@@ -65,5 +65,9 @@ python3 -m nfl_sim.models train --out ../reports/ep
 | Use | Status |
 | --- | --- |
 | Lake-`ep` Convention A/B diagnostics (Task A) | Available (parquet/JSON on Task A branch) |
-| Project `model_epa` pre/post on 2019–2022 | **Blocked** — original joblib missing |
-| Production Convention B code/spec | May proceed; model-surface labeled **unverified / lake-EP only** |
+| Project `model_epa` pre/post on 2019–2022 | **Blocked** until model-surface authorized — original missing; **labeled rebuild** available under scratch (see below) |
+| Production Convention B code/spec | May proceed; model-surface labeled **unverified / lake-EP only** until surface gate |
+
+## Update 2026-10-11 — recovery failed; labeled rebuild PASS
+
+Phase A re-search found **no** original. Authorized Phase B rebuild under scratch `--out` `/tmp/nfl-ep-labeled-rebuild` **passed** binding acceptance (exact). Joblib sha256 `1d4c6736c959baaab7bca8733344e113ecd9989a0a457689f1d45d84c38cf82e`; meta `rebuild: labeled_new_artifact`. **Not** promoted into committed `reports/ep/artifacts/`. Details: [`LABELED_REBUILD_RESULT.md`](./LABELED_REBUILD_RESULT.md).
