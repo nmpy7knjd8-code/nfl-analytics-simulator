@@ -1,0 +1,417 @@
+{
+  "command": "python3 -m nfl_sim.models decision-lab --seasons 2022 --game-id 2022_01_BAL_NYJ --play-id 790.0 --empirics-mode pooled --compare-modes --model /agent/repos/nfl-analytics-simulator/reports/wp/artifacts/wp_model.joblib",
+  "play": {
+    "game_state": {
+      "defteam_timeouts": 3,
+      "distance": 3,
+      "down": 4,
+      "game_seconds_remaining": 2899,
+      "half_seconds_remaining": 1099,
+      "is_home_possession": false,
+      "kick_distance_if_fg": 23,
+      "lake_defteam_timeouts_remaining": 3.0,
+      "lake_down": 4.0,
+      "lake_game_seconds_remaining": 2899.0,
+      "lake_half_seconds_remaining": 1099.0,
+      "lake_posteam_timeouts_remaining": 2.0,
+      "lake_qtr": 1.0,
+      "lake_score_differential": 0.0,
+      "lake_yardline_100": 6.0,
+      "lake_ydstogo": 3.0,
+      "posteam_timeouts": 2,
+      "qtr": 1,
+      "score_differential": 0,
+      "yardline_100": 6
+    },
+    "historical_action": "fg",
+    "provenance": {
+      "away_team": "BAL",
+      "defteam": "NYJ",
+      "desc": "(3:19) 9-J.Tucker 24 yard field goal is GOOD, Center-46-N.Moore, Holder-11-J.Stout.",
+      "field_goal_result": "made",
+      "fourth_down_converted": 0.0,
+      "game_id": "2022_01_BAL_NYJ",
+      "home_team": "NYJ",
+      "kick_distance": 24.0,
+      "play_id": 790.0,
+      "play_type": "field_goal",
+      "posteam": "BAL",
+      "punt_blocked": 0.0,
+      "season": 2022,
+      "season_type": "REG",
+      "week": 1,
+      "yards_gained": 0.0
+    },
+    "situation": {
+      "defteam_timeouts": 3,
+      "distance": 3,
+      "game_seconds_remaining": 2899,
+      "half_seconds_remaining": 1099,
+      "is_home_possession": false,
+      "posteam_timeouts": 2,
+      "qtr": 1,
+      "receive_2h_ko": 1,
+      "score_differential": 0,
+      "season": 2022,
+      "yardline_100": 6
+    },
+    "truth": "historical"
+  },
+  "pooled": {
+    "analysis": {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "empirics_resolve": {
+                "mode": "pooled",
+                "note": "Pooled REG train empirics",
+                "play_season": 2022,
+                "table_season": null
+              },
+              "filter": "REG play_type=field_goal",
+              "n": 704,
+              "p_make": 0.9801136363636364
+            },
+            "kick_distance": 23,
+            "p_make": 0.9801136363636364,
+            "wp_make": 0.6515077517709831,
+            "wp_miss": 0.556149810265141
+          },
+          "value_wp": 0.6496114290705828
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "empirics_resolve": {
+                "mode": "pooled",
+                "note": "Pooled REG train empirics",
+                "play_season": 2022,
+                "table_season": null
+              },
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 145,
+              "p_convert": 0.4689655172413793
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.4689655172413793,
+            "wp_convert": 0.7585341347744219,
+            "wp_fail": 0.556149810265141
+          },
+          "value_wp": 0.651061079690183
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 89.04347826086956,
+            "punt_bin": {
+              "empirics_resolve": {
+                "mode": "pooled",
+                "note": "Pooled REG train empirics",
+                "play_season": 2022,
+                "table_season": null
+              },
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 89.04347826086956,
+              "n": 184
+            },
+            "wp_punt": 0.544719610298746
+          },
+          "value_wp": 0.544719610298746
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+        "Empirics mode=pooled; Pooled REG train empirics"
+      ],
+      "empirics_meta": {
+        "empirics_mode": "pooled",
+        "empirics_resolve": {
+          "mode": "pooled",
+          "note": "Pooled REG train empirics",
+          "play_season": 2022,
+          "table_season": null
+        },
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+; pooled + per-season tables",
+        "per_season_n": {
+          "2019": {
+            "n_fg": 983,
+            "n_go": 593,
+            "n_punt": 2148
+          },
+          "2020": {
+            "n_fg": 960,
+            "n_go": 655,
+            "n_punt": 1888
+          },
+          "2021": {
+            "n_fg": 1027,
+            "n_go": 793,
+            "n_punt": 2066
+          }
+        },
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": true,
+      "margin": 0.001449650619600229,
+      "recommendation": "inconclusive",
+      "situation": {
+        "defteam_timeouts": 3,
+        "distance": 3,
+        "empirics_mode": "pooled",
+        "game_seconds_remaining": 2899,
+        "half_seconds_remaining": 1099,
+        "is_home_possession": false,
+        "kick_distance": 23,
+        "posteam_timeouts": 2,
+        "qtr": 1,
+        "receive_2h_ko": 1,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 6
+      }
+    },
+    "notes": [
+      "Action values reuse FourthDownAnalyzer (Path A WP + train empirics); not reimplemented here.",
+      "Historical play_type is observation only; recommendation is model counterfactual.",
+      "Offline / read-only: no live feeds, odds, or betting.",
+      "Empirics seasons=[2019, 2020, 2021]; n_go=2041, n_fg=2970, n_punt=6102 (never 2023+).",
+      "Empirics mode=pooled; resolve=Pooled REG train empirics",
+      "Historical action was 'fg'; model recommendation is 'inconclusive'."
+    ],
+    "summary": {
+      "distance": 3,
+      "empirics_mode": "pooled",
+      "empirics_n": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102
+      },
+      "empirics_resolve": {
+        "mode": "pooled",
+        "note": "Pooled REG train empirics",
+        "play_season": 2022,
+        "table_season": null
+      },
+      "empirics_seasons": [
+        2019,
+        2020,
+        2021
+      ],
+      "game_id": "2022_01_BAL_NYJ",
+      "game_seconds_remaining": 2899,
+      "historical_action": "fg",
+      "inconclusive": true,
+      "margin": 0.001449650619600229,
+      "p_convert": 0.4689655172413793,
+      "p_make": 0.9801136363636364,
+      "play_id": 790.0,
+      "recommendation": "inconclusive",
+      "score_differential": 0,
+      "season": 2022,
+      "sensitivity_changed": true,
+      "values": {
+        "fg": 0.6496114290705828,
+        "go": 0.651061079690183,
+        "punt": 0.544719610298746
+      },
+      "yardline_100": 6
+    }
+  },
+  "recommendation_changed": true,
+  "season_aware": {
+    "analysis": {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "empirics_resolve": {
+                "mode": "season_aware",
+                "note": "Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)",
+                "play_season": 2022,
+                "table_season": 2021
+              },
+              "filter": "REG play_type=field_goal",
+              "n": 239,
+              "p_make": 0.9916317991631799
+            },
+            "kick_distance": 23,
+            "p_make": 0.9916317991631799,
+            "wp_make": 0.6515077517709831,
+            "wp_miss": 0.556149810265141
+          },
+          "value_wp": 0.6507097773650764
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "empirics_resolve": {
+                "mode": "season_aware",
+                "note": "Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)",
+                "play_season": 2022,
+                "table_season": 2021
+              },
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 55,
+              "p_convert": 0.34545454545454546
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.34545454545454546,
+            "wp_convert": 0.7585341347744219,
+            "wp_fail": 0.556149810265141
+          },
+          "value_wp": 0.6260643950956198
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 88.3157894736842,
+            "punt_bin": {
+              "empirics_resolve": {
+                "mode": "season_aware",
+                "note": "Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)",
+                "play_season": 2022,
+                "table_season": 2021
+              },
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 88.3157894736842,
+              "n": 57
+            },
+            "wp_punt": 0.5424275108221213
+          },
+          "value_wp": 0.5424275108221213
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+        "Empirics mode=season_aware; Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)"
+      ],
+      "empirics_meta": {
+        "empirics_mode": "season_aware",
+        "empirics_resolve": {
+          "mode": "season_aware",
+          "note": "Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)",
+          "play_season": 2022,
+          "table_season": 2021
+        },
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+; pooled + per-season tables",
+        "per_season_n": {
+          "2019": {
+            "n_fg": 983,
+            "n_go": 593,
+            "n_punt": 2148
+          },
+          "2020": {
+            "n_fg": 960,
+            "n_go": 655,
+            "n_punt": 1888
+          },
+          "2021": {
+            "n_fg": 1027,
+            "n_go": 793,
+            "n_punt": 2066
+          }
+        },
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.02464538226945656,
+      "recommendation": "fg",
+      "situation": {
+        "defteam_timeouts": 3,
+        "distance": 3,
+        "empirics_mode": "season_aware",
+        "game_seconds_remaining": 2899,
+        "half_seconds_remaining": 1099,
+        "is_home_possession": false,
+        "kick_distance": 23,
+        "posteam_timeouts": 2,
+        "qtr": 1,
+        "receive_2h_ko": 1,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 6
+      }
+    },
+    "notes": [
+      "Action values reuse FourthDownAnalyzer (Path A WP + train empirics); not reimplemented here.",
+      "Historical play_type is observation only; recommendation is model counterfactual.",
+      "Offline / read-only: no live feeds, odds, or betting.",
+      "Empirics seasons=[2019, 2020, 2021]; n_go=2041, n_fg=2970, n_punt=6102 (never 2023+).",
+      "Empirics mode=season_aware; resolve=Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)"
+    ],
+    "summary": {
+      "distance": 3,
+      "empirics_mode": "season_aware",
+      "empirics_n": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102
+      },
+      "empirics_resolve": {
+        "mode": "season_aware",
+        "note": "Play season 2022 not in fit set; using most recent train table 2021 (no 2023+ fit)",
+        "play_season": 2022,
+        "table_season": 2021
+      },
+      "empirics_seasons": [
+        2019,
+        2020,
+        2021
+      ],
+      "game_id": "2022_01_BAL_NYJ",
+      "game_seconds_remaining": 2899,
+      "historical_action": "fg",
+      "inconclusive": false,
+      "margin": 0.02464538226945656,
+      "p_convert": 0.34545454545454546,
+      "p_make": 0.9916317991631799,
+      "play_id": 790.0,
+      "recommendation": "fg",
+      "score_differential": 0,
+      "season": 2022,
+      "sensitivity_changed": false,
+      "values": {
+        "fg": 0.6507097773650764,
+        "go": 0.6260643950956198,
+        "punt": 0.5424275108221213
+      },
+      "yardline_100": 6
+    }
+  },
+  "value_deltas": {
+    "fg": 0.001098348294493623,
+    "go": -0.024996684594563168,
+    "punt": -0.002292099476624787
+  }
+}

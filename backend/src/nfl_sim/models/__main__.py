@@ -323,6 +323,7 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
     import json as _json
 
     from nfl_sim.models.decision_lab import (
+        compare_empirics_modes,
         load_analyzer,
         load_fourth_down_frame,
         run_decision_lab,
@@ -333,6 +334,9 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
     seasons = tuple(int(s.strip()) for s in str(args.seasons).split(",") if s.strip())
     if not seasons:
         raise SystemExit("--seasons must list at least one season")
+    mode = str(args.empirics_mode)
+    if mode not in {"pooled", "season_aware"}:
+        raise SystemExit("--empirics-mode must be pooled or season_aware")
     frame = load_fourth_down_frame(seasons, season_type=args.season_type or None)
     if args.list:
         n = min(int(args.list_limit), len(frame))
@@ -379,20 +383,57 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
     except (KeyError, IndexError, ValueError) as exc:
         raise SystemExit(str(exc)) from exc
 
+    cmd = (
+        f"python3 -m nfl_sim.models decision-lab --seasons {args.seasons}"
+        + (f" --game-id {args.game_id} --play-id {args.play_id}" if args.game_id else f" --index {args.index}")
+        + f" --empirics-mode {mode}"
+        + (" --compare-modes" if args.compare_modes else "")
+        + f" --model {model_path}"
+    )
+
+    if args.compare_modes:
+        cmp = compare_empirics_modes(
+            az,
+            row,
+            convert_delta=float(args.convert_delta),
+            make_delta=float(args.make_delta),
+        )
+        payload = {**cmp, "command": cmd}
+        if args.out:
+            out = Path(args.out)
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "compare_modes.json").write_text(
+                _json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n"
+            )
+            _write_empirics_compare_report(out, payload)
+            print(
+                _json.dumps(
+                    {
+                        "out": str(out),
+                        "recommendation_changed": cmp["recommendation_changed"],
+                        "value_deltas": cmp["value_deltas"],
+                        "pooled_rec": cmp["pooled"]["summary"]["recommendation"],
+                        "season_aware_rec": cmp["season_aware"]["summary"]["recommendation"],
+                    },
+                    indent=2,
+                    default=str,
+                )
+            )
+            return 0
+        print(_json.dumps(payload, indent=2, sort_keys=True, default=str))
+        return 0
+
     result = run_decision_lab(
         az,
         row,
         convert_delta=float(args.convert_delta),
         make_delta=float(args.make_delta),
         include_sensitivity=not args.no_sensitivity,
+        empirics_mode=mode,  # type: ignore[arg-type]
     )
     payload = result.to_dict()
     payload["summary"] = summarize_lab(result)
-    payload["command"] = (
-        f"python3 -m nfl_sim.models decision-lab --seasons {args.seasons}"
-        + (f" --game-id {args.game_id} --play-id {args.play_id}" if args.game_id else f" --index {args.index}")
-        + f" --model {model_path}"
-    )
+    payload["command"] = cmd
 
     if args.out:
         out = Path(args.out)
@@ -415,6 +456,47 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
 
     print(_json.dumps(payload, indent=2, sort_keys=True, default=str))
     return 0
+
+
+def _write_empirics_compare_report(out: Path, payload: dict) -> None:
+    prov = payload["play"]["provenance"]
+    p = payload["pooled"]["summary"]
+    s = payload["season_aware"]["summary"]
+    lines = [
+        "# Empirics mode comparison (same frozen lake play)",
+        "",
+        f"**Command:** `{payload.get('command', '')}`",
+        "",
+        "> Offline counterfactual only — not live odds or betting advice.",
+        "",
+        f"* game_id / play_id: `{prov.get('game_id')}` / `{prov.get('play_id')}`",
+        f"* Historical play_type: `{prov.get('play_type')}`",
+        f"* State: yl={p.get('yardline_100')} &{p.get('distance')}, "
+        f"sd={p.get('score_differential')}, clock={p.get('game_seconds_remaining')}",
+        "",
+        "| Mode | go | FG | punt | rec | p_convert | table |",
+        "| --- | ---: | ---: | ---: | --- | ---: | --- |",
+        (
+            f"| pooled | {p['values']['go']:.4f} | {p['values']['fg']:.4f} | "
+            f"{p['values']['punt']:.4f} | {p['recommendation']} | "
+            f"{p.get('p_convert'):.4f} | pooled |"
+        ),
+        (
+            f"| season_aware | {s['values']['go']:.4f} | {s['values']['fg']:.4f} | "
+            f"{s['values']['punt']:.4f} | {s['recommendation']} | "
+            f"{s.get('p_convert'):.4f} | "
+            f"{(s.get('empirics_resolve') or {}).get('table_season')} |"
+        ),
+        "",
+        f"Recommendation changed: **{payload['recommendation_changed']}**",
+        "",
+        f"Value deltas (season_aware − pooled): `{payload['value_deltas']}`",
+        "",
+        f"Pooled resolve: `{(p.get('empirics_resolve') or {}).get('note')}`",
+        f"Season-aware resolve: `{(s.get('empirics_resolve') or {}).get('note')}`",
+        "",
+    ]
+    (out / "COMPARE.md").write_text("\n".join(lines))
 
 
 def _write_decision_lab_report(out: Path, payload: dict) -> None:
@@ -942,6 +1024,18 @@ def main(argv: list[str] | None = None) -> int:
     p_lab.add_argument("--convert-delta", type=float, default=-0.10)
     p_lab.add_argument("--make-delta", type=float, default=0.0)
     p_lab.add_argument("--no-sensitivity", action="store_true")
+    p_lab.add_argument(
+        "--empirics-mode",
+        type=str,
+        default="pooled",
+        choices=["pooled", "season_aware"],
+        help="Transition empirics: pooled train vs season-aware train table",
+    )
+    p_lab.add_argument(
+        "--compare-modes",
+        action="store_true",
+        help="Score the same frozen play under pooled and season_aware; write COMPARE.md",
+    )
     p_lab.add_argument(
         "--out",
         type=str,

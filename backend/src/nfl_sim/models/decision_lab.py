@@ -20,6 +20,7 @@ from nfl_sim.models.fourth_down import (
     FourthDownSituation,
     sensitivity_example,
 )
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode
 
 # Provenance + state columns surfaced to the lab (when present in PBP).
 PROVENANCE_COLUMNS: tuple[str, ...] = (
@@ -273,10 +274,11 @@ def run_decision_lab(
     convert_delta: float = -0.10,
     make_delta: float = 0.0,
     include_sensitivity: bool = True,
+    empirics_mode: EmpiricsMode = "pooled",
 ) -> DecisionLabResult:
     """Select path: freeze lake row → FourthDownAnalyzer.analyze (+ optional sensitivity)."""
     play = freeze_play(row)
-    analysis = analyzer.analyze(play.situation)
+    analysis = analyzer.analyze(play.situation, empirics_mode=empirics_mode)
     sens = None
     if include_sensitivity:
         sens = sensitivity_example(
@@ -284,7 +286,9 @@ def run_decision_lab(
             play.situation,
             convert_delta=convert_delta,
             make_delta=make_delta,
+            empirics_mode=empirics_mode,
         )
+    resolve = (analysis.empirics_meta or {}).get("empirics_resolve") or {}
     notes = [
         "Action values reuse FourthDownAnalyzer (Path A WP + train empirics); not reimplemented here.",
         "Historical play_type is observation only; recommendation is model counterfactual.",
@@ -295,6 +299,7 @@ def run_decision_lab(
             f"n_fg={analysis.empirics_meta.get('n_fg')}, "
             f"n_punt={analysis.empirics_meta.get('n_punt')} (never 2023+)."
         ),
+        f"Empirics mode={empirics_mode}; resolve={resolve.get('note')}",
     ]
     if play.historical_action and play.historical_action != analysis.recommendation:
         notes.append(
@@ -302,6 +307,47 @@ def run_decision_lab(
             f"model recommendation is {analysis.recommendation!r}."
         )
     return DecisionLabResult(play=play, analysis=analysis, sensitivity=sens, notes=notes)
+
+
+def compare_empirics_modes(
+    analyzer: FourthDownAnalyzer,
+    row: pd.Series | dict[str, Any],
+    *,
+    convert_delta: float = -0.10,
+    make_delta: float = 0.0,
+) -> dict[str, Any]:
+    """Same frozen lake play under pooled vs season_aware empirics (measure recommendation delta)."""
+    pooled = run_decision_lab(
+        analyzer,
+        row,
+        convert_delta=convert_delta,
+        make_delta=make_delta,
+        include_sensitivity=True,
+        empirics_mode="pooled",
+    )
+    season_aware = run_decision_lab(
+        analyzer,
+        row,
+        convert_delta=convert_delta,
+        make_delta=make_delta,
+        include_sensitivity=True,
+        empirics_mode="season_aware",
+    )
+    sp = summarize_lab(pooled)
+    ss = summarize_lab(season_aware)
+    return {
+        "play": pooled.play.to_dict(),
+        "pooled": {"summary": sp, "analysis": pooled.analysis.to_dict(), "notes": pooled.notes},
+        "season_aware": {
+            "summary": ss,
+            "analysis": season_aware.analysis.to_dict(),
+            "notes": season_aware.notes,
+        },
+        "recommendation_changed": sp["recommendation"] != ss["recommendation"],
+        "value_deltas": {
+            k: float(ss["values"][k] - sp["values"][k]) for k in ("go", "fg", "punt")
+        },
+    }
 
 
 def load_analyzer(
@@ -351,4 +397,8 @@ def summarize_lab(result: DecisionLabResult) -> dict[str, Any]:
             "n_fg": a.empirics_meta.get("n_fg"),
             "n_punt": a.empirics_meta.get("n_punt"),
         },
+        "empirics_mode": a.empirics_meta.get("empirics_mode"),
+        "empirics_resolve": a.empirics_meta.get("empirics_resolve"),
+        "p_convert": a.actions["go"].components.get("p_convert"),
+        "p_make": a.actions["fg"].components.get("p_make"),
     }
