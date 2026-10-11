@@ -439,7 +439,7 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
       },
     ],
     whyRecommended:
-      "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — the model isn’t picking a clear winner.",
+      "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — there’s no clear winner.",
     footnote:
       "Example inconclusive case for product demo — shown so fans see when the call is a coin-flip, not a slam dunk.",
   },
