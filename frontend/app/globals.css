@@ -215,7 +215,7 @@ button:focus-visible {
 /* —— Home hero —— */
 .hero {
   position: relative;
-  min-height: min(92vh, 44rem);
+  min-height: calc(100dvh - var(--nav-height));
   display: grid;
   align-content: end;
   padding: 0;
@@ -787,7 +787,7 @@ button:focus-visible {
   }
 
   .hero {
-    min-height: min(88vh, 36rem);
+    min-height: calc(100dvh - var(--nav-height));
   }
 
   .hero-brand {
