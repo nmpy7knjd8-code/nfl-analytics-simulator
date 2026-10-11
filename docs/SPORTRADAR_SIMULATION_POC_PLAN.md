@@ -3,6 +3,9 @@
 **Date:** 2026-10-11  
 **Depends on:** Feed evaluation on `main` via PR #17 (`fca789d`)  
 **Mode:** Planning / documentation only  
+**Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/18  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/0278561f6425be650ad87e1975be63263bce3158/docs/NEXT_STEPS_DELTA_SPORTRADAR_POC_PLAN.md
+
 **Approval boundary:** **STOP** — do not start trial, contact vendors, create accounts, incur costs, call Simulation or live APIs, or wire production until explicitly authorized.
 
 Related: [`FEED_EVALUATION.md`](./FEED_EVALUATION.md), [`PRE_SNAP_ADAPTER.md`](./PRE_SNAP_ADAPTER.md), recorded demo on `main`.
