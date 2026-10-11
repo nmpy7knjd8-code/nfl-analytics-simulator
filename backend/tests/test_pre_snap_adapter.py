@@ -47,20 +47,66 @@ def test_fixture_file_exists_and_parses(flip_raw: dict):
     assert snap.situation.distance == 14
 
 
-def test_missing_required_field_not_zero_filled(flip_raw: dict):
+def test_missing_user_fallbackable_without_fallback_unsupported(flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     del bad["situation"]["distance"]
     with pytest.raises(PreSnapAdapterError) as exc:
         parse_pre_snap_snapshot(bad)
-    assert "distance" in str(exc.value).lower()
+    msg = str(exc.value).lower()
+    assert "distance" in msg
+    assert "unsupported-state" in msg
 
 
-def test_missing_receive_2h_ko_rejected(flip_raw: dict):
+def test_missing_auto_field_unsupported_state(flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     del bad["situation"]["receive_2h_ko"]
     with pytest.raises(PreSnapAdapterError) as exc:
         parse_pre_snap_snapshot(bad)
-    assert "receive_2h_ko" in str(exc.value)
+    msg = str(exc.value).lower()
+    assert "receive_2h_ko" in msg
+    assert "unsupported-state" in msg
+
+
+def test_user_fallback_rejects_auto_only_keys(flip_raw: dict):
+    bad = copy.deepcopy(flip_raw)
+    bad["user_fallback"] = {"posteam_timeouts": 2}
+    with pytest.raises(PreSnapAdapterError) as exc:
+        parse_pre_snap_snapshot(bad)
+    assert "posteam_timeouts" in str(exc.value).lower()
+
+
+def test_user_fallback_fills_time_down_field_position(flip_raw: dict):
+    partial = copy.deepcopy(flip_raw)
+    for key in (
+        "down",
+        "distance",
+        "yardline_100",
+        "quarter",
+        "half_seconds_remaining",
+        "game_seconds_remaining",
+    ):
+        del partial["situation"][key]
+    partial["user_fallback"] = {
+        "down": 4,
+        "distance": 14,
+        "yardline_100": 64,
+        "quarter": 4,
+        "half_seconds_remaining": 207,
+        "game_seconds_remaining": 207,
+    }
+    snap = parse_pre_snap_snapshot(partial)
+    assert snap.situation.distance == 14
+    assert snap.field_sources["distance"] == "user_fallback"
+    assert snap.field_sources["posteam_timeouts"] == "snapshot"
+    assert snap.field_sources["yardline_100"] == "user_fallback"
+
+
+def test_conflict_snapshot_and_user_fallback_rejected(flip_raw: dict):
+    bad = copy.deepcopy(flip_raw)
+    bad["user_fallback"] = {"distance": 10}
+    with pytest.raises(PreSnapAdapterError) as exc:
+        parse_pre_snap_snapshot(bad)
+    assert "conflict" in str(exc.value).lower()
 
 
 def test_inconsistent_score_rejected(flip_raw: dict):
@@ -112,6 +158,8 @@ def test_deterministic_fixture_payload(flip_raw: dict):
         "truth_labels"
     ]["disclaimer"].lower()
     assert a["live_feed"] is False
+    assert a["field_sources"]["distance"] == "snapshot"
+    assert a["field_sources"]["posteam_timeouts"] == "snapshot"
 
 
 @pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing")
@@ -172,6 +220,35 @@ def test_api_rejects_missing_field(client: TestClient, flip_raw: dict):
     r = client.post("/situation-lab/api/compare-pre-snap", json=bad)
     assert r.status_code == 400
     assert "yardline_100" in r.json()["detail"].lower()
+
+
+@pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing")
+def test_api_user_fallback_partial_e2e(client: TestClient, flip_raw: dict):
+    body = copy.deepcopy(flip_raw)
+    for key in (
+        "down",
+        "distance",
+        "yardline_100",
+        "quarter",
+        "half_seconds_remaining",
+        "game_seconds_remaining",
+    ):
+        del body["situation"][key]
+    body["user_fallback"] = {
+        "down": 4,
+        "distance": 14,
+        "yardline_100": 64,
+        "quarter": 4,
+        "half_seconds_remaining": 207,
+        "game_seconds_remaining": 207,
+    }
+    r = client.post("/situation-lab/api/compare-pre-snap", json=body)
+    assert r.status_code == 200, r.text
+    data = r.json()
+    assert data["field_sources"]["yardline_100"] == "user_fallback"
+    assert data["field_sources"]["game_id"] == "snapshot"
+    assert data["recommendation_changed_legacy_to_improved"] is True
+    assert data["live_feed"] is False
 
 
 def test_fixture_json_roundtrip_stable():

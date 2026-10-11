@@ -3,11 +3,14 @@ from .game import GameSummary
 from .models import EpEpaBaselineResult, ModelDescriptor
 from .play import CanonicalPlay, ReferenceModelColumns
 from .pre_snap import (
+    AUTO_SITUATION_FIELDS,
+    USER_FALLBACK_FIELDS,
     Freshness,
     PreSnapProvider,
     PreSnapSituation,
     PreSnapSnapshot,
     PreSnapSource,
+    UserFallback,
 )
 from .prediction import ModelPrediction, PredictionKind
 from .provenance import Provenance
@@ -25,6 +28,7 @@ __all__ = [
     "DataMode",
     "DecisionAction",
     "EpEpaBaselineResult",
+    "AUTO_SITUATION_FIELDS",
     "Freshness",
     "GameSituation",
     "GameSummary",
@@ -47,4 +51,6 @@ __all__ = [
     "SimulationResult",
     "SimulationScope",
     "TruthLabel",
+    "USER_FALLBACK_FIELDS",
+    "UserFallback",
 ]

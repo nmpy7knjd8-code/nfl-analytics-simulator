@@ -8,6 +8,42 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+# Situation fields the feed/fixture must supply — never invented, never user-fallback.
+AUTO_SITUATION_FIELDS: frozenset[str] = frozenset(
+    {
+        "season",
+        "season_type",
+        "week",
+        "game_id",
+        "play_id",
+        "possession_team_id",
+        "defense_team_id",
+        "home_team_id",
+        "away_team_id",
+        "score_differential",
+        "posteam_score",
+        "defteam_score",
+        "posteam_timeouts",
+        "defteam_timeouts",
+        "receive_2h_ko",
+    }
+)
+
+# Only these may be supplied via user_fallback when the feed omits them.
+USER_FALLBACK_FIELDS: frozenset[str] = frozenset(
+    {
+        "down",
+        "distance",
+        "yardline_100",
+        "quarter",
+        "half_seconds_remaining",
+        "game_seconds_remaining",
+    }
+)
+
+# Optional auto field — may be absent without unsupported-state.
+OPTIONAL_SITUATION_FIELDS: frozenset[str] = frozenset({"roof"})
+
 
 class Freshness(str, Enum):
     PRE_SNAP = "pre_snap"
@@ -41,7 +77,7 @@ class PreSnapSource(BaseModel):
 
 
 class PreSnapSituation(BaseModel):
-    """Pre-snap fourth-down state. All listed fields required — no silent defaults."""
+    """Resolved pre-snap fourth-down state after auto + optional user_fallback merge."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -99,12 +135,36 @@ class PreSnapSituation(BaseModel):
         return self
 
 
+class UserFallback(BaseModel):
+    """Allowlisted time / down / field-position overrides when feed omits them."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    down: int | None = Field(default=None, ge=1, le=4)
+    distance: int | None = Field(default=None, ge=1, le=99)
+    yardline_100: int | None = Field(default=None, ge=1, le=99)
+    quarter: int | None = Field(default=None, ge=1, le=5)
+    half_seconds_remaining: int | None = Field(default=None, ge=0)
+    game_seconds_remaining: int | None = Field(default=None, ge=0)
+
+    def provided(self) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        for key in USER_FALLBACK_FIELDS:
+            val = getattr(self, key)
+            if val is not None:
+                out[key] = val
+        return out
+
+
 class PreSnapSnapshot(BaseModel):
+    """Envelope after merge — situation is fully resolved."""
+
     model_config = ConfigDict(extra="forbid")
 
     schema_version: str = Field(..., min_length=1)
     source: PreSnapSource
     situation: PreSnapSituation
+    field_sources: dict[str, str] = Field(default_factory=dict)
 
     @field_validator("schema_version")
     @classmethod

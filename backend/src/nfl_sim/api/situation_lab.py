@@ -173,6 +173,7 @@ def build_situation_lab_payload_from_snapshot(
         disclaimer=PRE_SNAP_DISCLAIMER,
     )
     payload["source"] = source_dict(snap)
+    payload["field_sources"] = dict(snap.field_sources)
     return payload
 
 

@@ -2,12 +2,12 @@
 
 **Date:** 2026-10-11  
 **Depends on:** PR #14 Situation Lab on `main` (`b0e6ea8`)  
-**Branch:** `cursor/pre-snap-adapter-c0ef` @ `7f878d1`  
+**Branch:** `cursor/pre-snap-adapter-c0ef` @ `23e9b16`  
 **Stage 2 PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/15  
 **Scope:** Thin **fixture/demo** pre-snap adapter → same Situation Lab payload shape.  
 **Non-goals:** Real live vendor, odds, betting, fan-UI changes, silent lake fill.
 
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7f878d169c04c38c779600a81027e6b809ced27c/docs/NEXT_STEPS_DELTA_PRE_SNAP_ADAPTER.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/23e9b1625c7f115f678a7061fdf825437dab485f/docs/NEXT_STEPS_DELTA_PRE_SNAP_ADAPTER.md
 
 This document locks the **payload contract first**. Implementation must conform; do not invent a second response shape.
 
@@ -29,8 +29,9 @@ Produced today by `build_situation_lab_payload(season, game_id, play_id)` and by
 | `offline` | bool | Always `true` for this stage |
 | `live_feed` | bool | Always `false` — adapter **never** claims a live feed |
 | `source` | object \| null | Present for pre-snap path only — see §1.4 |
+| `field_sources` | object \| null | Pre-snap: each situation field → `snapshot` \| `user_fallback` (§2.6) |
 
-Historical lake path may omit `source` and `live_feed` (treat missing `live_feed` as false). Pre-snap path **must** set both explicitly.
+Historical lake path may omit `source`, `live_feed`, and `field_sources` (treat missing `live_feed` as false). Pre-snap path **must** set `source` + `live_feed`; should set `field_sources`.
 
 ### 1.1 `truth_labels`
 
@@ -98,7 +99,8 @@ Adapter input is a JSON object (file fixture or POST body). **Missing required f
 | --- | --- | --- |
 | `schema_version` | `"pre_snap_snapshot.v1"` | yes |
 | `source` | object (§1.4 fields) | yes |
-| `situation` | object (§2.2) | yes |
+| `situation` | object (§2.2; auto fields required; user-fallbackable may be omitted if `user_fallback` supplies them — see §2.6) | yes |
+| `user_fallback` | object | no — allowlisted time/down/field-position only (§2.6) |
 
 ### 2.2 `situation` required fields
 
@@ -151,6 +153,68 @@ Stale ≠ simulated. In-play ≠ pre-snap. Never coerce.
 * Adapter **must not** copy `play_type` / conversion / kick results from history into a pre-snap snapshot.
 * Sample fixtures may **mirror** a known lake situation’s *pre-snap state* for regression, but remain self-contained JSON.
 
+### 2.6 Auto-from-feed vs user-fallback (live-path contract)
+
+Real-time decisions need current game variables. **Most fields auto-populate from the snapshot/feed.** The user supplies only a small allowlist when the feed cannot. **Never silently invent** a missing live field — either apply an explicit `user_fallback` value or return a clear **unsupported-state** error naming the field.
+
+#### Auto-from-snapshot (feed / fixture must supply — not user-invented)
+
+| Field | Why auto |
+| --- | --- |
+| `season`, `season_type`, `week` | Game identity |
+| `game_id`, `play_id` | Stable ids / revision keying |
+| `possession_team_id`, `defense_team_id`, `home_team_id`, `away_team_id` | Roster / possession from feed |
+| `posteam_score`, `defteam_score`, `score_differential` | Scoreboard (diff must match scores) |
+| `posteam_timeouts`, `defteam_timeouts` | Official timeout clocks |
+| `receive_2h_ko` | Derived once per half from feed rules — never guessed |
+| `roof` (optional) | Venue from feed when known |
+| Entire `source` block | Provider provenance / freshness |
+
+Missing any auto field → **unsupported-state** (HTTP 400). Do **not** zero-fill, lake-fill, or ask the user to type team/score/timeout identity in the MVP live path.
+
+#### User-fallback allowlist (only when feed omits)
+
+These are the **only** situation fields a caller may supply via top-level `user_fallback` when absent from `situation`:
+
+| Field | Group | Notes |
+| --- | --- | --- |
+| `down` | down | Lab path still requires final value `4` |
+| `distance` | down / to-go | 1–99 |
+| `yardline_100` | field position | 1–99, possession orientation |
+| `quarter` | time | 1–5 |
+| `half_seconds_remaining` | time | ≥ 0 |
+| `game_seconds_remaining` | time | ≥ 0 |
+
+Rules:
+
+1. If the snapshot already has the field → **use snapshot** (user_fallback for that key ignored or rejected as conflict — prefer reject on conflict).  
+2. If missing from snapshot and present in `user_fallback` → use user value; record `field_sources[field]="user_fallback"`.  
+3. If missing from both → **unsupported-state** naming the field (not a silent default).  
+4. Fixture stage may still ship **complete** snapshots (all fields auto); `user_fallback` is optional and used for partial-feed tests / future live UX.  
+5. `user_fallback` must not contain auto-only keys (teams, scores, timeouts, ids, …).
+
+#### Response `field_sources` (pre-snap path)
+
+Optional object mapping each scored situation field → `"snapshot"` \| `"user_fallback"`. Fixtures with full situation → all `"snapshot"`.
+
+Envelope with fallback:
+
+```json
+{
+  "schema_version": "pre_snap_snapshot.v1",
+  "source": { "...": "..." },
+  "situation": { "...auto fields...": "..." },
+  "user_fallback": {
+    "down": 4,
+    "distance": 14,
+    "yardline_100": 64,
+    "quarter": 4,
+    "half_seconds_remaining": 207,
+    "game_seconds_remaining": 207
+  }
+}
+```
+
 ---
 
 ## 3. Determinism
@@ -197,7 +261,10 @@ Bundled: `flip-lac-den-pre-snap` — LAC@DEN 2022 W18 4th & 14 @ 64 (same pre-sn
 5. `freshness=stale` → reject.  
 6. Response never sets `live_feed=true` / never labels play as live.  
 7. Historical `/compare` still returns flip for lake ids.  
-8. E2E: fixture_id → Situation Lab payload via API.
+8. E2E: fixture_id → Situation Lab payload via API.  
+9. Partial situation + `user_fallback` for time/down/yardline → scores; `field_sources` marks user keys.  
+10. Missing auto field (e.g. timeouts) → unsupported-state even if user_fallback tries to supply it.  
+11. Conflict: snapshot and user_fallback both set same allowlist key → reject.
 
 ---
 
