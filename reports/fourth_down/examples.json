@@ -1,0 +1,528 @@
+{
+  "command": "python3 -m nfl_sim.models fourth-down --report --model ../reports/wp/artifacts/wp_model.joblib --out ../reports/fourth_down",
+  "empirics_meta": {
+    "n_fg": 2970,
+    "n_go": 2041,
+    "n_punt": 6102,
+    "note": "Fit on train seasons only; never 2023+",
+    "season_type": "REG",
+    "seasons": [
+      2019,
+      2020,
+      2021
+    ]
+  },
+  "examples": [
+    {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 24,
+              "p_make": 0.2916666666666667
+            },
+            "kick_distance": 72,
+            "p_make": 0.2916666666666667,
+            "wp_make": 0.5884358616673223,
+            "wp_miss": 0.3786434755432455
+          },
+          "value_wp": 0.4398329214961012
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 814,
+              "p_convert": 0.6511056511056511
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.6511056511056511,
+            "wp_convert": 0.5949297262103674,
+            "wp_fail": 0.3786434755432455
+          },
+          "value_wp": 0.5194686756090621
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 85.74209486166008,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 85.74209486166008,
+              "n": 2024
+            },
+            "wp_punt": 0.47090085403499327
+          },
+          "value_wp": 0.47090085403499327
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.048567821574068804,
+      "recommendation": "go",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 1,
+        "game_seconds_remaining": 360,
+        "half_seconds_remaining": 360,
+        "is_home_possession": true,
+        "kick_distance": 72,
+        "posteam_timeouts": 2,
+        "qtr": 4,
+        "receive_2h_ko": 0,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 55
+      }
+    },
+    {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 471,
+              "p_make": 0.643312101910828
+            },
+            "kick_distance": 50,
+            "p_make": 0.643312101910828,
+            "wp_make": 0.44718660237478214,
+            "wp_miss": 0.29700331917560097
+          },
+          "value_wp": 0.39361804276233536
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 273,
+              "p_convert": 0.4652014652014652
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.4652014652014652,
+            "wp_convert": 0.5083950639507915,
+            "wp_fail": 0.29700331917560097
+          },
+          "value_wp": 0.3953430685765138
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 89.04347826086956,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 89.04347826086956,
+              "n": 184
+            },
+            "wp_punt": 0.3411080798943861
+          },
+          "value_wp": 0.3411080798943861
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": true,
+      "margin": 0.001725025814178438,
+      "recommendation": "inconclusive",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 4,
+        "game_seconds_remaining": 120,
+        "half_seconds_remaining": 120,
+        "is_home_possession": true,
+        "kick_distance": 50,
+        "posteam_timeouts": 2,
+        "qtr": 4,
+        "receive_2h_ko": 0,
+        "score_differential": -3,
+        "season": 2022,
+        "yardline_100": 33
+      }
+    },
+    {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 24,
+              "p_make": 0.2916666666666667
+            },
+            "kick_distance": 87,
+            "p_make": 0.2916666666666667,
+            "wp_make": 0.7537912831268618,
+            "wp_miss": 0.5318428943391174
+          },
+          "value_wp": 0.5965778410688761
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 298,
+              "p_convert": 0.5906040268456376
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.5906040268456376,
+            "wp_convert": 0.7366621610685866,
+            "wp_fail": 0.5318428943391174
+          },
+          "value_wp": 0.6528099780451126
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 73.09217970049917,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 73.09217970049917,
+              "n": 3005
+            },
+            "wp_punt": 0.6282701938752822
+          },
+          "value_wp": 0.6282701938752822
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.024539784169830492,
+      "recommendation": "go",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 2,
+        "game_seconds_remaining": 600,
+        "half_seconds_remaining": 600,
+        "is_home_possession": true,
+        "kick_distance": 87,
+        "posteam_timeouts": 2,
+        "qtr": 3,
+        "receive_2h_ko": 0,
+        "score_differential": 4,
+        "season": 2022,
+        "yardline_100": 70
+      }
+    },
+    {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 838,
+              "p_make": 0.9248210023866349
+            },
+            "kick_distance": 37,
+            "p_make": 0.9248210023866349,
+            "wp_make": 0.5900989994081074,
+            "wp_miss": 0.45882144487113274
+          },
+          "value_wp": 0.5802296844488838
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 340,
+              "p_convert": 0.3764705882352941
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.3764705882352941,
+            "wp_convert": 0.6825534573236431,
+            "wp_fail": 0.45882144487113274
+          },
+          "value_wp": 0.5430499672061955
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 89.04347826086956,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 89.04347826086956,
+              "n": 184
+            },
+            "wp_punt": 0.4795262186503
+          },
+          "value_wp": 0.4795262186503
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.037179717242688315,
+      "recommendation": "fg",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 8,
+        "game_seconds_remaining": 90,
+        "half_seconds_remaining": 90,
+        "is_home_possession": true,
+        "kick_distance": 37,
+        "posteam_timeouts": 2,
+        "qtr": 4,
+        "receive_2h_ko": 0,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 20
+      }
+    }
+  ],
+  "sensitivity": {
+    "alternate": {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 24,
+              "p_make": 0.2916666666666667
+            },
+            "kick_distance": 72,
+            "p_make": 0.2916666666666667,
+            "wp_make": 0.5884358616673223,
+            "wp_miss": 0.3786434755432455
+          },
+          "value_wp": 0.4398329214961012
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 814,
+              "p_convert": 0.6511056511056511
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.30110565110565113,
+            "wp_convert": 0.5949297262103674,
+            "wp_fail": 0.3786434755432455
+          },
+          "value_wp": 0.44376848787556933
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 85.74209486166008,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 85.74209486166008,
+              "n": 2024
+            },
+            "wp_punt": 0.47090085403499327
+          },
+          "value_wp": 0.47090085403499327
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.027132366159423937,
+      "recommendation": "punt",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 1,
+        "game_seconds_remaining": 360,
+        "half_seconds_remaining": 360,
+        "is_home_possession": true,
+        "kick_distance": 72,
+        "posteam_timeouts": 2,
+        "qtr": 4,
+        "receive_2h_ko": 0,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 55
+      }
+    },
+    "baseline": {
+      "actions": {
+        "fg": {
+          "action": "fg",
+          "components": {
+            "fg_bin": {
+              "filter": "REG play_type=field_goal",
+              "n": 24,
+              "p_make": 0.2916666666666667
+            },
+            "kick_distance": 72,
+            "p_make": 0.2916666666666667,
+            "wp_make": 0.5884358616673223,
+            "wp_miss": 0.3786434755432455
+          },
+          "value_wp": 0.4398329214961012
+        },
+        "go": {
+          "action": "go",
+          "components": {
+            "convert_bin": {
+              "filter": "REG 4th pass/run with fourth_down_converted",
+              "n": 814,
+              "p_convert": 0.6511056511056511
+            },
+            "kick_distance_n/a": null,
+            "p_convert": 0.6511056511056511,
+            "wp_convert": 0.5949297262103674,
+            "wp_fail": 0.3786434755432455
+          },
+          "value_wp": 0.5194686756090621
+        },
+        "punt": {
+          "action": "punt",
+          "components": {
+            "opp_yardline_100": 85.74209486166008,
+            "punt_bin": {
+              "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+              "mean_opp_yardline_100": 85.74209486166008,
+              "n": 2024
+            },
+            "wp_punt": 0.47090085403499327
+          },
+          "value_wp": 0.47090085403499327
+        }
+      },
+      "assumptions": [
+        "Path A uncalibrated WP only (no isotonic)",
+        "Clock \u22126s per branch",
+        "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+        "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+        "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+        "Empirics fit REG train 2019\u20132021 only"
+      ],
+      "empirics_meta": {
+        "n_fg": 2970,
+        "n_go": 2041,
+        "n_punt": 6102,
+        "note": "Fit on train seasons only; never 2023+",
+        "season_type": "REG",
+        "seasons": [
+          2019,
+          2020,
+          2021
+        ]
+      },
+      "inconclusive": false,
+      "margin": 0.048567821574068804,
+      "recommendation": "go",
+      "situation": {
+        "defteam_timeouts": 2,
+        "distance": 1,
+        "game_seconds_remaining": 360,
+        "half_seconds_remaining": 360,
+        "is_home_possession": true,
+        "kick_distance": 72,
+        "posteam_timeouts": 2,
+        "qtr": 4,
+        "receive_2h_ko": 0,
+        "score_differential": 0,
+        "season": 2022,
+        "yardline_100": 55
+      }
+    },
+    "convert_delta": -0.35,
+    "make_delta": 0.0,
+    "recommendation_changed": true
+  },
+  "wp_model": "../reports/wp/artifacts/wp_model.joblib",
+  "wp_note": "Path A uncalibrated primary; isotonic not loaded"
+}
