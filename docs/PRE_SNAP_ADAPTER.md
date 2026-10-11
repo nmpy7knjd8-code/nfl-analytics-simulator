@@ -156,14 +156,22 @@ Same validated snapshot bytes → same `configs` recommendations/values (given s
 
 ---
 
-## 4. API surface (planned)
+## 4. API surface (implemented)
 
-* Keep `GET /situation-lab/api/compare` — historical lake path unchanged.
-* Add `GET /situation-lab/api/fixtures` — list bundled pre-snap fixtures.
-* Add `POST /situation-lab/api/compare-pre-snap` — body = `pre_snap_snapshot.v1`.
-* Add `GET /situation-lab/api/compare-pre-snap?fixture_id=…` — load bundled fixture.
+* `GET /situation-lab/api/compare` — historical lake path unchanged.
+* `GET /situation-lab/api/fixtures` — list bundled pre-snap fixtures.
+* `POST /situation-lab/api/compare-pre-snap` — body = `pre_snap_snapshot.v1`.
+* `GET /situation-lab/api/compare-pre-snap?fixture_id=…` — load bundled fixture.
 
-HTML may expose a fixture picker later; **not** required to change fan UI.
+### Code
+
+* `backend/src/nfl_sim/contracts/pre_snap.py` — pydantic snapshot contract  
+* `backend/src/nfl_sim/providers/pre_snap.py` — validate / map / load fixtures  
+* `backend/src/nfl_sim/providers/fixtures/pre_snap/flip_lac_den_pre_snap.json`  
+* `backend/src/nfl_sim/api/situation_lab.py` — `build_situation_lab_payload_from_snapshot`  
+* Tests: `backend/tests/test_pre_snap_adapter.py`
+
+HTML fixture picker deferred; **no** fan-UI changes.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Separate from the fan-facing Next.js UI. Reuses compare_transition_modes; no
 duplicated go/FG/punt scoring logic. Trusted WP artifact path only.
+
+Pre-snap fixture/demo path shares the same payload shape; never claims a live feed.
 """
 
 from __future__ import annotations
@@ -17,6 +19,11 @@ from nfl_sim.config import REPO_ROOT
 
 WP_MODEL_ARTIFACT = REPO_ROOT / "reports" / "wp" / "artifacts" / "wp_model.joblib"
 STATIC_HTML = Path(__file__).resolve().parent / "static" / "situation_lab.html"
+
+PRE_SNAP_DISCLAIMER = (
+    "Offline estimate from a pre-snap snapshot fixture — not a live feed, "
+    "not live odds or betting advice. Path A uncalibrated WP + REG train empirics only."
+)
 
 # Documented flip is default; anchor included for contrast.
 PRESETS: list[dict[str, Any]] = [
@@ -75,6 +82,32 @@ def _summarize_config(block: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _payload_from_compare(cmp: dict[str, Any], *, truth_play: str, disclaimer: str) -> dict[str, Any]:
+    play = dict(cmp["play"])
+    play["truth"] = truth_play
+    return {
+        "truth_labels": {
+            "play": truth_play,
+            "action_values": "model_counterfactual",
+            "disclaimer": disclaimer,
+        },
+        "play": play,
+        "configs": {
+            "pooled_legacy": _summarize_config(cmp["pooled_legacy"]),
+            "season_aware_legacy": _summarize_config(cmp["season_aware_legacy"]),
+            "pooled_improved": _summarize_config(cmp["pooled_improved"]),
+        },
+        "recommendation_changed_legacy_to_improved": cmp[
+            "recommendation_changed_legacy_to_improved"
+        ],
+        "value_deltas_legacy_to_improved": cmp["value_deltas_legacy_to_improved"],
+        "clock_deltas_improved": cmp.get("clock_deltas_improved"),
+        "wp_model": str(WP_MODEL_ARTIFACT),
+        "offline": True,
+        "live_feed": False,
+    }
+
+
 def build_situation_lab_payload(
     *,
     season: int,
@@ -97,30 +130,50 @@ def build_situation_lab_payload(
     frame = load_fourth_down_frame([int(season)], season_type="REG")
     row = select_play(frame, game_id=str(game_id), play_id=float(play_id))
     cmp = compare_transition_modes(analyzer, row, empirics_mode="pooled")
-    play = cmp["play"]
-    return {
-        "truth_labels": {
-            "play": "historical",
-            "action_values": "model_counterfactual",
-            "disclaimer": (
-                "Offline estimate — not live odds or betting advice. "
-                "Path A uncalibrated WP + REG train empirics only."
-            ),
-        },
-        "play": play,
-        "configs": {
-            "pooled_legacy": _summarize_config(cmp["pooled_legacy"]),
-            "season_aware_legacy": _summarize_config(cmp["season_aware_legacy"]),
-            "pooled_improved": _summarize_config(cmp["pooled_improved"]),
-        },
-        "recommendation_changed_legacy_to_improved": cmp[
-            "recommendation_changed_legacy_to_improved"
-        ],
-        "value_deltas_legacy_to_improved": cmp["value_deltas_legacy_to_improved"],
-        "clock_deltas_improved": cmp.get("clock_deltas_improved"),
-        "wp_model": str(WP_MODEL_ARTIFACT),
-        "offline": True,
-    }
+    return _payload_from_compare(
+        cmp,
+        truth_play="historical",
+        disclaimer=(
+            "Offline estimate — not live odds or betting advice. "
+            "Path A uncalibrated WP + REG train empirics only."
+        ),
+    )
+
+
+def build_situation_lab_payload_from_snapshot(
+    raw: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate pre-snap snapshot → same Situation Lab payload shape (fixture/demo).
+
+    Never opens the lake to fill fields. Never claims live_feed.
+    """
+    from nfl_sim.models.decision_lab import compare_transition_modes
+    from nfl_sim.providers.pre_snap import (
+        PreSnapAdapterError,
+        parse_pre_snap_snapshot,
+        snapshot_to_decision_row,
+        source_dict,
+    )
+
+    analyzer = _load_analyzer()
+    if analyzer is None:
+        raise FileNotFoundError(
+            f"Missing WP artifact: {WP_MODEL_ARTIFACT}. "
+            "Train Path A WP first (uncalibrated primary; do not persist isotonic as default)."
+        )
+    try:
+        snap = parse_pre_snap_snapshot(raw)
+        row = snapshot_to_decision_row(snap)
+    except PreSnapAdapterError:
+        raise
+    cmp = compare_transition_modes(analyzer, row, empirics_mode="pooled")
+    payload = _payload_from_compare(
+        cmp,
+        truth_play="pre_snap_fixture",
+        disclaimer=PRE_SNAP_DISCLAIMER,
+    )
+    payload["source"] = source_dict(snap)
+    return payload
 
 
 def create_situation_lab_router() -> APIRouter:
@@ -160,6 +213,52 @@ def create_situation_lab_router() -> APIRouter:
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(
                 status_code=500, detail=f"situation lab compare failed: {exc}"
+            ) from exc
+
+    @router.get("/situation-lab/api/fixtures")
+    def pre_snap_fixtures() -> dict[str, Any]:
+        from nfl_sim.providers.pre_snap import list_fixtures
+
+        return {
+            "items": list_fixtures(),
+            "scope": "offline_pre_snap_fixture",
+            "live_feed": False,
+            "fan_ui": False,
+        }
+
+    @router.get("/situation-lab/api/compare-pre-snap")
+    def compare_pre_snap_fixture(
+        fixture_id: str = Query(..., min_length=1),
+    ) -> dict[str, Any]:
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError, load_fixture
+
+        try:
+            raw = load_fixture(fixture_id)
+            return build_situation_lab_payload_from_snapshot(raw)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except PreSnapAdapterError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"pre-snap compare failed: {exc}"
+            ) from exc
+
+    @router.post("/situation-lab/api/compare-pre-snap")
+    def compare_pre_snap_body(body: dict[str, Any]) -> dict[str, Any]:
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+
+        try:
+            return build_situation_lab_payload_from_snapshot(body)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except PreSnapAdapterError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"pre-snap compare failed: {exc}"
             ) from exc
 
     return router
