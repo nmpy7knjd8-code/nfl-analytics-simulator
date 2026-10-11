@@ -3,12 +3,14 @@
 **Use this page as the single handoff link.**
 
 → **[Open the full checklist (HANDOFF.md)](HANDOFF.md)**  
-→ **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check
+→ **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check  
+→ **[EP/EPA audit gate](../reports/ep/AUDIT.md)** — Stage A merge readiness  
 
 | Quick links | |
 | --- | --- |
 | [GitHub repository](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) | code + docs |
 | [Phase 2 review](PHASE2_REVIEW.md) | acceptance + what to verify |
+| [EP model spec](EP_MODEL_SPEC.md) | Stage A target / EPA |
 | [Architecture](ARCHITECTURE.md) | system design |
 | [Decisions](DECISIONS.md) | locked choices |
 | [Data experiment](DATA_EXPERIMENT.md) | 2019–2023 split |
@@ -20,4 +22,4 @@
 | [AGENTS.md](AGENTS.md) | process + stack |
 | [Roadmap](ROADMAP.md) | phase gates |
 
-**Phase 2:** 2023 historical ingest + Game Explorer replay complete on feature branch · **historical replay only** · models not trained · decision lab = Phase 6 · stopped before Phase 3 pending approval.
+**Phase 3 Stage A:** audit gate **PASS** — merge via PR #3 (not PR #2 as-is) · era excluded · focused nflverse reconciliation documented · next: WP after merge · live adapters last.

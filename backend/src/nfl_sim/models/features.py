@@ -19,8 +19,17 @@ from nfl_sim.models.constants import (
 )
 
 
+def era_post_2020_indicator(season: pd.Series) -> pd.Series:
+    """Binary era encoding: season≥2021 → 1. Diagnostic / ablation only — not a production feature."""
+    return (pd.to_numeric(season, errors="coerce") >= 2021).astype(float)
+
+
 def build_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
-    """Construct model feature columns from raw/canonical-compatible PBP."""
+    """Construct model feature columns from raw/canonical-compatible PBP.
+
+    Includes diagnostic ``era_post_2020`` for ablation tooling; ``FeatureBuilder``
+    fits only ``NUMERIC_FEATURES`` + ``CATEGORICAL_FEATURES`` (era excluded).
+    """
     down = pd.to_numeric(pbp["down"], errors="coerce")
     distance = pd.to_numeric(pbp["ydstogo"], errors="coerce")
     y100 = pd.to_numeric(pbp["yardline_100"], errors="coerce")
@@ -35,7 +44,7 @@ def build_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
     )
     is_home = (pbp["posteam"].astype("string") == pbp["home_team"].astype("string")).astype(float)
     season = pd.to_numeric(pbp["season"], errors="coerce")
-    era = (season >= 2021).astype(float)
+    era = era_post_2020_indicator(season)
     roof = pbp["roof"].astype("string") if "roof" in pbp.columns else pd.Series("unknown", index=pbp.index, dtype="string")
     roof = roof.fillna("unknown").str.lower()
     # Collapse rare / unexpected roofs
@@ -95,6 +104,11 @@ class FeatureBuilder:
 
     def fit(self, X: pd.DataFrame) -> FeatureBuilder:
         assert_no_leakage_columns(list(X.columns))
+        missing = [c for c in NUMERIC_FEATURES + CATEGORICAL_FEATURES if c not in X.columns]
+        if missing:
+            raise ValueError(f"Feature frame missing production columns: {missing}")
+        if "era_post_2020" in NUMERIC_FEATURES:
+            raise ValueError("era_post_2020 must not be in production NUMERIC_FEATURES")
         numeric = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="median")),
@@ -120,6 +134,8 @@ class FeatureBuilder:
         # Validate transformed feature names
         names = list(self.transformer.get_feature_names_out())
         assert_no_leakage_columns(names)
+        if any("era_post_2020" in n for n in names):
+            raise ValueError("Production feature matrix must not include era_post_2020")
         return self
 
     def transform(self, X: pd.DataFrame) -> np.ndarray:

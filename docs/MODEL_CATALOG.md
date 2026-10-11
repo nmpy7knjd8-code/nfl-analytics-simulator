@@ -36,7 +36,7 @@
 
 **Simplest baseline:** `sklearn.linear_model.LogisticRegression` on the 7-class next-score label; EP = Σ p_k · points_k with points ∈ {7,3,2,0,−2,−3,−7}. CLI: `python -m nfl_sim.models train|eval|score`.
 
-**Implementation (2026-10-11):** Train n=116,218; val log_loss≈1.337 / Brier≈0.687; held-out 2023 log_loss≈1.316 / Brier≈0.678; MAE vs reference `ep`≈0.367 (agreement only). Details: `reports/ep/EVALUATION.md`.
+**Implementation (2026-10-11, audited):** Train n=116,218; **era feature excluded**; val log_loss≈1.336 / Brier≈0.687; held-out 2023 log_loss≈1.314 / Brier≈0.677; MAE vs reference `ep`≈0.368 (agreement only). Details: `reports/ep/EVALUATION.md`, `AUDIT.md`.
 
 **Tests (run):** Leakage guard; split gate; proba sum≈1; label construction; toy train.
 
@@ -60,11 +60,11 @@
 
 **Simplest baseline:** Possession-aware transform of model EP (`EP_MODEL_SPEC.md` §6); store as `model_epa` only.
 
-**Implementation (2026-10-11):** Wired; held-out MAE vs reference `epa`≈0.675 overall, **≈2.76 on possession-change** vs **≈0.34 same-possession** — `reports/ep/DISCREPANCY_BACKLOG.md`.
+**Implementation (2026-10-11, audited):** Wired; val MAE vs reference `epa`≈0.676 overall; possession-change ≈2.82 with **after-score ≈6.47** (convention) vs non-score ≈0.53; same-possession ≈0.34 — `AUDIT.md`, `reconciliation_2022.json`.
 
-**Tests (run):** Possession-change sign; timeout → 0; terminal; vectorized identities.
+**Tests (run):** Possession-change sign; timeout → 0; terminal; vectorized + train-season telescoping identities.
 
-**Defer:** Opponent-adjusted EPA, player EPA/WAR (Yurko nflWAR); full nflfastR special-case parity (reconciliation follow-on).
+**Defer:** Opponent-adjusted EPA, player EPA/WAR (Yurko nflWAR); full nflfastR special-case parity (not required for WP gate).
 
 ---
 

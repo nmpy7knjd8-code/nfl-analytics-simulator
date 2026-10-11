@@ -74,6 +74,7 @@ FORBIDDEN_EXACT: frozenset[str] = frozenset(
     }
 )
 
+# Production Stage A features — era_post_2020 excluded (val ablation ΔLL≈0.001; see reports/ep).
 NUMERIC_FEATURES: tuple[str, ...] = (
     "down",
     "distance",
@@ -82,8 +83,10 @@ NUMERIC_FEATURES: tuple[str, ...] = (
     "posteam_timeouts",
     "defteam_timeouts",
     "is_home_possession",
-    "era_post_2020",
 )
+
+# Diagnostic-only column built by build_feature_frame; not fit in the production model.
+ABLATION_NUMERIC_FEATURES: tuple[str, ...] = ("era_post_2020",)
 
 CATEGORICAL_FEATURES: tuple[str, ...] = ("roof",)
 

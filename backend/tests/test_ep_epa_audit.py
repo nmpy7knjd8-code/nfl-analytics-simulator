@@ -219,6 +219,42 @@ def test_accounting_identity_terminal_half():
     assert epa.sum() == pytest.approx(-ep_before[0])
 
 
+def test_accounting_identity_possession_change_sign_flip():
+    """Possession change: EPA = -ep_after_raw - ep_before (not ep_after - ep_before)."""
+    ep_before = np.array([2.0, 1.0])
+    ep_after = np.array([1.5, 0.8])
+    pc = np.array([True, False])
+    to = np.array([False, False])
+    term = np.array([False, False])
+    epa = model_epa_from_eps(ep_before, ep_after, possession_change=pc, is_timeout=to, is_terminal=term)
+    assert epa[0] == pytest.approx(-1.5 - 2.0)
+    assert epa[1] == pytest.approx(0.8 - 1.0)
+
+
+def test_xp_and_two_point_not_independent_next_score_labels():
+    """XP and 2PT tries are not next-score classes; TD already closed the epoch at +7."""
+    df = pd.DataFrame(
+        [
+            _base_row(play_id=10, touchdown=1, td_team="AA", posteam="AA"),
+            _base_row(
+                play_id=20,
+                down=None,
+                play_type="two_point_attempt",
+                touchdown=1,
+                td_team="AA",
+                posteam="AA",
+            ),
+            _base_row(play_id=30, posteam="BB", defteam="AA", yardline_100=75, qtr=1),
+        ]
+    )
+    scorers = scoring_event_team(df)
+    assert scorers.iloc[0] == "AA"
+    assert pd.isna(scorers.iloc[1])
+    labels = construct_next_score_labels(df)
+    assert labels.iloc[0] == "Touchdown"
+    assert labels.iloc[2] == "NoScore"
+
+
 def test_realized_points_identity_does_not_hold_under_stage_a_score_convention():
     """Documented: Stage A does not cash score points into ep_after, so ΣEPA ≠ R − EP0."""
     # Synthetic: ep_before=2, score TD (+7), next snap opponent ep_after_raw=1.0 → possession change
@@ -229,8 +265,39 @@ def test_realized_points_identity_does_not_hold_under_stage_a_score_convention()
     assert abs(residual) > 1.0
 
 
-def test_era_unseen_season_encoding():
-    """era_post_2020 is binary on season≥2021; unseen future seasons stay post-2020=1 (no raw season feature)."""
+def test_accounting_identity_on_training_season_sample():
+    """Hand-checkable historical intervals from train seasons only (skip if lake missing)."""
+    from nfl_sim.models.dataset import raw_season_path
+    from nfl_sim.models.reconcile import accounting_identity_on_intervals
+    from nfl_sim.models.epa import score_model_epa
+
+    if not raw_season_path(2019).exists():
+        pytest.skip("lake not present")
+    # Tiny synthetic-like chain built from real EP model fitted on toy rows
+    rows = []
+    for i, cls in enumerate(EP_CLASSES):
+        for k in range(20):
+            rows.append({**_base_row(play_id=i * 100 + k, season=2019, game_id="2019_01_AA_BB"), "ep_label": cls})
+    model = EPModel().fit(pd.DataFrame(rows), C=1.0)
+    hist = pd.DataFrame(
+        [
+            _base_row(play_id=10, season=2019, game_id="2019_01_AA_BB", posteam="AA", yardline_100=75),
+            _base_row(play_id=20, season=2019, game_id="2019_01_AA_BB", posteam="AA", yardline_100=70, half_seconds_remaining=1700),
+            _base_row(play_id=30, season=2019, game_id="2019_01_AA_BB", posteam="AA", yardline_100=65, half_seconds_remaining=1600),
+            _base_row(play_id=40, season=2019, game_id="2019_01_AA_BB", qtr=2, half_seconds_remaining=1, posteam="AA", yardline_100=60),
+        ]
+    )
+    scored = score_model_epa(model, hist)
+    result = accounting_identity_on_intervals(scored, max_games=5)
+    assert result["pass"] is True
+    assert result["same_possession_telescoping"]["fail"] == 0
+    assert result["terminal_telescoping"]["fail"] == 0
+
+
+def test_era_unseen_season_encoding_excluded_from_production():
+    """era encoding preserved for ablation; production FeatureBuilder must not fit it."""
+    from nfl_sim.models.constants import NUMERIC_FEATURES
+
     df = pd.DataFrame(
         [
             _base_row(season=2019),
@@ -241,6 +308,9 @@ def test_era_unseen_season_encoding():
     feats = build_feature_frame(df)
     assert "season" not in feats.columns
     assert list(feats["era_post_2020"]) == [0.0, 1.0, 1.0]
+    assert "era_post_2020" not in NUMERIC_FEATURES
+    fb = FeatureBuilder().fit(feats)
+    assert not any("era_post_2020" in n for n in fb.feature_names)
 
 
 def test_feature_builder_handles_unseen_roof():

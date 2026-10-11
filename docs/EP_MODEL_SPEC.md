@@ -38,7 +38,12 @@ EP is scored from **pre-play** information only (start-of-play freeze).
 | `defteam_timeouts` | `defteam_timeouts_remaining` | 0–3 |
 | `is_home_possession` | derived (`posteam == home_team`) | 0/1 |
 | `roof` | `roof` | categorical (`dome` / `outdoors` / `closed` / `open`; unknown → other) |
-| `era` | derived from `season` | `pre_2021` (≤2020) vs `post_2020` (≥2021) — optional indicator for rule/era shift |
+
+**Excluded from production Stage A model (gate decision 2026-10-11):**
+
+| Feature | Encoding | Status |
+| --- | --- | --- |
+| `era_post_2020` | binary `season ≥ 2021` | Diagnostic/ablation only. Val 2022 ablation ΔLL≈0.001 vs with-era; **not** in production fit. Reconsider later only if gain is meaningful/stable across temporal validation with encoding documented. |
 
 ### Explicitly forbidden as features (leakage / policy)
 
@@ -190,7 +195,20 @@ Let `ep_before` be EP for possession team at snap. Let `ep_after_raw` be model E
 * Do **not** naïve-subtract EP across a possession meaning change.
 * Simplification (documented): we do not re-implement full NFL penalty replay logic beyond observed next state.
 
-### 6.4 Invariants
+### 6.4 Accounting identities (Stage A convention)
+
+Define \(V_i\) = model EP for the team about to snap. EPA cases as in §6.2.
+
+| Identity | Holds under Stage A? | Coverage |
+| --- | --- | --- |
+| Same-possession contiguous chain (no timeout): \(\sum\mathrm{EPA}=V_{\mathrm{after\,last}}-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season historical sample |
+| Chain ending terminal (same possession): \(\sum\mathrm{EPA}=-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season sample |
+| Possession change: \(\mathrm{EPA}=-V_{\mathrm{after}}-V_{\mathrm{before}}\) | **Yes** (by definition) | Unit tests |
+| Realized next-score cashing: \(\sum\mathrm{EPA}=R-V_0\) | **No** — scoring does not cash \(R\) into `ep_after` | Documented exclusion |
+
+**Exclusions from telescoping checks:** timeouts (EPA≡0), possession-change plays (sign-flip space), score-cash residual, and **2023 holdout** (never used to tune conventions).
+
+### 6.5 Invariants
 
 * Probabilities for the 7 classes sum to 1 (±1e-6).
 * EP ∈ [−7, 7] for any valid probability vector with the Stage A values.
@@ -198,6 +216,7 @@ Let `ep_before` be EP for possession team at snap. Let `ep_after_raw` be model E
 * Terminal EPA == `-ep_before`.
 * Possession-change EPA == `-ep_after - ep_before` (not `ep_after - ep_before`).
 * Feature matrix contains none of the forbidden names/columns (§2).
+* XP / two-point tries are **not** independent next-score labels.
 
 ---
 

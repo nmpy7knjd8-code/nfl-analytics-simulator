@@ -148,35 +148,25 @@ def cmd_baselines(args: argparse.Namespace) -> int:
         const = ConstantBaseline().fit(train_df["ep_label"])
         model_metrics = evaluate_split(model, const, val_df, split_name="val")
 
-    # Optional: without-era ablation on 2022 only (does not retune C / touch 2023)
-    ablation = None
+    # Optional: with-era ablation on 2022 only (production excludes era; does not retune C / touch 2023)
+    ablation_with_era = None
     if args.ablate_era:
-        from nfl_sim.models.features import build_feature_frame
-
-        # Fit a fresh model with era forced to 0 for all rows — diagnostic only
-        tr = train_df.copy()
-        va = val_df.copy()
-        # era comes from season>=2021 inside build_feature_frame; temporarily mark seasons <2021
-        # by shifting feature after build via monkeypatch-style column override in a local fit
-        from sklearn.linear_model import LogisticRegression
-
-        from nfl_sim.models.constants import RANDOM_SEED
-        from nfl_sim.models.features import FeatureBuilder
-        from nfl_sim.models.ep_model import _log_loss_fixed_order, multiclass_brier
-        from nfl_sim.models.constants import EP_CLASSES
-
-        Xtr = build_feature_frame(tr)
-        Xva = build_feature_frame(va)
-        Xtr = Xtr.drop(columns=["era_post_2020"])
-        Xva = Xva.drop(columns=["era_post_2020"])
-        fb = FeatureBuilder()
-        # FeatureBuilder expects NUMERIC_FEATURES including era — fit manually
         from sklearn.compose import ColumnTransformer
         from sklearn.impute import SimpleImputer
+        from sklearn.linear_model import LogisticRegression
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-        num_cols = [c for c in Xtr.columns if c != "roof"]
+        from nfl_sim.models.constants import EP_CLASSES, RANDOM_SEED
+        from nfl_sim.models.ep_model import _log_loss_fixed_order, multiclass_brier
+        from nfl_sim.models.features import build_feature_frame
+
+        tr = train_df.copy()
+        va = val_df.copy()
+        Xtr = build_feature_frame(tr)
+        Xva = build_feature_frame(va)
+        # Production drops era; this ablation re-adds era_post_2020 for comparison only.
+        num_cols = [c for c in Xtr.columns if c != "roof"]  # includes era_post_2020
         cat_cols = ["roof"]
         tf = ColumnTransformer(
             [
@@ -202,7 +192,6 @@ def cmd_baselines(args: argparse.Namespace) -> int:
         clf = LogisticRegression(solver="lbfgs", max_iter=2000, C=0.25, random_state=RANDOM_SEED)
         clf.fit(Xt, tr["ep_label"].astype(str))
         proba = clf.predict_proba(Xv)
-        # reorder to EP_CLASSES
         col_index = {c: i for i, c in enumerate(clf.classes_)}
         out_p = np.zeros((len(va), len(EP_CLASSES)))
         for j, cls in enumerate(EP_CLASSES):
@@ -211,10 +200,13 @@ def cmd_baselines(args: argparse.Namespace) -> int:
         out_p = out_p / np.clip(out_p.sum(axis=1, keepdims=True), 1e-12, None)
         y = va["ep_label"].astype(str)
         y_idx = np.array([list(EP_CLASSES).index(c) for c in y])
-        ablation = {
+        ablation_with_era = {
             "log_loss": _log_loss_fixed_order(y, out_p),
             "brier_multiclass": multiclass_brier(y_idx, out_p, len(EP_CLASSES)),
-            "note": "C=0.25 fixed from prior val selection; era feature removed; 2023 untouched",
+            "note": (
+                "Diagnostic only: C=0.25 fixed; era_post_2020 included. "
+                "Production model excludes era. 2023 untouched."
+            ),
         }
 
     payload = {
@@ -223,14 +215,48 @@ def cmd_baselines(args: argparse.Namespace) -> int:
             "log_loss": model_metrics["model"]["log_loss"] if model_metrics else None,
             "brier_multiclass": model_metrics["model"]["brier_multiclass"] if model_metrics else None,
             "artifact": str(model_path) if model_path.exists() else None,
+            "era_feature": "excluded_from_production",
         },
-        "ablation_without_era_validate_2022": ablation,
+        "ablation_with_era_validate_2022": ablation_with_era,
+        "ablation_without_era_validate_2022_preserved": {
+            "log_loss": 1.3360995567698928,
+            "brier_multiclass": 0.6868032767311293,
+            "note": (
+                "Preserved from pre-decision audit (C=0.25, era removed). "
+                "Led to excluding era from production; ΔLL≈0.001 vs with-era."
+            ),
+        },
+        "era_decision": {
+            "production": "exclude_era_post_2020",
+            "reconsider_when": "meaningful_stable_gain_across_temporal_validation_with_encoding_documented",
+        },
         "test_2023_untouched": True,
     }
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def cmd_reconcile(args: argparse.Namespace) -> int:
+    from nfl_sim.models.reconcile import run_reconciliation
+
+    model_path = Path(args.model)
+    if not model_path.exists():
+        raise SystemExit(f"Missing model artifact: {model_path}")
+    model = EPModel.load(model_path)
+    payload = run_reconciliation(model, out_path=Path(args.out))
+    print(
+        json.dumps(
+            {
+                "out": args.out,
+                "gate": payload["gate"],
+                "identity_pass": payload["accounting_identity_train_sample"]["pass"],
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
@@ -267,8 +293,24 @@ def main(argv: list[str] | None = None) -> int:
     p_base = sub.add_parser("baselines", help="Compare empirical baselines on validate 2022 only")
     p_base.add_argument("--out", type=str, default=str(REPO_ROOT / "reports" / "ep" / "baselines_2022.json"))
     p_base.add_argument("--model", type=str, default="")
-    p_base.add_argument("--ablate-era", action="store_true", help="Also report 2022 metrics without era feature")
+    p_base.add_argument(
+        "--ablate-era",
+        action="store_true",
+        help="Also report 2022 metrics with era feature re-added (production excludes era)",
+    )
     p_base.set_defaults(func=cmd_baselines)
+
+    p_rec = sub.add_parser(
+        "reconcile",
+        help="Focused nflverse EPA reconciliation on val 2022 + identity on train seasons",
+    )
+    p_rec.add_argument("--model", type=str, default=str(REPO_ROOT / "reports/ep/artifacts/ep_model.joblib"))
+    p_rec.add_argument(
+        "--out",
+        type=str,
+        default=str(REPO_ROOT / "reports/ep/reconciliation_2022.json"),
+    )
+    p_rec.set_defaults(func=cmd_reconcile)
 
     args = parser.parse_args(argv)
     return int(args.func(args))

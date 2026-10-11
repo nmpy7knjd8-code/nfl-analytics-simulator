@@ -5,14 +5,15 @@
 
 ## Material gaps (ordered)
 
-### B1 — EPA on possession changes (largest)
+### B1 — EPA on possession changes (largest) — **decomposed**
 
-| Evidence | Val n=5,386 MAE(ref epa)≈**2.82** · Test n=5,507 MAE≈**2.76** |
+| Evidence (val 2022, post audit + era exclusion) | Overall PC n=5,263 MAE≈**2.82** |
 | --- | --- |
 | Contrast | Same-possession non-terminal MAE≈**0.34** |
-| Likely causes | (1) Post-score next state: we jump to next scrimmage snap; nflfastR uses kickoff/touchback EP conventions. (2) Turnover+score sequences. (3) Sign/ownership of `ep_after` on defensive scores. |
-| Defensible Stage A action | **Documented, not “fixed”** — changing kickoff EP without a locked public formula risks silent wrongness. Unit tests cover the *stated* possession-change identity (`-ep_after - ep_before`). |
-| Follow-on | Public-model reconciliation pass: port nflfastR EPA special cases against open source; re-measure on val only. |
+| After score | n=2,030 MAE≈**6.47** → **intentional convention** (no kickoff/touchback EP; no score cash into `ep_after`) |
+| Non-score PC | n=3,233 MAE≈**0.53** → residual EP-level / transition mix; Stage A sign-flip identity passes |
+| Defensible Stage A action | **Documented, not “fixed” toward nflfastR.** Exact parity not required to close gate / start WP. |
+| Source | `reports/ep/reconciliation_2022.json`, `AUDIT.md` §4 |
 
 ### B2 — Fourth down EP level / bias
 
@@ -67,3 +68,12 @@
 | Empirical baselines + era ablation on **2022 only** | See `baselines_2022.json` | **2022 only** (no 2023) |
 
 **Still open (not “fixed” to chase reference EPA):** possession-change / post-score kickoff conventions (B1); Stage A does not cash score points into `ep_after`, so ΣEPA ≠ R − EP₀ by design.
+
+## Gate decisions (2026-10-11)
+
+| Decision | Outcome |
+| --- | --- |
+| EPA convention | Keep Stage A (no nflfastR bit-parity chase) |
+| Era feature | **Excluded** from production; ablation preserved |
+| Public reconciliation | Focused pass complete; parity not required for WP |
+| Merge | PR #3 audited unit; not PR #2 as-is |

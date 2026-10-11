@@ -10,7 +10,7 @@
 | --- | --- |
 | Target | Next score in half (7 classes); EP = Σ pₖ vₖ with v ∈ {+7,+3,+2,0,−2,−3,−7} |
 | Eligibility | REG scrimmage (`down` not null) + required pre-play fields + constructible label |
-| Features | down, distance, yardline_100, half_seconds_remaining, timeouts, home, roof, era≥2021 |
+| Features | down, distance, yardline_100, half_seconds_remaining, timeouts, home, roof (**era excluded** from production) |
 | Forbidden | nflverse `ep`/`epa`/`wp`/…, spreads/odds, post-play / future fields |
 | Split | train 2019–2021 · val 2022 · test 2023 (no test tuning) |
 | Selected hyperparam | `LogisticRegression` `C=0.25` chosen on **val log loss only** |
@@ -31,27 +31,27 @@
 | nflverse `ep` / `epa` columns | **Reference agreement only** | nflfastR/fastrmodels outputs in PBP — **not ground truth** |
 | fastrmodels XGB EP (R) | Not run here | Requires R/`fastrmodels`; deferred to reconciliation backlog |
 
-## Validate 2022 (model selection slice)
+## Validate 2022 (model selection slice; era excluded)
 
 | Metric | Model | Constant baseline |
 | --- | ---: | ---: |
-| log_loss | **1.337** | 1.528 |
+| log_loss | **1.336** | 1.528 |
 | Brier (multiclass) | **0.687** | 0.758 |
 | Brier (touchdown) | 0.210 | — |
 | MAE vs reference `ep` | 0.370 | — (agreement only) |
-| MAE vs reference `epa` | 0.682 | — (agreement only) |
+| MAE vs reference `epa` | 0.676 | — (agreement only) |
 
-Bias vs reference `ep` ≈ −0.007 (near zero overall).
+Era ablation (preserved): with-era LL 1.337 vs without-era 1.336 on 2022 — production excludes era. See `baselines_2022.json` and `AUDIT.md`.
 
 ## Held-out test 2023 (reported once; not tuned)
 
 | Metric | Model | Constant baseline |
 | --- | ---: | ---: |
-| log_loss | **1.316** | 1.539 |
-| Brier (multiclass) | **0.678** | 0.761 |
+| log_loss | **1.314** | 1.539 |
+| Brier (multiclass) | **0.677** | 0.761 |
 | Brier (touchdown) | 0.203 | — |
-| MAE vs reference `ep` | 0.367 | agreement only |
-| MAE vs reference `epa` | 0.675 | agreement only |
+| MAE vs reference `ep` | 0.368 | agreement only |
+| MAE vs reference `epa` | 0.669 | agreement only |
 
 ## Reference agreement vs realized next-score points
 

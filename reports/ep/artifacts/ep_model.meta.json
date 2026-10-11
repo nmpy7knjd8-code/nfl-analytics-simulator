@@ -28,6 +28,7 @@
       "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
     }
   },
+  "era_feature": "excluded_from_production",
   "feature_names": [
     "num__down",
     "num__distance",
@@ -36,12 +37,12 @@
     "num__posteam_timeouts",
     "num__defteam_timeouts",
     "num__is_home_possession",
-    "num__era_post_2020",
     "cat__roof_closed",
     "cat__roof_dome",
     "cat__roof_open",
     "cat__roof_outdoors"
   ],
+  "gate": "stage_a_audit_pass",
   "packages": {
     "joblib": "1.6.0",
     "numpy": "2.5.4",
@@ -57,8 +58,8 @@
     2021
   ],
   "val_log_loss_by_C": {
-    "0.25": 1.3371692089750382,
-    "1.0": 1.3371779576585945,
-    "4.0": 1.3371906545684176
+    "0.25": 1.3360995567698928,
+    "1.0": 1.3361933362018934,
+    "4.0": 1.336309459546224
   }
 }

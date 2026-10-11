@@ -1,8 +1,13 @@
 {
-  "ablation_without_era_validate_2022": {
+  "ablation_with_era_validate_2022": {
+    "brier_multiclass": 0.6867108253577942,
+    "log_loss": 1.3371692089750382,
+    "note": "Diagnostic only: C=0.25 fixed; era_post_2020 included. Production model excludes era. 2023 untouched."
+  },
+  "ablation_without_era_validate_2022_preserved": {
     "brier_multiclass": 0.6868032767311293,
     "log_loss": 1.3360995567698928,
-    "note": "C=0.25 fixed from prior val selection; era feature removed; 2023 untouched"
+    "note": "Preserved from pre-decision audit (C=0.25, era removed). Led to excluding era from production; \u0394LL\u22480.001 vs with-era."
   },
   "baselines_validate_2022": {
     "constant_class_prior": {
@@ -30,10 +35,15 @@
       "seed": 42
     }
   },
+  "era_decision": {
+    "production": "exclude_era_post_2020",
+    "reconsider_when": "meaningful_stable_gain_across_temporal_validation_with_encoding_documented"
+  },
   "multinomial_model_validate_2022": {
     "artifact": "/agent/nfl-analytics-simulator/reports/ep/artifacts/ep_model.joblib",
-    "brier_multiclass": 0.6867108253577942,
-    "log_loss": 1.3371692089750382
+    "brier_multiclass": 0.6868032767311293,
+    "era_feature": "excluded_from_production",
+    "log_loss": 1.3360995567698928
   },
   "test_2023_untouched": true
 }
