@@ -1,0 +1,222 @@
+{
+  "policy": "nflverse/nflfastR ep/epa are reference agreement only \u2014 not ground truth. No test-set tuning.",
+  "public_references_compared": [
+    {
+      "name": "nflverse PBP ep/epa",
+      "role": "reference agreement",
+      "source": "nflfastR/fastrmodels columns in pinned Parquet"
+    },
+    {
+      "name": "constant class-frequency baseline",
+      "role": "simple probabilistic baseline",
+      "source": "train label frequencies"
+    }
+  ],
+  "test_2023_heldout": {
+    "by_situation": [
+      {
+        "bias_ep": 0.10589163311040181,
+        "label": "down=1",
+        "mae_ep": 0.35469571499183766,
+        "mae_epa": 0.49086186078015603,
+        "n": 15843,
+        "p90_abs_ep": 0.7000523410808264
+      },
+      {
+        "bias_ep": -0.11850407254822103,
+        "label": "down=2",
+        "mae_ep": 0.3374137431175665,
+        "mae_epa": 0.5488732396183322,
+        "n": 11996,
+        "p90_abs_ep": 0.7441700431984576
+      },
+      {
+        "bias_ep": -0.2338690074871953,
+        "label": "down=3",
+        "mae_ep": 0.37325175671806304,
+        "mae_epa": 0.8343262644318559,
+        "n": 7886,
+        "p90_abs_ep": 0.8575597312965222
+      },
+      {
+        "bias_ep": 0.25556092236957906,
+        "label": "down=4",
+        "mae_ep": 0.48484034656823954,
+        "mae_epa": 1.413275559405943,
+        "n": 4306,
+        "p90_abs_ep": 0.9788984590616598
+      },
+      {
+        "bias_ep": -0.3642141799113074,
+        "label": "red_zone_y100<=20",
+        "mae_ep": 0.45815548257514943,
+        "mae_epa": 1.8185030266338102,
+        "n": 5923,
+        "p90_abs_ep": 0.9264703343539226
+      },
+      {
+        "bias_ep": -0.37131391611504455,
+        "label": "backed_up_y100>=80",
+        "mae_ep": 0.4463098623352848,
+        "mae_epa": 0.3950709720583924,
+        "n": 3961,
+        "p90_abs_ep": 1.0074693083470292
+      },
+      {
+        "bias_ep": -0.0839603257283014,
+        "label": "two_minute_half<=120s",
+        "mae_ep": 0.37281416575900533,
+        "mae_epa": 0.6745852173318808,
+        "n": 5187,
+        "p90_abs_ep": 0.8204205435301298
+      },
+      {
+        "bias_ep": -0.0015003203618493468,
+        "label": "not_two_minute",
+        "mae_ep": 0.3663316003634352,
+        "mae_epa": 0.6752093847036124,
+        "n": 34844,
+        "p90_abs_ep": 0.7626012298253311
+      },
+      {
+        "bias_ep": 0.056411978681668945,
+        "label": "epa_possession_change",
+        "mae_ep": 0.4751166073773478,
+        "mae_epa": 2.75659442541259,
+        "n": 5507,
+        "p90_abs_ep": 0.9763209130174897
+      },
+      {
+        "bias_ep": 0.21913176108657892,
+        "label": "epa_terminal",
+        "mae_ep": 0.4852920283256734,
+        "mae_epa": 0.795515146411137,
+        "n": 272,
+        "p90_abs_ep": 0.9796597131743181
+      },
+      {
+        "bias_ep": -0.025050916088300783,
+        "label": "epa_same_possession_nonterminal",
+        "mae_ep": 0.34887827783264796,
+        "mae_epa": 0.33951663267377585,
+        "n": 34252,
+        "p90_abs_ep": 0.7232939153903059
+      }
+    ],
+    "material_ep_disagreement_vs_reference": [],
+    "n": 40031,
+    "overall": {
+      "bias_vs_reference_ep": -0.012185040899327471,
+      "mae_model_ep_vs_realized_next_score_points": 3.613779680112027,
+      "mae_reference_ep_vs_realized_next_score_points": 3.599316350506141,
+      "mae_vs_reference_ep": 0.3671715760499487,
+      "mae_vs_reference_epa": 0.6751285084787573,
+      "note": "realized next-score points use OUR label construction; reference ep uses nflfastR target \u2014 disagreement can reflect target mismatch"
+    },
+    "split": "test"
+  },
+  "title": "Stage A EP/EPA reference agreement and discrepancy analysis",
+  "validate_2022_diagnosis": {
+    "by_situation": [
+      {
+        "bias_ep": 0.11113164427310093,
+        "label": "down=1",
+        "mae_ep": 0.35669585041670854,
+        "mae_epa": 0.5030117384517131,
+        "n": 15914,
+        "p90_abs_ep": 0.7012776184936462
+      },
+      {
+        "bias_ep": -0.11309977014016556,
+        "label": "down=2",
+        "mae_ep": 0.3402709970121819,
+        "mae_epa": 0.550567577486304,
+        "n": 12047,
+        "p90_abs_ep": 0.7437765044249436
+      },
+      {
+        "bias_ep": -0.2305286047743526,
+        "label": "down=3",
+        "mae_ep": 0.37375884461528674,
+        "mae_epa": 0.8530847188894128,
+        "n": 7620,
+        "p90_abs_ep": 0.8599558118412848
+      },
+      {
+        "bias_ep": 0.25838400983680554,
+        "label": "down=4",
+        "mae_ep": 0.49750827703246603,
+        "mae_epa": 1.4361453439951557,
+        "n": 4123,
+        "p90_abs_ep": 0.9945436390624163
+      },
+      {
+        "bias_ep": -0.3783383008311753,
+        "label": "red_zone_y100<=20",
+        "mae_ep": 0.4721773705338013,
+        "mae_epa": 1.8340198110856476,
+        "n": 5854,
+        "p90_abs_ep": 0.942322979085444
+      },
+      {
+        "bias_ep": -0.34045726353069955,
+        "label": "backed_up_y100>=80",
+        "mae_ep": 0.4338347881324085,
+        "mae_epa": 0.39970525360133047,
+        "n": 4038,
+        "p90_abs_ep": 1.0012472549157572
+      },
+      {
+        "bias_ep": -0.07457392198621025,
+        "label": "two_minute_half<=120s",
+        "mae_ep": 0.3885225580459322,
+        "mae_epa": 0.7070845424562162,
+        "n": 5225,
+        "p90_abs_ep": 0.8662368149606038
+      },
+      {
+        "bias_ep": 0.003027178939008812,
+        "label": "not_two_minute",
+        "mae_ep": 0.3667432675228574,
+        "mae_epa": 0.6776540064559207,
+        "n": 34479,
+        "p90_abs_ep": 0.7572432438221254
+      },
+      {
+        "bias_ep": 0.055535482091379894,
+        "label": "epa_possession_change",
+        "mae_ep": 0.49119099887526724,
+        "mae_epa": 2.8177511433237132,
+        "n": 5386,
+        "p90_abs_ep": 0.9964534883886293
+      },
+      {
+        "bias_ep": 0.22259956428782393,
+        "label": "epa_terminal",
+        "mae_ep": 0.4648648640717052,
+        "mae_epa": 0.90005818331627,
+        "n": 271,
+        "p90_abs_ep": 1.0003605776552544
+      },
+      {
+        "bias_ep": -0.01893597756648269,
+        "label": "epa_same_possession_nonterminal",
+        "mae_ep": 0.34961783383572637,
+        "mae_epa": 0.34185172841387457,
+        "n": 34047,
+        "p90_abs_ep": 0.7224808941919735
+      }
+    ],
+    "material_ep_disagreement_vs_reference": [],
+    "n": 39704,
+    "overall": {
+      "bias_vs_reference_ep": -0.007185035254378998,
+      "mae_model_ep_vs_realized_next_score_points": 3.6414181261170913,
+      "mae_reference_ep_vs_realized_next_score_points": 3.6192891131250082,
+      "mae_vs_reference_ep": 0.3696093967033699,
+      "mae_vs_reference_epa": 0.6815270305996226,
+      "note": "realized next-score points use OUR label construction; reference ep uses nflfastR target \u2014 disagreement can reflect target mismatch"
+    },
+    "split": "val"
+  }
+}

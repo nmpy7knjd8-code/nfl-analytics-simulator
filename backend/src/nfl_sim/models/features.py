@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from nfl_sim.models.constants import (
     CATEGORICAL_FEATURES,
@@ -98,6 +98,7 @@ class FeatureBuilder:
         numeric = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="median")),
+                ("scale", StandardScaler()),
             ]
         )
         categorical = Pipeline(

@@ -21,6 +21,9 @@ data/canonical/*
 *.duckdb.wal
 .cache/
 
+# Trained model binaries (regenerate via `python -m nfl_sim.models train`)
+reports/ep/artifacts/*.joblib
+
 # Node / Next.js
 node_modules/
 frontend/.next/

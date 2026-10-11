@@ -146,6 +146,53 @@ def create_app(store: CanonicalStore | None = None) -> FastAPI:
             ),
         }
 
+    @app.post("/models/ep/score")
+    def score_ep(body: dict[str, Any]) -> dict[str, Any]:
+        """Score Stage A model EP for a pre-play situation (optional; 503 if no artifact)."""
+        from pathlib import Path
+
+        import pandas as pd
+
+        from nfl_sim.config import REPO_ROOT
+        from nfl_sim.models.constants import EP_CLASSES
+        from nfl_sim.models.ep_model import EPModel
+
+        model_path = Path(body.get("model_path") or (REPO_ROOT / "reports/ep/artifacts/ep_model.joblib"))
+        if not model_path.exists():
+            raise HTTPException(
+                status_code=503,
+                detail="EP model artifact missing; run python -m nfl_sim.models train --out ../reports/ep",
+            )
+        try:
+            model = EPModel.load(model_path)
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(status_code=503, detail=f"failed to load EP model: {exc}") from exc
+
+        row = pd.DataFrame(
+            [
+                {
+                    "down": body.get("down", 1),
+                    "ydstogo": body.get("distance", 10),
+                    "yardline_100": body.get("yardline_100", 75),
+                    "half_seconds_remaining": body.get("half_seconds_remaining", 1800),
+                    "posteam_timeouts_remaining": body.get("posteam_timeouts", 3),
+                    "defteam_timeouts_remaining": body.get("defteam_timeouts", 3),
+                    "posteam": "HOME" if body.get("is_home_possession", True) else "AWAY",
+                    "home_team": "HOME",
+                    "season": body.get("season", 2022),
+                    "roof": body.get("roof", "outdoors"),
+                }
+            ]
+        )
+        proba = model.predict_proba(row)[0]
+        ep = float(model.predict_ep(row)[0])
+        return {
+            "model_ep": ep,
+            "proba": {c: float(p) for c, p in zip(EP_CLASSES, proba)},
+            "truth_label": "predicted",
+            "model_id": "stage_a_sklearn_multinomial_ep",
+        }
+
     return app
 
 

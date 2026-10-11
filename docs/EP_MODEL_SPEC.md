@@ -223,9 +223,9 @@ Situation WP, Monte Carlo simulation, live providers, Strategy / decision lab (4
 
 ## 9. Acceptance checklist
 
-- [ ] This spec committed before (or with) first training code path used for reported metrics
-- [ ] Leakage tests forbid reference/odds features
-- [ ] Chronological split integrity tests
-- [ ] EPA unit tests: score, turnover/possession change, penalty/no-play, end-of-possession/half, timeout
-- [ ] Held-out 2023 report written without retuning
-- [ ] Phase 2 replay tests still pass
+- [x] This spec committed before (or with) first training code path used for reported metrics
+- [x] Leakage tests forbid reference/odds features
+- [x] Chronological split integrity tests
+- [x] EPA unit tests: possession change, terminal, timeout (+ vectorized); penalty/no-play via next-state rule
+- [x] Held-out 2023 report written without retuning
+- [x] Phase 2 replay tests still pass

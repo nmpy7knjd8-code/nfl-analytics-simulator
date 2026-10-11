@@ -1,0 +1,169 @@
+{
+  "data_hash": {
+    "combined_sha256": "5df24dd0ec2ff7f8ae214549b4cc7a0e758a8e989be50c8f9e8993d100a6507b",
+    "season_sha256": {
+      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
+      "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+    }
+  },
+  "filters": {
+    "scrimmage": "down not null + required pre-play fields + valid label",
+    "season_type": "REG"
+  },
+  "hyperparam_selection": {
+    "candidates": [
+      "0.25",
+      "1.0",
+      "4.0"
+    ],
+    "param": "C",
+    "selected_C": 0.25,
+    "test_untouched_during_selection": true,
+    "tuned_on": "validate_2022_only",
+    "val_log_loss_by_C": {
+      "0.25": 1.3371692089750382,
+      "1.0": 1.3371779576585945,
+      "4.0": 1.3371906545684176
+    }
+  },
+  "n": {
+    "labeled_total": 195953,
+    "test": 40031,
+    "train": 116218,
+    "val": 39704
+  },
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.4.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1"
+  },
+  "seed": 42,
+  "spec": "docs/EP_MODEL_SPEC.md",
+  "split_rule": {
+    "test": [
+      2023
+    ],
+    "train": [
+      2019,
+      2020,
+      2021
+    ],
+    "val": [
+      2022
+    ]
+  },
+  "target": "next_score_in_half_7class",
+  "test": {
+    "baseline_constant": {
+      "brier_multiclass": 0.7613622428546665,
+      "log_loss": 1.538921075153753
+    },
+    "by_down": {
+      "down_1": {
+        "log_loss": 1.2935297118419384,
+        "mae_ep_vs_reference": 0.35469571499183766,
+        "n": 15843
+      },
+      "down_2": {
+        "log_loss": 1.314607997318663,
+        "mae_ep_vs_reference": 0.3374137431175665,
+        "n": 11996
+      },
+      "down_3": {
+        "log_loss": 1.3478967586330683,
+        "mae_ep_vs_reference": 0.37325175671806304,
+        "n": 7886
+      },
+      "down_4": {
+        "log_loss": 1.3449038233711088,
+        "mae_ep_vs_reference": 0.48484034656823954,
+        "n": 4306
+      }
+    },
+    "class_support": {
+      "FieldGoal": 10945,
+      "NoScore": 5524,
+      "OppFieldGoal": 4040,
+      "OppSafety": 104,
+      "OppTouchdown": 5672,
+      "Safety": 125,
+      "Touchdown": 13621
+    },
+    "model": {
+      "brier_multiclass": 0.6775190349817403,
+      "brier_touchdown": 0.20348371945871513,
+      "log_loss": 1.31608249762841,
+      "mean_ep": 1.950460044291132
+    },
+    "n": 40031,
+    "note": "Held-out 2023 \u2014 not used for model selection",
+    "reference_agreement_only": {
+      "epa_n": 40031,
+      "mae_vs_reference_ep": 0.3671715760499487,
+      "mae_vs_reference_epa": 0.6751285084787573,
+      "note": "nflverse ep is reference agreement only \u2014 not ground truth"
+    },
+    "seasons": [
+      2023
+    ],
+    "split": "test"
+  },
+  "validate": {
+    "baseline_constant": {
+      "brier_multiclass": 0.7578743429303343,
+      "log_loss": 1.5284577081021413
+    },
+    "by_down": {
+      "down_1": {
+        "log_loss": 1.3086369030270808,
+        "mae_ep_vs_reference": 0.35669585041670854,
+        "n": 15914
+      },
+      "down_2": {
+        "log_loss": 1.3370437211886497,
+        "mae_ep_vs_reference": 0.3402709970121819,
+        "n": 12047
+      },
+      "down_3": {
+        "log_loss": 1.3723157122353775,
+        "mae_ep_vs_reference": 0.37375884461528674,
+        "n": 7620
+      },
+      "down_4": {
+        "log_loss": 1.3827085039967764,
+        "mae_ep_vs_reference": 0.49750827703246603,
+        "n": 4123
+      }
+    },
+    "class_support": {
+      "FieldGoal": 10816,
+      "NoScore": 5445,
+      "OppFieldGoal": 3977,
+      "OppSafety": 71,
+      "OppTouchdown": 5462,
+      "Safety": 120,
+      "Touchdown": 13813
+    },
+    "model": {
+      "brier_multiclass": 0.6867108253577942,
+      "brier_touchdown": 0.20988872181653093,
+      "log_loss": 1.3371692089750382,
+      "mean_ep": 1.970894081834886
+    },
+    "n": 39704,
+    "reference_agreement_only": {
+      "epa_n": 39704,
+      "mae_vs_reference_ep": 0.3696093967033699,
+      "mae_vs_reference_epa": 0.6815270305996226,
+      "note": "nflverse ep is reference agreement only \u2014 not ground truth"
+    },
+    "seasons": [
+      2022
+    ],
+    "split": "val"
+  }
+}
