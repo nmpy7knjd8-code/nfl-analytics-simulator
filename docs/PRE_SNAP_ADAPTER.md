@@ -2,9 +2,12 @@
 
 **Date:** 2026-10-11  
 **Depends on:** PR #14 Situation Lab on `main` (`b0e6ea8`)  
-**Branch:** `cursor/pre-snap-adapter-c0ef` (PR open, **not merged**)  
+**Branch:** `cursor/pre-snap-adapter-c0ef` @ `7f878d1`  
+**Stage 2 PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/15  
 **Scope:** Thin **fixture/demo** pre-snap adapter → same Situation Lab payload shape.  
 **Non-goals:** Real live vendor, odds, betting, fan-UI changes, silent lake fill.
+
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7f878d169c04c38c779600a81027e6b809ced27c/docs/NEXT_STEPS_DELTA_PRE_SNAP_ADAPTER.md
 
 This document locks the **payload contract first**. Implementation must conform; do not invent a second response shape.
 
