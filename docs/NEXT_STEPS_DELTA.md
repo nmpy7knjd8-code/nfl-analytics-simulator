@@ -1,0 +1,58 @@
+# Next Steps Delta (after Convention B publish)
+
+> **Deltas only** since [`NEXT_STEPS_AFTER_CONVENTION_B.md`](./NEXT_STEPS_AFTER_CONVENTION_B.md).  
+> **Date:** 2026-10-11
+
+---
+
+## Published
+
+| Item | Value |
+| --- | --- |
+| **Convention B PR** | https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/7 |
+| **Source branch / SHA** | `cursor/convention-b-gate-8222` @ `d9165f49e249eede94f978f22901954bae88ef5f` |
+| **Target** | `main` @ `15da234b900059ab2a8f36279112203d02cace37` |
+| **Merge** | **Not** done |
+
+Raw tip (docs on that branch): use PR #7 head for Convention B files.
+
+## Tests actually run (this publish session)
+
+| Command | Exit | Result |
+| --- | ---: | --- |
+| `cd backend && python3 -m pytest -q` (pre-push) | **0** | **67 passed**, 1 skipped |
+| Same after CI-file drop commit | **0** | **67 passed**, 1 skipped |
+| `python3 scripts/epa_scoring_credit_diagnostic.py` | **1** | Blocked — missing lake season 2019 |
+| Identity from Task A parquet | **0** | 11198 intervals pass; max \|resid\| ~4.44e−16 |
+
+## Artifact search outcome
+
+- Production `reports/ep/artifacts/ep_model.joblib`: **still missing**
+- Store / phase tarballs / git objects / Actions artifacts: **no** production joblib
+- Only finds: pytest fixtures ~5502 B, sha256 `e2bd3446f8b15ee2792a81d0df88b2f2aef037447ee77133147a0a822d921c07` — **not** Stage A
+
+## Rebuild proposal
+
+- **Status:** Proposal ready — **not executed**
+- Doc on PR #7 branch: `reports/ep/LABELED_REBUILD_PROPOSAL.md`
+- **Gap:** pinned lake 2019–2022 not present on publish VM; needs host with matching sha256 pins + explicit “authorize labeled rebuild”
+
+## CI note (new)
+
+First push of `.github/workflows/ci.yml` was **rejected**: token lacks **`workflow`** scope. File removed from PR tip; proposed YAML remains at `reports/ep/ci-workflow-proposed.yml`. To install CI later: refresh token with `workflow` (and `repo`) scope, then add the file in a follow-up commit.
+
+## Approvals still needed from you
+
+1. **Review / merge PR #7** (or request changes) — merge **not** authorized yet  
+2. **Restore original joblib** from backup **or** **authorize labeled rebuild** (proposal ready)  
+3. After artifact: authorize model-surface Convention B pre/post (2019–2022)  
+4. Optional: grant `workflow` scope so CI YAML can be pushed  
+5. WP kickoff only after the above gates
+
+## What is NOT needed from you
+
+- Re-deciding D015 / Convention B (already accepted; on PR #7)  
+- Re-running the 67 pytest suite for publish confidence (already green twice this session)  
+- Touching PR #4 / PR #5 for this delta  
+- Providing a token in chat (set scopes in GitHub/Cursor secrets UI if CI push desired)  
+- Live / odds / 2023–2025 tuning work
