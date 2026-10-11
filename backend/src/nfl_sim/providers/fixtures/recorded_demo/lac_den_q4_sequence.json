@@ -1,0 +1,207 @@
+{
+  "schema_version": "recorded_demo_sequence.v1",
+  "sequence_id": "lac-den-q4-demo",
+  "label": "Recorded demo: LAC@DEN 2022 W18 Q4 (offline frames)",
+  "note": "Deterministic recorded frames — not a live feed. Same adapter contract a future provider would use.",
+  "provider": "demo",
+  "live_feed": false,
+  "frames": [
+    {
+      "index": 0,
+      "note": "Earlier Q4 4th & 3 — complete auto fields; score tied",
+      "expected": "scoreable",
+      "snapshot": {
+        "schema_version": "pre_snap_snapshot.v1",
+        "source": {
+          "source_id": "demo.recorded.lac_den_q4",
+          "provider": "demo",
+          "snapshot_id": "demo-lac-den-f0",
+          "event_timestamp": "2023-01-08T20:58:00Z",
+          "revision": 1,
+          "freshness": "pre_snap"
+        },
+        "situation": {
+          "season": 2022,
+          "season_type": "REG",
+          "week": 18,
+          "game_id": "2022_18_LAC_DEN",
+          "play_id": 3600,
+          "possession_team_id": "LAC",
+          "defense_team_id": "DEN",
+          "home_team_id": "DEN",
+          "away_team_id": "LAC",
+          "down": 4,
+          "distance": 3,
+          "yardline_100": 45,
+          "quarter": 4,
+          "half_seconds_remaining": 420,
+          "game_seconds_remaining": 420,
+          "score_differential": 0,
+          "posteam_score": 28,
+          "defteam_score": 28,
+          "posteam_timeouts": 3,
+          "defteam_timeouts": 3,
+          "receive_2h_ko": 0
+        }
+      }
+    },
+    {
+      "index": 1,
+      "note": "Later Q4 — score/clock changed; documented flip state (4th & 14 @ 64)",
+      "expected": "scoreable",
+      "snapshot": {
+        "schema_version": "pre_snap_snapshot.v1",
+        "source": {
+          "source_id": "demo.recorded.lac_den_q4",
+          "provider": "demo",
+          "snapshot_id": "demo-lac-den-f1",
+          "event_timestamp": "2023-01-08T21:03:27Z",
+          "revision": 2,
+          "freshness": "pre_snap"
+        },
+        "situation": {
+          "season": 2022,
+          "season_type": "REG",
+          "week": 18,
+          "game_id": "2022_18_LAC_DEN",
+          "play_id": 3897,
+          "possession_team_id": "LAC",
+          "defense_team_id": "DEN",
+          "home_team_id": "DEN",
+          "away_team_id": "LAC",
+          "down": 4,
+          "distance": 14,
+          "yardline_100": 64,
+          "quarter": 4,
+          "half_seconds_remaining": 207,
+          "game_seconds_remaining": 207,
+          "score_differential": -3,
+          "posteam_score": 28,
+          "defteam_score": 31,
+          "posteam_timeouts": 3,
+          "defteam_timeouts": 2,
+          "receive_2h_ko": 0
+        }
+      }
+    },
+    {
+      "index": 2,
+      "note": "Same moment as f1 but allowlist fields omitted — prompt user_fallback",
+      "expected": "needs_user_fallback",
+      "suggested_user_fallback": {
+        "down": 4,
+        "distance": 14,
+        "yardline_100": 64,
+        "quarter": 4,
+        "half_seconds_remaining": 207,
+        "game_seconds_remaining": 207
+      },
+      "snapshot": {
+        "schema_version": "pre_snap_snapshot.v1",
+        "source": {
+          "source_id": "demo.recorded.lac_den_q4",
+          "provider": "demo",
+          "snapshot_id": "demo-lac-den-f2",
+          "event_timestamp": "2023-01-08T21:03:28Z",
+          "revision": 3,
+          "freshness": "pre_snap"
+        },
+        "situation": {
+          "season": 2022,
+          "season_type": "REG",
+          "week": 18,
+          "game_id": "2022_18_LAC_DEN",
+          "play_id": 3897,
+          "possession_team_id": "LAC",
+          "defense_team_id": "DEN",
+          "home_team_id": "DEN",
+          "away_team_id": "LAC",
+          "score_differential": -3,
+          "posteam_score": 28,
+          "defteam_score": 31,
+          "posteam_timeouts": 3,
+          "defteam_timeouts": 2,
+          "receive_2h_ko": 0
+        }
+      }
+    },
+    {
+      "index": 3,
+      "note": "Stale frame — must reject; must not reuse prior decision",
+      "expected": "reject",
+      "snapshot": {
+        "schema_version": "pre_snap_snapshot.v1",
+        "source": {
+          "source_id": "demo.recorded.lac_den_q4",
+          "provider": "demo",
+          "snapshot_id": "demo-lac-den-f3-stale",
+          "event_timestamp": "2023-01-08T21:04:00Z",
+          "revision": 4,
+          "freshness": "stale"
+        },
+        "situation": {
+          "season": 2022,
+          "season_type": "REG",
+          "week": 18,
+          "game_id": "2022_18_LAC_DEN",
+          "play_id": 3900,
+          "possession_team_id": "LAC",
+          "defense_team_id": "DEN",
+          "home_team_id": "DEN",
+          "away_team_id": "LAC",
+          "down": 4,
+          "distance": 10,
+          "yardline_100": 55,
+          "quarter": 4,
+          "half_seconds_remaining": 180,
+          "game_seconds_remaining": 180,
+          "score_differential": -3,
+          "posteam_score": 28,
+          "defteam_score": 31,
+          "posteam_timeouts": 2,
+          "defteam_timeouts": 2,
+          "receive_2h_ko": 0
+        }
+      }
+    },
+    {
+      "index": 4,
+      "note": "Inconsistent score_differential — must reject",
+      "expected": "reject",
+      "snapshot": {
+        "schema_version": "pre_snap_snapshot.v1",
+        "source": {
+          "source_id": "demo.recorded.lac_den_q4",
+          "provider": "demo",
+          "snapshot_id": "demo-lac-den-f4-badscore",
+          "event_timestamp": "2023-01-08T21:04:30Z",
+          "revision": 5,
+          "freshness": "pre_snap"
+        },
+        "situation": {
+          "season": 2022,
+          "season_type": "REG",
+          "week": 18,
+          "game_id": "2022_18_LAC_DEN",
+          "play_id": 3910,
+          "possession_team_id": "LAC",
+          "defense_team_id": "DEN",
+          "home_team_id": "DEN",
+          "away_team_id": "LAC",
+          "down": 4,
+          "distance": 8,
+          "yardline_100": 50,
+          "quarter": 4,
+          "half_seconds_remaining": 150,
+          "game_seconds_remaining": 150,
+          "score_differential": 0,
+          "posteam_score": 28,
+          "defteam_score": 31,
+          "posteam_timeouts": 2,
+          "defteam_timeouts": 2,
+          "receive_2h_ko": 0
+        }
+      }
+    }
+  ]
+}

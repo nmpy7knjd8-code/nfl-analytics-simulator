@@ -188,10 +188,27 @@
     <div>
       <span class="chip chip--hist">Historical play</span>
       <span class="chip chip--sim">Model counterfactual</span>
+      <span class="chip">Recorded demo</span>
       <span class="chip">No live odds</span>
     </div>
 
-    <section class="panel" aria-labelledby="select-heading">
+    <section class="panel" aria-labelledby="mode-heading">
+      <h2 id="mode-heading">Source</h2>
+      <div class="row" style="grid-template-columns:1fr 1fr; max-width:28rem">
+        <div>
+          <label for="mode">Mode</label>
+          <select id="mode">
+            <option value="historical" selected>Historical lake</option>
+            <option value="recorded_demo">Recorded demo (offline)</option>
+          </select>
+        </div>
+      </div>
+      <p class="muted" style="margin:0.6rem 0 0; font-size:0.9rem">
+        Recorded demo uses timestamped frames through the same pre-snap adapter — never a live feed.
+      </p>
+    </section>
+
+    <section class="panel" id="hist-panel" aria-labelledby="select-heading">
       <h2 id="select-heading">Select play</h2>
       <div class="row row-4">
         <div>
@@ -217,6 +234,40 @@
       <p id="status" class="muted mono" style="margin:0.75rem 0 0"></p>
     </section>
 
+    <section class="panel" id="demo-panel" hidden aria-labelledby="demo-heading">
+      <h2 id="demo-heading">Recorded demo walkthrough</h2>
+      <div class="row" style="grid-template-columns:2fr 1fr auto auto; align-items:end; gap:0.75rem">
+        <div>
+          <label for="sequence">Sequence</label>
+          <select id="sequence"></select>
+        </div>
+        <div>
+          <label for="frame_index">Frame</label>
+          <input id="frame_index" type="number" value="0" min="0" step="1" />
+        </div>
+        <div>
+          <button id="demo-prev" type="button" style="background:#3a5f7d;border-color:#3a5f7d">Prev</button>
+        </div>
+        <div>
+          <button id="demo-next" type="button" style="background:#3a5f7d;border-color:#3a5f7d">Next</button>
+        </div>
+      </div>
+      <p id="demo-meta" class="mono muted" style="margin:0.75rem 0 0"></p>
+      <div id="fallback-box" hidden style="margin-top:0.75rem; padding:0.75rem; background:var(--warn-soft); border:1px solid var(--line)">
+        <p style="margin:0 0 0.5rem; color:var(--warn-ink); font-size:0.95rem">
+          Allowlist fields missing from this frame (time / down / field position). Supply them explicitly — never invented.
+        </p>
+        <label style="display:flex; gap:0.5rem; align-items:center; color:var(--warn-ink)">
+          <input id="apply_suggested" type="checkbox" style="width:auto; min-height:0" />
+          Apply suggested user_fallback for missing allowlist fields
+        </label>
+      </div>
+      <div style="margin-top:0.75rem; max-width:14rem">
+        <button id="demo-run" type="button">Score this frame</button>
+      </div>
+      <p id="demo-status" class="muted mono" style="margin:0.75rem 0 0"></p>
+    </section>
+
     <div id="banner" hidden></div>
 
     <section id="result" hidden>
@@ -224,6 +275,11 @@
         <h2 id="freeze-heading">Frozen game state</h2>
         <p id="prov" class="mono muted"></p>
         <div class="row vals" id="state"></div>
+      </section>
+
+      <section class="panel" id="why-panel" aria-labelledby="why-heading">
+        <h2 id="why-heading">Why (plain English)</h2>
+        <p id="layman-why" style="margin:0; font-size:1.05rem"></p>
       </section>
 
       <section class="panel" aria-labelledby="cmp-heading">
@@ -264,6 +320,8 @@
     const $ = (id) => document.getElementById(id);
     const fmt = (x) => (typeof x === "number" && Number.isFinite(x) ? x.toFixed(4) : "—");
     let presets = [];
+    let seqMeta = null;
+    let lastGoodPayload = null;
 
     async function loadPresets() {
       const r = await fetch("/situation-lab/api/presets");
@@ -281,6 +339,44 @@
       applyPreset(sel.value);
     }
 
+    async function loadSequences() {
+      const r = await fetch("/situation-lab/api/recorded-demo/sequences");
+      const data = await r.json();
+      const sel = $("sequence");
+      sel.innerHTML = "";
+      for (const s of data.items || []) {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = s.label;
+        sel.appendChild(opt);
+      }
+      if (sel.value) await refreshSequenceMeta();
+    }
+
+    async function refreshSequenceMeta() {
+      const id = $("sequence").value;
+      if (!id) return;
+      const r = await fetch("/situation-lab/api/recorded-demo/" + encodeURIComponent(id));
+      seqMeta = await r.json();
+      if (!r.ok) throw new Error(seqMeta.detail || r.statusText);
+      $("frame_index").max = Math.max(0, (seqMeta.frame_count || 1) - 1);
+      updateDemoMeta();
+    }
+
+    function updateDemoMeta() {
+      if (!seqMeta) return;
+      const idx = Number($("frame_index").value) || 0;
+      const fr = (seqMeta.frames || []).find((f) => f.index === idx) || {};
+      $("demo-meta").textContent =
+        `frame ${idx}/${(seqMeta.frame_count || 1) - 1} · ${fr.snapshot_id || "—"} · ` +
+        `${fr.event_timestamp || "—"} · freshness=${fr.freshness || "—"} · ${fr.note || ""}`;
+      const missing = fr.missing_allowlist || [];
+      $("fallback-box").hidden = missing.length === 0;
+      if (missing.length) {
+        $("apply_suggested").checked = false;
+      }
+    }
+
     function applyPreset(id) {
       const p = presets.find((x) => x.id === id);
       if (!p) return;
@@ -289,12 +385,32 @@
       $("play_id").value = p.play_id;
     }
 
+    function setMode(mode) {
+      const demo = mode === "recorded_demo";
+      $("hist-panel").hidden = demo;
+      $("demo-panel").hidden = !demo;
+      $("banner").hidden = true;
+      $("result").hidden = true;
+      lastGoodPayload = null;
+    }
+
+    function clearDecisionSurface() {
+      // Rejected frames must not keep showing a prior decision.
+      lastGoodPayload = null;
+      $("result").hidden = true;
+      $("cmp-body").innerHTML = "";
+      $("layman-why").textContent = "";
+      $("state").innerHTML = "";
+      $("prov").textContent = "";
+    }
+
     function renderState(play) {
       const g = play.game_state || {};
       const prov = play.provenance || {};
       $("prov").textContent =
         `${prov.season} w${prov.week} · ${prov.game_id} / ${prov.play_id} · ` +
-        `${prov.posteam} vs ${prov.defteam} · hist ${prov.play_type} (${play.historical_action})`;
+        `${prov.posteam} vs ${prov.defteam} · hist ${prov.play_type} (${play.historical_action})` +
+        (play.truth ? ` · truth=${play.truth}` : "");
       const fields = [
         ["score_diff", g.score_differential],
         ["yardline_100", g.yardline_100],
@@ -321,16 +437,21 @@
     }
 
     function render(data) {
+      lastGoodPayload = data;
       $("result").hidden = false;
       renderState(data.play);
+      $("layman-why").textContent = data.layman_why || "—";
       const c = data.configs;
       const changed = !!data.recommendation_changed_legacy_to_improved;
       const banner = $("banner");
       banner.hidden = false;
       banner.className = "banner " + (changed ? "banner--change" : "banner--same");
-      banner.textContent = changed
+      const demoNote = data.demo
+        ? ` · recorded demo frame ${data.demo.frame_index} (${data.demo.provider}, not live)`
+        : "";
+      banner.textContent = (changed
         ? `Recommendation changed: ${c.pooled_legacy.recommendation} → ${c.pooled_improved.recommendation}`
-        : `Recommendation unchanged (${c.pooled_legacy.recommendation}) under improved transitions`;
+        : `Recommendation unchanged (${c.pooled_legacy.recommendation}) under improved transitions`) + demoNote;
       $("cmp-body").innerHTML =
         row("pooled + legacy", c.pooled_legacy, false) +
         row("season_aware + legacy", c.season_aware_legacy, false) +
@@ -373,7 +494,7 @@
         render(data);
         status.textContent = "Done · offline counterfactual";
       } catch (err) {
-        $("result").hidden = true;
+        clearDecisionSurface();
         const banner = $("banner");
         banner.hidden = false;
         banner.className = "banner banner--err";
@@ -384,9 +505,85 @@
       }
     }
 
+    async function runDemoFrame() {
+      const btn = $("demo-run");
+      const status = $("demo-status");
+      btn.disabled = true;
+      status.textContent = "Scoring recorded frame…";
+      $("banner").hidden = true;
+      const sid = $("sequence").value;
+      const idx = Number($("frame_index").value) || 0;
+      try {
+        let r;
+        if ($("apply_suggested").checked) {
+          r = await fetch(
+            `/situation-lab/api/recorded-demo/${encodeURIComponent(sid)}/frame/${idx}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ apply_suggested_fallback: true }),
+            }
+          );
+        } else {
+          r = await fetch(
+            `/situation-lab/api/recorded-demo/${encodeURIComponent(sid)}/frame/${idx}`
+          );
+        }
+        const data = await r.json();
+        if (!r.ok) {
+          clearDecisionSurface();
+          const banner = $("banner");
+          banner.hidden = false;
+          banner.className = "banner banner--err";
+          banner.textContent = `Frame rejected (not reusing prior decision): ${data.detail || r.statusText}`;
+          status.textContent = "Rejected";
+          return;
+        }
+        if (data.live_feed) throw new Error("live_feed must be false");
+        render(data);
+        status.textContent = `Done · recorded demo · not live · frame ${idx}`;
+      } catch (err) {
+        clearDecisionSurface();
+        const banner = $("banner");
+        banner.hidden = false;
+        banner.className = "banner banner--err";
+        banner.textContent = String(err.message || err);
+        status.textContent = "Failed";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function stepFrame(delta) {
+      const max = seqMeta ? seqMeta.frame_count - 1 : 0;
+      let idx = Number($("frame_index").value) || 0;
+      idx = Math.max(0, Math.min(max, idx + delta));
+      $("frame_index").value = idx;
+      updateDemoMeta();
+      clearDecisionSurface();
+      $("banner").hidden = true;
+      $("demo-status").textContent = "Frame selected — score to update (prior decision cleared)";
+    }
+
     $("preset").addEventListener("change", (e) => applyPreset(e.target.value));
     $("run").addEventListener("click", run);
-    loadPresets().then(run);
+    $("mode").addEventListener("change", (e) => setMode(e.target.value));
+    $("sequence").addEventListener("change", () => refreshSequenceMeta().then(() => {
+      $("frame_index").value = 0;
+      updateDemoMeta();
+      clearDecisionSurface();
+    }));
+    $("frame_index").addEventListener("change", () => {
+      updateDemoMeta();
+      clearDecisionSurface();
+    });
+    $("demo-prev").addEventListener("click", () => stepFrame(-1));
+    $("demo-next").addEventListener("click", () => stepFrame(1));
+    $("demo-run").addEventListener("click", runDemoFrame);
+    Promise.all([loadPresets(), loadSequences()]).then(() => {
+      setMode("historical");
+      run();
+    });
   </script>
 </body>
 </html>

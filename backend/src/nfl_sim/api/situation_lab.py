@@ -25,6 +25,48 @@ PRE_SNAP_DISCLAIMER = (
     "not live odds or betting advice. Path A uncalibrated WP + REG train empirics only."
 )
 
+RECORDED_DEMO_DISCLAIMER = (
+    "Offline estimate from a recorded demo frame — not a live feed, "
+    "not live odds or betting advice. Path A uncalibrated WP + REG train empirics only."
+)
+
+
+def layman_why_from_config(cfg: dict[str, Any]) -> str:
+    """One-line plain-English why from existing summary fields only (no rescoring)."""
+    rec = cfg.get("recommendation")
+    values = cfg.get("values") or {}
+    margin = cfg.get("margin")
+    inconclusive = bool(cfg.get("inconclusive")) or rec == "inconclusive"
+    try:
+        m = float(margin) if margin is not None else None
+    except (TypeError, ValueError):
+        m = None
+    margin_txt = f" (edge ≈ {m:.3f} WP)" if m is not None else ""
+
+    if inconclusive:
+        return (
+            "Too close to call — go, field goal, and punt win chances are nearly tied"
+            f"{margin_txt}."
+        )
+    labels = {"go": "going for it", "fg": "a field goal", "punt": "punting"}
+    action = labels.get(str(rec), str(rec))
+    others = [a for a in ("go", "fg", "punt") if a != rec]
+    try:
+        ranked = sorted(
+            ((k, float(values[k])) for k in ("go", "fg", "punt") if k in values),
+            key=lambda kv: kv[1],
+            reverse=True,
+        )
+        best_wp = ranked[0][1] if ranked else None
+    except (TypeError, ValueError):
+        best_wp = None
+    wp_txt = f" (~{best_wp:.1%} win chance)" if best_wp is not None else ""
+    alt = " or ".join(labels.get(a, a) for a in others)
+    return (
+        f"{action[0].upper() + action[1:]} looks best here{wp_txt} — "
+        f"higher modeled win chance than {alt}{margin_txt}."
+    )
+
 # Documented flip is default; anchor included for contrast.
 PRESETS: list[dict[str, Any]] = [
     {
@@ -85,6 +127,13 @@ def _summarize_config(block: dict[str, Any]) -> dict[str, Any]:
 def _payload_from_compare(cmp: dict[str, Any], *, truth_play: str, disclaimer: str) -> dict[str, Any]:
     play = dict(cmp["play"])
     play["truth"] = truth_play
+    configs = {
+        "pooled_legacy": _summarize_config(cmp["pooled_legacy"]),
+        "season_aware_legacy": _summarize_config(cmp["season_aware_legacy"]),
+        "pooled_improved": _summarize_config(cmp["pooled_improved"]),
+    }
+    # Primary “why” uses improved config (same scorer output; no new math).
+    why = layman_why_from_config(configs["pooled_improved"])
     return {
         "truth_labels": {
             "play": truth_play,
@@ -92,11 +141,8 @@ def _payload_from_compare(cmp: dict[str, Any], *, truth_play: str, disclaimer: s
             "disclaimer": disclaimer,
         },
         "play": play,
-        "configs": {
-            "pooled_legacy": _summarize_config(cmp["pooled_legacy"]),
-            "season_aware_legacy": _summarize_config(cmp["season_aware_legacy"]),
-            "pooled_improved": _summarize_config(cmp["pooled_improved"]),
-        },
+        "configs": configs,
+        "layman_why": why,
         "recommendation_changed_legacy_to_improved": cmp[
             "recommendation_changed_legacy_to_improved"
         ],
@@ -260,6 +306,136 @@ def create_situation_lab_router() -> APIRouter:
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(
                 status_code=500, detail=f"pre-snap compare failed: {exc}"
+            ) from exc
+
+    @router.get("/situation-lab/api/recorded-demo/sequences")
+    def recorded_demo_sequences() -> dict[str, Any]:
+        from nfl_sim.providers.recorded_demo import list_sequences
+
+        return {
+            "items": list_sequences(),
+            "scope": "offline_recorded_demo",
+            "live_feed": False,
+            "fan_ui": False,
+            "mode": "recorded_demo",
+        }
+
+    @router.get("/situation-lab/api/recorded-demo/{sequence_id}")
+    def recorded_demo_sequence(sequence_id: str) -> dict[str, Any]:
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+        from nfl_sim.providers.recorded_demo import sequence_summary
+
+        try:
+            return sequence_summary(sequence_id)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except PreSnapAdapterError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @router.get("/situation-lab/api/recorded-demo/{sequence_id}/frame/{index}")
+    def recorded_demo_frame_get(
+        sequence_id: str,
+        index: int,
+        apply_suggested_fallback: bool = Query(default=False),
+    ) -> dict[str, Any]:
+        """Score one recorded frame. Rejected frames return 400 — no prior decision reuse."""
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+        from nfl_sim.providers.recorded_demo import (
+            get_frame,
+            missing_allowlist_fields,
+            prepare_snapshot_for_score,
+        )
+
+        try:
+            frame = get_frame(sequence_id, index)
+            snap = frame["snapshot"]
+            missing = missing_allowlist_fields(snap)
+            fb = None
+            if missing and apply_suggested_fallback:
+                fb = frame.get("suggested_user_fallback")
+            raw = prepare_snapshot_for_score(frame, user_fallback=fb)
+            payload = build_situation_lab_payload_from_snapshot(raw)
+            # Relabel as recorded demo (not live).
+            payload["truth_labels"]["play"] = "recorded_demo"
+            payload["truth_labels"]["disclaimer"] = RECORDED_DEMO_DISCLAIMER
+            payload["play"]["truth"] = "recorded_demo"
+            payload["demo"] = {
+                "sequence_id": sequence_id,
+                "frame_index": index,
+                "note": frame.get("note"),
+                "expected": frame.get("expected"),
+                "missing_allowlist": missing,
+                "applied_suggested_fallback": bool(fb),
+                "provider": "demo",
+                "live_feed": False,
+                "mode": "recorded_demo",
+            }
+            return payload
+        except IndexError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except PreSnapAdapterError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"recorded demo frame failed: {exc}"
+            ) from exc
+
+    @router.post("/situation-lab/api/recorded-demo/{sequence_id}/frame/{index}")
+    def recorded_demo_frame_post(
+        sequence_id: str,
+        index: int,
+        body: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Score frame with optional explicit user_fallback (allowlist only)."""
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+        from nfl_sim.providers.recorded_demo import (
+            get_frame,
+            missing_allowlist_fields,
+            prepare_snapshot_for_score,
+        )
+
+        body = body or {}
+        try:
+            frame = get_frame(sequence_id, index)
+            fb = body.get("user_fallback")
+            apply_suggested = bool(body.get("apply_suggested_fallback"))
+            missing = missing_allowlist_fields(frame["snapshot"])
+            if missing and fb is None and apply_suggested:
+                fb = frame.get("suggested_user_fallback")
+            raw = prepare_snapshot_for_score(frame, user_fallback=fb)
+            payload = build_situation_lab_payload_from_snapshot(raw)
+            payload["truth_labels"]["play"] = "recorded_demo"
+            payload["truth_labels"]["disclaimer"] = RECORDED_DEMO_DISCLAIMER
+            payload["play"]["truth"] = "recorded_demo"
+            payload["demo"] = {
+                "sequence_id": sequence_id,
+                "frame_index": index,
+                "note": frame.get("note"),
+                "expected": frame.get("expected"),
+                "missing_allowlist": missing,
+                "applied_user_fallback": bool(fb),
+                "provider": "demo",
+                "live_feed": False,
+                "mode": "recorded_demo",
+            }
+            return payload
+        except IndexError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except PreSnapAdapterError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"recorded demo frame failed: {exc}"
             ) from exc
 
     return router
