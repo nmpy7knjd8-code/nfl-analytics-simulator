@@ -2,7 +2,9 @@
 
 **Date:** 2026-10-11  
 **Depends on:** PR #15 pre-snap adapter on `main` (`17cfb4d`)  
-**Branch:** `cursor/recorded-snapshot-demo-c0ef` (PR open, **not merged**)  
+**Branch:** `cursor/recorded-snapshot-demo-c0ef` @ `6b6b3fd`
+**Stage 2 PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/16
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/6b6b3fd7d4c5a85c34b53da82f603edd35995cd7/docs/NEXT_STEPS_DELTA_RECORDED_DEMO.md  
 **Scope:** Offline deterministic sequence of `pre_snap_snapshot.v1` frames → existing adapter → Situation Lab.
 
 ## What it is
