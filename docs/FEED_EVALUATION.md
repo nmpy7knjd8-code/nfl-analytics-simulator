@@ -3,7 +3,8 @@
 **Date:** 2026-10-11  
 **Main after PR #16:** `4ce96b14496a64fba97e610b2b9b6226090cc7c0` (tip merged: `dc05f6df`)  
 **Mode:** Evidence review only — **no live source connected**, no paid API calls, no credentials, no odds automation  
-**Branch (docs-only, unmerged if opened):** `cursor/feed-evaluation-c0ef`
+**Docs PR (unmerged):** see GitHub PR from `cursor/feed-evaluation-c0ef`
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/aeb7ff9697a8883643c6121e8ed4ca280f8e3f91/docs/NEXT_STEPS_DELTA_FEED_EVAL.md
 
 ---
 
