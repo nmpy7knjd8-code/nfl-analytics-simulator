@@ -3,7 +3,7 @@
 **Date:** 2026-10-11  
 **Branch:** `cursor/epa-scoring-credit-0f5a` (local only — **no push, no merge**)  
 **Starting SHA:** `15da234b900059ab2a8f36279112203d02cace37` (`origin/main`, Stage A merge)  
-**Ending SHA:** tip `b89c949622f1afc2b248ab4635561f8f6b44447e` · investigation content `a7077d45336069719db38894f78470c1a77c068f`
+**Ending SHA:** tip `8a6d569390a0f17051f6003df761d4e1300b4f93` · investigation content `a7077d45336069719db38894f78470c1a77c068f`
 **Scope:** Task A only. No era/retrain/CI/baselines/Task B. **2023 sealed** (not loaded).  
 **Recon input:** [`docs/REFERENCE_IMPLEMENTATION_RECON.md`](../../docs/REFERENCE_IMPLEMENTATION_RECON.md) Addendum A (nflfastR cashes `R − ep` on scoring plays).
 
