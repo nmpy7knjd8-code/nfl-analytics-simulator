@@ -3,6 +3,8 @@
 **Date:** 2026-10-11  
 **Main at authorize M:** `b483ac0`  
 **Branch:** `cursor/offline-presnap-mapper-c0ef` (PR **not merged**)
+**PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/24  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/dac272f31f0674fa3f6eaa267d305ad16e73355a/docs/NEXT_STEPS_DELTA_OFFLINE_PRE_SNAP_MAPPER.md
 
 ## What landed
 
