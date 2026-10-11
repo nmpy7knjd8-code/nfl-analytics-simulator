@@ -85,7 +85,18 @@
   * Sequence after merge: WP → historical decision lab (4th down) → live adapters last.
   * Do not use 2023 holdout to tune conventions or features.
 * **Evidence:** `reports/ep/AUDIT.md`, `reconciliation_2022.json`.
+* **Supersession (score-cash only):** D015 adopts Convention B for scoring-play EPA. D014’s “do not chase bit-parity” still applies to non-score slices and PAT row overlays; it no longer means “keep no-cash EPA in production.”
+
+## D015 — EPA Convention B (score-cash) — ACCEPTED (2026-10-11)
+
+* **Status:** Accepted (local review branch; not yet on `origin/main`)
+* **Decision:** Production EPA uses Convention B: scoring plays with \(\|R\|>0\) → `EPA = R − ep_before`; non-score timeout/terminal/same-poss/PC unchanged; XP/2PT \(R=0\`.
+* **Evidence:** Task A lake-`ep` diagnostics (2019–2022); `docs/EPA_CONVENTION_B_ATTRIBUTION.md`; `EP_MODEL_SPEC` §6; synthetics.
+* **Artifact:** `ep_model.joblib` missing → project-model pre/post **Blocked** (`reports/ep/ARTIFACT_PROVENANCE.md`).
+* **Brief:** `docs/DECISIONS_AND_FORWARD_PLAN.md` (successor to open-D015 PR #5 text).
 
 ## Open decisions (user)
 
-1. Approve starting Phase 4 situation WP after PR #3 merges (project stop-gate).
+1. Authorize push/merge of Convention B branch after review.
+2. Restore original `ep_model.joblib` (or authorize explicit new-artifact rebuild) before model-surface acceptance.
+3. Approve starting Phase 4 situation WP after A.2 model-surface gate.

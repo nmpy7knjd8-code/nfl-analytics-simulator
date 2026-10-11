@@ -1,4 +1,4 @@
-"""Deterministic EPA from model EP — docs/EP_MODEL_SPEC.md §6."""
+"""Deterministic EPA from model EP — docs/EP_MODEL_SPEC.md §6 (Convention B)."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ EpaCase = Literal[
     "terminal",
     "same_possession",
     "possession_change",
+    "scoring",
 ]
 
 
@@ -35,11 +36,19 @@ def compute_epa(
     possession_change: bool,
     is_timeout: bool,
     is_terminal: bool,
+    realized_r: float = 0.0,
 ) -> EpaResult:
-    """Possession-aware EPA (no naïve subtraction across possession change)."""
+    """Possession-aware EPA (Convention B: score cash on |R|>0).
+
+    Non-score path matches Stage A ΔEP / PC sign-flip / terminal ``-ep``.
+    When ``abs(realized_r) > 0`` and not a timeout, override to ``R - ep_before``.
+    """
     eb = float(ep_before)
     if is_timeout:
         return EpaResult(0.0, "timeout", eb, eb)
+    r = float(realized_r)
+    if abs(r) > 0.0:
+        return EpaResult(r - eb, "scoring", eb, r)
     if is_terminal or ep_after_raw is None:
         return EpaResult(-eb, "terminal", eb, 0.0)
     ea = float(ep_after_raw)
@@ -157,7 +166,13 @@ def model_epa_from_eps(
     possession_change: np.ndarray | pd.Series,
     is_timeout: np.ndarray | pd.Series,
     is_terminal: np.ndarray | pd.Series,
+    realized_r: np.ndarray | pd.Series | None = None,
 ) -> np.ndarray:
+    """Vectorized EPA. Convention B when ``realized_r`` is provided.
+
+    Base (no score / R=0): timeout 0; terminal ``-ep``; PC ``-ea-eb``; else ``ea-eb``.
+    Scoring (``|R|>0``, not timeout): override ``R - ep_before``.
+    """
     eb = np.asarray(ep_before, dtype=float)
     ea = np.asarray(ep_after_raw, dtype=float)
     pc = np.asarray(possession_change, dtype=bool)
@@ -171,12 +186,17 @@ def model_epa_from_eps(
     out[mask_pc] = (-ea[mask_pc]) - eb[mask_pc]
     mask_same = (~to) & (~term) & (~pc)
     out[mask_same] = ea[mask_same] - eb[mask_same]
+    if realized_r is not None:
+        r = np.asarray(realized_r, dtype=float)
+        scored = (~to) & (np.abs(r) > 0.0)
+        out[scored] = r[scored] - eb[scored]
     return out
 
 
 def score_model_epa(model, pbp: pd.DataFrame) -> pd.DataFrame:
-    """Attach model_ep / model_epa using next-scrimmage transitions."""
+    """Attach model_ep / model_epa using next-scrimmage transitions (Convention B)."""
     from nfl_sim.models.ep_model import EPModel
+    from nfl_sim.models.scoring_credit import realized_next_score_value
 
     if not isinstance(model, EPModel):
         raise TypeError("model must be EPModel")
@@ -203,16 +223,19 @@ def score_model_epa(model, pbp: pd.DataFrame) -> pd.DataFrame:
     if active.any():
         ep_after[active] = model.predict_ep(next_df.loc[active])
 
+    realized_r = realized_next_score_value(framed)
     model_epa = model_epa_from_eps(
         ep_before,
         ep_after,
         possession_change=framed["epa_possession_change"],
         is_timeout=framed["epa_is_timeout"],
         is_terminal=framed["epa_is_terminal"],
+        realized_r=realized_r,
     )
     out = framed.copy()
     out["model_ep"] = ep_before
     out["model_ep_after_raw"] = ep_after
+    out["model_realized_r"] = realized_r
     out["model_epa"] = model_epa
     return out
 

@@ -1,0 +1,388 @@
+{
+  "accounting_identity": {
+    "atol": 1e-09,
+    "epoch_fail_examples": [],
+    "epoch_form": {
+      "fail": 0,
+      "ok": 11198,
+      "pass": true
+    },
+    "exclusions": [
+      "timeouts",
+      "non-score possession-change intervals",
+      "discontinuous ep_after\u2192ep_before links",
+      "null-down admin-only starts",
+      "2023 holdout"
+    ],
+    "identity": "sum_convention_B_EPA = R_end - EP_before_start (nflfastR score overlay)",
+    "intervals_checked": 11198,
+    "residual_summary": {
+      "frac_abs_lt_atol": 1.0,
+      "max_abs": 4.440892098500626e-16,
+      "mean_abs": 1.0311055059922869e-18,
+      "n": 11198
+    },
+    "skipped_non_contiguous_or_pc": 75430
+  },
+  "artifact": {
+    "joblib_exists": false,
+    "joblib_path": "/tmp/nfl-analytics-simulator/reports/ep/artifacts/ep_model.joblib",
+    "meta": {
+      "C": 0.25,
+      "class_values": {
+        "FieldGoal": 3.0,
+        "NoScore": 0.0,
+        "OppFieldGoal": -3.0,
+        "OppSafety": -2.0,
+        "OppTouchdown": -7.0,
+        "Safety": 2.0,
+        "Touchdown": 7.0
+      },
+      "classes": [
+        "Touchdown",
+        "FieldGoal",
+        "Safety",
+        "NoScore",
+        "OppSafety",
+        "OppFieldGoal",
+        "OppTouchdown"
+      ],
+      "data_hash": {
+        "combined_sha256": "5df24dd0ec2ff7f8ae214549b4cc7a0e758a8e989be50c8f9e8993d100a6507b",
+        "season_sha256": {
+          "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+          "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+          "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+          "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
+          "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+        }
+      },
+      "era_feature": "excluded_from_production",
+      "feature_names": [
+        "num__down",
+        "num__distance",
+        "num__yardline_100",
+        "num__half_seconds_remaining",
+        "num__posteam_timeouts",
+        "num__defteam_timeouts",
+        "num__is_home_possession",
+        "cat__roof_closed",
+        "cat__roof_dome",
+        "cat__roof_open",
+        "cat__roof_outdoors"
+      ],
+      "gate": "stage_a_audit_pass",
+      "packages": {
+        "joblib": "1.6.0",
+        "numpy": "2.5.4",
+        "pandas": "3.0.6",
+        "scikit-learn": "1.9.1"
+      },
+      "seed": 42,
+      "selected_C": 0.25,
+      "train_n": 116218,
+      "train_seasons": [
+        2019,
+        2020,
+        2021
+      ],
+      "val_log_loss_by_C": {
+        "0.25": 1.3360995567698928,
+        "1.0": 1.3361933362018934,
+        "4.0": 1.336309459546224
+      }
+    },
+    "meta_exists": true,
+    "meta_path": "/tmp/nfl-analytics-simulator/reports/ep/artifacts/ep_model.meta.json"
+  },
+  "blocker_project_model_epa": true,
+  "data_hash": {
+    "combined_sha256": "7e765adb53c3451322e57237d525ac2d633534ca29cf2b4bf3e40037c836f148",
+    "season_sha256": {
+      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7"
+    }
+  },
+  "ep_surface": "nflverse_ep",
+  "ep_surface_note": "Project ep_model.joblib missing; diagnostics use nflverse ep as EP surface to isolate EPA transition convention. Not a substitute project model.",
+  "holdout_2023_loaded": false,
+  "outcome_table": {
+    "buckets": {
+      "fg_made": {
+        "convention_a": {
+          "mae": 3.9261935222777313,
+          "mean_conv": -3.283265776414271,
+          "mean_ref": 0.6318967589534527,
+          "mean_signed_diff": -3.9151625353677244,
+          "median_ae": 3.9851999012753367,
+          "n": 3391,
+          "pct_negative_conv": 99.4396933058095,
+          "pct_negative_ref": 0.0
+        },
+        "convention_b": {
+          "mae": 0.0,
+          "mean_conv": 0.6318967589534527,
+          "mean_ref": 0.6318967589534527,
+          "mean_signed_diff": 0.0,
+          "median_ae": 0.0,
+          "n": 3391,
+          "pct_negative_conv": 0.0,
+          "pct_negative_ref": 0.0
+        },
+        "pct_negative_epa_on_score": {
+          "convention_a": 99.4396933058095,
+          "convention_b": 0.0,
+          "reference": 0.0
+        }
+      },
+      "possession_change_other": {
+        "convention_a": {
+          "mae": 0.8657515316028336,
+          "mean_conv": -3.405355989348127,
+          "mean_ref": -2.5612406809152763,
+          "mean_signed_diff": -0.8441153084328509,
+          "median_ae": 0.0,
+          "n": 724,
+          "pct_negative_conv": 99.72375690607734,
+          "pct_negative_ref": 89.9171270718232
+        },
+        "convention_b": {
+          "mae": 0.8657515316028336,
+          "mean_conv": -3.405355989348127,
+          "mean_ref": -2.5612406809152763,
+          "mean_signed_diff": -0.8441153084328509,
+          "median_ae": 0.0,
+          "n": 724,
+          "pct_negative_conv": 99.72375690607734,
+          "pct_negative_ref": 89.9171270718232
+        }
+      },
+      "punt": {
+        "convention_a": {
+          "mae": 0.0028625958768110416,
+          "mean_conv": -0.099135445361987,
+          "mean_ref": -0.10069846187997242,
+          "mean_signed_diff": 0.001563016517985413,
+          "median_ae": 0.0,
+          "n": 8274,
+          "pct_negative_conv": 59.71718636693256,
+          "pct_negative_ref": 59.75344452501813
+        },
+        "convention_b": {
+          "mae": 0.0028625958768110416,
+          "mean_conv": -0.099135445361987,
+          "mean_ref": -0.10069846187997242,
+          "mean_signed_diff": 0.001563016517985413,
+          "median_ae": 0.0,
+          "n": 8274,
+          "pct_negative_conv": 59.71718636693256,
+          "pct_negative_ref": 59.75344452501813
+        }
+      },
+      "safety": {
+        "convention_a": {
+          "mae": 0.8045893263235132,
+          "mean_conv": -0.7982491436273595,
+          "mean_ref": -1.0712564712589336,
+          "mean_signed_diff": 0.27300732763157404,
+          "median_ae": 0.4881633361801505,
+          "n": 62,
+          "pct_negative_conv": 82.25806451612904,
+          "pct_negative_ref": 95.16129032258065
+        },
+        "convention_b": {
+          "mae": 0.12903225806451613,
+          "mean_conv": -1.2002887293234497,
+          "mean_ref": -1.0712564712589336,
+          "mean_signed_diff": -0.12903225806451613,
+          "median_ae": 0.0,
+          "n": 62,
+          "pct_negative_conv": 98.38709677419355,
+          "pct_negative_ref": 95.16129032258065
+        }
+      },
+      "same_possession_other": {
+        "convention_a": {
+          "mae": 0.0020768830958802042,
+          "mean_conv": 0.03189159653013745,
+          "mean_ref": 0.03160152735694651,
+          "mean_signed_diff": 0.0002900691731909373,
+          "median_ae": 0.0,
+          "n": 132697,
+          "pct_negative_conv": 56.9281897857525,
+          "pct_negative_ref": 56.94627610270013
+        },
+        "convention_b": {
+          "mae": 0.0020768830958802042,
+          "mean_conv": 0.03189159653013745,
+          "mean_ref": 0.03160152735694651,
+          "mean_signed_diff": 0.0002900691731909373,
+          "median_ae": 0.0,
+          "n": 132697,
+          "pct_negative_conv": 56.9281897857525,
+          "pct_negative_ref": 56.94627610270013
+        }
+      },
+      "td_defense_or_return": {
+        "convention_a": {
+          "mae": 8.029562605569625,
+          "mean_conv": 0.15038092484961815,
+          "mean_ref": -7.8791816807200075,
+          "mean_signed_diff": 8.029562605569625,
+          "median_ae": 8.03839593892917,
+          "n": 271,
+          "pct_negative_conv": 45.38745387453875,
+          "pct_negative_ref": 100.0
+        },
+        "convention_b": {
+          "mae": 0.0,
+          "mean_conv": -7.8791816807200075,
+          "mean_ref": -7.8791816807200075,
+          "mean_signed_diff": 0.0,
+          "median_ae": 0.0,
+          "n": 271,
+          "pct_negative_conv": 100.0,
+          "pct_negative_ref": 100.0
+        }
+      },
+      "td_offense": {
+        "convention_a": {
+          "mae": 8.01218871604482,
+          "mean_conv": -5.6036490456387344,
+          "mean_ref": 2.408539670406086,
+          "mean_signed_diff": -8.01218871604482,
+          "median_ae": 8.030669982777908,
+          "n": 5242,
+          "pct_negative_conv": 99.61846623426173,
+          "pct_negative_ref": 0.0
+        },
+        "convention_b": {
+          "mae": 0.0,
+          "mean_conv": 2.408539670406086,
+          "mean_ref": 2.408539670406086,
+          "mean_signed_diff": 0.0,
+          "median_ae": 0.0,
+          "n": 5242,
+          "pct_negative_conv": 0.0,
+          "pct_negative_ref": 0.0
+        },
+        "pct_negative_epa_on_score": {
+          "convention_a": 99.61846623426173,
+          "convention_b": 0.0,
+          "reference": 0.0
+        }
+      },
+      "terminal_no_score": {
+        "convention_a": {
+          "mae": 0.023588315126792183,
+          "mean_conv": -0.7415105976908866,
+          "mean_ref": -0.725745086563224,
+          "mean_signed_diff": -0.01576551112766252,
+          "median_ae": 0.0,
+          "n": 1713,
+          "pct_negative_conv": 61.06246351430239,
+          "pct_negative_ref": 60.88733216579101
+        },
+        "convention_b": {
+          "mae": 0.023588315126792183,
+          "mean_conv": -0.7415105976908866,
+          "mean_ref": -0.725745086563224,
+          "mean_signed_diff": -0.01576551112766252,
+          "median_ae": 0.0,
+          "n": 1713,
+          "pct_negative_conv": 61.06246351430239,
+          "pct_negative_ref": 60.88733216579101
+        }
+      },
+      "turnover_non_score": {
+        "convention_a": {
+          "mae": 0.005639604521170998,
+          "mean_conv": -4.461749244951245,
+          "mean_ref": -4.465940318750138,
+          "mean_signed_diff": 0.004191073798893031,
+          "median_ae": 0.0,
+          "n": 2266,
+          "pct_negative_conv": 99.7793468667255,
+          "pct_negative_ref": 99.9117387466902
+        },
+        "convention_b": {
+          "mae": 0.005639604521170998,
+          "mean_conv": -4.461749244951245,
+          "mean_ref": -4.465940318750138,
+          "mean_signed_diff": 0.004191073798893031,
+          "median_ae": 0.0,
+          "n": 2266,
+          "pct_negative_conv": 99.7793468667255,
+          "pct_negative_ref": 99.9117387466902
+        }
+      },
+      "turnover_on_downs": {
+        "convention_a": {
+          "mae": 0.019780755319607123,
+          "mean_conv": -2.9464618005425223,
+          "mean_ref": -2.954641010613534,
+          "mean_signed_diff": 0.008179210071011767,
+          "median_ae": 0.0,
+          "n": 1280,
+          "pct_negative_conv": 99.375,
+          "pct_negative_ref": 99.609375
+        },
+        "convention_b": {
+          "mae": 0.019780755319607123,
+          "mean_conv": -2.9464618005425223,
+          "mean_ref": -2.954641010613534,
+          "mean_signed_diff": 0.008179210071011767,
+          "median_ae": 0.0,
+          "n": 1280,
+          "pct_negative_conv": 99.375,
+          "pct_negative_ref": 99.609375
+        }
+      }
+    },
+    "ep_surface": "nflverse_ep_column",
+    "exclusions": {
+      "holdout_2023_loaded": false,
+      "n_eligible": 155920,
+      "n_non_reg_or_null_down_or_missing_epa": 38401,
+      "n_total_rows": 194321,
+      "seasons": [
+        2019,
+        2020,
+        2021,
+        2022
+      ]
+    },
+    "n_eligible": 155920,
+    "overall": {
+      "convention_a": {
+        "mae": 0.3754752588872347,
+        "mean_conv": -0.35096478024231403,
+        "mean_ref": -0.00687789452836118,
+        "mean_signed_diff": -0.34408688571395285,
+        "median_ae": 0.0,
+        "n": 155920,
+        "pct_negative_conv": 60.64135454079015,
+        "pct_negative_ref": 55.20330938943048
+      },
+      "convention_b": {
+        "mae": 0.0064942975744321915,
+        "mean_conv": -0.01056411652684216,
+        "mean_ref": -0.00687789452836118,
+        "mean_signed_diff": -0.003686221998480979,
+        "median_ae": 0.0,
+        "n": 155920,
+        "pct_negative_conv": 55.23088763468446,
+        "pct_negative_ref": 55.20330938943048
+      }
+    }
+  },
+  "seasons": [
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "task": "A_scoring_credit"
+}
