@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from nfl_sim.models.fourth_down_empirics import FourthDownEmpirics
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FourthDownEmpirics
 from nfl_sim.models.wp_model import WPModel
 
 INCONCLUSIVE_EPS = 0.01
@@ -229,15 +229,20 @@ class FourthDownAnalyzer:
         p_convert_override: float | None = None,
         p_make_override: float | None = None,
         inconclusive_eps: float = INCONCLUSIVE_EPS,
+        empirics_mode: EmpiricsMode = "pooled",
     ) -> FourthDownResult:
-        p_conv, conv_meta = self.empirics.p_convert(sit.distance)
+        p_conv, conv_meta = self.empirics.p_convert(
+            sit.distance, season=sit.season, mode=empirics_mode
+        )
         if p_convert_override is not None:
             p_conv = float(np.clip(p_convert_override, 0.0, 1.0))
         kd = kick_distance(sit)
-        p_make, fg_meta = self.empirics.p_make(kd)
+        p_make, fg_meta = self.empirics.p_make(kd, season=sit.season, mode=empirics_mode)
         if p_make_override is not None:
             p_make = float(np.clip(p_make_override, 0.0, 1.0))
-        punt_yl, punt_meta = self.empirics.punt_opp_yardline(sit.yardline_100)
+        punt_yl, punt_meta = self.empirics.punt_opp_yardline(
+            sit.yardline_100, season=sit.season, mode=empirics_mode
+        )
 
         s_conv = state_go_convert(sit)
         s_fail = state_go_fail(sit)
@@ -306,20 +311,26 @@ class FourthDownAnalyzer:
         margin = float(best.value_wp - second.value_wp)
         inconclusive = margin < inconclusive_eps
         rec = "inconclusive" if inconclusive else best.action
+        resolve = conv_meta.get("empirics_resolve") or {"mode": empirics_mode}
 
         return FourthDownResult(
-            situation=asdict(sit) | {"kick_distance": kd},
+            situation=asdict(sit) | {"kick_distance": kd, "empirics_mode": empirics_mode},
             recommendation=rec,
             margin=margin,
             actions=actions,
-            empirics_meta=self.empirics.meta,
+            empirics_meta={
+                **self.empirics.meta,
+                "empirics_mode": empirics_mode,
+                "empirics_resolve": resolve,
+            },
             assumptions=[
                 "Path A uncalibrated WP only (no isotonic)",
                 f"Clock −{CLOCK_DELTA}s per branch",
                 f"FG distance = yardline_100 + 17; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
                 "Go fail / FG miss → opponent at 100−yardline_100",
                 "Punt → empirical mean opponent yardline (blocked punts excluded from fit)",
-                "Empirics fit REG train 2019–2021 only",
+                "Empirics fit REG train 2019–2021 only (never 2023+)",
+                f"Empirics mode={empirics_mode}; {resolve.get('note')}",
             ],
             inconclusive=inconclusive,
         )
@@ -331,15 +342,17 @@ def sensitivity_example(
     *,
     convert_delta: float = -0.10,
     make_delta: float = 0.0,
+    empirics_mode: EmpiricsMode = "pooled",
 ) -> dict[str, Any]:
     """Baseline vs alternate probs; report whether recommendation changes."""
-    base = analyzer.analyze(sit)
+    base = analyzer.analyze(sit, empirics_mode=empirics_mode)
     p0 = base.actions["go"].components["p_convert"]
     m0 = base.actions["fg"].components["p_make"]
     alt = analyzer.analyze(
         sit,
         p_convert_override=float(np.clip(p0 + convert_delta, 0.0, 1.0)),
         p_make_override=float(np.clip(m0 + make_delta, 0.0, 1.0)),
+        empirics_mode=empirics_mode,
     )
     return {
         "baseline": base.to_dict(),

@@ -1,0 +1,62 @@
+[
+  {
+    "game_id": "2022_01_BAL_NYJ",
+    "play_id": 368,
+    "hist": "punt",
+    "pooled": "go",
+    "season_aware": "go",
+    "changed": false,
+    "p_pool": 0.6511,
+    "p_sa": 0.6792,
+    "d_go": 0.0063,
+    "table": 2021
+  },
+  {
+    "game_id": "2022_01_CLE_CAR",
+    "play_id": 2431.0,
+    "hist": "go",
+    "pooled": "go",
+    "season_aware": "go",
+    "changed": false,
+    "p_pool": 0.6511,
+    "p_sa": 0.6792,
+    "d_go": 0.0029,
+    "table": 2021
+  },
+  {
+    "game_id": "2022_01_GB_MIN",
+    "play_id": 2593.0,
+    "hist": "punt",
+    "pooled": "inconclusive",
+    "season_aware": "inconclusive",
+    "changed": false,
+    "p_pool": 0.5906,
+    "p_sa": 0.5938,
+    "d_go": 0.0002,
+    "table": 2021
+  },
+  {
+    "game_id": "2022_01_IND_HOU",
+    "play_id": 4120.0,
+    "hist": "punt",
+    "pooled": "go",
+    "season_aware": "go",
+    "changed": false,
+    "p_pool": 0.6511,
+    "p_sa": 0.6792,
+    "d_go": 0.0062,
+    "table": 2021
+  },
+  {
+    "game_id": "2022_01_JAX_WAS",
+    "play_id": 2700.0,
+    "hist": "punt",
+    "pooled": "go",
+    "season_aware": "go",
+    "changed": false,
+    "p_pool": 0.5906,
+    "p_sa": 0.5938,
+    "d_go": 0.0006,
+    "table": 2021
+  }
+]
