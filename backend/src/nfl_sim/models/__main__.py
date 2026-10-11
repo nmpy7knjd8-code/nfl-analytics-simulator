@@ -318,6 +318,141 @@ def cmd_wp_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_fourth_down(args: argparse.Namespace) -> int:
+    """Offline go/FG/punt analysis using Path A WP + train-season empirics."""
+    import json as _json
+
+    from nfl_sim.models.fourth_down import (
+        FourthDownAnalyzer,
+        FourthDownSituation,
+        sensitivity_example,
+    )
+    from nfl_sim.models.fourth_down_empirics import FourthDownEmpirics
+
+    model_path = Path(args.model)
+    if not model_path.exists():
+        raise SystemExit(
+            f"Missing WP artifact: {model_path}. Train Path A WP first "
+            "(uncalibrated primary; do not persist isotonic as default)."
+        )
+    empirics = FourthDownEmpirics.fit_from_seasons()
+    az = FourthDownAnalyzer.load(model_path, empirics=empirics)
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "empirics.json").write_text(_json.dumps(empirics.to_dict(), indent=2, sort_keys=True) + "\n")
+
+    if args.report:
+        examples = [
+            FourthDownSituation(55, 1, 0, 360, 360, qtr=4),
+            FourthDownSituation(33, 4, -3, 120, 120, qtr=4),
+            FourthDownSituation(70, 2, 4, 600, 600, qtr=3),
+            FourthDownSituation(20, 8, 0, 90, 90, qtr=4),
+        ]
+        rows = []
+        for sit in examples:
+            rows.append(az.analyze(sit).to_dict())
+        # Sensitivity: midfield 4th & 1 — lower conversion until recommendation leaves "go"
+        sens_sit = FourthDownSituation(55, 1, 0, 360, 360, qtr=4)
+        sens = sensitivity_example(az, sens_sit, convert_delta=-0.35, make_delta=0.0)
+        # Prefer a decisive action flip (not merely → inconclusive) when possible
+        if sens["alternate"]["recommendation"] in {sens["baseline"]["recommendation"], "inconclusive"}:
+            sens_try = sensitivity_example(az, sens_sit, convert_delta=-0.50, make_delta=0.0)
+            if sens_try["recommendation_changed"] and sens_try["alternate"]["recommendation"] != "inconclusive":
+                sens = sens_try
+        if not sens["recommendation_changed"]:
+            sens_sit = FourthDownSituation(20, 8, 0, 90, 90, qtr=4)
+            sens = sensitivity_example(az, sens_sit, convert_delta=0.0, make_delta=-0.25)
+        payload = {
+            "command": (
+                f"python3 -m nfl_sim.models fourth-down --report --model {model_path} --out {out}"
+            ),
+            "wp_model": str(model_path),
+            "wp_note": "Path A uncalibrated primary; isotonic not loaded",
+            "empirics_meta": empirics.meta,
+            "examples": rows,
+            "sensitivity": sens,
+        }
+        (out / "examples.json").write_text(_json.dumps(payload, indent=2, sort_keys=True) + "\n")
+        _write_fourth_down_report(out, payload)
+        print(_json.dumps({"out": str(out), "n_examples": len(rows), "sensitivity_changed": sens["recommendation_changed"]}, indent=2))
+        return 0
+
+    sit = FourthDownSituation(
+        yardline_100=args.yardline_100,
+        distance=args.distance,
+        score_differential=args.score_diff,
+        game_seconds_remaining=args.game_seconds,
+        half_seconds_remaining=args.half_seconds,
+        qtr=args.qtr,
+    )
+    res = az.analyze(sit)
+    print(_json.dumps(res.to_dict(), indent=2, sort_keys=True))
+    return 0
+
+
+def _write_fourth_down_report(out: Path, payload: dict) -> None:
+    lines = [
+        "# Offline 4th-down prototype report",
+        "",
+        f"**Command:** `{payload['command']}`",
+        "",
+        f"**WP model:** `{payload['wp_model']}` — {payload['wp_note']}",
+        "",
+        "## Empirics",
+        "",
+        f"Seasons: `{payload['empirics_meta'].get('seasons')}` "
+        f"(REG; n_go={payload['empirics_meta'].get('n_go')}, "
+        f"n_fg={payload['empirics_meta'].get('n_fg')}, "
+        f"n_punt={payload['empirics_meta'].get('n_punt')}). "
+        "**Not fit on 2023+.**",
+        "",
+        "See `empirics.json` for bin rates and n.",
+        "",
+        "## Example situations",
+        "",
+        "| yardline_100 | distance | score_diff | clock | go | FG | punt | rec | margin |",
+        "| ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |",
+    ]
+    for ex in payload["examples"]:
+        s = ex["situation"]
+        a = ex["actions"]
+        lines.append(
+            f"| {s['yardline_100']} | {s['distance']} | {s['score_differential']} | "
+            f"{s['game_seconds_remaining']} | {a['go']['value_wp']:.4f} | "
+            f"{a['fg']['value_wp']:.4f} | {a['punt']['value_wp']:.4f} | "
+            f"{ex['recommendation']} | {ex['margin']:.4f} |"
+        )
+    sens = payload["sensitivity"]
+    b, alt = sens["baseline"], sens["alternate"]
+    lines += [
+        "",
+        "## Sensitivity (recommendation flip check)",
+        "",
+        f"Convert Δ={sens['convert_delta']:+}, make Δ={sens['make_delta']:+}.",
+        "",
+        f"| | go | FG | punt | recommendation |",
+        f"| --- | ---: | ---: | ---: | --- |",
+        f"| Baseline | {b['actions']['go']['value_wp']:.4f} | {b['actions']['fg']['value_wp']:.4f} | "
+        f"{b['actions']['punt']['value_wp']:.4f} | {b['recommendation']} |",
+        f"| Alternate | {alt['actions']['go']['value_wp']:.4f} | {alt['actions']['fg']['value_wp']:.4f} | "
+        f"{alt['actions']['punt']['value_wp']:.4f} | {alt['recommendation']} |",
+        "",
+        f"Recommendation changed: **{sens['recommendation_changed']}**",
+        "",
+        "## Limitations",
+        "",
+        "- Toy clock (−6s); no timeout/OT/onside model",
+        "- Single mean punt field position (no return variance / blocks)",
+        "- FG miss spot ≈ previous LOS; kickoff always TB at 75",
+        "- Conversion/FG probs are coarse bins from 2019–2021 only",
+        "- Margin < 0.01 WP → inconclusive (do not manufacture confidence)",
+        "",
+        "Design: `docs/FOURTH_DOWN_DESIGN.md`",
+        "",
+    ]
+    (out / "REPORT.md").write_text("\n".join(lines))
+
+
 def cmd_wp_calibrate(args: argparse.Namespace) -> int:
     """OOF Platt calibration on validate 2022; freeze C; never touch 2023."""
     from nfl_sim.models.wp_calibration import run_wp_calibration_eval
@@ -554,6 +689,25 @@ def main(argv: list[str] | None = None) -> int:
         help="Skip isotonic OOF ablation",
     )
     p_wpc.set_defaults(func=cmd_wp_calibrate)
+
+    p_fd = sub.add_parser(
+        "fourth-down",
+        help="Offline analytical 4th-down go/FG/punt values (Path A WP + train empirics)",
+    )
+    p_fd.add_argument(
+        "--model",
+        type=str,
+        default=str(REPO_ROOT / "reports" / "wp" / "artifacts" / "wp_model.joblib"),
+    )
+    p_fd.add_argument("--out", type=str, default=str(REPO_ROOT / "reports" / "fourth_down"))
+    p_fd.add_argument("--yardline-100", type=int, default=55)
+    p_fd.add_argument("--distance", type=int, default=1)
+    p_fd.add_argument("--score-diff", type=int, default=0)
+    p_fd.add_argument("--game-seconds", type=int, default=360)
+    p_fd.add_argument("--half-seconds", type=int, default=360)
+    p_fd.add_argument("--qtr", type=int, default=4)
+    p_fd.add_argument("--report", action="store_true", help="Write multi-example report + sensitivity")
+    p_fd.set_defaults(func=cmd_fourth_down)
 
     args = parser.parse_args(argv)
     return int(args.func(args))

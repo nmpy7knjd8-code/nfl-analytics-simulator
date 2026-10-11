@@ -1,0 +1,95 @@
+{
+  "convert_by_distance": {
+    "1-1": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 814,
+      "p_convert": 0.6511056511056511
+    },
+    "11-99": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 171,
+      "p_convert": 0.22807017543859648
+    },
+    "2-2": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 298,
+      "p_convert": 0.5906040268456376
+    },
+    "3-3": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 145,
+      "p_convert": 0.4689655172413793
+    },
+    "4-5": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 273,
+      "p_convert": 0.4652014652014652
+    },
+    "6-10": {
+      "filter": "REG 4th pass/run with fourth_down_converted",
+      "n": 340,
+      "p_convert": 0.3764705882352941
+    }
+  },
+  "fg_by_kick_distance": {
+    "18-29": {
+      "filter": "REG play_type=field_goal",
+      "n": 704,
+      "p_make": 0.9801136363636364
+    },
+    "30-39": {
+      "filter": "REG play_type=field_goal",
+      "n": 838,
+      "p_make": 0.9248210023866349
+    },
+    "40-49": {
+      "filter": "REG play_type=field_goal",
+      "n": 933,
+      "p_make": 0.7642015005359056
+    },
+    "50-59": {
+      "filter": "REG play_type=field_goal",
+      "n": 471,
+      "p_make": 0.643312101910828
+    },
+    "60-80": {
+      "filter": "REG play_type=field_goal",
+      "n": 24,
+      "p_make": 0.2916666666666667
+    }
+  },
+  "meta": {
+    "n_fg": 2970,
+    "n_go": 2041,
+    "n_punt": 6102,
+    "note": "Fit on train seasons only; never 2023+",
+    "season_type": "REG",
+    "seasons": [
+      2019,
+      2020,
+      2021
+    ]
+  },
+  "punt_by_yardline": {
+    "1-40": {
+      "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+      "mean_opp_yardline_100": 89.04347826086956,
+      "n": 184
+    },
+    "41-60": {
+      "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+      "mean_opp_yardline_100": 85.74209486166008,
+      "n": 2024
+    },
+    "61-80": {
+      "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+      "mean_opp_yardline_100": 73.09217970049917,
+      "n": 3005
+    },
+    "81-99": {
+      "filter": "REG punt, punt_blocked==0; TB\u2192opp yardline_100=80",
+      "mean_opp_yardline_100": 55.74690663667042,
+      "n": 889
+    }
+  }
+}
