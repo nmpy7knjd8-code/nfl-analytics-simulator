@@ -1,4 +1,4 @@
-"""CLI: python -m nfl_sim.ingest [--season 2023]."""
+"""CLI: python -m nfl_sim.ingest [--season 2023] [--seasons 2019,2020,2021,2022]."""
 
 from __future__ import annotations
 
@@ -9,13 +9,40 @@ import sys
 from nfl_sim.ingest.pipeline import ingest_season
 
 
+def _parse_seasons(args: argparse.Namespace) -> list[int]:
+    if args.seasons:
+        out: list[int] = []
+        for part in args.seasons.split(","):
+            part = part.strip()
+            if not part:
+                continue
+            out.append(int(part))
+        if not out:
+            raise SystemExit("--seasons was empty")
+        return out
+    return [int(args.season)]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Ingest nflverse PBP into canonical lake")
-    parser.add_argument("--season", type=int, default=2023, help="Season to ingest (Phase 2: 2023)")
+    parser.add_argument(
+        "--season",
+        type=int,
+        default=2023,
+        help="Single season to ingest (default 2023)",
+    )
+    parser.add_argument(
+        "--seasons",
+        type=str,
+        default=None,
+        help="Comma-separated seasons (overrides --season), e.g. 2019,2020,2021,2022",
+    )
     args = parser.parse_args(argv)
-    result = ingest_season(args.season)
-    print(
-        json.dumps(
+    seasons = _parse_seasons(args)
+    results = []
+    for season in seasons:
+        result = ingest_season(season)
+        results.append(
             {
                 "season": result.season,
                 "row_count": result.row_count,
@@ -27,10 +54,10 @@ def main(argv: list[str] | None = None) -> int:
                 "games_parquet": str(result.games_parquet),
                 "plays_parquet": str(result.plays_parquet),
                 "duckdb_path": str(result.duckdb_path),
-            },
-            indent=2,
+            }
         )
-    )
+    payload = results[0] if len(results) == 1 else {"seasons": results}
+    print(json.dumps(payload, indent=2))
     return 0
 
 

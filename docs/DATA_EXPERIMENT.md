@@ -86,6 +86,8 @@ Release tag [`pbp`](https://github.com/nflverse/nflverse-data/releases/tag/pbp) 
 | 2022 | 20,426,548 | `931121d8897779d7944e2a293e92ed8799c8e5cceef84096ac42339003fedc09` |
 | 2023 | 20,534,088 | `bd3484731408def6b0ec93225bba2bd7b2c65769ca707a2b9444d891abdc6776` |
 
+**2023 pin drift (same row count):** Phase 2 lake uses operational pin `b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d` (20,624,417 bytes, still **49,665** rows). Cause: mutable nflverse `pbp` tag republish. Keep both digests; see [`DATA_PIN_NOTES.md`](DATA_PIN_NOTES.md). Do not silently replace local raw.
+
 Schema: **372 columns**, identical across all five seasons. Row counts: 47,260 / 47,705 / 49,922 / 49,434 / 49,665.
 
 ### Chronological split (regular season, scrimmage = `down` not null)
