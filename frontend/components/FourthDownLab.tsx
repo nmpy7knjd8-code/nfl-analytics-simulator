@@ -40,13 +40,17 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
 
   return (
     <aside className="recommend" aria-live="polite">
-      <p className="recommend-kicker">Recommendation</p>
-      <p className="recommend-pick">{title}</p>
-      {pickLine ? <p className="recommend-alt muted">{pickLine}</p> : null}
-      <p className="recommend-why">
-        <span className="recommend-why-label">Why</span>
-        {rec.why}
-      </p>
+      <div className="recommend-pick-col">
+        <p className="recommend-kicker">Recommendation</p>
+        <p className="recommend-pick">{title}</p>
+        {pickLine ? <p className="recommend-alt muted">{pickLine}</p> : null}
+      </div>
+      <div className="recommend-why-col">
+        <p className="recommend-why">
+          <span className="recommend-why-label">Why</span>
+          {rec.why}
+        </p>
+      </div>
     </aside>
   );
 }

@@ -17,7 +17,7 @@ export default async function GamesPage() {
           <span className="muted">2023</span>
         </div>
         <h1>Games</h1>
-        <p>Tap a matchup. Walk the story play by play.</p>
+        <p>Pick a matchup — walk the story play by play.</p>
       </header>
 
       {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
