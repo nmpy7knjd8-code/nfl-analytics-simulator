@@ -160,3 +160,39 @@ First push of `.github/workflows/ci.yml` was **rejected**: token lacks **`workfl
 - Training-code changes for isolation (scratch `--out` already sufficient)  
 - Auto-relaxing log-loss / re-pinning data / full pytest for this docs task  
 - Editing PR #4 / merging / WP / live / odds
+
+---
+
+# Delta — after PR #7 merge (2026-10-11)
+
+> **New only** since the C1.1 delta above (rebuild / C2 / merge happened after).  
+> Source confirmation facts verified via `gh` on this publish.
+
+## What changed
+
+| Item | New state |
+| --- | --- |
+| PR #7 | **MERGED** to `main` @ `559e7dc51de8a661ab9708fe8454b812a3d164e2` |
+| Pre-merge tip (PR head) | `bd4c7350d4f7b7c290903bf9b074de0edb033578` |
+| Merge method | GitHub merge commit; parents `15da234b…` + `bd4c7350…` |
+| On `main` now | Convention B docs + C2 report `reports/ep/model_surface/REBUILD_AND_MODEL_SURFACE.md` + scoring parquet |
+| Artifact promotion | **Not done** — no `ep_model.joblib` under `reports/ep/artifacts/`; rebuild label stays `labeled_new_artifact` |
+| External bench | **Deferred** until after `scratch-xgb-lake-2019-2022`; load labeled model by **explicit path**; nfeloml/nflfastR reference-only |
+| PR #5 | Still **OPEN / CONFLICTING** (`DIRTY`); **untouched** |
+| PR #4 / #6 | Left open; this docs append only |
+
+C2 raw (merge tip):  
+https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/559e7dc51de8a661ab9708fe8454b812a3d164e2/reports/ep/model_surface/REBUILD_AND_MODEL_SURFACE.md
+
+## Approvals / actions needed from you (updated)
+
+1. **Promote labeled artifact?** — separate decision; keep `rebuild: labeled_new_artifact` if promoted.  
+2. **Run external bench?** — after `scratch-xgb-lake-2019-2022`; explicit model path only.  
+3. **Resolve PR #5?** — still open + CONFLICTING after #7; leave until authorized.  
+4. **WP kickoff?** — after merge settles + gates you choose.
+
+## Not needed
+
+- Force-push / xgboost install / promote to `reports/ep/artifacts/` now  
+- Rebase or close PR #5 / touch PR #4  
+- Retrain / change provenance labels / live / odds
