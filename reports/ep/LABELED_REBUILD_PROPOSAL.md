@@ -12,18 +12,21 @@ Produce a **new** Stage A EP artifact with explicit rebuild provenance. Never la
 
 | Prerequisite | Status |
 | --- | --- |
-| Pinned lake 2019–2022 matching meta `season_sha256` | **Gap** on publish VM (`data/raw/` empty) |
-| 2023 on disk for report-only (optional `--include-test`) | Not required for rebuild fit; keep sealed for tuning |
+| Pinned lake **2019–2023** matching meta `season_sha256` | **Gap** on review VM (`data/raw/` empty) |
+| 2023 on disk | **Required by current CLI** — `train` loads `ALL_MODEL_SEASONS` (2019–2023) even without `--include-test`; keep 2023 **sealed** (no tuning / no selection use) |
 | Package pins | sklearn 1.9.1, joblib 1.6.0, numpy 2.5.4, pandas 3.0.6 (or document drift) |
 | Explicit chat authorization: “authorize labeled rebuild” | **Pending** |
+| Post-train rebuild labeling | Train code does **not** auto-write `rebuild:`; operator must patch **new** meta (below) |
 
 ## Exact command (when authorized)
 
 ```bash
 cd /path/to/nfl-analytics-simulator/backend
-# Ensure lake pins match reports/ep/artifacts/ep_model.meta.json data_hash.season_sha256
+# Ensure lake pins match reports/ep/artifacts/ep_model.meta.json data_hash.season_sha256 (2019–2023)
 python3 -m nfl_sim.models train --out ../reports/ep
-# Do NOT pass --include-test for selection/tuning. Optional later: report-only 2023 with --include-test after freeze.
+# Do NOT pass --include-test for selection/tuning.
+# After train: patch artifacts/ep_model.meta.json with rebuild provenance (see Labeling row);
+# record new joblib sha256 in a rebuild report. Never claim bit-identity with the lost original.
 ```
 
 | Param | Value |

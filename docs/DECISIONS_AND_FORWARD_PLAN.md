@@ -1,10 +1,10 @@
 # Decisions & Forward Plan — NFL Analytics Simulator
 
 > **Purpose:** Authoritative executive brief for external review — decisions, verified state, evidence, gated forward plan.  
-> **Date:** 2026-10-11 (D015 closed on local review branch; supersedes open-D015 brief text on PR #5)  
+> **Date:** 2026-10-11 (D015 closed on Convention B review branch; supersedes open-D015 brief text on PR #5)  
 > **Kind:** Sendable snapshot (Claude-/externally-safe).  
 > **Verified `origin/main` SHA:** `15da234b900059ab2a8f36279112203d02cace37` (merge of PR #3)  
-> **Local Convention B branch tip:** see `cursor/convention-b-gate-8222` (unpushed)  
+> **Convention B PR:** [#7](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/7) — branch `cursor/convention-b-gate-8222` (base review tip `d9165f49…`; see `reports/ep/PR7_REVIEW_AND_ARTIFACT_DECISION.md`)  
 > **Repo:** [nmpy7knjd8-code/nfl-analytics-simulator](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator)  
 > **Destination product:** one simulator → validated EP/EPA/WP → historical decision analysis → validated decision engine → live decision terminal.
 
@@ -52,8 +52,8 @@
 | # | Decision | Status |
 | --- | --- | --- |
 | O1 | Start Phase 4 WP | Hold until joblib restore + B review merge auth |
-| O2 | Push Convention B / Task A branches | Needs explicit push authorization |
-| O4/O5 | PR #4 / CI | Do not modify PR #4/#5 in this workstream; CI YAML may land locally only |
+| O2 | Push Convention B / Task A branches | **Done** — PR #7 open (CI workflow still omitted: token lacks `workflow` scope) |
+| O4/O5 | PR #4 / CI | Do not modify PR #4/#5 in this workstream; proposed CI at `reports/ep/ci-workflow-proposed.yml` |
 
 **D014:** Still accepted for Stage A merge / era exclusion / no 2023 tuning. Score-cash stance **superseded by D015** (B adopted).
 
@@ -65,7 +65,7 @@
 | --- | --- |
 | `origin/main` | `15da234…` — Convention A still on remote until B merges |
 | Task A tip (safety) | `a0356c33…` — `pre-d015/epa-scoring-credit-20261011T1924Z` |
-| Convention B branch | `cursor/convention-b-gate-8222` (local) |
+| Convention B branch | `cursor/convention-b-gate-8222` via PR #7 |
 | WP model | Absent |
 | Live | Stubs only |
 
