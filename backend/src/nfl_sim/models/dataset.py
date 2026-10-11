@@ -135,6 +135,28 @@ def build_modeling_frame(
     return frame
 
 
+def build_wp_modeling_frame(
+    seasons: list[int] | tuple[int, ...] = ALL_MODEL_SEASONS,
+    *,
+    cfg: Settings | None = None,
+) -> pd.DataFrame:
+    """Raw PBP → WP-eligible rows with win labels and split column.
+
+    Reuses the same raw loader and chronological split gates as EP; eligibility
+    and labels follow docs/WP_MODEL_SPEC.md (does not require ep_label).
+    """
+    from nfl_sim.models.wp_labels import construct_win_labels, wp_eligible_mask
+
+    pbp = load_raw_seasons(seasons, cfg=cfg)
+    labels = construct_win_labels(pbp)
+    mask = wp_eligible_mask(pbp, labels)
+    frame = pbp.loc[mask].copy()
+    frame["wp_label"] = labels.loc[mask].astype("Int64")
+    frame["split"] = assign_split(frame["season"])
+    frame = frame[frame["split"].isin(["train", "val", "test"])].reset_index(drop=True)
+    return frame
+
+
 def split_frames(frame: pd.DataFrame) -> dict[str, pd.DataFrame]:
     train = frame[frame["split"] == "train"]
     val = frame[frame["split"] == "val"]

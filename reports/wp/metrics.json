@@ -1,0 +1,206 @@
+{
+  "command": "python3 -m nfl_sim.models wp-train --out ../reports/wp --include-test",
+  "data_hash": {
+    "combined_sha256": "5df24dd0ec2ff7f8ae214549b4cc7a0e758a8e989be50c8f9e8993d100a6507b",
+    "season_sha256": {
+      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
+      "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+    }
+  },
+  "ep_labeled_rebuild_note": "SHA verified at store internal/ep-labeled-rebuild/; not loaded for Path A train/eval",
+  "ep_labeled_rebuild_verified_sha256": "1d4c6736c959baaab7bca8733344e113ecd9989a0a457689f1d45d84c38cf82e",
+  "ep_model_loaded": null,
+  "features": [
+    "score_differential",
+    "game_seconds_remaining",
+    "half_seconds_remaining",
+    "down",
+    "distance",
+    "yardline_100",
+    "posteam_timeouts",
+    "defteam_timeouts",
+    "is_home_possession",
+    "receive_2h_ko"
+  ],
+  "filters": {
+    "scrimmage": "down + WP pre-play fields + binary win label (ties dropped)",
+    "season_type": "REG"
+  },
+  "hyperparam_selection": {
+    "candidates": [
+      "0.25",
+      "1.0",
+      "4.0"
+    ],
+    "param": "C",
+    "selected_C": 0.25,
+    "test_untouched_during_selection": true,
+    "tuned_on": "validate_2022_only",
+    "val_log_loss_by_C": {
+      "0.25": 0.5749267926938539,
+      "1.0": 0.5749656065405567,
+      "4.0": 0.5749753317880381
+    }
+  },
+  "n": {
+    "labeled_total": 195024,
+    "test": 40031,
+    "train": 115646,
+    "val": 39347
+  },
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1"
+  },
+  "path": "A_no_ep_feature",
+  "seed": 42,
+  "spec": "docs/WP_MODEL_SPEC.md",
+  "split_rule": {
+    "test": [
+      2023
+    ],
+    "train": [
+      2019,
+      2020,
+      2021
+    ],
+    "val": [
+      2022
+    ]
+  },
+  "target": "posteam_wins_game_binary",
+  "test": {
+    "baseline_constant": {
+      "brier": 0.24994778280264568,
+      "log_loss": 0.6930427425507951,
+      "p_win": 0.5069436037562908
+    },
+    "baseline_score_time": {
+      "brier": 0.16481507202775159,
+      "log_loss": 0.49217441166209097
+    },
+    "model": {
+      "brier": 0.16244860481240128,
+      "log_loss": 0.48664402268415685,
+      "mean_wp": 0.5093941354158195
+    },
+    "n": 40031,
+    "note": "Held-out / report-only 2023 \u2014 not used for model selection",
+    "reference_agreement_only": {
+      "mae_vs_lake_wp": 0.05171311340794989,
+      "n": 40031,
+      "note": "nflverse wp is reference agreement only \u2014 not a pass/fail gate"
+    },
+    "seasons": [
+      2023
+    ],
+    "slices": {
+      "first_half": {
+        "brier": 0.203840089160681,
+        "empirical_win_rate": 0.5211183225162257,
+        "log_loss": 0.5929796316750183,
+        "mean_wp": 0.5168094396553794,
+        "n": 20030
+      },
+      "leading": {
+        "brier": 0.12383388259845596,
+        "empirical_win_rate": 0.8372295629446784,
+        "log_loss": 0.39351909457578155,
+        "mean_wp": 0.829754447263166,
+        "n": 13774
+      },
+      "q4_or_ot_clock_lt_300": {
+        "brier": 0.09548556613938548,
+        "empirical_win_rate": 0.4905618964003512,
+        "log_loss": 0.31306678221207856,
+        "mean_wp": 0.4921784944988066,
+        "n": 4556
+      },
+      "tied": {
+        "brier": 0.24194597147322341,
+        "empirical_win_rate": 0.562827559759683,
+        "log_loss": 0.6771845224821579,
+        "mean_wp": 0.5598823289993358,
+        "n": 7823
+      },
+      "trailing": {
+        "brier": 0.15756476432131258,
+        "empirical_win_rate": 0.23706195074319192,
+        "log_loss": 0.47536618986680834,
+        "mean_wp": 0.24859278607280091,
+        "n": 18434
+      }
+    },
+    "split": "test",
+    "win_rate": 0.5072318952811571
+  },
+  "validate": {
+    "baseline_constant": {
+      "brier": 0.24991850746084,
+      "log_loss": 0.6929841881028266,
+      "p_win": 0.5069436037562908
+    },
+    "baseline_score_time": {
+      "brier": 0.19798837625617052,
+      "log_loss": 0.5785540830250662
+    },
+    "model": {
+      "brier": 0.19611045855700418,
+      "log_loss": 0.5749267926938539,
+      "mean_wp": 0.5077993341929723
+    },
+    "n": 39347,
+    "reference_agreement_only": {
+      "mae_vs_lake_wp": 0.054913488246916387,
+      "n": 39347,
+      "note": "nflverse wp is reference agreement only \u2014 not a pass/fail gate"
+    },
+    "seasons": [
+      2022
+    ],
+    "slices": {
+      "first_half": {
+        "brier": 0.2353976118164803,
+        "empirical_win_rate": 0.5124089836939801,
+        "log_loss": 0.6739491637072551,
+        "mean_wp": 0.5140187349532837,
+        "n": 19502
+      },
+      "leading": {
+        "brier": 0.16419470054882115,
+        "empirical_win_rate": 0.7736481221754714,
+        "log_loss": 0.50524972876575,
+        "mean_wp": 0.8207703708678976,
+        "n": 12834
+      },
+      "q4_or_ot_clock_lt_300": {
+        "brier": 0.11711589484372335,
+        "empirical_win_rate": 0.4983755685510071,
+        "log_loss": 0.3655694968906662,
+        "mean_wp": 0.4871763798920152,
+        "n": 4617
+      },
+      "tied": {
+        "brier": 0.2506822629892621,
+        "empirical_win_rate": 0.5353004420021503,
+        "log_loss": 0.6950504806876291,
+        "mean_wp": 0.5581943884344396,
+        "n": 8371
+      },
+      "trailing": {
+        "brier": 0.19350800366639612,
+        "empirical_win_rate": 0.3103847425862639,
+        "log_loss": 0.5687907573205431,
+        "mean_wp": 0.2631445395870131,
+        "n": 18142
+      }
+    },
+    "split": "val",
+    "win_rate": 0.5093399750933998
+  }
+}
