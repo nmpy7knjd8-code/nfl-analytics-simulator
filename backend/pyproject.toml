@@ -39,6 +39,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/nfl_sim"]
 
+# Ship Situation Lab HTML with the package (not fan UI).
+[tool.hatch.build.targets.wheel.force-include]
+"src/nfl_sim/api/static" = "nfl_sim/api/static"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]

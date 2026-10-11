@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from nfl_sim.api.situation_lab import create_situation_lab_router
 from nfl_sim.config import REPO_ROOT, settings
 from nfl_sim.ingest.project import play_row_to_api_dict
 from nfl_sim.store import CanonicalStore
@@ -89,7 +90,9 @@ def create_app(store: CanonicalStore | None = None) -> FastAPI:
         version="0.2.0",
         description=(
             "Phase 2: historical 2023 game list and ordered play-by-play replay. "
-            "Reference ep/epa/wp are nflverse/nflfastR columns — not models trained here."
+            "Reference ep/epa/wp are nflverse/nflfastR columns — not models trained here. "
+            "Situation Lab (/situation-lab) is an offline analyst UI over fourth-down "
+            "compare-transitions — separate from the fan-facing frontend."
         ),
     )
     app.add_middleware(
@@ -99,6 +102,7 @@ def create_app(store: CanonicalStore | None = None) -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.include_router(create_situation_lab_router())
 
     def get_store() -> CanonicalStore:
         return store if store is not None else CanonicalStore()
