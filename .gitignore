@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
+# Data (local DuckDB / Parquet artifacts)
+data/raw/*
+data/canonical/*
+!data/raw/.gitkeep
+!data/canonical/.gitkeep
+*.duckdb
+*.duckdb.wal
+.cache/
+
+# Node / Next.js
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+*.tsbuildinfo
+.env
+.env.local
+.DS_Store
+*.log
+
+# IDE
+.idea/
+.vscode/

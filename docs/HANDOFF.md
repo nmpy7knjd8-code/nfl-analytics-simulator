@@ -1,10 +1,10 @@
-# NFL Analytics — Phase 1 handoff hub
+# NFL Analytics — handoff hub
 
-**Single checklist for progress and accuracy.** Last updated: 2026-10-11.
+**Single checklist for progress and accuracy.** Last updated: 2026-10-11 (Phase 2 complete locally).
 
 | Link | What it is |
 | --- | --- |
-| [GitHub repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) | Source + docs on `main` |
+| [GitHub repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) | Source + docs |
 | [GitHub Pages](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/) | Published docs site (this hub) |
 | [This file on GitHub](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/HANDOFF.md) | Same checklist in the repo |
 
@@ -15,94 +15,95 @@
 | Area | State | Check |
 | --- | --- | --- |
 | Scope | NFL only; no betting/odds MVP | [AGENTS.md](AGENTS.md) |
-| Phase 1 gate | Local complete; **awaiting your approval** before Phase 2 | below |
-| GitHub | Public repo + Pages homepage set | links above |
-| Full code scaffold on GitHub | Frontend contracts + docs on `main`; **backend package not yet on GitHub** (architect re-export pending) | [repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) |
-| Models trained | **Not started** (research only) | do not treat as validated |
+| Phase 1 | Contracts + docs complete | below |
+| Phase 2 | **Complete locally** — 2023 historical ingest + ordered play replay | reproduce commands below |
+| Phase 2 product scope | **Historical replay only** | not a decision lab |
+| Decision lab (4th / clock / strategy) | Planned **Phase 6** after EP/EPA/WP + sim | [ROADMAP.md](ROADMAP.md) |
+| Models trained | **Not started** | do not treat as validated |
+| Next milestone | Phase 3 Stage A EP → EPA (after your approval) | [ROADMAP.md](ROADMAP.md) |
 
 ---
 
-## Locked stack (verify against repo)
+## Locked stack
 
 - Backend: Python + FastAPI  
 - Storage: DuckDB + Parquet  
-- Models: scikit-learn first; XGBoost only if justified  
+- Models: scikit-learn first (Phase 3+); XGBoost only if justified  
 - Frontend: Next.js + TypeScript  
 - Data: nflverse PBP via **nflreadpy==0.1.5**  
 - Experiment: train **2019–2021**, validate **2022**, test **2023**  
 - Local CPU-only; no paid services required for historical MVP  
 
-Source of truth: [AGENTS.md](AGENTS.md)
-
 ---
 
-## Accuracy checklist — research & data
+## What works (Phase 2)
 
-Open each doc and confirm claims match evidence (no fabricated benchmarks):
+1. `python -m nfl_sim.ingest --season 2023` downloads via nflreadpy 0.1.5, writes immutable raw Parquet + `manifest.json` (URL, UTC timestamp, package version, sha256, row count), projects canonical games/plays Parquet, builds DuckDB.
+2. FastAPI: `GET /games`, `GET /games/{id}`, `GET /games/{id}/plays` (ordered, paginated). Reference ep/epa/wp nested under `reference` with disclaimer.
+3. Next.js Game Explorer lists 2023 games and replays PBP with **Historical** truth chips; does not imply project-trained models.
+4. Known game replay verified: `2023_01_DET_KC` (DET @ KC, week 1).
 
-1. [RESEARCH_REGISTER.md](RESEARCH_REGISTER.md) — six families (EP, EPA, WP, fourth-down design, empirical sampling, calibration); licenses; reproduced vs approximated vs unreproducible  
-2. [MODEL_CATALOG.md](MODEL_CATALOG.md) — Stage A order: EP → EPA → situation WP → empirical stubs; fourth-down Phase 6  
-3. [LICENSING_AND_DATA_SOURCES.md](LICENSING_AND_DATA_SOURCES.md) — nflverse / nflreadpy terms  
-4. [DATA_EXPERIMENT.md](DATA_EXPERIMENT.md) — 2019–2023 coverage; column→canonical map; `ep`/`epa`/`wp` = **reference**, not observed state  
-5. [MODEL_VALIDATION.md](MODEL_VALIDATION.md) — fair baseline; Brier / log loss / calibration / *n* under `/reports/`; no leakage; no arbitrary “beat baseline by X”  
-
-**Verified in research/data workstreams (re-check if you doubt):**
-
-- `nflreadpy==0.1.5` installs; loads 2019–2023 PBP with reference `ep`/`epa`/`wp`  
-- REG scrimmage EP/WP inputs essentially complete; split sizes ~116k / 40k / 40k plays  
-- Free PBP is **batch historical**, not live  
-
----
-
-## Accuracy checklist — architecture & contracts
-
-1. [REPO_AUDIT.md](REPO_AUDIT.md) — empty/greenfield baseline  
-2. [ARCHITECTURE.md](ARCHITECTURE.md) — component boundaries; live adapter deferred  
-3. [DECISIONS.md](DECISIONS.md) — ADR-style stack and schema choices  
-4. [DATA_DICTIONARY.md](DATA_DICTIONARY.md) — MVP fields, units, missingness; pre-play vs post-play  
-5. [ROADMAP.md](ROADMAP.md) — phase gates; Phase 2 recommendation  
-
-**Contract tests reported by lead (re-run locally to confirm):**
-
-- Backend pytest: **6 passed**  
-- Frontend typecheck + contract tests: **2 passed**  
+### Reproduce
 
 ```bash
-cd backend && pip install -e ".[dev]" && pytest -q
-cd frontend && npm install && npm run typecheck && npm test
+cd backend
+python3 -m pip install -e ".[dev,phase2]"
+python -m nfl_sim.ingest --season 2023
+pytest -q
+python -m nfl_sim.api          # http://127.0.0.1:8000
+
+cd ../frontend
+npm install
+npm run typecheck && npm test
+npm run dev                    # http://localhost:3000/games
 ```
+
+### Tests last run (this agent)
+
+| Suite | Result |
+| --- | --- |
+| Backend `pytest` | **16 passed** (contracts, derive/project, API, real 2023 integration) |
+| Frontend `npm test` | **2 passed** (contract shapes) |
+| Frontend `npm run typecheck` | **pass** |
+| Frontend `npm run build` | **pass** |
+
+### Data pin note
+
+nflverse release tag `pbp` is mutable. Phase 2 pin for 2023: sha256 `b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d`, **49,665** rows (same row count as Phase 1 DATA_EXPERIMENT; digest drifted from earlier `bd348473…`). Manifest records retrieval timestamp and prior pin.
 
 ---
 
-## Accuracy checklist — UI direction (docs only)
+## Limitations
 
-1. [UI_DESIGN_SYSTEM.md](UI_DESIGN_SYSTEM.md) — minimalist/elegant tokens; truth chips (historical / predicted / simulated)  
-2. [UI_COMPONENT_RULES.md](UI_COMPONENT_RULES.md) — tables vs charts; no overclaiming recommendations  
-3. [UI_SCREEN_SPECS.md](UI_SCREEN_SPECS.md) — eight screens; composition rules  
-
-No Next.js product screens implemented yet — specs only.
+- Only **2023** ingested (not full 2019–2023 backfill).
+- No situation-at-play dedicated endpoint beyond fields on each play row.
+- No trained EP/EPA/WP models; UI shows imported reference columns only.
+- No live providers.
+- **No** clock management, 4th-down go/punt/FG, or strategy comparison UI/API (Phase 6).
+- GitHub push/PR requires `GH_TOKEN` / `gh auth` (no chat-pasted tokens).
 
 ---
 
 ## What is explicitly NOT done
 
-- Historical ingest product pipeline (access verified only)  
 - Trained/calibrated EP, EPA, or WP models  
 - Live data providers  
-- Full UI implementation  
-- Phase 2+ (blocked on your approval)  
+- Full Strategy Lab UI  
+- Fourth-down / clock **recommendations** (Phase 6)  
+- Phase 3+  
 
 ---
 
 ## Decisions still needed from you
 
-1. Approve Phase 1 contracts (or list required changes)  
-2. Confirm repo name/visibility (current: public `nfl-analytics-simulator`)  
-3. Phase 2 import: **2023 smoke first** (recommended) vs full 2019–2023 immediately  
-4. Rotate the chat-pasted GitHub PAT; use environment secret `GH_TOKEN` for future pushes  
+1. Approve Phase 2 before Phase 3 (EP/EPA training)  
+2. Whether to backfill 2019–2022 next or go straight to Phase 3 on 2023 test season  
+3. Use environment secret `GH_TOKEN` for pushes (rotate any chat-pasted PAT)  
 
 ---
 
-## Recommended Phase 2 (only after approval)
+## Product goal — situational decisions (later)
 
-nflreadpy pin → Parquet/DuckDB canonical projection → FastAPI games/plays/situation → Next.js historical-labeled shell (apply UI specs) → provider stub. Model training per catalog is a later phase unless you expand scope.
+Answer **what to do** in situations (clock management, 4th-down go/punt/FG, and similar), not only replay history. That is **Phase 6 (Strategy / decision lab)** after historical replay, validated EP/EPA, WP, and seeded simulation. Until then, those choices stay design requirements — not fake recommendations. See [ROADMAP.md](ROADMAP.md).
+
+**Phase 2 delivers historical game selection + ordered play inspection only.**
