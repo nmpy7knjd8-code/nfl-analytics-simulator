@@ -1,50 +1,41 @@
 # NFL Analytics Simulator
 
-Research-grounded **NFL-only** analytics and simulation: reconstruct real games, validate baselines (EP → EPA → situation WP), and run reproducible counterfactual simulations. Local-first, CPU-only. No sports-betting product features in the MVP.
+**Website / progress hub:** [HANDOFF.md](HANDOFF.md) · [index](index.md)
 
-**Project docs:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/ROADMAP.md](docs/ROADMAP.md) · [AGENTS.md](AGENTS.md)
+Research-grounded **NFL-only** analytics and simulation (historical-first). Local-first, CPU-only. No sports-betting features in the MVP.
 
-**Phase:** 1 complete locally — architecture + shared contracts. **Stopped for user approval** before Phase 2 (ingest/API/UI).
+**Phase 1** architecture and shared contracts are established locally. **Phase 2 is paused for approval.**
+
+## Project docs (working Pages links)
+
+- [Architecture](ARCHITECTURE.md)
+- [Roadmap](ROADMAP.md)
+- [Decisions](DECISIONS.md)
+- [Data dictionary](DATA_DICTIONARY.md)
+- [Data experiment](DATA_EXPERIMENT.md)
+- [Research register](RESEARCH_REGISTER.md)
+- [Model catalog](MODEL_CATALOG.md)
+- [Model validation](MODEL_VALIDATION.md)
+- [Licensing & data sources](LICENSING_AND_DATA_SOURCES.md)
+- [UI design system](UI_DESIGN_SYSTEM.md)
+- [UI screen specs](UI_SCREEN_SPECS.md)
+- [AGENTS.md](AGENTS.md)
+- [Handoff checklist](HANDOFF.md)
 
 ## Stack (locked)
 
 | Layer | Choice |
 | --- | --- |
-| Backend | Python + FastAPI (API in Phase 2+) |
+| Backend | Python + FastAPI |
 | Storage | DuckDB + Parquet |
 | Models | scikit-learn first; XGBoost only if justified |
-| Frontend | Next.js + TypeScript (screens in Phase 2+) |
+| Frontend | Next.js + TypeScript |
 | Data | nflverse PBP via **nflreadpy==0.1.5** |
-
-## Repository layout
-
-```
-AGENTS.md                 Process + stack defaults
-docs/                     Architecture, research, data experiment, validation
-backend/                  Python package (contracts implemented; other pkgs stubbed)
-frontend/contracts/       TypeScript contract mirrors
-PUSH_WHEN_AUTH.md         Exact gh create/push/Pages steps
-```
-
-## Phase 1 commands
-
-```bash
-# Python contract tests
-cd backend
-python3 -m pip install -e ".[dev]"
-pytest -q
-
-# TypeScript contract typecheck / tests
-cd ../frontend
-npm install
-npm run typecheck
-npm test
-```
 
 ## Experiment window
 
-Train 2019–2021 · validate 2022 · test 2023 (REG scrimmage for fits). See `docs/DATA_EXPERIMENT.md`.
+Train 2019–2021 · validate 2022 · test 2023. See [DATA_EXPERIMENT.md](DATA_EXPERIMENT.md).
 
-## GitHub / Pages
+## Source repository
 
-Repo creation requires auth — see [PUSH_WHEN_AUTH.md](PUSH_WHEN_AUTH.md). Until then, this README is the project home.
+https://github.com/nmpy7knjd8-code/nfl-analytics-simulator
