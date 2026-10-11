@@ -4,7 +4,7 @@
 **Main after PR #22:** `1158eea`  
 **Branch:** `cursor/sportradar-product-signoff-c0ef` (docs-only PR, **not merged**)
 **PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/23  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/78f24ca586bb71bcf4bc895b01d68023a1dd3ec6/docs/NEXT_STEPS_DELTA_SPORTRADAR_SIGNOFF.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/76ccad09b894fd4b3ccb5e59cf290eec210f71f1/docs/NEXT_STEPS_DELTA_SPORTRADAR_SIGNOFF.md
 
 ## What landed
 

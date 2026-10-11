@@ -5,7 +5,7 @@
 **Sources:** [`SPORTRADAR_BLOCKER_TRACKER.md`](./SPORTRADAR_BLOCKER_TRACKER.md), [`SPORTRADAR_IMPLEMENTATION_CLARIFICATIONS.md`](./SPORTRADAR_IMPLEMENTATION_CLARIFICATIONS.md), [`SPORTRADAR_BLOCKER_RESOLUTION.md`](./SPORTRADAR_BLOCKER_RESOLUTION.md)  
 **Mode:** Sign-off checklist only — no mapper, Simulation, API, vendor, or **T**/**M** authorization
 **Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/23  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/78f24ca586bb71bcf4bc895b01d68023a1dd3ec6/docs/NEXT_STEPS_DELTA_SPORTRADAR_SIGNOFF.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/76ccad09b894fd4b3ccb5e59cf290eec210f71f1/docs/NEXT_STEPS_DELTA_SPORTRADAR_SIGNOFF.md
 
 **Locked (unchanged):** Path A **unsupported** (E1–E3 absent). `PreSnapProvider` = `fixture`\|`demo` closed. Alias matching = `alias.normalize.v1` + game-scoped `to_team_id` (reject unknown). Fail-closed binding until Path C/A approved. Preserve recorded-demo + historical.
 
