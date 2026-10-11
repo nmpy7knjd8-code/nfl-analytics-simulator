@@ -18,7 +18,7 @@ export default function DecidePage() {
           <span className="muted">Example</span>
         </div>
         <h1>Go, kick, or punt?</h1>
-        <p>Tap a choice. See who keeps a better chance of winning.</p>
+        <p>See the call, then the short why — in plain English.</p>
       </header>
 
       <ExampleBanner message={FIXTURE_BANNER} />

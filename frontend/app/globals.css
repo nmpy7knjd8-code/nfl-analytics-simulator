@@ -675,6 +675,85 @@ button {
   border-radius: var(--radius-md);
 }
 
+.segment-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.recommend {
+  margin: 0 0 1.15rem;
+  padding: 1rem 1.05rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  color: var(--color-ink-inverse);
+}
+
+.recommend-kicker {
+  margin: 0 0 0.25rem;
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.recommend-pick {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.recommend-alt {
+  margin: 0.25rem 0 0;
+  font-size: var(--text-body-sm);
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.recommend-why {
+  margin: 0.75rem 0 0;
+  font-size: var(--text-body-sm);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.recommend-why-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.recommend .recommend-why-label {
+  color: #93c5fd;
+}
+
+.decide-choice-badge {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-ink-inverse);
+}
+
+.decide-choice.is-recommended:not(.is-active) {
+  border-color: var(--color-accent);
+}
+
+.decide-why-inline {
+  margin: 0 0 0.65rem !important;
+  color: var(--color-ink) !important;
+  font-weight: 500;
+}
+
 .segment-btn {
   min-height: 44px;
   border: none;
@@ -761,6 +840,10 @@ button {
 .decide-choice-label {
   grid-column: 1;
   grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.15rem;
