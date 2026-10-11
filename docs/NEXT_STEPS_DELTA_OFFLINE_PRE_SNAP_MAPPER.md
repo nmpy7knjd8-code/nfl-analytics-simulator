@@ -4,7 +4,7 @@
 **Main at authorize M:** `b483ac0`  
 **Branch:** `cursor/offline-presnap-mapper-c0ef` (PR **not merged**)
 **PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/24  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/2dcbb25f0ecef8528dabaf9dfb3050751633ccdf/docs/NEXT_STEPS_DELTA_OFFLINE_PRE_SNAP_MAPPER.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7648fbfb84b36669280be6aebfc19de1e92dcb89/docs/NEXT_STEPS_DELTA_OFFLINE_PRE_SNAP_MAPPER.md
 
 ## What landed
 

@@ -4,6 +4,8 @@
 **Authorized:** P-CL / P-FC / P-YL Accept + **M** (offline only) @ main `b483ac0d`  
 **Not authorized:** T, HTTP, vendor, live feed, odds, betting  
 **Branch:** `cursor/offline-presnap-mapper-c0ef` (PR unmerged until approval)
+**Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/24  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7648fbfb84b36669280be6aebfc19de1e92dcb89/docs/NEXT_STEPS_DELTA_OFFLINE_PRE_SNAP_MAPPER.md
 
 ## What works
 
