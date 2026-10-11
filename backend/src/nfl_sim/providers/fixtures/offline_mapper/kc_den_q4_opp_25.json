@@ -1,0 +1,33 @@
+{
+  "schema_version": "offline_provider_frame.v1",
+  "provider": "demo",
+  "source_id": "offline.mapper.kc_den",
+  "snapshot_id": "offline-kc-den-opp25-v1",
+  "event_timestamp": "2023-01-01T18:05:00Z",
+  "revision": 2,
+  "freshness": "pre_snap",
+  "game": {
+    "season": 2022,
+    "season_type": "REG",
+    "week": 10,
+    "game_id": "2022_10_KC_DEN",
+    "home_alias": "KC",
+    "away_alias": "DEN"
+  },
+  "situation": {
+    "play_id": 1100,
+    "possession_alias": "KC",
+    "location": {"alias": "DEN", "yardline": 25},
+    "down": 4,
+    "yfd": 2,
+    "quarter": 4,
+    "half_seconds_remaining": 300,
+    "game_seconds_remaining": 300,
+    "posteam_score": 17,
+    "defteam_score": 14,
+    "score_differential": 3,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3,
+    "receive_2h_ko": 0
+  }
+}
