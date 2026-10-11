@@ -1,8 +1,8 @@
 # Frontend — NFL Analytics Simulator
 
-Fan-facing Next.js UI: branded home, **Game Explorer** (historical replay), and a **4th & short** explainer (go / kick / punt in plain English).
+Fan-facing Next.js UI with a **phone-app** shell (bottom tabs, large taps, mobile-first column): branded home, **Games** replay, and **4th & short** explainer.
 
-Truth chips mark **Historical** / **Predicted** / **Simulated**. When the FastAPI lake is not running, Game Explorer falls back to labeled **example** fixtures so `npm run dev` still works.
+Truth chips mark **Historical** / **Predicted** / **Simulated**. When the FastAPI lake is not running, Games falls back to labeled **example** fixtures so `npm run dev` still works.
 
 No betting / odds UI. Fourth-down numbers are fixtures until the offline scorer API is wired (`POST /models/fourth-down` hook left in the explainer).
 

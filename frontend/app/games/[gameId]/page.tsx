@@ -16,7 +16,7 @@ function formatClock(halfSeconds: number | null | undefined): string {
 
 function winChanceLabel(wp: number | null | undefined): string | null {
   if (wp == null || Number.isNaN(wp)) return null;
-  return `${Math.round(wp * 100)}% chance of winning`;
+  return `${Math.round(wp * 100)}% win chance`;
 }
 
 export default async function GameReplayPage({ params }: Props) {
@@ -36,10 +36,10 @@ export default async function GameReplayPage({ params }: Props) {
   const banner = game?.banner ?? plays?.banner;
 
   return (
-    <main className="main" id="main">
-      <p style={{ marginBottom: "1rem" }}>
-        <Link href="/games">← All games</Link>
-      </p>
+    <main className="main page" id="main">
+      <Link className="back-link" href="/games">
+        ← Games
+      </Link>
 
       {error ? (
         <div className="error-band" role="alert">
@@ -58,36 +58,31 @@ export default async function GameReplayPage({ params }: Props) {
                 Week {game.data.week} · {game.data.game_date}
               </span>
             </div>
-            <h1>
-              {game.data.away_team_id} @ {game.data.home_team_id}
-            </h1>
-            <p>
-              Final{" "}
-              <span className="mono">
+            <div className="scoreboard">
+              <h1 className="scoreboard-matchup">
+                {game.data.away_team_id} @ {game.data.home_team_id}
+              </h1>
+              <span className="scoreboard-final">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
               </span>
-              . Scroll the story of the game below.
-            </p>
+            </div>
+            <p>Scroll the story.</p>
           </header>
 
-          <p className="muted" style={{ marginBottom: "0.75rem" }}>
-            {plays.data.total} plays
-          </p>
+          <p className="list-count">{plays.data.total} plays</p>
 
-          <div className="play-list" role="list">
+          <div className="play-feed" role="list">
             {plays.data.items.map((p) => {
               const chance = winChanceLabel(p.reference?.wp ?? null);
               return (
-                <article
-                  className="play-row"
-                  role="listitem"
-                  key={`${p.game_id}-${p.play_id}`}
-                >
-                  <div className="play-meta mono">#{p.play_index}</div>
-                  <div className="play-meta">Q{p.quarter}</div>
-                  <div className="play-meta mono">
-                    {p.down != null ? `${p.down}&${p.distance}` : "—"} ·{" "}
-                    {formatClock(p.half_seconds_remaining ?? null)}
+                <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
+                  <div className="play-top">
+                    <span className="play-meta">
+                      Q{p.quarter}
+                      {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
+                      {formatClock(p.half_seconds_remaining ?? null)}
+                    </span>
+                    <span className="play-meta">#{p.play_index}</span>
                   </div>
                   <p className="play-desc">
                     {p.description ? (
@@ -99,16 +94,7 @@ export default async function GameReplayPage({ params }: Props) {
                       </>
                     )}
                   </p>
-                  {chance ? (
-                    <div
-                      className="win-chance"
-                      title="Estimated win chance at the snap (reference or model)"
-                    >
-                      {chance}
-                    </div>
-                  ) : (
-                    <div className="win-chance" aria-hidden />
-                  )}
+                  {chance ? <div className="win-chance">{chance}</div> : null}
                 </article>
               );
             })}
@@ -116,8 +102,8 @@ export default async function GameReplayPage({ params }: Props) {
 
           <aside className="disclaimer">
             {source === "example"
-              ? "This is a short example replay so the product is usable without a running API. Connect the backend lake for full 2023 play-by-play."
-              : "Win-chance figures next to plays are reference estimates at the snap — not a bet, and not a guarantee of what happens next."}
+              ? "Short example replay — connect the API for full 2023 play-by-play."
+              : "Win chance is an estimate at the snap — not a bet."}
           </aside>
         </>
       ) : null}

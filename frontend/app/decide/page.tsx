@@ -11,17 +11,14 @@ export const metadata = {
 
 export default function DecidePage() {
   return (
-    <main className="decide-page" id="main">
+    <main className="decide-page page" id="main">
       <header className="section-head">
         <div className="overline">
           <TruthChip kind="simulated" />
-          <span className="muted">Decision explainer</span>
+          <span className="muted">Example</span>
         </div>
-        <h1>Go for it, kick, or punt?</h1>
-        <p>
-          Pick a situation, tap a choice, and see which one leaves your team with a better chance
-          of winning — explained in everyday football language.
-        </p>
+        <h1>Go, kick, or punt?</h1>
+        <p>Tap a choice. See who keeps a better chance of winning.</p>
       </header>
 
       <ExampleBanner message={FIXTURE_BANNER} />

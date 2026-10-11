@@ -6,26 +6,22 @@ import {
   type FourthDownChoice,
   type FourthDownScenario,
 } from "../lib/fixtures";
-import { TruthChip } from "./TruthChip";
 
 function pct(n: number): string {
   return `${Math.round(n * 100)}%`;
 }
 
-function SituationLine({ scenario }: { scenario: FourthDownScenario }) {
+function SituationBlock({ scenario }: { scenario: FourthDownScenario }) {
   const s = scenario.situation;
   return (
-    <p className="decide-situation">
-      <span className="mono">
+    <div className="decide-situation">
+      <span className="decide-situation-line mono">
         {s.offense} ball · Q{s.quarter} {s.clock} · {s.scoreOffense}–{s.scoreDefense}
       </span>
-      <span className="decide-situation-sep" aria-hidden>
-        ·
-      </span>
-      <span>
+      <span className="decide-situation-line">
         {s.down}th &amp; {s.distance} from the {s.yardline_100}
       </span>
-    </p>
+    </div>
   );
 }
 
@@ -66,8 +62,8 @@ function OptionPanel({
               onClick={() => onSelect(opt.id)}
             >
               <span className="decide-choice-label">{opt.label}</span>
-              <span className="decide-choice-pct mono">{pct(opt.winChance)}</span>
               <span className="decide-choice-caption">chance of winning</span>
+              <span className="decide-choice-pct">{pct(opt.winChance)}</span>
             </button>
           );
         })}
@@ -96,13 +92,12 @@ function OptionPanel({
         </p>
         {current.id === best.id ? (
           <p className="decide-callout">
-            In this example, <strong>{current.label.toLowerCase()}</strong> leaves your
-            team with the highest estimated chance of winning.
+            In this example, <strong>{current.label.toLowerCase()}</strong> leaves the
+            highest chance of winning.
           </p>
         ) : (
           <p className="decide-callout muted">
-            Compared with <strong>{best.label.toLowerCase()}</strong>, this looks like a
-            lower win chance in the example numbers.
+            Lower than <strong>{best.label.toLowerCase()}</strong> in these example numbers.
           </p>
         )}
       </div>
@@ -118,42 +113,36 @@ export function FourthDownLab() {
 
   return (
     <div className="decide-lab">
-      <div className="decide-scenario-tabs" role="tablist" aria-label="Example situations">
+      <div className="segment" role="tablist" aria-label="Example situations">
         {FOURTH_DOWN_SCENARIOS.map((s) => {
           const active = s.id === scenario.id;
+          const short =
+            s.id === "demo-4th-1" ? "Midfield" : s.id === "demo-4th-2" ? "Goal line" : s.title;
           return (
             <button
               key={s.id}
               type="button"
               role="tab"
               aria-selected={active}
-              className={`decide-tab${active ? " is-active" : ""}`}
+              className={`segment-btn${active ? " is-active" : ""}`}
               onClick={() => {
                 setScenarioId(s.id);
                 setSelected("go");
               }}
             >
-              {s.title}
+              {short}
             </button>
           );
         })}
       </div>
 
       <header className="section-head decide-head">
-        <div className="overline">
-          <TruthChip kind="simulated" />
-          <span className="muted">Example · not live</span>
-        </div>
         <h2>{scenario.title}</h2>
         <p>{scenario.setup}</p>
-        <SituationLine scenario={scenario} />
+        <SituationBlock scenario={scenario} />
       </header>
 
-      <OptionPanel
-        scenario={scenario}
-        selected={selected}
-        onSelect={setSelected}
-      />
+      <OptionPanel scenario={scenario} selected={selected} onSelect={setSelected} />
 
       <p className="decide-footnote muted">{scenario.footnote}</p>
       <p className="decide-api-hook mono muted" title="Placeholder for sibling 4th-down API">

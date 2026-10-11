@@ -10,49 +10,41 @@ export default async function GamesPage() {
   const { data: games, source, banner } = result;
 
   return (
-    <main className="main" id="main">
+    <main className="main page" id="main">
       <header className="section-head">
         <div className="overline">
           <TruthChip kind="historical" />
-          <span className="muted">2023 season</span>
+          <span className="muted">2023</span>
         </div>
-        <h1>Game Explorer</h1>
-        <p>Pick a real NFL game and walk through what happened, play by play.</p>
+        <h1>Games</h1>
+        <p>Tap a matchup. Walk the story play by play.</p>
       </header>
 
       {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
 
-      <p className="muted" style={{ marginBottom: "1rem" }}>
-        {games.total} games
-        {source === "live" ? " from your local data lake" : " in this example set"}
+      <p className="list-count">
+        {games.total} {source === "live" ? "from your lake" : "examples"}
       </p>
 
-      <table className="game-table">
-        <thead>
-          <tr>
-            <th>Week</th>
-            <th>Matchup</th>
-            <th>Date</th>
-            <th>Final</th>
-          </tr>
-        </thead>
-        <tbody>
-          {games.items.map((g) => (
-            <tr key={g.game_id}>
-              <td className="mono">{g.week}</td>
-              <td>
-                <Link href={`/games/${encodeURIComponent(g.game_id)}`}>
+      <ul className="game-list">
+        {games.items.map((g) => (
+          <li key={g.game_id}>
+            <Link className="game-row" href={`/games/${encodeURIComponent(g.game_id)}`}>
+              <span className="game-row-main">
+                <span className="game-row-matchup">
                   {g.away_team_id} @ {g.home_team_id}
-                </Link>
-              </td>
-              <td className="mono">{g.game_date}</td>
-              <td className="mono">
+                </span>
+                <span className="game-row-meta">
+                  Week {g.week} · {g.game_date}
+                </span>
+              </span>
+              <span className="game-row-score">
                 {g.away_score ?? "—"}–{g.home_score ?? "—"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
