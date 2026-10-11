@@ -267,7 +267,7 @@ def cmd_wp_train(args: argparse.Namespace) -> int:
 
     out = Path(args.out)
     cmd = (
-        f"python -m nfl_sim.models wp-train --out {out}"
+        f"python3 -m nfl_sim.models wp-train --out {out}"
         + (" --include-test" if args.include_test else "")
     )
     frame = build_wp_modeling_frame(ALL_MODEL_SEASONS)

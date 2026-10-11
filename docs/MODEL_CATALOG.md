@@ -3,7 +3,7 @@
 **Scope:** NFL only · local CPU · no paid sources · no betting/odds features in MVP  
 **Experiment:** train 2019–2021 · validate 2022 · test 2023  
 **Stack default:** scikit-learn first; XGBoost only if justified on validate metrics  
-**Status:** Stage A EP/EPA **implemented (approximated)** per `EP_MODEL_SPEC.md`. **No nflfastR bit-parity.** See `/reports/ep/`.
+**Status:** Stage A EP/EPA **implemented (approximated)** per `EP_MODEL_SPEC.md`. Situation WP Path A **prototype implemented** per `WP_MODEL_SPEC.md` (`/reports/wp/`). **No nflfastR bit-parity.**
 
 ---
 
@@ -13,7 +13,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 1 | EP | Pre-play expected points | sklearn multinomial logistic (7 next-score classes) | nflverse `ep` / nflfastR EP | **First** |
 | 2 | EPA | Play value | EP_end − EP_start (+ documented special cases) | nflverse `epa` | Immediately after EP |
-| 3 | Situation WP | P(win) | sklearn logistic / GBM-light without spread | nflverse `wp` (not `vegas_wp`) | After EPA validates |
+| 3 | Situation WP | P(win) | sklearn logistic (Path A, no EP feature) | nflverse `wp` (not `vegas_wp`) | **Prototype implemented** |
 | 4 | Fourth-down | Decision compare | Design only (nfl4th-inspired) | nfl4th | **Phase 6** |
 | 5 | Empirical sampling | Non-parametric outcomes | Situation-matched historical resample | nflverse PBP itself | Parallel with EP/EPA for sim stub |
 | 6 | Calibration / chrono validation | Quality gate | Brier, log loss, calibration; season holdouts | OSF/Yurko methods (cite, don’t claim) | Every model gate |
@@ -82,13 +82,13 @@
 
 **Reproducibility:** Published `wp` **reference-only**. Sklearn WP **approximated**.
 
-**Simplest baseline:** `sklearn` logistic regression (or `HistGradientBoostingClassifier` if linear fails calibration on val — still sklearn). Optional: include predicted EP as a feature (Yurko-style), fit only on train seasons. **Document the baseline’s exact inputs** in the eval write-up.
+**Simplest baseline:** Constant train-frequency P(win); score+time logistic (`score_differential`, `game_seconds_remaining`). Full model: Path A logistic on score/time/field/timeouts/home/`receive_2h_ko` — **no** predicted EP, spreads, or `vegas_wp`.
 
-**Acceptance / validation:** Follow [`MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md) — fair baseline with documented exact inputs; identical held-out games/situations; report **Brier**, **log loss**, **calibration**, and **n** under **`/reports/`**; no look-ahead/temporal leakage; **no** arbitrary “beat baseline by X” bar. Chronological splits unless data work documents a justified change.
+**Implementation (2026-10-11, Path A prototype):** Spec `docs/WP_MODEL_SPEC.md`; CLI `python3 -m nfl_sim.models wp-train|wp-eval`. Val 2022 log_loss≈0.575 / Brier≈0.196 (vs constant 0.693 / 0.250; score+time 0.579 / 0.198). Report-only 2023 log_loss≈0.487 / Brier≈0.162. Details: `reports/wp/EVALUATION.md`, `metrics.json`. EP labeled rebuild SHA verified but **not loaded**.
 
-**Tests (planned):** Above metrics on val 2022 / test 2023; calibration by score/time buckets; odds-feature and leakage audits; `/reports/` artifact check.
+**Tests (run):** Win labels; ties dropped; leakage; split gate; score consistency; toy train; receive_2h_ko encoding.
 
-**Defer:** Spread-adjusted WP, in-game market calibration, live WP.
+**Defer:** EP-as-feature (Path B), spread-adjusted WP, market calibration, live WP, 4th-down engine.
 
 ---
 
