@@ -24,7 +24,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "NFL Analytics Simulator",
   description:
-    "Historical NFL play-by-play reconstruction. Phase 2 — replay only; no trained models yet.",
+    "See real NFL games play by play, and explore tough calls like fourth-and-short — in plain English.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -32,12 +32,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${syne.variable} ${sourceSans.variable} ${ibmPlexMono.variable}`}>
       <body>
         <div className="shell">
+          <a className="sr-only" href="#main">
+            Skip to content
+          </a>
           <header className="topbar">
             <Link href="/" className="brand">
               NFL Analytics Simulator
             </Link>
             <nav className="nav" aria-label="Primary">
               <Link href="/games">Game Explorer</Link>
+              <Link href="/decide">4th &amp; short</Link>
             </nav>
           </header>
           {children}

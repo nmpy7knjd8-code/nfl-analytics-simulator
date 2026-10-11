@@ -2,7 +2,7 @@
 
 Research-grounded **NFL-only** analytics and simulation: reconstruct real games, validate baselines (EP → EPA → situation WP), and later run reproducible counterfactual / decision-lab simulations. Local-first, CPU-only. No sports-betting product features in the MVP.
 
-**Phase 2 (this branch):** 2023 historical ingest + FastAPI games/plays + Next.js Game Explorer replay. **Historical replay only** — no model training, no situational decision support (clock / 4th-down / strategy). Those belong in later roadmap phases (decision lab = Phase 6).
+**Current main:** historical ingest + FastAPI games/plays + Next.js fan UI (branded home, Game Explorer, 4th-&-short explainer with example data when the API is offline). Model training lives in `backend/` / `reports/`; the UI speaks plain football language, not calibration metrics.
 
 **Docs:** [docs/HANDOFF.md](docs/HANDOFF.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/ROADMAP.md](docs/ROADMAP.md) · [AGENTS.md](AGENTS.md)
 
