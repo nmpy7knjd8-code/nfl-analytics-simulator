@@ -89,3 +89,37 @@ First push of `.github/workflows/ci.yml` was **rejected**: token lacks **`workfl
 - Re-hashing D015 / full pytest 67/1 / lake re-download for this delta  
 - Editing PR #4 for this step  
 - Live / odds / WP training
+
+---
+
+# Delta — after C1 rebuild-proposal corrections (2026-10-11)
+
+> **New only** since the PR #7 review-packet delta above.  
+> Corrected proposal: [`reports/ep/LABELED_REBUILD_PROPOSAL.md`](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/cursor/convention-b-gate-8222/reports/ep/LABELED_REBUILD_PROPOSAL.md) on PR #7 @ `c962883…`.
+
+## What changed
+
+| Item | New state |
+| --- | --- |
+| PR #7 tip | `c96288306924e185f0f281be19e5a037411e80df` on `cursor/convention-b-gate-8222` (docs-only C1 commit) |
+| C1 start tip verified | `4250d13f4a69a38ac20386e8e3cf8f9ba73db75b` matched reported tip |
+| Rebuild proposal A–E | **Corrected vs code** — 2019–2023 on-disk required by CLI; post-train `rebuild:` meta patch documented; **not executed** |
+| Artifact authorization | Proposal text **ready to decide**; prefer restore original; else say **“authorize labeled rebuild”** on host with pinned 2019–2023 |
+| WP plan | Minimal clarify: **2023 = prior-exposure report-only, not pristine holdout**; prefer 2024 sealed test when available |
+| Focused tests (C1) | `test_epa_scoring_credit` + `test_ep_epa` + `test_ep_epa_audit` → **42 passed**, 1 skipped (`lake not present`) |
+| Merge / rebuild / train / WP / repin / PR #5 | **None** performed |
+
+## Approvals / actions needed from you (updated)
+
+1. **Review PR #7** — approve / request changes / leave open (**do not merge** until you decide).  
+2. **Artifact (ready):** restore original joblib **or** say **“authorize labeled rebuild”** on a host with pinned 2019–2023 (use corrected proposal).  
+3. After artifact: authorize **model-surface** Convention B pre/post (2019–2022 only).  
+4. After merging #7 (when ready): **close or rebase PR #5**.  
+5. Optional: `workflow` scope for CI YAML.  
+6. WP kickoff only after 1–3.
+
+## Not needed
+
+- Re-deciding D015 / full pytest 67/1 / lake download for this delta  
+- Editing PR #4 / merging anything  
+- Live / odds / WP training / data repin
