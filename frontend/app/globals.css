@@ -1,33 +1,34 @@
 :root {
-  --color-bg: #e8eef0;
-  --color-bg-elevated: #f4f7f8;
-  --color-bg-sunken: #dce4e8;
-  --color-bg-atmosphere-top: #c5d4cc;
-  --color-bg-atmosphere-bottom: #e8eef0;
-  --color-ink: #0e1218;
-  --color-ink-secondary: #3d4550;
-  --color-ink-muted: #6a7380;
-  --color-ink-inverse: #f4f7f8;
-  --color-border: #c5ced6;
-  --color-border-strong: #8f9aa6;
-  --color-divider: #d5dde3;
-  --color-focus-ring: #1a5f4a;
-  --color-accent: #1a5f4a;
-  --color-accent-hover: #144c3b;
-  --color-accent-soft: #d8ebe3;
-  --color-accent-ink: #0f3d30;
-  --color-danger: #9b3a2f;
-  --color-danger-soft: #f3e4e1;
-  --color-warning: #8a6a12;
-  --color-warning-soft: #f2ead4;
-  --color-truth-historical: #2c333c;
-  --color-truth-historical-soft: #e6e9ed;
-  --color-truth-predicted: #1a5f4a;
-  --color-truth-predicted-soft: #d8ebe3;
-  --color-truth-simulated: #5b4a2e;
-  --color-truth-simulated-soft: #efe8dc;
-  --color-interactive-surface: #f4f7f8;
-  --color-interactive-hover: #e7eef1;
+  /* Black / white / blue — fan UI only */
+  --color-bg: #f4f6fb;
+  --color-bg-elevated: #ffffff;
+  --color-bg-sunken: #e6ebf5;
+  --color-bg-atmosphere-top: #d7e2f5;
+  --color-bg-atmosphere-bottom: #f4f6fb;
+  --color-ink: #0a0a0b;
+  --color-ink-secondary: #2a3140;
+  --color-ink-muted: #5c667a;
+  --color-ink-inverse: #ffffff;
+  --color-border: #c9d2e3;
+  --color-border-strong: #8b97b0;
+  --color-divider: #dce3f0;
+  --color-focus-ring: #1d4ed8;
+  --color-accent: #1d4ed8;
+  --color-accent-hover: #1e3a8a;
+  --color-accent-soft: #e8effc;
+  --color-accent-ink: #122a6e;
+  --color-danger: #1d4ed8;
+  --color-danger-soft: #e8effc;
+  --color-warning: #1e3a8a;
+  --color-warning-soft: #eef2fb;
+  --color-truth-historical: #0a0a0b;
+  --color-truth-historical-soft: #eceff5;
+  --color-truth-predicted: #1d4ed8;
+  --color-truth-predicted-soft: #e8effc;
+  --color-truth-simulated: #2a3140;
+  --color-truth-simulated-soft: #eef2fb;
+  --color-interactive-surface: #ffffff;
+  --color-interactive-hover: #eef2fb;
   --font-display: var(--font-syne), sans-serif;
   --font-body: var(--font-source-sans), sans-serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
@@ -48,7 +49,7 @@
   --duration-fast: 120ms;
   --duration-base: 220ms;
   --duration-slow: 420ms;
-  --shadow-focus: 0 0 0 3px rgba(26, 95, 74, 0.35);
+  --shadow-focus: 0 0 0 3px rgba(29, 78, 216, 0.35);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
@@ -70,7 +71,7 @@ body {
   font-size: var(--text-body);
   line-height: 1.45;
   background:
-    radial-gradient(120% 80% at 50% -10%, #9fb9a8 0%, transparent 55%),
+    radial-gradient(120% 80% at 50% -10%, #9db6e8 0%, transparent 55%),
     linear-gradient(
       180deg,
       var(--color-bg-atmosphere-top) 0%,
@@ -148,7 +149,7 @@ button {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.25rem;
-  background: rgba(244, 247, 248, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   border-top: 1px solid var(--color-divider);
   backdrop-filter: blur(14px);
   z-index: 40;
@@ -250,15 +251,15 @@ button {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 14, 12, 0.15) 0%, rgba(8, 14, 12, 0.55) 55%, rgba(8, 14, 12, 0.82) 100%),
+    linear-gradient(180deg, rgba(10, 10, 11, 0.2) 0%, rgba(10, 10, 11, 0.55) 52%, rgba(10, 10, 11, 0.88) 100%),
     repeating-linear-gradient(
       90deg,
       transparent 0,
       transparent 31px,
-      rgba(255, 255, 255, 0.06) 31px,
-      rgba(255, 255, 255, 0.06) 32px
+      rgba(255, 255, 255, 0.07) 31px,
+      rgba(255, 255, 255, 0.07) 32px
     ),
-    radial-gradient(ellipse 90% 70% at 50% 40%, #4a7a58 0%, #1f4a36 42%, #0d1c14 100%);
+    radial-gradient(ellipse 95% 70% at 50% 38%, #2563eb 0%, #1e3a8a 38%, #0a0a0b 100%);
   background-size: auto, 64px 100%, auto;
   animation: field-drift 18s var(--ease-standard) infinite alternate;
 }
@@ -873,16 +874,16 @@ button {
 @media (min-width: 720px) {
   body {
     background:
-      radial-gradient(70% 50% at 50% 0%, #a8c4b2 0%, transparent 60%),
-      linear-gradient(180deg, #b7c9be 0%, var(--color-bg) 55%);
+      radial-gradient(70% 50% at 50% 0%, #a8bce8 0%, transparent 60%),
+      linear-gradient(180deg, #c8d6f0 0%, var(--color-bg) 55%);
   }
 
   .app-shell {
-    box-shadow: 0 0 0 1px rgba(14, 18, 24, 0.06);
+    box-shadow: 0 0 0 1px rgba(10, 10, 11, 0.08);
     background: linear-gradient(
       180deg,
-      rgba(244, 247, 248, 0.35) 0%,
-      rgba(232, 238, 240, 0.65) 100%
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(244, 246, 251, 0.85) 100%
     );
     min-height: 100dvh;
   }
