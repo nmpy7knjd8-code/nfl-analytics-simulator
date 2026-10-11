@@ -5,8 +5,10 @@
 | Link | What it is |
 | --- | --- |
 | [GitHub repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) | Source + docs |
-| [GitHub Pages](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/) | Published docs site (this hub) |
-| [This file on GitHub](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/HANDOFF.md) | Same checklist in the repo |
+| [GitHub Pages hub](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/) | Published docs site |
+| [Phase 2 review (Pages)](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/PHASE2_REVIEW) | Public accuracy check page |
+| [HANDOFF (Pages)](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/HANDOFF) | This checklist on Pages |
+| [PHASE2_REVIEW.md](PHASE2_REVIEW.md) | Review pack in-repo |
 
 ---
 
