@@ -77,6 +77,48 @@ def data_hash_for_seasons(seasons: list[int] | tuple[int, ...], cfg: Settings | 
     return {"combined_sha256": h.hexdigest(), "season_sha256": per}
 
 
+# Deterministic content hash columns (distinct from raw-byte sha256).
+_CONTENT_HASH_COLUMNS: tuple[str, ...] = (
+    "game_id",
+    "play_id",
+    "season",
+    "season_type",
+    "qtr",
+    "down",
+    "ydstogo",
+    "yardline_100",
+    "half_seconds_remaining",
+    "posteam",
+    "defteam",
+    "home_team",
+    "touchdown",
+    "safety",
+    "field_goal_result",
+    "td_team",
+)
+
+
+def canonical_content_hash(df: pd.DataFrame) -> str:
+    """SHA-256 over a documented deterministic projection of PBP rows.
+
+    Procedure: select `_CONTENT_HASH_COLUMNS` (missing → empty string), coerce to
+    string with pandas NA → \"\", sort by (game_id, play_id) mergesort, serialize
+    as CSV (comma, no index, header included, \\n newlines), hash UTF-8 bytes.
+    This is **not** the raw Parquet file digest.
+    """
+    ordered = list(_CONTENT_HASH_COLUMNS)
+    frame = pd.DataFrame(index=df.index)
+    for c in ordered:
+        if c in df.columns:
+            frame[c] = df[c]
+        else:
+            frame[c] = ""
+    frame = frame.sort_values(["game_id", "play_id"], kind="mergesort")
+    frame = frame.astype("string").fillna("")
+    payload = frame.to_csv(index=False, lineterminator="\n")
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def build_modeling_frame(
     seasons: list[int] | tuple[int, ...] = ALL_MODEL_SEASONS,
     *,

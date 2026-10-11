@@ -23,19 +23,41 @@ def _flag(series: pd.Series | None, index: pd.Index) -> pd.Series:
     return pd.to_numeric(series, errors="coerce").fillna(0).astype(int).eq(1)
 
 
+# Spec §3.1: PAT / two-point attempts are not next-score events (+7 already folds the try).
+_TRY_PLAY_TYPES = frozenset(
+    {
+        "extra_point",
+        "extra_point_attempt",
+        "two_point_attempt",
+        "two_point_conversion",
+        "xp_kick",
+    }
+)
+
+
+def _is_try_row(df: pd.DataFrame, index: pd.Index) -> pd.Series:
+    if "play_type" not in df.columns:
+        return pd.Series(False, index=index)
+    pt = df["play_type"].astype("string").str.lower().fillna("")
+    return pt.isin(_TRY_PLAY_TYPES)
+
+
 def scoring_event_team(df: pd.DataFrame) -> pd.Series:
     """Return scoring team abbrev or NA if row is not a scoring play.
 
     Priority: TD > safety > made FG (EP_MODEL_SPEC §3.1).
+    Extra-point / two-point rows are never scoring events for labeling.
     """
     idx = df.index
-    is_td = _flag(df["touchdown"] if "touchdown" in df.columns else None, idx)
-    is_safety = _flag(df["safety"] if "safety" in df.columns else None, idx)
+    is_try = _is_try_row(df, idx)
+    is_td = _flag(df["touchdown"] if "touchdown" in df.columns else None, idx) & ~is_try
+    is_safety = _flag(df["safety"] if "safety" in df.columns else None, idx) & ~is_try
     fg_made = pd.Series(False, index=idx)
     if "field_goal_result" in df.columns:
         fg_made = (
             df["field_goal_result"].astype("string").str.lower().eq("made").fillna(False).astype(bool)
         )
+    fg_made = fg_made & ~is_try
 
     posteam = (
         df["posteam"].astype("string")
@@ -105,13 +127,15 @@ def construct_next_score_labels(pbp: pd.DataFrame) -> pd.Series:
     df = pbp.sort_values(["game_id", "play_id"], kind="mergesort").reset_index(drop=True)
     hb = half_bucket(df["qtr"])
     scorers = scoring_event_team(df)
-    is_td = _flag(df["touchdown"] if "touchdown" in df.columns else None, df.index)
-    is_safety = _flag(df["safety"] if "safety" in df.columns else None, df.index)
+    is_try = _is_try_row(df, df.index)
+    is_td = _flag(df["touchdown"] if "touchdown" in df.columns else None, df.index) & ~is_try
+    is_safety = _flag(df["safety"] if "safety" in df.columns else None, df.index) & ~is_try
     fg_made = pd.Series(False, index=df.index)
     if "field_goal_result" in df.columns:
         fg_made = (
             df["field_goal_result"].astype("string").str.lower().eq("made").fillna(False).astype(bool)
         )
+    fg_made = fg_made & ~is_try
 
     labels = np.full(len(df), None, dtype=object)
 

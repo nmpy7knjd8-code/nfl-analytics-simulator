@@ -56,3 +56,14 @@
 | `C` selected among {0.25,1,4} | Val log loss | **2022 only** |
 | StandardScaler on numeric features | Convergence | preprocess fit train only |
 | No EPA rule change after seeing test slices | Avoid test leakage | — |
+
+## Audit fix log (independent gate — branch `cursor/ep-epa-audit-d4ea`)
+
+| Change | Evidence | Tuned on |
+| --- | --- | --- |
+| EPA next-scrimmage restricted to **same half bucket** | Demonstrated: Q2→Q3 was `possession_change` not `terminal`; after fix, all 542 last-in-half eligible rows on 2022 are terminal | n/a (spec §6.1–6.2) |
+| Exclude XP/2PT play_types from scoring events | Spec §3.1; adversarial `touchdown=1` on `extra_point` would poison labels | n/a |
+| API: remove caller `model_path`; require typed body | Pickle RCE + silent defaults | n/a |
+| Empirical baselines + era ablation on **2022 only** | See `baselines_2022.json` | **2022 only** (no 2023) |
+
+**Still open (not “fixed” to chase reference EPA):** possession-change / post-score kickoff conventions (B1); Stage A does not cash score points into `ep_after`, so ΣEPA ≠ R − EP₀ by design.

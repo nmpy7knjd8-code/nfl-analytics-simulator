@@ -1,0 +1,39 @@
+{
+  "ablation_without_era_validate_2022": {
+    "brier_multiclass": 0.6868032767311293,
+    "log_loss": 1.3360995567698928,
+    "note": "C=0.25 fixed from prior val selection; era feature removed; 2023 untouched"
+  },
+  "baselines_validate_2022": {
+    "constant_class_prior": {
+      "brier_multiclass": 0.7578743429303343,
+      "eval_on": "validate_2022",
+      "fit_on": "train_2019_2021",
+      "log_loss": 1.5284577081021413,
+      "n": 39704,
+      "seed": 42
+    },
+    "down_distance_yardline_smoothed": {
+      "brier_multiclass": 0.7158055873330619,
+      "eval_on": "validate_2022",
+      "fit_on": "train_2019_2021",
+      "log_loss": 1.431808060420545,
+      "n": 39704,
+      "seed": 42
+    },
+    "yardline_bin_empirical": {
+      "brier_multiclass": 0.7310890104336858,
+      "eval_on": "validate_2022",
+      "fit_on": "train_2019_2021",
+      "log_loss": 1.4548801076829898,
+      "n": 39704,
+      "seed": 42
+    }
+  },
+  "multinomial_model_validate_2022": {
+    "artifact": "/agent/nfl-analytics-simulator/reports/ep/artifacts/ep_model.joblib",
+    "brier_multiclass": 0.6867108253577942,
+    "log_loss": 1.3371692089750382
+  },
+  "test_2023_untouched": true
+}

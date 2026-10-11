@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from nfl_sim.models.features import build_feature_frame
+from nfl_sim.models.labels import half_bucket
 
 
 EpaCase = Literal[
@@ -54,9 +55,14 @@ def _is_timeout_row(play_type: object) -> bool:
 
 
 def attach_post_state(pbp: pd.DataFrame) -> pd.DataFrame:
-    """Add next-scrimmage post-state columns for EPA transitions."""
+    """Add next-scrimmage post-state columns for EPA transitions.
+
+    Next scrimmage must share the same half bucket (Q1–Q2 vs Q3–Q5) as the
+    current play. Crossing the half boundary is terminal (EP_MODEL_SPEC §6.1–6.2).
+    """
     df = pbp.sort_values(["game_id", "play_id"], kind="mergesort").copy()
     down = pd.to_numeric(df["down"], errors="coerce")
+    hb = half_bucket(df["qtr"] if "qtr" in df.columns else pd.Series(pd.NA, index=df.index))
 
     next_down = pd.Series(pd.NA, index=df.index, dtype="Float64")
     next_distance = pd.Series(pd.NA, index=df.index, dtype="Float64")
@@ -82,13 +88,15 @@ def attach_post_state(pbp: pd.DataFrame) -> pd.DataFrame:
         else "defteam_timeouts"
     )
 
-    for _, group in df.groupby("game_id", sort=False):
+    df = df.copy()
+    df["_half"] = hb
+    for _, group in df.groupby(["game_id", "_half"], sort=False, dropna=True):
         idx = group.index.to_numpy()
         g_down = down.loc[group.index].to_numpy()
         g_posteam = group["posteam"].astype("string").to_numpy()
         n = len(idx)
 
-        # next scrimmage index strictly after i
+        # next scrimmage index strictly after i, within the same half bucket
         next_scrim = np.full(n, -1, dtype=int)
         last = -1
         for i in range(n - 1, -1, -1):
@@ -123,7 +131,8 @@ def attach_post_state(pbp: pd.DataFrame) -> pd.DataFrame:
             if pd.notna(cur_p) and pd.notna(g_posteam[j]) and str(cur_p) != str(g_posteam[j]):
                 possession_change.loc[gi] = True
 
-    out = df
+    # Rows with missing half bucket (unknown qtr) remain terminal — no cross-game bridge.
+    out = df.drop(columns=["_half"], errors="ignore")
     out["epa_next_down"] = next_down
     out["epa_next_distance"] = next_distance
     out["epa_next_yardline_100"] = next_y100

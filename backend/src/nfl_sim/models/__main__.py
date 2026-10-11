@@ -130,6 +130,110 @@ def cmd_epa_demo(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_baselines(args: argparse.Namespace) -> int:
+    """Fit empirical baselines on train; evaluate on validate 2022 only (never 2023)."""
+    from nfl_sim.models.baselines import evaluate_baselines_on_val
+    from nfl_sim.models.ep_model import ConstantBaseline, EPModel, evaluate_split
+
+    frame = build_modeling_frame((2019, 2020, 2021, 2022))  # no 2023
+    splits = split_frames(frame)
+    train_df, val_df = splits["train"], splits["val"]
+    base = evaluate_baselines_on_val(train_df, val_df)
+
+    # Multinomial model if artifact present (already selected on 2022 — report only)
+    model_path = Path(args.model) if args.model else (REPO_ROOT / "reports/ep/artifacts/ep_model.joblib")
+    model_metrics = None
+    if model_path.exists():
+        model = EPModel.load(model_path)
+        const = ConstantBaseline().fit(train_df["ep_label"])
+        model_metrics = evaluate_split(model, const, val_df, split_name="val")
+
+    # Optional: without-era ablation on 2022 only (does not retune C / touch 2023)
+    ablation = None
+    if args.ablate_era:
+        from nfl_sim.models.features import build_feature_frame
+
+        # Fit a fresh model with era forced to 0 for all rows — diagnostic only
+        tr = train_df.copy()
+        va = val_df.copy()
+        # era comes from season>=2021 inside build_feature_frame; temporarily mark seasons <2021
+        # by shifting feature after build via monkeypatch-style column override in a local fit
+        from sklearn.linear_model import LogisticRegression
+
+        from nfl_sim.models.constants import RANDOM_SEED
+        from nfl_sim.models.features import FeatureBuilder
+        from nfl_sim.models.ep_model import _log_loss_fixed_order, multiclass_brier
+        from nfl_sim.models.constants import EP_CLASSES
+
+        Xtr = build_feature_frame(tr)
+        Xva = build_feature_frame(va)
+        Xtr = Xtr.drop(columns=["era_post_2020"])
+        Xva = Xva.drop(columns=["era_post_2020"])
+        fb = FeatureBuilder()
+        # FeatureBuilder expects NUMERIC_FEATURES including era — fit manually
+        from sklearn.compose import ColumnTransformer
+        from sklearn.impute import SimpleImputer
+        from sklearn.pipeline import Pipeline
+        from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+        num_cols = [c for c in Xtr.columns if c != "roof"]
+        cat_cols = ["roof"]
+        tf = ColumnTransformer(
+            [
+                (
+                    "num",
+                    Pipeline([("imputer", SimpleImputer(strategy="median")), ("scale", StandardScaler())]),
+                    num_cols,
+                ),
+                (
+                    "cat",
+                    Pipeline(
+                        [
+                            ("imputer", SimpleImputer(strategy="most_frequent")),
+                            ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
+                        ]
+                    ),
+                    cat_cols,
+                ),
+            ]
+        )
+        Xt = tf.fit_transform(Xtr)
+        Xv = tf.transform(Xva)
+        clf = LogisticRegression(solver="lbfgs", max_iter=2000, C=0.25, random_state=RANDOM_SEED)
+        clf.fit(Xt, tr["ep_label"].astype(str))
+        proba = clf.predict_proba(Xv)
+        # reorder to EP_CLASSES
+        col_index = {c: i for i, c in enumerate(clf.classes_)}
+        out_p = np.zeros((len(va), len(EP_CLASSES)))
+        for j, cls in enumerate(EP_CLASSES):
+            if cls in col_index:
+                out_p[:, j] = proba[:, col_index[cls]]
+        out_p = out_p / np.clip(out_p.sum(axis=1, keepdims=True), 1e-12, None)
+        y = va["ep_label"].astype(str)
+        y_idx = np.array([list(EP_CLASSES).index(c) for c in y])
+        ablation = {
+            "log_loss": _log_loss_fixed_order(y, out_p),
+            "brier_multiclass": multiclass_brier(y_idx, out_p, len(EP_CLASSES)),
+            "note": "C=0.25 fixed from prior val selection; era feature removed; 2023 untouched",
+        }
+
+    payload = {
+        "baselines_validate_2022": base,
+        "multinomial_model_validate_2022": {
+            "log_loss": model_metrics["model"]["log_loss"] if model_metrics else None,
+            "brier_multiclass": model_metrics["model"]["brier_multiclass"] if model_metrics else None,
+            "artifact": str(model_path) if model_path.exists() else None,
+        },
+        "ablation_without_era_validate_2022": ablation,
+        "test_2023_untouched": True,
+    }
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Stage A EP/EPA tools")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -159,6 +263,12 @@ def main(argv: list[str] | None = None) -> int:
 
     p_epa = sub.add_parser("epa-demo", help="Show EPA identity example")
     p_epa.set_defaults(func=cmd_epa_demo)
+
+    p_base = sub.add_parser("baselines", help="Compare empirical baselines on validate 2022 only")
+    p_base.add_argument("--out", type=str, default=str(REPO_ROOT / "reports" / "ep" / "baselines_2022.json"))
+    p_base.add_argument("--model", type=str, default="")
+    p_base.add_argument("--ablate-era", action="store_true", help="Also report 2022 metrics without era feature")
+    p_base.set_defaults(func=cmd_baselines)
 
     args = parser.parse_args(argv)
     return int(args.func(args))
