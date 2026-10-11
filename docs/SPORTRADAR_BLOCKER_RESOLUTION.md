@@ -5,7 +5,7 @@
 **Sources:** [`SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`](./SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md), [`SPORTRADAR_SIMULATION_POC_PLAN.md`](./SPORTRADAR_SIMULATION_POC_PLAN.md), `contracts/pre_snap.py`  
 **Mode:** Documentation / gate only — **no Simulation calls, no mapper code, no vendor contact**
 **Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/20  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/11bae93e3e53b49401d07f1f5eb6c4d38e89b0cf/docs/NEXT_STEPS_DELTA_SPORTRADAR_BLOCKERS.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/c70928688c5317cd1fefa08fdb3666fa68605fc4/docs/NEXT_STEPS_DELTA_SPORTRADAR_BLOCKERS.md
 
 **No legal conclusions.** This report lists unanswered questions and what product/counsel documentation would need to answer them. It does not interpret Sportradar ToS or grant rights.
 
