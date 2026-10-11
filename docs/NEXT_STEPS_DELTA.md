@@ -123,3 +123,40 @@ First push of `.github/workflows/ci.yml` was **rejected**: token lacks **`workfl
 - Re-deciding D015 / full pytest 67/1 / lake download for this delta  
 - Editing PR #4 / merging anything  
 - Live / odds / WP training / data repin
+
+---
+
+# Delta — after C1.1 rebuild output isolation (2026-10-11)
+
+> **New only** since the C1 rebuild-proposal corrections delta above.  
+> Updated proposal: [`reports/ep/LABELED_REBUILD_PROPOSAL.md`](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/cursor/convention-b-gate-8222/reports/ep/LABELED_REBUILD_PROPOSAL.md) on PR #7 @ `506b2dc…`.
+
+## What changed
+
+| Item | New state |
+| --- | --- |
+| PR #7 tip | `506b2dcf64eb375a6dfb54f6a0f00151752074a0` on `cursor/convention-b-gate-8222` (docs-only C1.1) |
+| C1.1 start tip verified | `c96288306924e185f0f281be19e5a037411e80df` matched reported tip |
+| Rebuild `--out` | **Must** use scratch (e.g. `/tmp/nfl-ep-labeled-rebuild`); default/`../reports/ep` would overwrite committed meta/metrics/calibration/TARGETS |
+| CLI isolation (code inspect) | Train writes only under `Path(args.out)` — joblib, meta, metrics, calibration CSV, TARGETS.md; no hard-coded `reports/ep` writes in train path |
+| Binding acceptance | `selected_C==0.25`, `train_n==116218` exact; log-loss ≤1e-6 **only if** lake+packages match else **stop** (no auto-relax); season hashes 2019–2023 exact |
+| 2023 | Disk required for frame/hash; **not** for fit/select/eval/tune (omit `--include-test`) |
+| Model load from scratch | `eval`/`reconcile`/`baselines`/`EPModel.load` accept explicit `--model`; diagnostic/API hard-code `reports/ep` — **stop** if check would misrepresent new artifact as original |
+| Gates | **Rebuild ≠ model-surface B**; 2019–2022 surface separate; 2023 prior-exposure; 2024 unsealed until audited |
+| Tests this session | **Not run** (docs + inspection only per C1.1) |
+| Merge / rebuild / train / WP / repin / PR #5 | **None** |
+
+## Approvals / actions needed from you (updated)
+
+1. **Review PR #7** — leave open or request changes (**do not merge** until you decide).  
+2. **Artifact:** prefer restore original joblib; **else** say **“authorize labeled rebuild”** on a host with pinned 2019–2023 using scratch `--out` + binding acceptance in the C1.1 proposal.  
+3. After artifact: separately authorize **model-surface** Convention B pre/post (2019–2022 only).  
+4. After merging #7 (when ready): **close or rebase PR #5**.  
+5. Optional: `workflow` scope for CI YAML.  
+6. WP kickoff only after 1–3.
+
+## Not needed
+
+- Training-code changes for isolation (scratch `--out` already sufficient)  
+- Auto-relaxing log-loss / re-pinning data / full pytest for this docs task  
+- Editing PR #4 / merging / WP / live / odds
