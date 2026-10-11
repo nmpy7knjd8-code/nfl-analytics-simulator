@@ -4,6 +4,8 @@
 **Depends on:** Blocker resolution on `main` via PR #20 merge `fcd22a9ab767e2a44b88769c63eb54d5a5d61f07`  
 **Sources:** [`SPORTRADAR_BLOCKER_RESOLUTION.md`](./SPORTRADAR_BLOCKER_RESOLUTION.md), [`SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`](./SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md)  
 **Mode:** Technical clarification only — **no mapper code, no Simulation/API calls, no vendor contact**
+**Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/21  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/eac8da59ca59e1188e56e3220623e0a0fa555062/docs/NEXT_STEPS_DELTA_SPORTRADAR_CLARIFICATIONS.md
 
 **Does not resolve:** L1–L7 legal/licensing (remain external). **T** (trial) and **M** (mapper) stay separate approvals.
 
