@@ -1,0 +1,57 @@
+{
+  "flips": [
+    {
+      "game_id": "2022_18_LAC_DEN",
+      "play_id": 3897.0,
+      "yl": 64,
+      "dist": 14,
+      "sd": -3,
+      "gsec": 207,
+      "hist": "punt",
+      "legacy": "inconclusive",
+      "improved": "punt",
+      "sa": "fg",
+      "changed": true,
+      "d_go": -0.0,
+      "d_fg": -0.0,
+      "d_punt": 0.0016,
+      "max_abs": 0.0016
+    },
+    {
+      "game_id": "2022_02_HOU_DEN",
+      "play_id": 4209.0,
+      "yl": 76,
+      "dist": 11,
+      "sd": -7,
+      "gsec": 17,
+      "hist": "go",
+      "legacy": "inconclusive",
+      "improved": "punt",
+      "sa": "fg",
+      "changed": true,
+      "d_go": -0.0,
+      "d_fg": -0.0,
+      "d_punt": 0.0011,
+      "max_abs": 0.0011
+    },
+    {
+      "game_id": "2022_17_NO_PHI",
+      "play_id": 3491.0,
+      "yl": 59,
+      "dist": 22,
+      "sd": -10,
+      "gsec": 223,
+      "hist": "go",
+      "legacy": "punt",
+      "improved": "inconclusive",
+      "sa": "inconclusive",
+      "changed": true,
+      "d_go": -0.0,
+      "d_fg": -0.0,
+      "d_punt": -0.0002,
+      "max_abs": 0.0002
+    }
+  ],
+  "material": [],
+  "n_late": 421
+}

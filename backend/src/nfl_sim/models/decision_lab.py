@@ -20,7 +20,7 @@ from nfl_sim.models.fourth_down import (
     FourthDownSituation,
     sensitivity_example,
 )
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, TransitionMode
 
 # Provenance + state columns surfaced to the lab (when present in PBP).
 PROVENANCE_COLUMNS: tuple[str, ...] = (
@@ -275,10 +275,13 @@ def run_decision_lab(
     make_delta: float = 0.0,
     include_sensitivity: bool = True,
     empirics_mode: EmpiricsMode = "pooled",
+    transition_mode: TransitionMode = "legacy",
 ) -> DecisionLabResult:
     """Select path: freeze lake row → FourthDownAnalyzer.analyze (+ optional sensitivity)."""
     play = freeze_play(row)
-    analysis = analyzer.analyze(play.situation, empirics_mode=empirics_mode)
+    analysis = analyzer.analyze(
+        play.situation, empirics_mode=empirics_mode, transition_mode=transition_mode
+    )
     sens = None
     if include_sensitivity:
         sens = sensitivity_example(
@@ -287,6 +290,7 @@ def run_decision_lab(
             convert_delta=convert_delta,
             make_delta=make_delta,
             empirics_mode=empirics_mode,
+            transition_mode=transition_mode,
         )
     resolve = (analysis.empirics_meta or {}).get("empirics_resolve") or {}
     notes = [
@@ -300,6 +304,7 @@ def run_decision_lab(
             f"n_punt={analysis.empirics_meta.get('n_punt')} (never 2023+)."
         ),
         f"Empirics mode={empirics_mode}; resolve={resolve.get('note')}",
+        f"Transition mode={transition_mode}",
     ]
     if play.historical_action and play.historical_action != analysis.recommendation:
         notes.append(
@@ -315,6 +320,7 @@ def compare_empirics_modes(
     *,
     convert_delta: float = -0.10,
     make_delta: float = 0.0,
+    transition_mode: TransitionMode = "legacy",
 ) -> dict[str, Any]:
     """Same frozen lake play under pooled vs season_aware empirics (measure recommendation delta)."""
     pooled = run_decision_lab(
@@ -324,6 +330,7 @@ def compare_empirics_modes(
         make_delta=make_delta,
         include_sensitivity=True,
         empirics_mode="pooled",
+        transition_mode=transition_mode,
     )
     season_aware = run_decision_lab(
         analyzer,
@@ -332,6 +339,7 @@ def compare_empirics_modes(
         make_delta=make_delta,
         include_sensitivity=True,
         empirics_mode="season_aware",
+        transition_mode=transition_mode,
     )
     sp = summarize_lab(pooled)
     ss = summarize_lab(season_aware)
@@ -347,6 +355,59 @@ def compare_empirics_modes(
         "value_deltas": {
             k: float(ss["values"][k] - sp["values"][k]) for k in ("go", "fg", "punt")
         },
+    }
+
+
+def compare_transition_modes(
+    analyzer: FourthDownAnalyzer,
+    row: pd.Series | dict[str, Any],
+    *,
+    convert_delta: float = -0.10,
+    make_delta: float = 0.0,
+    empirics_mode: EmpiricsMode = "pooled",
+) -> dict[str, Any]:
+    """Same freeze: legacy (mean punt + toy clock) vs improved (punt buckets + outcome clock)."""
+    legacy = run_decision_lab(
+        analyzer,
+        row,
+        convert_delta=convert_delta,
+        make_delta=make_delta,
+        include_sensitivity=False,
+        empirics_mode=empirics_mode,
+        transition_mode="legacy",
+    )
+    improved = run_decision_lab(
+        analyzer,
+        row,
+        convert_delta=convert_delta,
+        make_delta=make_delta,
+        include_sensitivity=False,
+        empirics_mode=empirics_mode,
+        transition_mode="improved",
+    )
+    # Also season_aware + legacy for three-way harness view
+    season_aware = run_decision_lab(
+        analyzer,
+        row,
+        convert_delta=convert_delta,
+        make_delta=make_delta,
+        include_sensitivity=False,
+        empirics_mode="season_aware",
+        transition_mode="legacy",
+    )
+    sl = summarize_lab(legacy)
+    si = summarize_lab(improved)
+    ss = summarize_lab(season_aware)
+    return {
+        "play": legacy.play.to_dict(),
+        "pooled_legacy": {"summary": sl, "analysis": legacy.analysis.to_dict()},
+        "season_aware_legacy": {"summary": ss, "analysis": season_aware.analysis.to_dict()},
+        "pooled_improved": {"summary": si, "analysis": improved.analysis.to_dict()},
+        "recommendation_changed_legacy_to_improved": sl["recommendation"] != si["recommendation"],
+        "value_deltas_legacy_to_improved": {
+            k: float(si["values"][k] - sl["values"][k]) for k in ("go", "fg", "punt")
+        },
+        "clock_deltas_improved": (improved.analysis.empirics_meta or {}).get("clock_deltas_used"),
     }
 
 
@@ -399,6 +460,8 @@ def summarize_lab(result: DecisionLabResult) -> dict[str, Any]:
         },
         "empirics_mode": a.empirics_meta.get("empirics_mode"),
         "empirics_resolve": a.empirics_meta.get("empirics_resolve"),
+        "transition_mode": a.empirics_meta.get("transition_mode"),
+        "clock_deltas_used": a.empirics_meta.get("clock_deltas_used"),
         "p_convert": a.actions["go"].components.get("p_convert"),
         "p_make": a.actions["fg"].components.get("p_make"),
     }

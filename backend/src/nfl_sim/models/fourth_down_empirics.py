@@ -13,6 +13,11 @@ from nfl_sim.models.dataset import load_raw_seasons
 from nfl_sim.models.split import forbid_test_season_in_fit
 
 EmpiricsMode = Literal["pooled", "season_aware"]
+TransitionMode = Literal["legacy", "improved"]
+
+# Play-duration filter for outcome clock (game_seconds_remaining delta to next play)
+CLOCK_DT_MIN = 1
+CLOCK_DT_MAX = 55
 
 # Distance bins for conversion (inclusive)
 CONVERT_BINS: tuple[tuple[int, int], ...] = (
@@ -78,17 +83,84 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
     return fg_tbl
 
 
-def _build_punt_table(yl: pd.Series, opp_yl: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
+def _build_punt_table(
+    yl: pd.Series,
+    opp_yl: pd.Series,
+    tb: pd.Series | None = None,
+) -> dict[tuple[int, int], dict[str, Any]]:
+    """Mean + quantile buckets for variance-aware punt (TB already mapped to opp 80)."""
     punt_tbl: dict[tuple[int, int], dict[str, Any]] = {}
     for lo, hi in PUNT_YARDLINE_BINS:
         m = yl.ge(lo) & yl.le(hi) & opp_yl.notna()
         n = int(m.sum())
+        if n:
+            vals = opp_yl[m]
+            q25 = float(vals.quantile(0.25))
+            q50 = float(vals.quantile(0.50))
+            q75 = float(vals.quantile(0.75))
+            buckets = [
+                {"label": "q25", "opp_yardline_100": q25, "weight": 0.25},
+                {"label": "q50", "opp_yardline_100": q50, "weight": 0.50},
+                {"label": "q75", "opp_yardline_100": q75, "weight": 0.25},
+            ]
+            mean_yl = float(vals.mean())
+            tb_rate = float(tb[m].mean()) if tb is not None else None
+        else:
+            buckets = [{"label": "fallback", "opp_yardline_100": 75.0, "weight": 1.0}]
+            mean_yl = 75.0
+            tb_rate = None
         punt_tbl[(lo, hi)] = {
             "n": n,
-            "mean_opp_yardline_100": float(opp_yl[m].mean()) if n else 75.0,
-            "filter": "REG punt, punt_blocked==0; TB→opp yardline_100=80",
+            "mean_opp_yardline_100": mean_yl,
+            "tb_rate": tb_rate,
+            "buckets": buckets,
+            "filter": "REG punt, punt_blocked==0; TB→opp yardline_100=80; buckets=q25/q50/q75",
         }
     return punt_tbl
+
+
+def _clock_stat(dt: pd.Series) -> dict[str, Any]:
+    n = int(dt.notna().sum())
+    return {
+        "n": n,
+        "median": float(dt.median()) if n else float(6),
+        "mean": float(dt.mean()) if n else float(6),
+        "p25": float(dt.quantile(0.25)) if n else float(6),
+        "p75": float(dt.quantile(0.75)) if n else float(6),
+    }
+
+
+def _fit_outcome_clock(df: pd.DataFrame, reg: pd.Series) -> dict[str, Any]:
+    """Median game-clock drain by outcome from REG train (next-play delta)."""
+    ordered = df.sort_values(["game_id", "play_id"], kind="mergesort")
+    next_g = ordered.groupby("game_id", sort=False)["game_seconds_remaining"].shift(-1)
+    gsec = pd.to_numeric(ordered["game_seconds_remaining"], errors="coerce")
+    dt = gsec - pd.to_numeric(next_g, errors="coerce")
+    ok = reg.reindex(ordered.index).fillna(False) & dt.between(CLOCK_DT_MIN, CLOCK_DT_MAX)
+
+    play = ordered["play_type"].astype("string").str.lower()
+    down = pd.to_numeric(ordered["down"], errors="coerce")
+    go = ok & down.eq(4) & play.isin(["pass", "run"])
+    conv = pd.to_numeric(ordered["fourth_down_converted"], errors="coerce")
+    fg = ok & play.eq("field_goal")
+    made = ordered["field_goal_result"].astype("string").str.lower().eq("made")
+    pu = (
+        ok
+        & play.eq("punt")
+        & pd.to_numeric(ordered["punt_blocked"], errors="coerce").fillna(0).eq(0)
+    )
+    return {
+        "method": (
+            f"median Δgame_seconds_remaining to next play; REG; "
+            f"dt∈[{CLOCK_DT_MIN},{CLOCK_DT_MAX}]; blocked punts excluded"
+        ),
+        "go_convert": _clock_stat(dt.loc[go & conv.eq(1)]),
+        "go_fail": _clock_stat(dt.loc[go & conv.eq(0)]),
+        "fg_make": _clock_stat(dt.loc[fg & made]),
+        "fg_miss": _clock_stat(dt.loc[fg & ~made]),
+        "punt": _clock_stat(dt.loc[pu]),
+        "legacy_toy_seconds": 6,
+    }
 
 
 def _ser_bins(d: dict[tuple[int, int], dict]) -> dict[str, dict]:
@@ -106,6 +178,7 @@ class FourthDownEmpirics:
     convert_by_season: dict[int, dict[tuple[int, int], dict[str, Any]]] = field(default_factory=dict)
     fg_by_season: dict[int, dict[tuple[int, int], dict[str, Any]]] = field(default_factory=dict)
     punt_by_season: dict[int, dict[tuple[int, int], dict[str, Any]]] = field(default_factory=dict)
+    clock_by_outcome: dict[str, Any] = field(default_factory=dict)
     meta: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
@@ -147,7 +220,8 @@ class FourthDownEmpirics:
             np.where(tb.to_numpy(), 80.0, np.clip(100.0 - new_for_kicker.to_numpy(), 1.0, 99.0)),
             index=yl.index,
         )
-        punt_tbl = _build_punt_table(yl, opp_yl)
+        punt_tbl = _build_punt_table(yl, opp_yl, tb=tb)
+        clock_by_outcome = _fit_outcome_clock(df, reg)
 
         # Per-season tables (same filters; train seasons only)
         season_col = pd.to_numeric(df["season"], errors="coerce")
@@ -178,7 +252,7 @@ class FourthDownEmpirics:
                 np.where(tb_s.to_numpy(), 80.0, np.clip(100.0 - new_s.to_numpy(), 1.0, 99.0)),
                 index=yl_s.index,
             )
-            punt_by_season[s_i] = _build_punt_table(yl_s, opp_s)
+            punt_by_season[s_i] = _build_punt_table(yl_s, opp_s, tb=tb_s)
             per_season_n[str(s_i)] = {
                 "n_go": int(go_s.sum()),
                 "n_fg": int(fg_s.sum()),
@@ -192,6 +266,7 @@ class FourthDownEmpirics:
             convert_by_season=convert_by_season,
             fg_by_season=fg_by_season,
             punt_by_season=punt_by_season,
+            clock_by_outcome=clock_by_outcome,
             meta={
                 "seasons": list(seasons),
                 "season_type": "REG",
@@ -199,7 +274,14 @@ class FourthDownEmpirics:
                 "n_fg": int(fg.sum()),
                 "n_punt": int(pu.sum()),
                 "per_season_n": per_season_n,
-                "note": "Fit on train seasons only; never 2023+; pooled + per-season tables",
+                "clock_by_outcome": {
+                    k: clock_by_outcome[k]
+                    for k in ("go_convert", "go_fail", "fg_make", "fg_miss", "punt")
+                },
+                "note": (
+                    "Fit on train seasons only; never 2023+; pooled + per-season tables; "
+                    "punt quantile buckets + outcome clock medians"
+                ),
             },
         )
         return out
@@ -299,6 +381,33 @@ class FourthDownEmpirics:
         row = {**row, "empirics_resolve": resolved}
         return float(row["mean_opp_yardline_100"]), row
 
+    def punt_buckets(
+        self,
+        yardline_100: float,
+        *,
+        season: int | None = None,
+        mode: EmpiricsMode = "pooled",
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        """Quantile buckets for variance-aware punt expectation."""
+        _, _, punt_tbl, resolved = self._tables_for(season, mode=mode)
+        row = dict(_bin_rate(PUNT_YARDLINE_BINS, float(yardline_100), punt_tbl))
+        buckets = list(row.get("buckets") or [])
+        if not buckets:
+            mean_yl = float(row.get("mean_opp_yardline_100", 75.0))
+            buckets = [{"label": "mean", "opp_yardline_100": mean_yl, "weight": 1.0}]
+        meta = {**row, "empirics_resolve": resolved}
+        return buckets, meta
+
+    def clock_delta(self, outcome: str, *, transition_mode: TransitionMode = "legacy") -> int:
+        """Seconds to subtract from game/half clock for a branch outcome."""
+        if transition_mode == "legacy" or not self.clock_by_outcome:
+            return 6
+        row = self.clock_by_outcome.get(outcome) or {}
+        med = row.get("median")
+        if med is None:
+            return 6
+        return max(0, int(round(float(med))))
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "meta": self.meta,
@@ -308,4 +417,5 @@ class FourthDownEmpirics:
             "convert_by_season": {str(s): _ser_bins(t) for s, t in self.convert_by_season.items()},
             "fg_by_season": {str(s): _ser_bins(t) for s, t in self.fg_by_season.items()},
             "punt_by_season": {str(s): _ser_bins(t) for s, t in self.punt_by_season.items()},
+            "clock_by_outcome": self.clock_by_outcome,
         }
