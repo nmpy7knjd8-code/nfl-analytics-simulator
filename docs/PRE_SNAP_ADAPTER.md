@@ -1,0 +1,207 @@
+# Pre-snap adapter — Situation Lab payload contract
+
+**Date:** 2026-10-11  
+**Depends on:** PR #14 Situation Lab on `main` (`b0e6ea8`)  
+**Branch:** `cursor/pre-snap-adapter-c0ef` (PR open, **not merged**)  
+**Scope:** Thin **fixture/demo** pre-snap adapter → same Situation Lab payload shape.  
+**Non-goals:** Real live vendor, odds, betting, fan-UI changes, silent lake fill.
+
+This document locks the **payload contract first**. Implementation must conform; do not invent a second response shape.
+
+---
+
+## 1. Situation Lab response payload (locked)
+
+Produced today by `build_situation_lab_payload(season, game_id, play_id)` and by the pre-snap adapter after validation. Top-level keys:
+
+| Key | Type | Notes |
+| --- | --- | --- |
+| `truth_labels` | object | Epistemic labels — see §1.1 |
+| `play` | object | Frozen play — see §1.2 |
+| `configs` | object | Three scored configs — see §1.3 |
+| `recommendation_changed_legacy_to_improved` | bool | Legacy vs improved rec differ |
+| `value_deltas_legacy_to_improved` | object | `{go, fg, punt}` floats (improved − legacy) |
+| `clock_deltas_improved` | object \| null | Outcome clock seconds used by improved |
+| `wp_model` | string | Trusted artifact path |
+| `offline` | bool | Always `true` for this stage |
+| `live_feed` | bool | Always `false` — adapter **never** claims a live feed |
+| `source` | object \| null | Present for pre-snap path only — see §1.4 |
+
+Historical lake path may omit `source` and `live_feed` (treat missing `live_feed` as false). Pre-snap path **must** set both explicitly.
+
+### 1.1 `truth_labels`
+
+| Field | Historical path | Pre-snap fixture path |
+| --- | --- | --- |
+| `play` | `"historical"` | `"pre_snap_fixture"` |
+| `action_values` | `"model_counterfactual"` | `"model_counterfactual"` |
+| `disclaimer` | Offline estimate — not live odds… | Offline estimate from **pre-snap snapshot fixture** — **not a live feed**, not odds… |
+
+### 1.2 `play`
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `provenance` | object | Ids + teams (+ optional description). Pre-snap: no silent outcome fill |
+| `situation` | object | `FourthDownSituation` fields (yardline_100, distance, clocks, timeouts, …) |
+| `game_state` | object | Frozen pre-snap state (down=4, kick_distance_if_fg, …) |
+| `historical_action` | `"go"` \| `"fg"` \| `"punt"` \| null | Observation only. Pre-snap fixture: usually `null` |
+| `truth` | string | `"historical"` or `"pre_snap_fixture"` |
+
+### 1.3 `configs`
+
+Keys (exactly these three):
+
+* `pooled_legacy`
+* `season_aware_legacy`
+* `pooled_improved`
+
+Each value is a **summary** object (not raw analyzer dump):
+
+| Field | Type |
+| --- | --- |
+| `recommendation` | string \| null |
+| `inconclusive` | bool |
+| `margin` | float |
+| `values` | `{go, fg, punt}` |
+| `p_convert` / `p_make` | float |
+| `empirics_mode` / `transition_mode` | string |
+| `clock_deltas_used` | object \| null |
+| `empirics_seasons` / `empirics_n` | list / object |
+| `assumptions` | list |
+| `punt_method` / `punt_buckets` / `opp_yardline_100_mean` | punt meta |
+
+Scoring **reuses** `compare_transition_modes` — adapter must not reimplement go/FG/punt math.
+
+### 1.4 `source` (pre-snap only)
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `source_id` | string | yes |
+| `provider` | `"fixture"` \| `"demo"` | yes — never `"live"` / vendor ids in this stage |
+| `snapshot_id` | string | yes |
+| `event_timestamp` | string (ISO-8601 UTC) | yes |
+| `revision` | int (≥ 1) | yes |
+| `freshness` | `"pre_snap"` \| `"in_play"` \| `"stale"` | yes — only `pre_snap` may score |
+
+---
+
+## 2. Input: `pre_snap_snapshot.v1`
+
+Adapter input is a JSON object (file fixture or POST body). **Missing required field ≠ zero / default.** Reject with a clear error naming the field.
+
+### 2.1 Envelope
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `schema_version` | `"pre_snap_snapshot.v1"` | yes |
+| `source` | object (§1.4 fields) | yes |
+| `situation` | object (§2.2) | yes |
+
+### 2.2 `situation` required fields
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `season` | int | 1999–2100 |
+| `season_type` | string | e.g. `REG` |
+| `week` | int | ≥ 1 |
+| `game_id` | string | non-empty |
+| `play_id` | number \| string | present (identity) |
+| `possession_team_id` | string | must equal `home_team_id` or `away_team_id` |
+| `defense_team_id` | string | other side of possession |
+| `home_team_id` / `away_team_id` | string | non-empty, distinct |
+| `down` | int | must be `4` for Situation Lab fourth-down path |
+| `distance` | int | 1–99 |
+| `yardline_100` | int | 1–99 |
+| `quarter` | int | 1–5 |
+| `half_seconds_remaining` | int | ≥ 0 |
+| `game_seconds_remaining` | int | ≥ 0 |
+| `score_differential` | int | **must equal** `posteam_score − defteam_score` |
+| `posteam_score` / `defteam_score` | int | ≥ 0 |
+| `posteam_timeouts` / `defteam_timeouts` | int | 0–3 |
+| `receive_2h_ko` | int | 0 or 1 — **required always** (never inferred silently) |
+
+Optional: `roof` (string). **Forbidden** in this stage: odds, spreads, `vegas_wp`, vendor live payloads.
+
+### 2.3 Consistency rejects (non-exhaustive)
+
+* `score_differential != posteam_score - defteam_score`
+* `possession_team_id` not in `{home, away}`
+* `defense_team_id` equals possession or not the opposite team
+* `home_team_id == away_team_id`
+* `freshness` ∈ {`in_play`, `stale`} → reject scoring (clear error; do not score as if pre-snap)
+* `provider` claiming live/vendor in this stage
+* `schema_version` mismatch
+
+### 2.4 Freshness semantics
+
+| Value | Meaning | Adapter action |
+| --- | --- | --- |
+| `pre_snap` | Ball not yet snapped; state is decision-ready | Validate + score |
+| `in_play` | Play underway / incomplete state | **Reject** — do not score |
+| `stale` | Snapshot older than caller/policy allows | **Reject** — do not score |
+
+Stale ≠ simulated. In-play ≠ pre-snap. Never coerce.
+
+### 2.5 No silent historical fill
+
+* Adapter **must not** open the lake to fill missing snapshot fields.
+* Adapter **must not** copy `play_type` / conversion / kick results from history into a pre-snap snapshot.
+* Sample fixtures may **mirror** a known lake situation’s *pre-snap state* for regression, but remain self-contained JSON.
+
+---
+
+## 3. Determinism
+
+Same validated snapshot bytes → same `configs` recommendations/values (given same WP artifact + empirics). Provenance/`source` echo the snapshot; they do not float with wall clock except where `event_timestamp` is supplied by the fixture.
+
+---
+
+## 4. API surface (planned)
+
+* Keep `GET /situation-lab/api/compare` — historical lake path unchanged.
+* Add `GET /situation-lab/api/fixtures` — list bundled pre-snap fixtures.
+* Add `POST /situation-lab/api/compare-pre-snap` — body = `pre_snap_snapshot.v1`.
+* Add `GET /situation-lab/api/compare-pre-snap?fixture_id=…` — load bundled fixture.
+
+HTML may expose a fixture picker later; **not** required to change fan UI.
+
+---
+
+## 5. Sample fixture
+
+Bundled: `flip-lac-den-pre-snap` — LAC@DEN 2022 W18 4th & 14 @ 64 (same pre-snap state as documented Situation Lab flip). Expect:
+
+* `recommendation_changed_legacy_to_improved == true`
+* pooled_legacy → inconclusive; pooled_improved → punt  
+* `truth_labels.play == "pre_snap_fixture"`; `live_feed == false`
+
+---
+
+## 6. Tests (acceptance)
+
+1. Valid fixture → deterministic payload (configs + flip assertions).  
+2. Missing required field → reject; not zero-filled.  
+3. Inconsistent score differential → reject.  
+4. `freshness=in_play` → reject.  
+5. `freshness=stale` → reject.  
+6. Response never sets `live_feed=true` / never labels play as live.  
+7. Historical `/compare` still returns flip for lake ids.  
+8. E2E: fixture_id → Situation Lab payload via API.
+
+---
+
+## 7. What still blocks a real live feed
+
+* Authorized provider + credentials / ToS  
+* Freshness policy clock + revision handling under churn  
+* Milestone D-style decision validation gate before live recommendations  
+* Mapping every vendor field → this snapshot (see §8)  
+* No odds features in WP path  
+
+**Single best next step after this PR:** wire a **demo** provider descriptor that emits `pre_snap_snapshot.v1` from recorded frames (still offline), then expand flip-coverage — still no paid vendor.
+
+---
+
+## 8. Fields a real feed must supply
+
+Everything in §2.2 plus durable `source_id` / `snapshot_id` / `event_timestamp` / `revision` / `freshness`. Especially easy to get wrong: timeouts, `receive_2h_ko`, score differential sign (possession view), yardline_100 orientation, and not emitting in-play frames as pre-snap.
