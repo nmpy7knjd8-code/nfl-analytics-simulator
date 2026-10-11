@@ -206,7 +206,7 @@ Avoid embedding “this report’s own commit” as a field that must be updated
 | `selected_C=0.25` / era excluded | meta + feature builder | **verified** |
 | `train_n=116218` | meta; matches DATA_EXPERIMENT REG scrimmage | **verified** / **previously reported** |
 | val log loss ≈ 1.3360995567698928 | meta exact | **verified** (source = committed meta, not re-trained) |
-| Command `python3 -m nfl_sim.models train --out ../reports/ep` | CLI exists; `--include-test` opt-in | **verified** |
+| Train `--out` | **Binding procedure is scratch-only** — see `LABELED_REBUILD_PROPOSAL.md` §B (`--out "$SCRATCH"`). Old `--out ../reports/ep` is **superseded / non-executable** for labeled rebuild | **verified** — proposal corrected |
 | Not claiming original | Explicit | **verified** |
 | **2023 on disk for train** | `cmd_train` → `build_modeling_frame(ALL_MODEL_SEASONS)` → `FileNotFoundError` if 2023 missing; `--include-test` only gates scoring | **verified** — proposal corrected |
 | `rebuild:` meta label | Train does **not** auto-write; proposal documents required post-train JSON patch | **verified** — proposal corrected |
@@ -216,7 +216,7 @@ Avoid embedding “this report’s own commit” as a field that must be updated
 
 1. Host has pinned **2019–2023** matching meta `season_sha256` (2023 sealed — no tuning / no selection).  
 2. User says **“authorize labeled rebuild”** (or equivalent).  
-3. Operator applies post-train `rebuild: labeled_new_artifact` (+ date) and records new joblib sha256.
+3. Operator follows **`reports/ep/LABELED_REBUILD_PROPOSAL.md`** (binding procedure): scratch `--out`, post-train `rebuild: labeled_new_artifact` (+ date), record new joblib sha256.
 
 Prefer **restore original** if a trustworthy copy exists.
 
@@ -228,14 +228,18 @@ Prefer **restore original** if a trustworthy copy exists.
 | Bit-identity with Stage A gate desired | Accept **new** artifact + new meta |
 | Host can place file beside meta only | Host has pinned lake + packages; corrections above applied |
 
-**Blocked command environment (rebuild):** repo checkout; `data/raw/pbp/season={2019..2023}/` matching meta pins; Python 3.12; packages per meta; then (after auth + proposal fix):
+**Blocked command environment (rebuild):** repo checkout; `data/raw/pbp/season={2019..2023}/` matching meta pins; Python 3.12; packages per meta. **Binding train procedure:** `reports/ep/LABELED_REBUILD_PROPOSAL.md` §B only. Example (scratch-only — do not execute until authorized):
 
 ```bash
-cd backend && python3 -m nfl_sim.models train --out ../reports/ep
-# then patch artifacts/ep_model.meta.json with rebuild provenance; record joblib sha256
+cd backend
+SCRATCH="${SCRATCH:-/tmp/nfl-ep-labeled-rebuild}"
+mkdir -p "$SCRATCH"
+python3 -m nfl_sim.models train --out "$SCRATCH"
+# then patch $SCRATCH/artifacts/ep_model.meta.json with rebuild provenance; record joblib sha256
+# SUPERSEDED / non-executable for labeled rebuild: train --out ../reports/ep
 ```
 
-Do **not** pass `--include-test` for selection. Do not execute until authorized.
+Do **not** pass `--include-test` for selection. Do **not** use `--out ../reports/ep` (would overwrite committed baselines). Do not execute until authorized.
 
 ---
 
