@@ -90,7 +90,7 @@ Releases: https://github.com/nflverse/nflverse-data/releases/tag/pbp
 | **Public impl** | nflfastR `wp_model` / `wp_model_spread` (XGBoost, MIT via fastrmodels); Yurko GAM lineage |
 | **MVP stance** | Situation WP **without** spread/odds (`vegas_wp` / `spread_line` excluded from MVP features per AGENTS.md) |
 | **Status** | Method **approximated**; published `wp` **reference-only** for calibration comparison |
-| **Acceptance (see `MODEL_VALIDATION.md`)** | **Not** an a priori “must beat baseline by X.” When WP is implemented: (1) document a simple baseline’s **exact inputs**; (2) score candidate and baseline on **identical** held-out games/eligible situations; (3) report **Brier**, **log loss**, **calibration plots**, and **n**; (4) discuss whether any improvement is meaningful/robust across situation groups; (5) save metrics/plots under **`/reports/`**. No look-ahead / temporal leakage. Chronological split unless Phase 1 data work documents otherwise. |
+| **Acceptance** | Canonical rules: [`/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md) — fair baseline (documented exact inputs); identical held-out compare; **Brier + log loss + calibration + n** in **`/reports/`**; no leakage; **no** arbitrary “beat baseline by X” bar. |
 
 ---
 
@@ -112,7 +112,7 @@ Releases: https://github.com/nflverse/nflverse-data/releases/tag/pbp
 | --- | --- |
 | **Empirical sampling** | Matched historical situations → bootstrap/resample observed next-play or drive outcomes (non-parametric baseline for simulation) |
 | **Validation (general)** | Chronological split (train 2019–2021, val 2022, test 2023); probabilistic models: log loss, Brier, calibration + **sample sizes**; EPA: MAE/RMSE vs realized next-score and/or reference `epa`. Artifacts under **`/reports/`**. Reading docs ≠ validation. |
-| **WP-specific gate** | Per `docs/MODEL_VALIDATION.md`: fair baseline with documented inputs; identical held-out comparison; **no** pre-set “beat by X” bar; leakage prohibition |
+| **WP-specific gate** | Per [`MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md): fair baseline; Brier/log loss/calibration/n in `/reports/`; no leakage; no arbitrary beat-baseline bar |
 | **Status** | Methods standard; **no metrics claimed** until computed |
 
 ---

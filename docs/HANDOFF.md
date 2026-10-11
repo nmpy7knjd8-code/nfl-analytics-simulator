@@ -17,7 +17,7 @@
 | Scope | NFL only; no betting/odds MVP | [AGENTS.md](AGENTS.md) |
 | Phase 1 gate | Local complete; **awaiting your approval** before Phase 2 | below |
 | GitHub | Public repo + Pages homepage set | links above |
-| Full code scaffold on GitHub | Docs yes; backend/frontend contracts **partially mirrored** — confirm tree on repo | [repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) |
+| Full code scaffold on GitHub | Frontend contracts + docs on `main`; **backend package not yet on GitHub** (architect re-export pending) | [repo](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) |
 | Models trained | **Not started** (research only) | do not treat as validated |
 
 ---

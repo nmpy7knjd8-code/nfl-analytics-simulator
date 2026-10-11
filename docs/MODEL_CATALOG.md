@@ -82,7 +82,7 @@ Lead: copy this file into the GitHub repo `docs/` when the repo exists.
 
 **Simplest baseline:** `sklearn` logistic regression (or `HistGradientBoostingClassifier` if linear fails calibration on val — still sklearn). Optional: include predicted EP as a feature (Yurko-style), fit only on train seasons. **Document the baseline’s exact inputs** in the eval write-up.
 
-**Acceptance / validation (from `MODEL_VALIDATION.md`):** Do **not** set a hard “must beat baseline by X” bar before baseline and data are inspected. Evaluate candidate and baseline on **identical** held-out games and eligible situations. Report **Brier score**, **log loss**, **calibration plots**, and **sample sizes (n)**; explain whether any improvement is statistically meaningful and robust across situation groups. Save metrics and plots under **`/reports/`**. Fairness: no look-ahead / temporal leakage (information only available at prediction time). Chronological splits unless data work documents a justified change.
+**Acceptance / validation:** Follow [`MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md) — fair baseline with documented exact inputs; identical held-out games/situations; report **Brier**, **log loss**, **calibration**, and **n** under **`/reports/`**; no look-ahead/temporal leakage; **no** arbitrary “beat baseline by X” bar. Chronological splits unless data work documents a justified change.
 
 **Tests (planned):** Above metrics on val 2022 / test 2023; calibration by score/time buckets; odds-feature and leakage audits; `/reports/` artifact check.
 
@@ -130,7 +130,7 @@ Lead: copy this file into the GitHub repo `docs/` when the repo exists.
 
 ## 6. Calibration and chronological validation
 
-**Purpose:** Quality gate for EP class probs, WP, and (later) fourth-down transition probs. Canonical WP rules live in `docs/MODEL_VALIDATION.md`.
+**Purpose:** Quality gate for EP class probs, WP, and (later) fourth-down transition probs. Canonical WP rules: [`MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md).
 
 **Methods (cite, then implement):** Chronological season split (locked above); leave-one-season-out only as stretch goal. For probabilistic models: **Brier**, **log loss**, **calibration plots**, and **n** on identical held-out slices for every candidate vs its documented baseline. For EPA: MAE/RMSE vs realized next-score and/or reference `epa`. Accuracy alone is insufficient (AGENTS.md). Persist artifacts under **`/reports/`**.
 
@@ -150,7 +150,7 @@ Lead: copy this file into the GitHub repo `docs/` when the repo exists.
 
 1. **EP** (sklearn multinomial) → validate 2022  
 2. **EPA** derivation + compare to reference `epa`  
-3. **Situation WP** (no odds) → fair baseline comparison per `MODEL_VALIDATION.md` (not a preset Δ threshold)  
+3. **Situation WP** (no odds) → fair baseline comparison per [`MODEL_VALIDATION.md`](/cursor/stores/bc-01a12bd3-e392-7ab5-8ff8-b4421b804d34/docs/MODEL_VALIDATION.md) (not a preset Δ threshold)  
 4. Wire **empirical sampling** for early simulation stubs  
 5. Freeze test-2023 evaluation once val reporting is complete and reviewed  
 6. **Fourth-down** only in Phase 6  
