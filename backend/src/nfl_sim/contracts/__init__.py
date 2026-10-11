@@ -2,6 +2,16 @@ from .enums import DataMode, DecisionAction, League, PlayType, TruthLabel
 from .game import GameSummary
 from .models import EpEpaBaselineResult, ModelDescriptor
 from .play import CanonicalPlay, ReferenceModelColumns
+from .pre_snap import (
+    AUTO_SITUATION_FIELDS,
+    USER_FALLBACK_FIELDS,
+    Freshness,
+    PreSnapProvider,
+    PreSnapSituation,
+    PreSnapSnapshot,
+    PreSnapSource,
+    UserFallback,
+)
 from .prediction import ModelPrediction, PredictionKind
 from .provenance import Provenance
 from .providers import LiveProviderId, ProviderDescriptor, ProviderStatus
@@ -18,6 +28,8 @@ __all__ = [
     "DataMode",
     "DecisionAction",
     "EpEpaBaselineResult",
+    "AUTO_SITUATION_FIELDS",
+    "Freshness",
     "GameSituation",
     "GameSummary",
     "League",
@@ -27,6 +39,10 @@ __all__ = [
     "OutcomeBucket",
     "PlayType",
     "PredictionKind",
+    "PreSnapProvider",
+    "PreSnapSituation",
+    "PreSnapSnapshot",
+    "PreSnapSource",
     "Provenance",
     "ProviderDescriptor",
     "ProviderStatus",
@@ -35,4 +51,6 @@ __all__ = [
     "SimulationResult",
     "SimulationScope",
     "TruthLabel",
+    "USER_FALLBACK_FIELDS",
+    "UserFallback",
 ]
