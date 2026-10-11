@@ -324,6 +324,7 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
 
     from nfl_sim.models.decision_lab import (
         compare_empirics_modes,
+        compare_transition_modes,
         load_analyzer,
         load_fourth_down_frame,
         run_decision_lab,
@@ -337,6 +338,9 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
     mode = str(args.empirics_mode)
     if mode not in {"pooled", "season_aware"}:
         raise SystemExit("--empirics-mode must be pooled or season_aware")
+    tmode = str(getattr(args, "transition_mode", "legacy"))
+    if tmode not in {"legacy", "improved"}:
+        raise SystemExit("--transition-mode must be legacy or improved")
     frame = load_fourth_down_frame(seasons, season_type=args.season_type or None)
     if args.list:
         n = min(int(args.list_limit), len(frame))
@@ -387,9 +391,47 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
         f"python3 -m nfl_sim.models decision-lab --seasons {args.seasons}"
         + (f" --game-id {args.game_id} --play-id {args.play_id}" if args.game_id else f" --index {args.index}")
         + f" --empirics-mode {mode}"
+        + f" --transition-mode {tmode}"
         + (" --compare-modes" if args.compare_modes else "")
+        + (" --compare-transitions" if getattr(args, "compare_transitions", False) else "")
         + f" --model {model_path}"
     )
+
+    if getattr(args, "compare_transitions", False):
+        cmp_t = compare_transition_modes(
+            az,
+            row,
+            convert_delta=float(args.convert_delta),
+            make_delta=float(args.make_delta),
+            empirics_mode=mode,  # type: ignore[arg-type]
+        )
+        payload = {**cmp_t, "command": cmd}
+        if args.out:
+            out = Path(args.out)
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "compare_transitions.json").write_text(
+                _json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n"
+            )
+            _write_transition_compare_report(out, payload)
+            print(
+                _json.dumps(
+                    {
+                        "out": str(out),
+                        "recommendation_changed_legacy_to_improved": cmp_t[
+                            "recommendation_changed_legacy_to_improved"
+                        ],
+                        "value_deltas_legacy_to_improved": cmp_t["value_deltas_legacy_to_improved"],
+                        "legacy_rec": cmp_t["pooled_legacy"]["summary"]["recommendation"],
+                        "improved_rec": cmp_t["pooled_improved"]["summary"]["recommendation"],
+                        "season_aware_rec": cmp_t["season_aware_legacy"]["summary"]["recommendation"],
+                    },
+                    indent=2,
+                    default=str,
+                )
+            )
+            return 0
+        print(_json.dumps(payload, indent=2, sort_keys=True, default=str))
+        return 0
 
     if args.compare_modes:
         cmp = compare_empirics_modes(
@@ -397,6 +439,7 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
             row,
             convert_delta=float(args.convert_delta),
             make_delta=float(args.make_delta),
+            transition_mode=tmode,  # type: ignore[arg-type]
         )
         payload = {**cmp, "command": cmd}
         if args.out:
@@ -430,6 +473,7 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
         make_delta=float(args.make_delta),
         include_sensitivity=not args.no_sensitivity,
         empirics_mode=mode,  # type: ignore[arg-type]
+        transition_mode=tmode,  # type: ignore[arg-type]
     )
     payload = result.to_dict()
     payload["summary"] = summarize_lab(result)
@@ -456,6 +500,50 @@ def cmd_decision_lab(args: argparse.Namespace) -> int:
 
     print(_json.dumps(payload, indent=2, sort_keys=True, default=str))
     return 0
+
+
+def _write_transition_compare_report(out: Path, payload: dict) -> None:
+    prov = payload["play"]["provenance"]
+    leg = payload["pooled_legacy"]["summary"]
+    imp = payload["pooled_improved"]["summary"]
+    sa = payload["season_aware_legacy"]["summary"]
+    clk = payload.get("clock_deltas_improved") or {}
+    lines = [
+        "# Transition mode comparison (same frozen lake play)",
+        "",
+        f"**Command:** `{payload.get('command', '')}`",
+        "",
+        "> Offline counterfactual — variance-aware punt + outcome clock vs mean-punt/toy-clock.",
+        "",
+        f"* game_id / play_id: `{prov.get('game_id')}` / `{prov.get('play_id')}`",
+        f"* Historical play_type: `{prov.get('play_type')}`",
+        f"* State: yl={leg.get('yardline_100')} &{leg.get('distance')}, "
+        f"sd={leg.get('score_differential')}, clock={leg.get('game_seconds_remaining')}",
+        "",
+        f"Improved clock deltas (median s): `{clk}`",
+        "",
+        "| Config | go | FG | punt | rec |",
+        "| --- | ---: | ---: | ---: | --- |",
+        (
+            f"| pooled + legacy | {leg['values']['go']:.4f} | {leg['values']['fg']:.4f} | "
+            f"{leg['values']['punt']:.4f} | {leg['recommendation']} |"
+        ),
+        (
+            f"| season_aware + legacy | {sa['values']['go']:.4f} | {sa['values']['fg']:.4f} | "
+            f"{sa['values']['punt']:.4f} | {sa['recommendation']} |"
+        ),
+        (
+            f"| pooled + improved | {imp['values']['go']:.4f} | {imp['values']['fg']:.4f} | "
+            f"{imp['values']['punt']:.4f} | {imp['recommendation']} |"
+        ),
+        "",
+        f"Legacy→improved recommendation changed: "
+        f"**{payload['recommendation_changed_legacy_to_improved']}**",
+        "",
+        f"Value deltas (improved − legacy): `{payload['value_deltas_legacy_to_improved']}`",
+        "",
+    ]
+    (out / "COMPARE_TRANSITIONS.md").write_text("\n".join(lines))
 
 
 def _write_empirics_compare_report(out: Path, payload: dict) -> None:
@@ -1035,6 +1123,18 @@ def main(argv: list[str] | None = None) -> int:
         "--compare-modes",
         action="store_true",
         help="Score the same frozen play under pooled and season_aware; write COMPARE.md",
+    )
+    p_lab.add_argument(
+        "--transition-mode",
+        type=str,
+        default="legacy",
+        choices=["legacy", "improved"],
+        help="legacy=mean punt+toy clock; improved=punt buckets+outcome clock",
+    )
+    p_lab.add_argument(
+        "--compare-transitions",
+        action="store_true",
+        help="Compare legacy vs improved transitions on the same freeze; write COMPARE_TRANSITIONS.md",
     )
     p_lab.add_argument(
         "--out",
