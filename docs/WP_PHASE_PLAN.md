@@ -21,9 +21,9 @@
 
 | Question | Statement |
 | --- | --- |
-| Was Stage A / prior EP analysis influenced by 2023+? | **Held-out report only** for 2023 under Stage A gates; **no tuning** on 2023 (D014). This WP plan must **not** use 2023 for hyperparameter selection. |
-| Preferred sealed later season | Prefer a **later sealed season** (e.g. 2024 once pinned and policy-approved under Milestone R) for final holdout over **reusing 2023** as a second tuning surface. Until then, keep 2023 sealed for WP selection. |
-| Train / val window for WP | Propose train ≤2021, validate 2022, report-only sealed holdout (2023 or later) — **no 2024–2025 training into Stage A EP**. |
+| Was Stage A / prior EP analysis influenced by 2023+? | **Held-out report only** for 2023 under Stage A gates; **no tuning** on 2023 (D014). **2023 is prior-exposure report-only, not a pristine holdout.** This WP plan must **not** use 2023 for hyperparameter selection. |
+| Preferred sealed later season | Prefer **2024** (once pinned + untouched audit / Milestone R) as the sealed WP test season over treating 2023 as pristine. Until then, keep 2023 sealed for WP selection (report-only). |
+| Train / val window for WP | Propose train ≤2021, validate 2022, report-only sealed holdout (prefer 2024 when available; else sealed 2023) — **no 2024–2025 training into Stage A EP**. |
 | Experiment window changes | **Out of scope** for this plan’s kickoff; no silent ingest pin changes. |
 
 ---

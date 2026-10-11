@@ -1,10 +1,22 @@
 # PR #7 Review Packet & EP Artifact Decision
 
 **Date:** 2026-10-11  
-**Reviewer agent:** `bc-dc4b2403-dca3-52e4-ab7f-94b0f67caa42`  
-**Scope:** Continue Convention B publish — verify claims; artifact decision; no merge / no retrain / no WP implementation.
+**Reviewer agents:** `bc-dc4b2403-dca3-52e4-ab7f-94b0f67caa42` (initial packet); `bc-c5b52bb8-6e39-5b57-bc2f-4f462db93fd7` (C1 corrections)  
+**Scope:** Convention B review + C1 docs-only rebuild-proposal corrections; no merge / no retrain / no WP implementation.
 
 Evidence labels: **verified** · **previously reported** · **inferred** · **unresolved**
+
+---
+
+## 0. C1 delta (docs-only)
+
+| Item | Outcome |
+| --- | --- |
+| Reported tip at C1 start | `4250d13f4a69a38ac20386e8e3cf8f9ba73db75b` — **verified** match |
+| Rebuild proposal A–E | Corrected vs `cmd_train` / `ALL_MODEL_SEASONS` / meta write path |
+| Artifact authorization | Proposal text **ready to present**; execution still **blocked** until user phrase + pinned lake host |
+| WP plan | Minimal clarify: 2023 = prior-exposure report-only, not pristine holdout (§9) |
+| Code / dataset / PR #5 | Untouched |
 
 ---
 
@@ -13,11 +25,12 @@ Evidence labels: **verified** · **previously reported** · **inferred** · **un
 | Item | Value | Label |
 | --- | --- | --- |
 | Branch | `cursor/convention-b-gate-8222` | **verified** |
-| HEAD (pre-packet) | `d9165f49e249eede94f978f22901954bae88ef5f` | **verified** (matches reported tip) |
-| Working tree (pre-packet) | clean | **verified** |
+| HEAD (C1 start / base_review_sha) | `4250d13f4a69a38ac20386e8e3cf8f9ba73db75b` | **verified** (matches reported tip) |
+| Prior packet base | `d9165f49e249eede94f978f22901954bae88ef5f` | **previously reported** |
+| Working tree (C1 start) | clean | **verified** |
 | PR | [#7](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/7) OPEN → `main` | **verified** |
 | Base | `main` @ `15da234b900059ab2a8f36279112203d02cace37` | **verified** |
-| Ahead / behind | **11** ahead / **0** behind `main` | **verified** |
+| Ahead / behind (C1 start) | **12** ahead / **0** behind `main` | **verified** |
 | Mergeable | MERGEABLE / CLEAN | **verified** |
 | CI checks on tip | **none reported** (no workflow on branch) | **verified** |
 | Comments / reviews | 0 / 0 | **verified** |
@@ -37,10 +50,10 @@ Evidence labels: **verified** · **previously reported** · **inferred** · **un
 | `docs/DECISIONS.md` | D015 pointer | **OK** |
 | `docs/DECISIONS_AND_FORWARD_PLAN.md` | Successor brief (D015 accepted) | **OK** (stale “unpushed” note → narrow fix in packet commit) |
 | `docs/EPA_CONVENTION_B_ATTRIBUTION.md` | Event attribution table | **OK** |
-| `docs/WP_PHASE_PLAN.md` | WP plan only | **OK** — see §9 |
-| `reports/ep/ARTIFACT_PROVENANCE.md` | joblib search / rebuild constraints | **OK** |
+| `docs/WP_PHASE_PLAN.md` | WP plan only | **OK** — C1 minimal 2023 clarify (§9) |
+| `reports/ep/ARTIFACT_PROVENANCE.md` | joblib search / rebuild constraints | **OK** — C1 aligned lake years with CLI |
 | `reports/ep/EPA_SCORING_CREDIT_INVESTIGATION.md` | Task A report | **previously reported** evidence |
-| `reports/ep/LABELED_REBUILD_PROPOSAL.md` | Rebuild protocol (not executed) | Needs corrections — §7 |
+| `reports/ep/LABELED_REBUILD_PROPOSAL.md` | Rebuild protocol (not executed) | **Corrected (C1)** — §7 |
 | `reports/ep/scoring_credit/*` | JSON/CSV/parquet diagnostic cache | See §5 |
 | *(absent)* `.github/workflows/ci.yml` | Dropped for token scope | **verified** absent; proposed YAML present |
 
@@ -61,11 +74,11 @@ Code matches documented Convention B:
 * Spec §6 + attribution table align with code (**verified**).
 * Documented **non**-parity: no nflfastR PAT `1−ep` / 2PT overlays (**verified** docs).
 
-Focused tests this session:
+Focused tests (initial packet + C1 reconfirm):
 
 ```text
 cd backend && python3 -m pytest -q tests/test_epa_scoring_credit.py tests/test_ep_epa.py tests/test_ep_epa_audit.py
-→ 42 passed, 1 skipped  (exit 0)
+→ 42 passed, 1 skipped  (exit 0)  # skip: test_accounting_identity_on_training_season_sample — lake not present
 ```
 
 ### Accounting identity — **pass on available data; lake reload blocked**
@@ -184,7 +197,7 @@ Avoid embedding “this report’s own commit” as a field that must be updated
 | Store / git history joblib | Not in this clone; never committed | **previously reported** / **verified** `git log -- **/ep_model.joblib` empty |
 | Pytest stubs | Not Stage A | **previously reported** |
 
-### Proposal audit (`LABELED_REBUILD_PROPOSAL.md`)
+### Proposal audit (`LABELED_REBUILD_PROPOSAL.md`) — C1 closed
 
 | Claim | Check | Label |
 | --- | --- | --- |
@@ -195,16 +208,17 @@ Avoid embedding “this report’s own commit” as a field that must be updated
 | val log loss ≈ 1.3360995567698928 | meta exact | **verified** (source = committed meta, not re-trained) |
 | Command `python3 -m nfl_sim.models train --out ../reports/ep` | CLI exists; `--include-test` opt-in | **verified** |
 | Not claiming original | Explicit | **verified** |
-| **2023 “optional” for fit** | **Incorrect vs CLI** — `cmd_train` → `build_modeling_frame(ALL_MODEL_SEASONS)` **requires 2023 on disk** even without `--include-test` | **verified** gap |
-| `rebuild:` meta label | Train path does **not** write it; needs post-train meta patch or code change | **verified** gap |
-| Lake pins | Required; empty here | **verified** blocked |
+| **2023 on disk for train** | `cmd_train` → `build_modeling_frame(ALL_MODEL_SEASONS)` → `FileNotFoundError` if 2023 missing; `--include-test` only gates scoring | **verified** — proposal corrected |
+| `rebuild:` meta label | Train does **not** auto-write; proposal documents required post-train JSON patch | **verified** — proposal corrected |
+| Lake pins | Required; empty here | **verified** blocked (host gap, not doc gap) |
 
-**Decision rule outcome:** Proposal is **not ready for authorization as written** — needs two corrections first:
+**Decision rule outcome (C1):** Proposal text is **ready for the user authorization decision**. Still **do not execute** until:
 
-1. Prerequisite: pinned **2019–2023** on disk (2023 sealed/report-only; still loaded by current train CLI), matching meta `season_sha256`.  
-2. Explicit post-train step: write `rebuild: labeled_new_artifact` (+ date, new joblib sha256) into **new** meta; never label `original`.
+1. Host has pinned **2019–2023** matching meta `season_sha256` (2023 sealed — no tuning / no selection).  
+2. User says **“authorize labeled rebuild”** (or equivalent).  
+3. Operator applies post-train `rebuild: labeled_new_artifact` (+ date) and records new joblib sha256.
 
-After corrections + user phrase “authorize labeled rebuild” + lake host → ready. Prefer **restore original** if a trustworthy copy exists.
+Prefer **restore original** if a trustworthy copy exists.
 
 ### Checklist: restore vs labeled rebuild
 
@@ -251,7 +265,7 @@ Do **not** pass `--include-test` for selection. Do not execute until authorized.
 
 `docs/WP_PHASE_PLAN.md`: **ready as plan** — consistent with merge auth + artifact + model-surface gates; forbids odds/`vegas_wp`; sealed holdout; kickoff-rule check; analytical 4th-down before sim; no 2023+ tuning.
 
-Optional narrow doc tweak (not blocking): explicitly say **2023 is prior-exposure report-only, not a pristine holdout**; treat **2024** as sealed test only after pin + “untouched” audit. No WP code/training started (**verified**).
+**C1 clarify (applied):** **2023 is prior-exposure report-only, not a pristine holdout** (Stage A already produced a held-out 2023 report). Prefer **2024** (once pinned + untouched audit) as the sealed WP test season; until then keep 2023 sealed for WP selection (no hyperparameter use). No WP code/training started (**verified**).
 
 ---
 
@@ -259,14 +273,15 @@ Optional narrow doc tweak (not blocking): explicitly say **2023 is prior-exposur
 
 1. **PR #7 review/merge** — Approve / request changes / leave open.  
    - *Consequence:* Merge lands Convention B on `main`; then close/rebase PR #5 (conflict).  
-2. **Artifact path** — Restore original joblib **or** authorize labeled rebuild after proposal corrections (§7).  
+2. **Artifact path (ready to decide)** — Prefer restore original `ep_model.joblib` if available; **else** authorize labeled rebuild using corrected proposal (§7) on a host with pinned 2019–2023 by saying **“authorize labeled rebuild”**.  
    - *Consequence:* Unblocks model-surface gate; WP stays gated until that passes.  
+   - *Not ready:* executing train on this review VM (no lake).  
 3. **Parquet policy** — Accept keep+CC BY attribution (recommended) or request slim later.  
 4. **CI workflow push** — Optional: grant `workflow` scope so proposed YAML can be committed.  
 5. **WP kickoff** — Only after (1)+(2)+model-surface — not requested now.
 
 ---
 
-## Non-actions (this review)
+## Non-actions (C1 + prior review)
 
-No merge; no force-push; no retrain; no WP/sim/4th/live; no PR #4/#5 edits; no full pytest reconfirm of 67/1; no secrets printed.
+No merge; no force-push; no retrain; no WP/sim/4th/live; no PR #4/#5 edits; no data ingest/repin; no full pytest 67/1 reconfirm required; no secrets printed.

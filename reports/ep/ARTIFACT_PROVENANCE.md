@@ -43,9 +43,10 @@ Confirmed via `git check-ignore -v` and `git status --ignored`.
 Do **not** run as a silent substitute for the missing original. If authorized later:
 
 ```bash
-cd /tmp/work/nfl-analytics-simulator/backend
-# Requires pinned lake 2019–2022 (+ 2023 on disk sealed for report-only)
-python -m nfl_sim.models  # or project train entrypoint used for Stage A
+cd /path/to/nfl-analytics-simulator/backend
+# Current CLI requires pinned lake 2019–2023 on disk (2023 sealed; no --include-test for selection)
+python3 -m nfl_sim.models train --out ../reports/ep
+# Then patch new ep_model.meta.json with rebuild: labeled_new_artifact (+ date); see LABELED_REBUILD_PROPOSAL.md
 ```
 
 | Rebuild param | Required value (from meta) |
@@ -55,9 +56,9 @@ python -m nfl_sim.models  # or project train entrypoint used for Stage A
 | Era | excluded |
 | Train seasons | 2019–2021 only |
 | Validate | 2022 only |
-| Holdout | 2023 report-only — **never tune** |
+| On-disk seasons | **2019–2023** required by `ALL_MODEL_SEASONS`; 2023 sealed — **never tune** |
 
-**Acceptance tolerances (new artifact ≠ claim original):** reproduce meta `val_log_loss_by_C["0.25"]` ≈ `1.3360995567698928` within a documented ε (suggest 1e-6 relative if same lake pins + package pins); write **new** meta with new sha256; never overwrite history claiming identity with the lost file.
+**Acceptance tolerances (new artifact ≠ claim original):** reproduce meta `val_log_loss_by_C["0.25"]` ≈ `1.3360995567698928` within a documented ε (suggest 1e-6 abs if same lake pins + package pins); write **new** meta with `rebuild: labeled_new_artifact` + new sha256; never overwrite history claiming identity with the lost file. Full protocol: [`LABELED_REBUILD_PROPOSAL.md`](./LABELED_REBUILD_PROPOSAL.md).
 
 ## Gate impact
 
