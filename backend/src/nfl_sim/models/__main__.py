@@ -260,8 +260,139 @@ def cmd_reconcile(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_wp_train(args: argparse.Namespace) -> int:
+    """Path A WP: train 2019–2021, select C on 2022, optional 2023 report-only."""
+    from nfl_sim.models.dataset import build_wp_modeling_frame
+    from nfl_sim.models.wp_model import train_and_evaluate_wp
+
+    out = Path(args.out)
+    cmd = (
+        f"python -m nfl_sim.models wp-train --out {out}"
+        + (" --include-test" if args.include_test else "")
+    )
+    frame = build_wp_modeling_frame(ALL_MODEL_SEASONS)
+    metrics = train_and_evaluate_wp(
+        frame,
+        out_dir=out,
+        include_test=args.include_test,
+        command=cmd,
+    )
+    _write_wp_eval_report(out, metrics, command=cmd)
+    print(
+        json.dumps(
+            {
+                "out": str(out),
+                "n": metrics["n"],
+                "selected_C": metrics["hyperparam_selection"]["selected_C"],
+                "validate": {
+                    "log_loss": metrics["validate"]["model"]["log_loss"],
+                    "brier": metrics["validate"]["model"]["brier"],
+                },
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def cmd_wp_eval(args: argparse.Namespace) -> int:
+    from nfl_sim.models.dataset import build_wp_modeling_frame
+    from nfl_sim.models.wp_model import WPModel
+
+    model = WPModel.load(Path(args.model))
+    frame = build_wp_modeling_frame(ALL_MODEL_SEASONS)
+    splits = split_frames(frame)
+    df = splits[args.split]
+    p = model.predict_wp(df)
+    print(
+        json.dumps(
+            {
+                "split": args.split,
+                "n": int(len(df)),
+                "mean_wp": float(p.mean()),
+                "model": str(args.model),
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def _write_wp_eval_report(out: Path, metrics: dict, *, command: str) -> None:
+    val = metrics["validate"]
+    test = metrics.get("test")
+    lines = [
+        "# WP prototype evaluation",
+        "",
+        f"**Command:** `{command}`",
+        "",
+        f"**Spec:** `{metrics['spec']}`",
+        f"**Path:** {metrics['path']} (EP joblib not loaded)",
+        f"**Selected C:** {metrics['hyperparam_selection']['selected_C']} "
+        f"(tuned on validate 2022 only)",
+        "",
+        "## Packages",
+        "",
+        "```json",
+        json.dumps(metrics["packages"], indent=2),
+        "```",
+        "",
+        "## EP labeled rebuild (not used in Path A)",
+        "",
+        f"- Verified SHA-256: `{metrics['ep_labeled_rebuild_verified_sha256']}`",
+        f"- Note: {metrics['ep_labeled_rebuild_note']}",
+        f"- `ep_model_loaded`: `{metrics['ep_model_loaded']}`",
+        "",
+        "## Counts",
+        "",
+        "```json",
+        json.dumps(metrics["n"], indent=2),
+        "```",
+        "",
+        "## Validate 2022",
+        "",
+        f"| Estimator | Log loss | Brier |",
+        f"| --- | ---: | ---: |",
+        f"| WP logistic | {val['model']['log_loss']:.6f} | {val['model']['brier']:.6f} |",
+        f"| Constant baseline | {val['baseline_constant']['log_loss']:.6f} | {val['baseline_constant']['brier']:.6f} |",
+        f"| Score+time baseline | {val['baseline_score_time']['log_loss']:.6f} | {val['baseline_score_time']['brier']:.6f} |",
+        "",
+        f"n={val['n']}, empirical win rate={val['win_rate']:.4f}",
+        "",
+    ]
+    if test:
+        lines += [
+            "## Report-only 2023",
+            "",
+            f"| Estimator | Log loss | Brier |",
+            f"| --- | ---: | ---: |",
+            f"| WP logistic | {test['model']['log_loss']:.6f} | {test['model']['brier']:.6f} |",
+            f"| Constant baseline | {test['baseline_constant']['log_loss']:.6f} | {test['baseline_constant']['brier']:.6f} |",
+            f"| Score+time baseline | {test['baseline_score_time']['log_loss']:.6f} | {test['baseline_score_time']['brier']:.6f} |",
+            "",
+            f"n={test['n']}. **Not used for selection.**",
+            "",
+        ]
+    lines += [
+        "## Target / terminal / end-of-half",
+        "",
+        "See `docs/WP_MODEL_SPEC.md` §3. Win label = posteam eventual game winner; "
+        "ties dropped. Half boundaries do not reset the target. "
+        "`receive_2h_ko` encoded 0 outside first half.",
+        "",
+        "## Artifacts",
+        "",
+        f"- `artifacts/wp_model.joblib` (gitignored binary)",
+        f"- `artifacts/wp_model.meta.json`",
+        f"- `metrics.json`",
+        f"- `calibration_val.csv`",
+        "",
+    ]
+    (out / "EVALUATION.md").write_text("\n".join(lines))
+
+
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Stage A EP/EPA tools")
+    parser = argparse.ArgumentParser(description="Stage A EP/EPA + WP tools")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_train = sub.add_parser("train", help="Train EP on 2019–2021; select C on 2022")
@@ -311,6 +442,16 @@ def main(argv: list[str] | None = None) -> int:
         default=str(REPO_ROOT / "reports/ep/reconciliation_2022.json"),
     )
     p_rec.set_defaults(func=cmd_reconcile)
+
+    p_wp = sub.add_parser("wp-train", help="Train Path A WP on 2019–2021; select C on 2022")
+    p_wp.add_argument("--out", type=str, default=str(REPO_ROOT / "reports" / "wp"))
+    p_wp.add_argument("--include-test", action="store_true", help="Score report-only 2023 once")
+    p_wp.set_defaults(func=cmd_wp_train)
+
+    p_wpe = sub.add_parser("wp-eval", help="Evaluate a saved WP model on a split")
+    p_wpe.add_argument("--model", type=str, required=True)
+    p_wpe.add_argument("--split", choices=["train", "val", "test"], default="val")
+    p_wpe.set_defaults(func=cmd_wp_eval)
 
     args = parser.parse_args(argv)
     return int(args.func(args))
