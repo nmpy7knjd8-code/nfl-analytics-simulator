@@ -318,6 +318,205 @@ def cmd_wp_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_decision_lab(args: argparse.Namespace) -> int:
+    """Historical decision lab: freeze a lake 4th-down → reuse FourthDownAnalyzer."""
+    import json as _json
+
+    from nfl_sim.models.decision_lab import (
+        load_analyzer,
+        load_fourth_down_frame,
+        run_decision_lab,
+        select_play,
+        summarize_lab,
+    )
+
+    seasons = tuple(int(s.strip()) for s in str(args.seasons).split(",") if s.strip())
+    if not seasons:
+        raise SystemExit("--seasons must list at least one season")
+    frame = load_fourth_down_frame(seasons, season_type=args.season_type or None)
+    if args.list:
+        n = min(int(args.list_limit), len(frame))
+        cols = [
+            c
+            for c in (
+                "season",
+                "week",
+                "game_id",
+                "play_id",
+                "posteam",
+                "ydstogo",
+                "yardline_100",
+                "score_differential",
+                "game_seconds_remaining",
+                "play_type",
+            )
+            if c in frame.columns
+        ]
+        rows = frame.loc[: n - 1, cols].copy()
+        # JSON-friendly scalars
+        payload = {
+            "n_total": int(len(frame)),
+            "showing": int(n),
+            "seasons": list(seasons),
+            "plays": rows.to_dict(orient="records"),
+        }
+        print(_json.dumps(payload, indent=2, default=str))
+        return 0
+
+    model_path = Path(args.model)
+    try:
+        az = load_analyzer(model_path)
+    except FileNotFoundError as exc:
+        raise SystemExit(str(exc)) from exc
+
+    try:
+        row = select_play(
+            frame,
+            game_id=args.game_id,
+            play_id=args.play_id,
+            index=args.index,
+        )
+    except (KeyError, IndexError, ValueError) as exc:
+        raise SystemExit(str(exc)) from exc
+
+    result = run_decision_lab(
+        az,
+        row,
+        convert_delta=float(args.convert_delta),
+        make_delta=float(args.make_delta),
+        include_sensitivity=not args.no_sensitivity,
+    )
+    payload = result.to_dict()
+    payload["summary"] = summarize_lab(result)
+    payload["command"] = (
+        f"python3 -m nfl_sim.models decision-lab --seasons {args.seasons}"
+        + (f" --game-id {args.game_id} --play-id {args.play_id}" if args.game_id else f" --index {args.index}")
+        + f" --model {model_path}"
+    )
+
+    if args.out:
+        out = Path(args.out)
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "lab_result.json").write_text(
+            _json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n"
+        )
+        _write_decision_lab_report(out, payload)
+        print(
+            _json.dumps(
+                {
+                    "out": str(out),
+                    "summary": payload["summary"],
+                },
+                indent=2,
+                default=str,
+            )
+        )
+        return 0
+
+    print(_json.dumps(payload, indent=2, sort_keys=True, default=str))
+    return 0
+
+
+def _write_decision_lab_report(out: Path, payload: dict) -> None:
+    play = payload["play"]
+    prov = play["provenance"]
+    analysis = payload["analysis"]
+    actions = analysis["actions"]
+    summary = payload["summary"]
+    emp = analysis.get("empirics_meta") or {}
+    lines = [
+        "# Historical fourth-down decision lab",
+        "",
+        f"**Command:** `{payload.get('command', '')}`",
+        "",
+        "> **Offline estimate disclaimer:** Values are model counterfactuals from "
+        "Path A uncalibrated WP + REG train empirics — **not** historical fact, "
+        "live odds, or betting advice. No sportsbook/exchange inputs.",
+        "",
+        "## Frozen historical play",
+        "",
+        f"* Season / week: `{prov.get('season')}` / `{prov.get('week')}`",
+        f"* game_id / play_id: `{prov.get('game_id')}` / `{prov.get('play_id')}`",
+        f"* Possession: `{prov.get('posteam')}` vs `{prov.get('defteam')}` "
+        f"(home `{prov.get('home_team')}`)",
+        f"* Historical play_type: `{prov.get('play_type')}` "
+        f"(mapped action: `{play.get('historical_action')}`)",
+        f"* Truth: **historical** observation (not a model recommendation)",
+        "",
+        "## Game state (frozen)",
+        "",
+        f"| Field | Value |",
+        f"| --- | ---: |",
+        f"| score_differential | {summary['score_differential']} |",
+        f"| yardline_100 | {summary['yardline_100']} |",
+        f"| distance (ydstogo) | {summary['distance']} |",
+        f"| game_seconds_remaining | {summary['game_seconds_remaining']} |",
+        f"| half_seconds_remaining | {play['situation'].get('half_seconds_remaining')} |",
+        f"| qtr | {play['situation'].get('qtr')} |",
+        "",
+        "## Empirics (visible with values)",
+        "",
+        f"* Training seasons: `{emp.get('seasons')}` (REG only; **not** 2023+)",
+        f"* Sample sizes: n_go={emp.get('n_go')}, n_fg={emp.get('n_fg')}, "
+        f"n_punt={emp.get('n_punt')}",
+        "",
+        "## Model action values (counterfactual)",
+        "",
+        f"| Action | WP value |",
+        f"| --- | ---: |",
+        f"| go | {actions['go']['value_wp']:.4f} |",
+        f"| fg | {actions['fg']['value_wp']:.4f} |",
+        f"| punt | {actions['punt']['value_wp']:.4f} |",
+        "",
+        f"**Recommendation:** `{analysis['recommendation']}` "
+        f"(margin={analysis['margin']:.4f}; inconclusive={analysis['inconclusive']})",
+        "",
+        "### Assumptions",
+        "",
+    ]
+    for a in analysis.get("assumptions", []):
+        lines.append(f"* {a}")
+    lines += [
+        "",
+        "### Limitations (not invented away)",
+        "",
+        "* Toy clock (−6s per branch); no timeout / OT / onside strategy",
+        "* Coarse FG make bins; miss spot ≈ previous LOS; kickoff TB proxy at 75",
+        "* Punt → mean opponent yardline only (no return variance / blocked branch)",
+        "* Conversion rates are distance bins from 2019–2021 REG only",
+        "* Margin < 0.01 WP → inconclusive (do not manufacture confidence)",
+    ]
+    sens = payload.get("sensitivity")
+    if sens:
+        b, alt = sens["baseline"], sens["alternate"]
+        lines += [
+            "",
+            "## Sensitivity",
+            "",
+            f"Convert Δ={sens['convert_delta']:+}, make Δ={sens['make_delta']:+}.",
+            "",
+            "| | go | FG | punt | recommendation |",
+            "| --- | ---: | ---: | ---: | --- |",
+            f"| Baseline | {b['actions']['go']['value_wp']:.4f} | "
+            f"{b['actions']['fg']['value_wp']:.4f} | "
+            f"{b['actions']['punt']['value_wp']:.4f} | {b['recommendation']} |",
+            f"| Alternate | {alt['actions']['go']['value_wp']:.4f} | "
+            f"{alt['actions']['fg']['value_wp']:.4f} | "
+            f"{alt['actions']['punt']['value_wp']:.4f} | {alt['recommendation']} |",
+            "",
+            f"Recommendation changed: **{sens['recommendation_changed']}**",
+        ]
+    lines += [
+        "",
+        "## Notes",
+        "",
+    ]
+    for n in payload.get("notes", []):
+        lines.append(f"* {n}")
+    lines.append("")
+    (out / "REPORT.md").write_text("\n".join(lines))
+
+
 def cmd_fourth_down(args: argparse.Namespace) -> int:
     """Offline go/FG/punt analysis using Path A WP + train-season empirics."""
     import json as _json
@@ -708,6 +907,48 @@ def main(argv: list[str] | None = None) -> int:
     p_fd.add_argument("--qtr", type=int, default=4)
     p_fd.add_argument("--report", action="store_true", help="Write multi-example report + sensitivity")
     p_fd.set_defaults(func=cmd_fourth_down)
+
+    p_lab = sub.add_parser(
+        "decision-lab",
+        help="Historical decision lab: freeze a lake 4th-down row → go/FG/punt values",
+    )
+    p_lab.add_argument(
+        "--model",
+        type=str,
+        default=str(REPO_ROOT / "reports" / "wp" / "artifacts" / "wp_model.joblib"),
+    )
+    p_lab.add_argument(
+        "--seasons",
+        type=str,
+        default="2022",
+        help="Comma-separated lake seasons to search (default 2022)",
+    )
+    p_lab.add_argument(
+        "--season-type",
+        type=str,
+        default="REG",
+        help="Filter season_type (default REG; empty string = all)",
+    )
+    p_lab.add_argument("--game-id", type=str, default=None)
+    p_lab.add_argument("--play-id", type=float, default=None)
+    p_lab.add_argument(
+        "--index",
+        type=int,
+        default=0,
+        help="Positional index into filtered 4th-down frame when game_id unset",
+    )
+    p_lab.add_argument("--list", action="store_true", help="List candidate 4th-down plays and exit")
+    p_lab.add_argument("--list-limit", type=int, default=20)
+    p_lab.add_argument("--convert-delta", type=float, default=-0.10)
+    p_lab.add_argument("--make-delta", type=float, default=0.0)
+    p_lab.add_argument("--no-sensitivity", action="store_true")
+    p_lab.add_argument(
+        "--out",
+        type=str,
+        default=None,
+        help="Optional directory for lab_result.json + REPORT.md",
+    )
+    p_lab.set_defaults(func=cmd_decision_lab)
 
     args = parser.parse_args(argv)
     return int(args.func(args))
