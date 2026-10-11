@@ -1,0 +1,65 @@
+{
+  "C": 0.25,
+  "class_values": {
+    "FieldGoal": 3.0,
+    "NoScore": 0.0,
+    "OppFieldGoal": -3.0,
+    "OppSafety": -2.0,
+    "OppTouchdown": -7.0,
+    "Safety": 2.0,
+    "Touchdown": 7.0
+  },
+  "classes": [
+    "Touchdown",
+    "FieldGoal",
+    "Safety",
+    "NoScore",
+    "OppSafety",
+    "OppFieldGoal",
+    "OppTouchdown"
+  ],
+  "data_hash": {
+    "combined_sha256": "5df24dd0ec2ff7f8ae214549b4cc7a0e758a8e989be50c8f9e8993d100a6507b",
+    "season_sha256": {
+      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
+      "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+    }
+  },
+  "era_feature": "excluded_from_production",
+  "feature_names": [
+    "num__down",
+    "num__distance",
+    "num__yardline_100",
+    "num__half_seconds_remaining",
+    "num__posteam_timeouts",
+    "num__defteam_timeouts",
+    "num__is_home_possession",
+    "cat__roof_closed",
+    "cat__roof_dome",
+    "cat__roof_open",
+    "cat__roof_outdoors"
+  ],
+  "gate": "stage_a_audit_pass",
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1"
+  },
+  "seed": 42,
+  "selected_C": 0.25,
+  "train_n": 116218,
+  "train_seasons": [
+    2019,
+    2020,
+    2021
+  ],
+  "val_log_loss_by_C": {
+    "0.25": 1.3360995567698928,
+    "1.0": 1.3361933362018934,
+    "4.0": 1.336309459546224
+  }
+}

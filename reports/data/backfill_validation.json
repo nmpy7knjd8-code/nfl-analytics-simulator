@@ -1,0 +1,494 @@
+{
+  "seasons": {
+    "2019": {
+      "file_sha256": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "sha256_matches_phase1_pin": false,
+      "rows": 47260,
+      "games_canonical": 267,
+      "plays_canonical": 47260,
+      "reg_games": 256,
+      "reg_scrimmage": 38231,
+      "split": "train",
+      "ncols": 372,
+      "manifest": {
+        "source_url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2019.parquet",
+        "retrieval_timestamp_utc": "2026-10-11T17:50:31+00:00",
+        "package_version": "0.1.5",
+        "pinned_sha256": "60c3067017db2d28a78f66a79b657268be8578d9a5288e6a827efdcd7fe42540"
+      },
+      "missingness_reg_scrimmage": {
+        "down": 0.0,
+        "ydstogo": 0.0,
+        "yardline_100": 0.0,
+        "half_seconds_remaining": 0.0,
+        "posteam": 0.0,
+        "home_team": 0.0,
+        "roof": 0.0
+      }
+    },
+    "2020": {
+      "file_sha256": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "sha256_matches_phase1_pin": false,
+      "rows": 47705,
+      "games_canonical": 269,
+      "plays_canonical": 47705,
+      "reg_games": 256,
+      "reg_scrimmage": 37980,
+      "split": "train",
+      "ncols": 372,
+      "manifest": {
+        "source_url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2020.parquet",
+        "retrieval_timestamp_utc": "2026-10-11T17:50:34+00:00",
+        "package_version": "0.1.5",
+        "pinned_sha256": "8889f5d8782b5c5dce3c3644acdc0322b228a7e9cb13fa36cbac250e260e9f60"
+      },
+      "missingness_reg_scrimmage": {
+        "down": 0.0,
+        "ydstogo": 0.0,
+        "yardline_100": 0.0,
+        "half_seconds_remaining": 0.0,
+        "posteam": 0.0,
+        "home_team": 0.0,
+        "roof": 0.0
+      }
+    },
+    "2021": {
+      "file_sha256": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "sha256_matches_phase1_pin": false,
+      "rows": 49922,
+      "games_canonical": 285,
+      "plays_canonical": 49922,
+      "reg_games": 272,
+      "reg_scrimmage": 40007,
+      "split": "train",
+      "ncols": 372,
+      "manifest": {
+        "source_url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2021.parquet",
+        "retrieval_timestamp_utc": "2026-10-11T17:50:37+00:00",
+        "package_version": "0.1.5",
+        "pinned_sha256": "333ad34378e5339d5172717cc83378e908daf02c8699416ab3e17c2ec10f78d8"
+      },
+      "missingness_reg_scrimmage": {
+        "down": 0.0,
+        "ydstogo": 0.0,
+        "yardline_100": 0.0,
+        "half_seconds_remaining": 0.0,
+        "posteam": 0.0,
+        "home_team": 0.0,
+        "roof": 0.0
+      }
+    },
+    "2022": {
+      "file_sha256": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
+      "sha256_matches_phase1_pin": false,
+      "rows": 49434,
+      "games_canonical": 284,
+      "plays_canonical": 49434,
+      "reg_games": 271,
+      "reg_scrimmage": 39704,
+      "split": "val",
+      "ncols": 372,
+      "manifest": {
+        "source_url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.parquet",
+        "retrieval_timestamp_utc": "2026-10-11T17:50:40+00:00",
+        "package_version": "0.1.5",
+        "pinned_sha256": "931121d8897779d7944e2a293e92ed8799c8e5cceef84096ac42339003fedc09"
+      },
+      "missingness_reg_scrimmage": {
+        "down": 0.0,
+        "ydstogo": 0.0,
+        "yardline_100": 0.0,
+        "half_seconds_remaining": 0.0,
+        "posteam": 0.0,
+        "home_team": 0.0,
+        "roof": 0.0
+      }
+    },
+    "2023": {
+      "file_sha256": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d",
+      "sha256_matches_phase1_pin": true,
+      "rows": 49665,
+      "games_canonical": 285,
+      "plays_canonical": 49665,
+      "reg_games": 272,
+      "reg_scrimmage": 40031,
+      "split": "test",
+      "ncols": 372,
+      "manifest": {
+        "source_url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.parquet",
+        "retrieval_timestamp_utc": "2026-10-11T17:47:55+00:00",
+        "package_version": "0.1.5",
+        "pinned_sha256": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+      },
+      "missingness_reg_scrimmage": {
+        "down": 0.0,
+        "ydstogo": 0.0,
+        "yardline_100": 0.0,
+        "half_seconds_remaining": 0.0,
+        "posteam": 0.0,
+        "home_team": 0.0,
+        "roof": 0.0
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "2023_raw_pin_unchanged",
+      "ok": true,
+      "detail": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+    },
+    {
+      "name": "2019_raw_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_manifest_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_games_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_plays_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_manifest_sha_matches_file",
+      "ok": true,
+      "detail": "d14de5d1beebf223"
+    },
+    {
+      "name": "2019_row_count_pin",
+      "ok": true,
+      "detail": "47260"
+    },
+    {
+      "name": "2019_package_pin",
+      "ok": true,
+      "detail": "0.1.5"
+    },
+    {
+      "name": "2019_game_id_unique_games",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_play_id_unique_in_game",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_plays_game_id_subset",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2019_key_missingness_near_zero",
+      "ok": true,
+      "detail": "{'down': 0.0, 'ydstogo': 0.0, 'yardline_100': 0.0, 'half_seconds_remaining': 0.0, 'posteam': 0.0, 'home_team': 0.0, 'roof': 0.0}"
+    },
+    {
+      "name": "2020_raw_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_manifest_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_games_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_plays_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_manifest_sha_matches_file",
+      "ok": true,
+      "detail": "324cef331f3c6b91"
+    },
+    {
+      "name": "2020_row_count_pin",
+      "ok": true,
+      "detail": "47705"
+    },
+    {
+      "name": "2020_package_pin",
+      "ok": true,
+      "detail": "0.1.5"
+    },
+    {
+      "name": "2020_game_id_unique_games",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_play_id_unique_in_game",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_plays_game_id_subset",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2020_key_missingness_near_zero",
+      "ok": true,
+      "detail": "{'down': 0.0, 'ydstogo': 0.0, 'yardline_100': 0.0, 'half_seconds_remaining': 0.0, 'posteam': 0.0, 'home_team': 0.0, 'roof': 0.0}"
+    },
+    {
+      "name": "2021_raw_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_manifest_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_games_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_plays_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_manifest_sha_matches_file",
+      "ok": true,
+      "detail": "e4dd2e160522ed35"
+    },
+    {
+      "name": "2021_row_count_pin",
+      "ok": true,
+      "detail": "49922"
+    },
+    {
+      "name": "2021_package_pin",
+      "ok": true,
+      "detail": "0.1.5"
+    },
+    {
+      "name": "2021_game_id_unique_games",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_play_id_unique_in_game",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_plays_game_id_subset",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2021_key_missingness_near_zero",
+      "ok": true,
+      "detail": "{'down': 0.0, 'ydstogo': 0.0, 'yardline_100': 0.0, 'half_seconds_remaining': 0.0, 'posteam': 0.0, 'home_team': 0.0, 'roof': 0.0}"
+    },
+    {
+      "name": "2022_raw_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_manifest_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_games_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_plays_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_manifest_sha_matches_file",
+      "ok": true,
+      "detail": "e7c1b53b14afd073"
+    },
+    {
+      "name": "2022_row_count_pin",
+      "ok": true,
+      "detail": "49434"
+    },
+    {
+      "name": "2022_package_pin",
+      "ok": true,
+      "detail": "0.1.5"
+    },
+    {
+      "name": "2022_game_id_unique_games",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_play_id_unique_in_game",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_plays_game_id_subset",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2022_key_missingness_near_zero",
+      "ok": true,
+      "detail": "{'down': 0.0, 'ydstogo': 0.0, 'yardline_100': 0.0, 'half_seconds_remaining': 0.0, 'posteam': 0.0, 'home_team': 0.0, 'roof': 0.0}"
+    },
+    {
+      "name": "2023_raw_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_manifest_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_games_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_plays_exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_manifest_sha_matches_file",
+      "ok": true,
+      "detail": "b8417df9501f7f96"
+    },
+    {
+      "name": "2023_row_count_pin",
+      "ok": true,
+      "detail": "49665"
+    },
+    {
+      "name": "2023_package_pin",
+      "ok": true,
+      "detail": "0.1.5"
+    },
+    {
+      "name": "2023_game_id_unique_games",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_play_id_unique_in_game",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_plays_game_id_subset",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2023_key_missingness_near_zero",
+      "ok": true,
+      "detail": "{'down': 0.0, 'ydstogo': 0.0, 'yardline_100': 0.0, 'half_seconds_remaining': 0.0, 'posteam': 0.0, 'home_team': 0.0, 'roof': 0.0}"
+    },
+    {
+      "name": "schema_match_2019_vs_2019",
+      "ok": true,
+      "detail": "ncols=372"
+    },
+    {
+      "name": "schema_match_2020_vs_2019",
+      "ok": true,
+      "detail": "ncols=372"
+    },
+    {
+      "name": "schema_match_2021_vs_2019",
+      "ok": true,
+      "detail": "ncols=372"
+    },
+    {
+      "name": "schema_match_2022_vs_2019",
+      "ok": true,
+      "detail": "ncols=372"
+    },
+    {
+      "name": "schema_match_2023_vs_2019",
+      "ok": true,
+      "detail": "ncols=372"
+    },
+    {
+      "name": "reg_scrimmage_train",
+      "ok": true,
+      "detail": "116218 vs 116218"
+    },
+    {
+      "name": "reg_scrimmage_val",
+      "ok": true,
+      "detail": "39704 vs 39704"
+    },
+    {
+      "name": "reg_scrimmage_test",
+      "ok": true,
+      "detail": "40031 vs 40031"
+    },
+    {
+      "name": "reg_games_train",
+      "ok": true,
+      "detail": "784"
+    },
+    {
+      "name": "reg_games_val",
+      "ok": true,
+      "detail": "271"
+    },
+    {
+      "name": "reg_games_test",
+      "ok": true,
+      "detail": "272"
+    },
+    {
+      "name": "duckdb_games_seasons",
+      "ok": true,
+      "detail": "[2019, 2020, 2021, 2022, 2023]"
+    },
+    {
+      "name": "duckdb_plays_total",
+      "ok": true,
+      "detail": "243986"
+    }
+  ],
+  "ok": true,
+  "aggregates": {
+    "reg_scrimmage": {
+      "train": 116218,
+      "val": 39704,
+      "test": 40031
+    },
+    "reg_games": {
+      "train": 784,
+      "val": 271,
+      "test": 272
+    }
+  }
+}

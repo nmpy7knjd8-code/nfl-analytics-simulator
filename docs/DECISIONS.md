@@ -74,8 +74,18 @@
 * **Status:** Accepted
 * **Decision:** Tag `pbp` mutates; Phase 2 manifests must store sha256 + timestamp.json (values in DATA_EXPERIMENT).
 
+## D014 — EP/EPA Stage A audit gate (2026-10-11)
+
+* **Status:** Accepted
+* **Decision:**
+  * Merge audited Stage A as one unit ([PR #3](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/3)); do not merge PR #2 as-is.
+  * Keep project EPA convention; do **not** chase nflfastR bit-parity for this milestone.
+  * Exclude optional `era_post_2020` from production model; preserve ablation in reports.
+  * Focused public-model reconciliation is sufficient when internal identities pass and remaining diffs are explained.
+  * Sequence after merge: WP → historical decision lab (4th down) → live adapters last.
+  * Do not use 2023 holdout to tune conventions or features.
+* **Evidence:** `reports/ep/AUDIT.md`, `reconciliation_2022.json`.
+
 ## Open decisions (user)
 
-1. GitHub visibility (public/private) and exact repo name once auth available — see `PUSH_WHEN_AUTH.md`.
-2. Phase 2 import: 2023 smoke-first vs all five seasons immediately (architect recommends smoke then backfill).
-3. Confirm Stage A EP = sklearn multinomial (catalog) vs “reference columns only” for first UI replay (can do both: columns for replay, sklearn for Phase 3).
+1. Approve starting Phase 4 situation WP after PR #3 merges (project stop-gate).

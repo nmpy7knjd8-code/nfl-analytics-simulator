@@ -8,26 +8,31 @@ Phase gates: tests + report + **user approval** before next phase.
 * Research + data docs adopted; contracts + tests
 * GitHub docs + Pages hub
 
-## Phase 2 — Historical ingest + API + minimal replay UI ← **STOP HERE**
+## Phase 2 — Historical ingest + API + minimal replay UI ✓
 
-**Scope: historical replay only.** No model training. No situational decision support.
+**Scope: historical replay only.** Merged to `main` (PR #1).
 
-* `nflreadpy==0.1.5` import with Path `cache_dir`; pin sha256 + row count in season manifest
-* **2023** smoke season → immutable raw Parquet + canonical games/plays Parquet + DuckDB
-* FastAPI: list games, get game, ordered plays (pagination)
-* Next.js Game Explorer: historical game list + PBP replay; truth chip **Historical**; reference ep/epa/wp labeled as imported nflverse columns
-* Tests: projection/derive, API contracts, real 2023 ingest + known game replay
-* **Not in Phase 2:** EP/EPA/WP training, live feeds, Strategy Lab, 4th-down / clock recommendations
+* `nflreadpy==0.1.5`; pinned 2023 raw + canonical lake + DuckDB
+* FastAPI games/plays; Next.js Game Explorer; reference columns labeled
 
-## Phase 3 — Stage A EP → EPA
+## Phase 3 — Stage A EP → EPA ← **AUDIT GATE PASS / MERGE-READY**
 
-* sklearn multinomial EP; EPA transform; compare to reference columns
-* Metrics under `/reports/`; chronological splits
+* `EP_MODEL_SPEC.md` → leakage-safe sklearn multinomial EP (era feature **excluded**) → deterministic EPA
+* Backfill 2019–2022; chrono split enforced; held-out 2023 report under `/reports/ep/`
+* Audit fixes: half-boundary terminal EPA, XP/2PT label exclusion, API safety
+* Focused nflverse reconciliation on val 2022 — post-score EPA gap = **convention** (parity not required)
+* Merge unit: [PR #3](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/3) (`cursor/ep-epa-audit-d4ea`); do **not** merge PR #2 as-is
+* Report: `reports/ep/AUDIT.md`
 
-## Phase 4 — Situation WP + empirical sampling stubs
+### Public-model comparison (closed for Stage A)
+
+Focused reconciliation complete for target definition, scoring attribution, terminals, possession changes, error decomposition. Exact nflfastR bit-parity **deferred**; reopen only if a likely defect appears. Does **not** block WP.
+
+## Phase 4 — Situation WP + empirical sampling stubs  ← **NEXT after merge**
 
 * WP without odds; MODEL_VALIDATION reporting
 * Empirical resample stubs for sim paths
+* No live adapters; no decision-lab recommendations in this phase
 
 ## Phase 5 — Simulation engine + UI workflow
 
@@ -36,10 +41,15 @@ Phase gates: tests + report + **user approval** before next phase.
 
 ## Phase 6 — Strategy / decision lab (user priority)
 
-Situational decision support on top of validated EP/EPA/WP and the rules engine — **not** Phase 2 work.
+Situational decision support on top of validated EP/EPA/WP and the rules engine — **not** Phase 2/3 work.
 
 * Fourth-down: go vs punt vs field goal (nfl4th-inspired; disclose simplifications)
 * Clock management: timeout use, spike/kneel, end-of-half / two-minute choices
 * Compare options under EP vs win-probability objectives (they can disagree)
 * Label outputs clearly: historical observation vs model prediction vs counterfactual simulation
 * UI: Strategy Lab + Situation Lab decision panels per UI_SCREEN_SPECS
+
+## Later — Live adapters (deferred)
+
+* After WP + decision lab foundations only
+* Separate from finalized historical lake; no new providers in Stage A/WP start

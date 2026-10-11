@@ -1,0 +1,84 @@
+{
+  "accounting_identity_train_sample": {
+    "exclusions": [
+      "timeouts (EPA\u22610)",
+      "possession-change plays (sign-flip; not telescoping in posteam EP units)",
+      "null-down / admin rows between snaps (not part of next-scrimmage chain)",
+      "intervals where ep_after[i] \u2260 ep_before[i+1] (non-contiguous next-scrimmage)",
+      "realized next-score cashing \u03a3EPA=R\u2212EP0 (not Stage A convention)",
+      "2023 holdout (never used for this diagnostic tuning)"
+    ],
+    "games_checked": 40,
+    "pass": true,
+    "plays_in_checked_chains": 5196,
+    "same_possession_telescoping": {
+      "fail": 0,
+      "ok": 776
+    },
+    "skipped_discontinuous_starts": 0,
+    "terminal_telescoping": {
+      "fail": 0,
+      "ok": 80
+    }
+  },
+  "epa_convention": "possession_aware_sign_flip_no_score_cash",
+  "epa_mae_slices_validate": {
+    "classification_notes": {
+      "possession_change_after_score": "Intentional convention gap vs nflfastR: Stage A jumps to next same-half scrimmage EP (often post-kickoff) and does not cash R into ep_after; nflfastR uses kickoff/touchback EP special cases.",
+      "possession_change_non_score": "Mix of turnovers on downs / punts / interceptions without score. Sign-flip identity (-ep_after - ep_before) is tested; residual MAE may reflect EP level differences vs reference, not EPA identity bugs.",
+      "same_possession_non_terminal": "Healthy agreement band when conventions align (target \u22480.3\u20130.4 MAE)."
+    },
+    "kick_related_play_type": {
+      "mae": null,
+      "n": 0
+    },
+    "overall": {
+      "mae": 0.6761616446409716,
+      "n": 39704
+    },
+    "possession_change_after_score": {
+      "mae": 6.4749655197922475,
+      "n": 2030
+    },
+    "possession_change_all": {
+      "mae": 2.8240501901930273,
+      "n": 5263
+    },
+    "possession_change_non_score": {
+      "mae": 0.53164124522352,
+      "n": 3233
+    },
+    "same_possession_non_terminal": {
+      "mae": 0.3373022577146609,
+      "n": 33899
+    },
+    "terminal": {
+      "mae": 1.0131670730072806,
+      "n": 542
+    },
+    "timeout": {
+      "mae": null,
+      "n": 0
+    }
+  },
+  "gate": "Internal EPA identities pass; remaining possession-change MAE vs nflverse explained as convention (esp. post-score) \u2014 not blocking WP if no new defect found",
+  "holdout_2023_unused": true,
+  "intentional_convention_diffs": [
+    "No kickoff/touchback EP special-case layer; next state = next same-half scrimmage",
+    "Scoring plays do not cash R into ep_after (\u03a3EPA \u2260 R \u2212 EP0 by design)",
+    "XP/2PT are not independent next-score labels (TD = +7 folds try)",
+    "OT bundled into second-half labeling bucket"
+  ],
+  "nflfastr_bit_parity_required": false,
+  "scope": "focused_reconciliation_stage_a",
+  "seasons_for_agreement_slices": [
+    2022
+  ],
+  "seasons_for_identity_sample": [
+    2019,
+    2020,
+    2021
+  ],
+  "target_definition": "next_score_in_half_7class_posteam_perspective",
+  "unresolved_defects": []
+}

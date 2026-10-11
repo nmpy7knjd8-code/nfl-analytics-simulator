@@ -1,6 +1,6 @@
 # NFL Analytics — handoff hub
 
-**Single checklist for progress and accuracy.** Last updated: 2026-10-11 (Phase 2 complete locally).
+**Single checklist for progress and accuracy.** Last updated: 2026-10-11 (EP/EPA audit gate **PASS** — Stage A merge-ready).
 
 | Link | What it is |
 | --- | --- |
@@ -8,7 +8,9 @@
 | [GitHub Pages hub](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/) | Published docs site |
 | [Phase 2 review (Pages)](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/PHASE2_REVIEW) | Public accuracy check page |
 | [HANDOFF (Pages)](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/HANDOFF) | This checklist on Pages |
-| [PHASE2_REVIEW.md](PHASE2_REVIEW.md) | Review pack in-repo |
+| [EP audit (repo)](../reports/ep/AUDIT.md) | Gate report — merge readiness |
+| [EP_MODEL_SPEC.md](EP_MODEL_SPEC.md) | Stage A target / EPA semantics |
+| [DATA_PIN_NOTES.md](DATA_PIN_NOTES.md) | Lake pins + digest drift |
 
 ---
 
@@ -18,11 +20,11 @@
 | --- | --- | --- |
 | Scope | NFL only; no betting/odds MVP | [AGENTS.md](AGENTS.md) |
 | Phase 1 | Contracts + docs complete | below |
-| Phase 2 | **Complete locally** — 2023 historical ingest + ordered play replay | reproduce commands below |
-| Phase 2 product scope | **Historical replay only** | not a decision lab |
-| Decision lab (4th / clock / strategy) | Planned **Phase 6** after EP/EPA/WP + sim | [ROADMAP.md](ROADMAP.md) |
-| Models trained | **Not started** | do not treat as validated |
-| Next milestone | Phase 3 Stage A EP → EPA (after your approval) | [ROADMAP.md](ROADMAP.md) |
+| Phase 2 | **Complete** — 2023 historical ingest + ordered play replay on `main` | PR #1 merged |
+| Phase 3 Stage A | **Audit gate PASS — merge-ready** via PR #3 (do not merge PR #2 as-is) | [`reports/ep/AUDIT.md`](../reports/ep/AUDIT.md) |
+| Decision lab (4th / clock / strategy) | Planned **after WP** | [ROADMAP.md](ROADMAP.md) |
+| Models trained | Sklearn multinomial EP (**no era feature**) + deterministic EPA | not nflfastR parity |
+| Next milestone | Merge audited Stage A → Phase 4 situation WP | [ROADMAP.md](ROADMAP.md) |
 
 ---
 
@@ -38,74 +40,102 @@
 
 ---
 
-## What works (Phase 2)
+## Merge status (actual)
 
-1. `python -m nfl_sim.ingest --season 2023` downloads via nflreadpy 0.1.5, writes immutable raw Parquet + `manifest.json` (URL, UTC timestamp, package version, sha256, row count), projects canonical games/plays Parquet, builds DuckDB.
-2. FastAPI: `GET /games`, `GET /games/{id}`, `GET /games/{id}/plays` (ordered, paginated). Reference ep/epa/wp nested under `reference` with disclaimer.
-3. Next.js Game Explorer lists 2023 games and replays PBP with **Historical** truth chips; does not imply project-trained models.
-4. Known game replay verified: `2023_01_DET_KC` (DET @ KC, week 1).
+| PR | Branch | Role | Action |
+| --- | --- | --- | --- |
+| [#2](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/2) | `cursor/stage-a-ep-epa-0cca` | Stage A without audit fixes | **Do not merge as-is** — close when #3 lands |
+| [#3](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/3) | `cursor/ep-epa-audit-d4ea` | **Stacked on #2** + audit + gate decisions | **Merge unit** → `main` |
 
-### Reproduce
-
-```bash
-cd backend
-python3 -m pip install -e ".[dev,phase2]"
-python -m nfl_sim.ingest --season 2023
-pytest -q
-python -m nfl_sim.api          # http://127.0.0.1:8000
-
-cd ../frontend
-npm install
-npm run typecheck && npm test
-npm run dev                    # http://localhost:3000/games
-```
-
-### Tests last run (this agent)
-
-| Suite | Result |
-| --- | --- |
-| Backend `pytest` | **16 passed** (contracts, derive/project, API, real 2023 integration) |
-| Frontend `npm test` | **2 passed** (contract shapes) |
-| Frontend `npm run typecheck` | **pass** |
-| Frontend `npm run build` | **pass** |
-
-### Data pin note
-
-nflverse release tag `pbp` is mutable. Phase 2 pin for 2023: sha256 `b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d`, **49,665** rows (same row count as Phase 1 DATA_EXPERIMENT; digest drifted from earlier `bd348473…`). Manifest records retrieval timestamp and prior pin.
+PR #3 is not independent of #2; it contains Stage A commits plus audit/gate work. Merge #3 only.
 
 ---
 
-## Limitations
+## What works (Phase 3 Stage A — audited)
 
-- Only **2023** ingested (not full 2019–2023 backfill).
-- No situation-at-play dedicated endpoint beyond fields on each play row.
-- No trained EP/EPA/WP models; UI shows imported reference columns only.
-- No live providers.
-- **No** clock management, 4th-down go/punt/FG, or strategy comparison UI/API (Phase 6).
-- GitHub push/PR requires `GH_TOKEN` / `gh auth` (no chat-pasted tokens).
+1. `docs/EP_MODEL_SPEC.md` defines next-score-in-half target, eligibility, leakage bans, EPA possession semantics.
+2. Lake backfill **2019–2022** + preserved 2023 pin (`b8417df9…`); see `DATA_PIN_NOTES.md`.
+3. Sklearn multinomial EP **without** `era_post_2020`; `C` on **2022 only**; 2023 held out.
+4. Deterministic `model_epa` with timeout / terminal / same-possession / possession-change (half-boundary fix).
+5. XP/2PT excluded from next-score labels; API hardened (no caller `model_path`).
+6. Accounting identities pass on synthetic + train-season contiguous next-scrimmage chains.
+7. Focused nflverse reconciliation: post-score possession-change MAE is **convention**, not silent “fix.”
+8. Reports: `reports/ep/AUDIT.md`, `EVALUATION.md`, `reconciliation_2022.json`, `DISCREPANCY_BACKLOG.md`.
+
+### Headline metrics (held-out test 2023 — report only; not tuned)
+
+| Metric | Model | Constant baseline |
+| --- | ---: | ---: |
+| log_loss | 1.314 | 1.539 |
+| Brier multiclass | 0.677 | 0.761 |
+| MAE vs reference `ep` | 0.368 | agreement only |
+| MAE vs reference `epa` | 0.669 | agreement only |
+
+Val 2022 model log_loss **1.336** (era excluded). Ablation with-era 1.337 preserved in `baselines_2022.json`.
+
+### Reproduce Stage A
+
+```bash
+cd backend
+python3 -m pip install -e ".[dev,phase2,models]"
+python3 -m nfl_sim.ingest --seasons 2019,2020,2021,2022   # if lake empty; 2023 pin preserved
+python3 -m nfl_sim.models train --out ../reports/ep --include-test
+python3 -m nfl_sim.models reconcile --out ../reports/ep/reconciliation_2022.json
+pytest -q
+```
+
+### Tests last run (gate agent)
+
+| Suite | Result |
+| --- | --- |
+| Backend `pytest` | **54 passed** |
+| Frontend `npm test` | **2 passed** |
+| Frontend `npm run typecheck` | **pass** |
+| Accounting identity (train sample) | **pass** (`reconciliation_2022.json`) |
+
+---
+
+## What works (Phase 2)
+
+1. `python -m nfl_sim.ingest --season 2023` → immutable raw + manifest + canonical + DuckDB.
+2. FastAPI games/plays; reference ep/epa/wp namespaced.
+3. Next.js Game Explorer with **Historical** truth chips.
+4. Known game: `2023_01_DET_KC`.
+
+---
+
+## Limitations / open gaps
+
+- EP/EPA **approximated**; largest reference gap = **EPA after scoring plays** (val MAE≈6.47 on that slice vs ≈0.34 same-possession). Explained convention — see `AUDIT.md` §4.
+- UI still shows imported reference columns for replay (model score API optional).
+- Situation WP not trained.
+- No live providers; no Strategy / decision lab.
+- CI workflow proposed at `reports/ep/ci-workflow-proposed.yml` (needs `workflow` token scope to install).
 
 ---
 
 ## What is explicitly NOT done
 
-- Trained/calibrated EP, EPA, or WP models  
+- nflfastR / fastrmodels bit-parity  
+- Situation WP  
 - Live data providers  
-- Full Strategy Lab UI  
-- Fourth-down / clock **recommendations** (Phase 6)  
-- Phase 3+  
+- Full Strategy Lab / 4th-down / clock **recommendations**  
+- Complex ML / new data providers  
 
 ---
 
-## Decisions still needed from you
+## Explicit gate for beginning WP
 
-1. Approve Phase 2 before Phase 3 (EP/EPA training)  
-2. Whether to backfill 2019–2022 next or go straight to Phase 3 on 2023 test season  
-3. Use environment secret `GH_TOKEN` for pushes (rotate any chat-pasted PAT)  
+After audited Stage A is on `main`:
+
+1. Internal EPA identities pass under project conventions (**yes** on current head).  
+2. Remaining nflverse diffs explained (post-score convention) — exact parity **not** required.  
+3. User phase approval before expanding scope.  
+4. Sequence: **WP → historical decision lab (4th down) → live adapters last.**  
+5. Do **not** use 2023 to tune conventions/features.
 
 ---
 
 ## Product goal — situational decisions (later)
 
-Answer **what to do** in situations (clock management, 4th-down go/punt/FG, and similar), not only replay history. That is **Phase 6 (Strategy / decision lab)** after historical replay, validated EP/EPA, WP, and seeded simulation. Until then, those choices stay design requirements — not fake recommendations. See [ROADMAP.md](ROADMAP.md).
-
-**Phase 2 delivers historical game selection + ordered play inspection only.**
+Answer **what to do** in situations (clock, 4th-down, etc.) after EP/EPA/WP + sim. Until then, no fake recommendations. Live adapters stay separate from finalized historical records.

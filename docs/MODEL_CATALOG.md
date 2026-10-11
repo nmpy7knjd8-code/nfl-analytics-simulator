@@ -3,9 +3,7 @@
 **Scope:** NFL only · local CPU · no paid sources · no betting/odds features in MVP  
 **Experiment:** train 2019–2021 · validate 2022 · test 2023  
 **Stack default:** scikit-learn first; XGBoost only if justified on validate metrics  
-**Status:** Catalog + baselines only. **No reproduction claimed. No invented benchmarks.**
-
-Lead: copy this file into the GitHub repo `docs/` when the repo exists.
+**Status:** Stage A EP/EPA **implemented (approximated)** per `EP_MODEL_SPEC.md`. **No nflfastR bit-parity.** See `/reports/ep/`.
 
 ---
 
@@ -34,11 +32,13 @@ Lead: copy this file into the GitHub repo `docs/` when the repo exists.
 
 **License:** Methodology papers as published; fastrmodels/nflfastR MIT; our training data CC BY 4.0 with attribution.
 
-**Reproducibility:** Published `ep` = **reference-only**. Our sklearn retrain = **approximated** until metrics are recorded. OSF LOSO figures = **unreproducible** here until re-run.
+**Reproducibility:** Published `ep` = **reference agreement only**. Our sklearn retrain = **approximated**. OSF LOSO figures = **unreproducible** here until re-run.
 
-**Simplest baseline:** `sklearn.linear_model.LogisticRegression` (multinomial / one-vs-rest) on the 7-class next-score label constructed from chronological PBP; EP = Σ p_k · points_k with points ∈ {7,3,2,0,−2,−3,−7}.
+**Simplest baseline:** `sklearn.linear_model.LogisticRegression` on the 7-class next-score label; EP = Σ p_k · points_k with points ∈ {7,3,2,0,−2,−3,−7}. CLI: `python -m nfl_sim.models train|eval|score`.
 
-**Tests (planned, not run):** Feature leakage check; class probs sum ≈ 1; val-2022 log loss / Brier / calibration vs constant and vs published `ep` as reference.
+**Implementation (2026-10-11, audited):** Train n=116,218; **era feature excluded**; val log_loss≈1.336 / Brier≈0.687; held-out 2023 log_loss≈1.314 / Brier≈0.677; MAE vs reference `ep`≈0.368 (agreement only). Details: `reports/ep/EVALUATION.md`, `AUDIT.md`.
+
+**Tests (run):** Leakage guard; split gate; proba sum≈1; label construction; toy train.
 
 **Defer:** XGBoost EP, player-adjusted EP, weather beyond roof.
 
@@ -58,11 +58,13 @@ Lead: copy this file into the GitHub repo `docs/` when the repo exists.
 
 **Reproducibility:** Matching published `epa` bit-for-bit = not claimed. Rule port = **approximated**.
 
-**Simplest baseline:** `epa = ep_end - ep_start` on non-special plays; document and unit-test each special case; compare distribution/MAE to reference `epa` on validate 2022.
+**Simplest baseline:** Possession-aware transform of model EP (`EP_MODEL_SPEC.md` §6); store as `model_epa` only.
 
-**Tests (planned):** Possession-change sign; timeout → 0; no silent overwrite of historical `epa` column (store ours as `model_epa`).
+**Implementation (2026-10-11, audited):** Wired; val MAE vs reference `epa`≈0.676 overall; possession-change ≈2.82 with **after-score ≈6.47** (convention) vs non-score ≈0.53; same-possession ≈0.34 — `AUDIT.md`, `reconciliation_2022.json`.
 
-**Defer:** Opponent-adjusted EPA, player EPA/WAR (Yurko nflWAR).
+**Tests (run):** Possession-change sign; timeout → 0; terminal; vectorized + train-season telescoping identities.
+
+**Defer:** Opponent-adjusted EPA, player EPA/WAR (Yurko nflWAR); full nflfastR special-case parity (not required for WP gate).
 
 ---
 

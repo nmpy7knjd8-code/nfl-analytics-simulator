@@ -1,0 +1,16 @@
+{
+  "era_feature": "excluded_from_production",
+  "identity_pass_train_sample": true,
+  "n": 39704,
+  "poss_change_after_score_mae": 6.4749655197922475,
+  "poss_change_after_score_n": 2030,
+  "poss_change_mae": 2.8240501901930273,
+  "poss_change_n": 5263,
+  "poss_change_non_score_mae": 0.53164124522352,
+  "poss_change_non_score_n": 3233,
+  "same_possession_mae": 0.3373022577146609,
+  "same_possession_n": 33899,
+  "terminal_mae": 1.0131670730072806,
+  "terminal_n": 542,
+  "val_2022_epa_mae_overall": 0.6761616446409716
+}
