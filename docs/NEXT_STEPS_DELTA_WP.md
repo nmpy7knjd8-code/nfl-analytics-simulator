@@ -1,36 +1,31 @@
-# Delta summary + next steps (after WP Path A prototype)
+# Delta summary + next steps (WP calibration)
 
 **Date:** 2026-10-11  
-**Branch tip:** `cursor/wp-prototype-8ade`  
-**Base:** `main` @ `559e7dc`
+**PR:** [#8](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/8) · branch `cursor/wp-prototype-8ade`
 
-## What landed
+## Measured calibration (validate 2022, OOF primary)
 
-* Path A situation WP (logistic): train 2019–2021, select C on 2022, report-only 2023
-* Spec, leakage/split tests, constant + score/time baselines, `reports/wp/` metrics from a real run
-* EP labeled rebuild SHA verified; **not** loaded; Convention B untouched
+Command: `python3 -m nfl_sim.models wp-calibrate --out ../reports/wp --C 0.25 --folds 5`
 
-## Headline numbers (validate 2022)
+| Estimator | Log loss | Brier | ECE (decile) |
+| --- | ---: | ---: | ---: |
+| Uncalibrated (frozen C=0.25) | 0.574927 | 0.196110 | 0.054501 |
+| Platt OOF | 0.571387 | 0.195414 | 0.045597 |
+| Isotonic OOF | 0.564082 | 0.192579 | 0.002231 |
 
-| Model | Log loss | Brier |
-| --- | ---: | ---: |
-| WP logistic (C=0.25) | 0.575 | 0.196 |
-| Score+time baseline | 0.579 | 0.198 |
-| Constant | 0.693 | 0.250 |
+* Train 2019–2021 only for base WP; calibrator 5-fold OOF on 2022 only; **no 2023**.  
+* Original uncalibrated eval preserved.  
+* **Calibration recommendation:** `improved` — keep **isotonic OOF** as a **separate candidate**; do not replace the Path A uncalibrated artifact as the sole report.
 
-Full write-up: [`reports/wp/EVALUATION.md`](../reports/wp/EVALUATION.md)
+## PR #8 merge call
 
-## Approvals / decisions still open
+**Ready to merge** for the Path A WP prototype (code + tests + uncalibrated metrics). Calibration tooling/results can land in the same PR; calibrated model is optional follow-on, not a merge blocker.
 
-1. Merge WP prototype PR when review is satisfied  
-2. Keep EP labeled rebuild isolated vs promote later (still open; not required for Path A)  
-3. Close PR #5 separately (superseded by #7) — not part of WP  
-4. Whether to pursue Path B (EP-as-feature via **explicit** joblib path only)
+## Single best next product step
 
-## Single best next step
+Author a thin **offline analytical 4th-down** module design→impl that scores go / FG / punt via WP transitions, adding empirical conversion / FG-make / punt-net estimates (WP alone cannot supply those). No live/odds.
 
-**Calibrate on validate 2022 only** (e.g. sklearn `CalibratedClassifierCV` / isotonic on val folds that never see 2023) and re-report Brier/log-loss vs the current linear WP — or, if calibration is already acceptable in `calibration_val.csv`, authorize a thin analytical 4th-down Milestone C design that consumes WP (+ EP via explicit path) with disclosed simplifications.
+## Approval needed
 
-## Out of scope until authorized
-
-External WP benchmarks, live providers, odds features, silent EP retrain/promotion, tuning on 2023–2025.
+1. Merge PR #8 (yes/no).  
+2. Whether to persist an isotonic-calibrated WP candidate artifact later (optional; not required before 4th-down design/impl).

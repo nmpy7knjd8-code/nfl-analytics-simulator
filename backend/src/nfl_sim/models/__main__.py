@@ -318,6 +318,94 @@ def cmd_wp_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_wp_calibrate(args: argparse.Namespace) -> int:
+    """OOF Platt calibration on validate 2022; freeze C; never touch 2023."""
+    from nfl_sim.models.wp_calibration import run_wp_calibration_eval
+
+    out = Path(args.out)
+    cmd = (
+        f"python3 -m nfl_sim.models wp-calibrate --out {out} --C {args.C} --folds {args.folds}"
+    )
+    payload = run_wp_calibration_eval(
+        out_dir=out,
+        C=float(args.C),
+        n_splits=int(args.folds),
+        include_isotonic=not args.skip_isotonic,
+        command=cmd,
+    )
+    _append_wp_calibration_section(out, payload)
+    print(
+        json.dumps(
+            {
+                "out": str(out),
+                "recommendation": payload["recommendation"],
+                "uncalibrated": payload["metrics"]["uncalibrated"],
+                "platt_oof_primary": payload["metrics"]["platt_oof_primary"],
+                "deltas_oof_platt_minus_uncal": payload["deltas_oof_platt_minus_uncal"],
+                "isotonic_justified_vs_platt": payload["isotonic_justified_vs_platt"],
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+def _append_wp_calibration_section(out: Path, payload: dict) -> None:
+    """Append calibration results; preserve original EVALUATION.md body if present."""
+    path = out / "EVALUATION.md"
+    existing = path.read_text() if path.exists() else ""
+    marker = "## Calibration (validate 2022, OOF primary)"
+    if marker in existing:
+        existing = existing.split(marker)[0].rstrip() + "\n\n"
+    elif existing and not existing.endswith("\n"):
+        existing += "\n"
+
+    u = payload["metrics"]["uncalibrated"]
+    p = payload["metrics"]["platt_oof_primary"]
+    sec = payload["metrics"]["platt_in_sample_secondary"]
+    d = payload["deltas_oof_platt_minus_uncal"]
+    lines = [
+        marker,
+        "",
+        f"**Command:** `{payload['command']}`",
+        "",
+        f"Base WP frozen at **C={payload['base_model']['C_frozen']}** "
+        f"(train n={payload['base_model']['train_n']}); "
+        f"calibrator cross-fit on validate {payload['base_model']['val_season']} "
+        f"only (n={payload['base_model']['val_n']}, "
+        f"{payload['n_splits']}-fold stratified OOF). "
+        "**2023 not used.** Original uncalibrated eval above is preserved.",
+        "",
+        "| Estimator | Log loss | Brier | ECE (decile) |",
+        "| --- | ---: | ---: | ---: |",
+        f"| Uncalibrated | {u['log_loss']:.6f} | {u['brier']:.6f} | {u['ece_decile']:.6f} |",
+        f"| Platt OOF (primary) | {p['log_loss']:.6f} | {p['brier']:.6f} | {p['ece_decile']:.6f} |",
+        f"| Platt in-sample (secondary) | {sec['log_loss']:.6f} | {sec['brier']:.6f} | {sec['ece_decile']:.6f} |",
+    ]
+    iso = payload["metrics"].get("isotonic_oof_ablation")
+    if iso:
+        lines.append(
+            f"| Isotonic OOF (ablation) | {iso['log_loss']:.6f} | {iso['brier']:.6f} | {iso['ece_decile']:.6f} |"
+        )
+    lines += [
+        "",
+        f"OOF Platt − uncalibrated: ΔLL={d['log_loss']:+.6f}, "
+        f"ΔBrier={d['brier']:+.6f}, ΔECE={d['ece_decile']:+.6f}.",
+        "",
+        f"**Recommendation:** `{payload['recommendation']}` — {payload['rationale']}",
+        "",
+        f"Isotonic justified vs Platt: `{payload['isotonic_justified_vs_platt']}`. "
+        f"Preferred calibrator candidate: `{payload.get('preferred_calibrator_candidate')}`.",
+        "",
+        "Artifacts: `calibration_eval.json`, `calibration_compare.csv` "
+        "(plus original `calibration_val.csv` / `metrics.json`).",
+        "",
+        f"Packages: `{json.dumps(payload['packages'], sort_keys=True)}`",
+        "",
+    ]
+    path.write_text(existing + "\n".join(lines))
+
+
 def _write_wp_eval_report(out: Path, metrics: dict, *, command: str) -> None:
     val = metrics["validate"]
     test = metrics.get("test")
@@ -452,6 +540,20 @@ def main(argv: list[str] | None = None) -> int:
     p_wpe.add_argument("--model", type=str, required=True)
     p_wpe.add_argument("--split", choices=["train", "val", "test"], default="val")
     p_wpe.set_defaults(func=cmd_wp_eval)
+
+    p_wpc = sub.add_parser(
+        "wp-calibrate",
+        help="OOF Platt calibration on validate 2022 (freeze C; no 2023)",
+    )
+    p_wpc.add_argument("--out", type=str, default=str(REPO_ROOT / "reports" / "wp"))
+    p_wpc.add_argument("--C", type=float, default=0.25, help="Frozen base WP C (default 0.25)")
+    p_wpc.add_argument("--folds", type=int, default=5, help="Stratified OOF folds on val")
+    p_wpc.add_argument(
+        "--skip-isotonic",
+        action="store_true",
+        help="Skip isotonic OOF ablation",
+    )
+    p_wpc.set_defaults(func=cmd_wp_calibrate)
 
     args = parser.parse_args(argv)
     return int(args.func(args))

@@ -1,0 +1,100 @@
+{
+  "base_model": {
+    "C_frozen": 0.25,
+    "note": "Base WP refit with frozen C=0.25 on train only; calibrator never sees 2023",
+    "path": "A_no_ep_feature",
+    "train_n": 115646,
+    "train_seasons": [
+      2019,
+      2020,
+      2021
+    ],
+    "val_n": 39347,
+    "val_season": 2022
+  },
+  "command": "python3 -m nfl_sim.models wp-calibrate --out ../reports/wp --C 0.25 --folds 5",
+  "data_hash": {
+    "combined_sha256": "7e765adb53c3451322e57237d525ac2d633534ca29cf2b4bf3e40037c836f148",
+    "season_sha256": {
+      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
+      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
+      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
+      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7"
+    }
+  },
+  "deltas_oof_platt_minus_uncal": {
+    "brier": -0.000696802554626258,
+    "ece_decile": -0.008903693493916794,
+    "log_loss": -0.003540018403411227
+  },
+  "isotonic": {
+    "metrics": {
+      "brier": 0.19257894470649267,
+      "ece_decile": 0.0022312980838001865,
+      "empirical_win_rate": 0.5093399750933998,
+      "label": "isotonic_oof_ablation",
+      "log_loss": 0.564081596746526,
+      "mean_p": 0.5092976879776093,
+      "n": 39347
+    },
+    "note": "Ablation on validate 2022 OOF only. Prefer Platt unless isotonic shows a clear, stable ECE/LL gain without harming log-loss."
+  },
+  "isotonic_justified_vs_platt": true,
+  "metrics": {
+    "isotonic_oof_ablation": {
+      "brier": 0.19257894470649267,
+      "ece_decile": 0.0022312980838001865,
+      "empirical_win_rate": 0.5093399750933998,
+      "label": "isotonic_oof_ablation",
+      "log_loss": 0.564081596746526,
+      "mean_p": 0.5092976879776093,
+      "n": 39347
+    },
+    "platt_in_sample_secondary": {
+      "brier": 0.19539555419592963,
+      "ece_decile": 0.04589996623411331,
+      "empirical_win_rate": 0.5093399750933998,
+      "label": "platt_in_sample_secondary",
+      "log_loss": 0.5713282191461706,
+      "mean_p": 0.5093512739686753,
+      "n": 39347
+    },
+    "platt_oof_primary": {
+      "brier": 0.19541365600237792,
+      "ece_decile": 0.04559715498488612,
+      "empirical_win_rate": 0.5093399750933998,
+      "label": "platt_oof",
+      "log_loss": 0.5713867742904427,
+      "mean_p": 0.5093579784670156,
+      "n": 39347
+    },
+    "uncalibrated": {
+      "brier": 0.19611045855700418,
+      "ece_decile": 0.05450084847880291,
+      "empirical_win_rate": 0.5093399750933998,
+      "label": "uncalibrated",
+      "log_loss": 0.5749267926938539,
+      "mean_p": 0.5077993341929723,
+      "n": 39347
+    }
+  },
+  "n_splits": 5,
+  "original_eval_preserved": true,
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1"
+  },
+  "preferred_calibrator_candidate": "isotonic_oof",
+  "protocol": {
+    "forbidden": "no 2023\u20132025 for fit/tune/selection",
+    "isotonic": "ablation OOF; use only if justified vs Platt",
+    "primary": "5-fold stratified OOF on validate 2022",
+    "secondary": "in-sample Platt on full validate 2022 (optimistic)"
+  },
+  "rationale": "OOF isotonic_oof improves calibration/discrimination vs uncalibrated (\u0394LL=+0.0108, \u0394Brier=+0.0035, \u0394ECE=+0.0523); keep calibrated scores as a separate candidate \u2014 do not replace the original eval.",
+  "recommendation": "improved",
+  "seed": 42,
+  "spec": "docs/WP_MODEL_SPEC.md"
+}
