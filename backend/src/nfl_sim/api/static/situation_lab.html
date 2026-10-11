@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Situation Lab — NFL Analytics Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #e8eef2;
+      --bg1: #f7f5f1;
+      --ink: #1a232b;
+      --muted: #5a6670;
+      --line: #c5ced6;
+      --accent: #0b6e4f;
+      --accent-soft: #d7ebe3;
+      --warn-soft: #f3e6c8;
+      --warn-ink: #6a4b12;
+      --danger-soft: #f3d9d6;
+      --panel: rgba(255,255,255,0.72);
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --sans: "Source Sans 3", ui-sans-serif, sans-serif;
+      --serif: "Source Serif 4", ui-serif, Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(900px 420px at 10% -10%, #d5e4dc 0%, transparent 55%),
+        linear-gradient(165deg, var(--bg0), var(--bg1) 55%, #eef1ea);
+    }
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3.5rem;
+    }
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.4rem;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 650;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      line-height: 1.15;
+      margin: 0 0 0.5rem;
+    }
+    .lede {
+      color: var(--muted);
+      max-width: 38rem;
+      margin: 0 0 1.5rem;
+      font-size: 1.05rem;
+    }
+    .chip {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--line);
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+      background: var(--panel);
+    }
+    .chip--hist { border-left: 3px solid #3a5f7d; }
+    .chip--sim { border-style: dashed; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 1rem 1.1rem;
+      margin: 0 0 1rem;
+      backdrop-filter: blur(6px);
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    select, input, button {
+      font: inherit;
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      min-height: 40px;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: 0.55; cursor: wait; }
+    .row {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px) {
+      .row-4 { grid-template-columns: 2fr 1fr 1fr auto; align-items: end; }
+      .vals { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.45rem 0.35rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.95rem;
+    }
+    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
+    td.num, th.num { text-align: right; font-family: var(--mono); font-size: 0.88rem; }
+    .rec {
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+    .banner {
+      padding: 0.75rem 0.9rem;
+      margin: 0 0 1rem;
+      border: 1px solid var(--line);
+    }
+    .banner--change {
+      background: var(--warn-soft);
+      color: var(--warn-ink);
+      border-color: #e0c789;
+    }
+    .banner--same {
+      background: var(--accent-soft);
+      color: #0d4a38;
+    }
+    .banner--err {
+      background: var(--danger-soft);
+      color: #6b221c;
+    }
+    .mono { font-family: var(--mono); font-size: 0.85rem; }
+    .muted { color: var(--muted); }
+    ul.assumptions {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .bucket {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.2rem 0;
+      border-bottom: 1px dotted var(--line);
+    }
+    h2 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      margin: 0 0 0.65rem;
+      font-weight: 650;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      button:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Offline · read-only · not the fan UI</p>
+    <h1>Situation Lab</h1>
+    <p class="lede">
+      Freeze a real lake fourth-down, score go / FG / punt with the shared analyzer,
+      and compare legacy transitions to improved punt buckets + outcome clock.
+    </p>
+    <div>
+      <span class="chip chip--hist">Historical play</span>
+      <span class="chip chip--sim">Model counterfactual</span>
+      <span class="chip">No live odds</span>
+    </div>
+
+    <section class="panel" aria-labelledby="select-heading">
+      <h2 id="select-heading">Select play</h2>
+      <div class="row row-4">
+        <div>
+          <label for="preset">Preset</label>
+          <select id="preset"></select>
+        </div>
+        <div>
+          <label for="season">Season</label>
+          <input id="season" type="number" value="2022" min="2019" max="2022" />
+        </div>
+        <div>
+          <label for="game_id">game_id</label>
+          <input id="game_id" class="mono" spellcheck="false" />
+        </div>
+        <div>
+          <label for="play_id">play_id</label>
+          <input id="play_id" class="mono" type="number" />
+        </div>
+      </div>
+      <div style="margin-top:0.75rem; max-width:12rem">
+        <button id="run" type="button">Compare transitions</button>
+      </div>
+      <p id="status" class="muted mono" style="margin:0.75rem 0 0"></p>
+    </section>
+
+    <div id="banner" hidden></div>
+
+    <section id="result" hidden>
+      <section class="panel" aria-labelledby="freeze-heading">
+        <h2 id="freeze-heading">Frozen game state</h2>
+        <p id="prov" class="mono muted"></p>
+        <div class="row vals" id="state"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="cmp-heading">
+        <h2 id="cmp-heading">Action values</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Config</th>
+              <th class="num">go</th>
+              <th class="num">FG</th>
+              <th class="num">punt</th>
+              <th>recommendation</th>
+            </tr>
+          </thead>
+          <tbody id="cmp-body"></tbody>
+        </table>
+        <p id="deltas" class="mono muted" style="margin:0.75rem 0 0"></p>
+      </section>
+
+      <section class="panel" aria-labelledby="assump-heading">
+        <h2 id="assump-heading">Assumptions</h2>
+        <p class="muted" style="margin:0 0 0.5rem">
+          Empirics: REG train <span class="mono" id="emp-seasons">—</span>
+          · n_go=<span class="mono" id="n-go">—</span>
+          · n_fg=<span class="mono" id="n-fg">—</span>
+          · n_punt=<span class="mono" id="n-punt">—</span>
+          · Path A uncalibrated WP (no isotonic)
+        </p>
+        <p class="muted" style="margin:0 0 0.35rem">Improved clock deltas (median seconds):</p>
+        <p id="clock" class="mono" style="margin:0 0 0.75rem"></p>
+        <p class="muted" style="margin:0 0 0.35rem">Improved punt buckets:</p>
+        <div id="buckets"></div>
+        <ul class="assumptions" id="assumptions"></ul>
+      </section>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fmt = (x) => (typeof x === "number" && Number.isFinite(x) ? x.toFixed(4) : "—");
+    let presets = [];
+
+    async function loadPresets() {
+      const r = await fetch("/situation-lab/api/presets");
+      const data = await r.json();
+      presets = data.items || [];
+      const sel = $("preset");
+      sel.innerHTML = "";
+      for (const p of presets) {
+        const opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = p.label;
+        if (p.default) opt.selected = true;
+        sel.appendChild(opt);
+      }
+      applyPreset(sel.value);
+    }
+
+    function applyPreset(id) {
+      const p = presets.find((x) => x.id === id);
+      if (!p) return;
+      $("season").value = p.season;
+      $("game_id").value = p.game_id;
+      $("play_id").value = p.play_id;
+    }
+
+    function renderState(play) {
+      const g = play.game_state || {};
+      const prov = play.provenance || {};
+      $("prov").textContent =
+        `${prov.season} w${prov.week} · ${prov.game_id} / ${prov.play_id} · ` +
+        `${prov.posteam} vs ${prov.defteam} · hist ${prov.play_type} (${play.historical_action})`;
+      const fields = [
+        ["score_diff", g.score_differential],
+        ["yardline_100", g.yardline_100],
+        ["ydstogo", g.distance],
+        ["game_sec", g.game_seconds_remaining],
+        ["half_sec", g.half_seconds_remaining],
+        ["qtr", g.qtr],
+      ];
+      $("state").innerHTML = fields.map(([k, v]) =>
+        `<div><div class="muted" style="font-size:0.8rem">${k}</div><div class="mono">${v}</div></div>`
+      ).join("");
+    }
+
+    function row(label, cfg, highlight) {
+      const v = cfg.values || {};
+      const style = highlight ? ' style="background:var(--warn-soft)"' : "";
+      return `<tr${style}>
+        <td>${label}</td>
+        <td class="num">${fmt(v.go)}</td>
+        <td class="num">${fmt(v.fg)}</td>
+        <td class="num">${fmt(v.punt)}</td>
+        <td class="rec">${cfg.recommendation ?? "—"}</td>
+      </tr>`;
+    }
+
+    function render(data) {
+      $("result").hidden = false;
+      renderState(data.play);
+      const c = data.configs;
+      const changed = !!data.recommendation_changed_legacy_to_improved;
+      const banner = $("banner");
+      banner.hidden = false;
+      banner.className = "banner " + (changed ? "banner--change" : "banner--same");
+      banner.textContent = changed
+        ? `Recommendation changed: ${c.pooled_legacy.recommendation} → ${c.pooled_improved.recommendation}`
+        : `Recommendation unchanged (${c.pooled_legacy.recommendation}) under improved transitions`;
+      $("cmp-body").innerHTML =
+        row("pooled + legacy", c.pooled_legacy, false) +
+        row("season_aware + legacy", c.season_aware_legacy, false) +
+        row("pooled + improved", c.pooled_improved, changed);
+      const d = data.value_deltas_legacy_to_improved || {};
+      $("deltas").textContent =
+        `Δ (improved − legacy): go ${fmt(d.go)} · FG ${fmt(d.fg)} · punt ${fmt(d.punt)}`;
+      const imp = c.pooled_improved;
+      const n = imp.empirics_n || {};
+      $("emp-seasons").textContent = JSON.stringify(imp.empirics_seasons || []);
+      $("n-go").textContent = n.n_go ?? "—";
+      $("n-fg").textContent = n.n_fg ?? "—";
+      $("n-punt").textContent = n.n_punt ?? "—";
+      $("clock").textContent = JSON.stringify(data.clock_deltas_improved || imp.clock_deltas_used || {});
+      const buckets = imp.punt_buckets || [];
+      $("buckets").innerHTML = buckets.length
+        ? buckets.map((b) =>
+            `<div class="bucket"><span>${b.label} · yl ${b.opp_yardline_100} · w ${b.weight}</span><span>WP ${fmt(b.wp)}</span></div>`
+          ).join("")
+        : `<p class="muted">No buckets (legacy mean punt).</p>`;
+      $("assumptions").innerHTML = (imp.assumptions || [])
+        .map((a) => `<li>${a}</li>`).join("");
+    }
+
+    async function run() {
+      const btn = $("run");
+      const status = $("status");
+      btn.disabled = true;
+      status.textContent = "Scoring…";
+      $("banner").hidden = true;
+      try {
+        const q = new URLSearchParams({
+          season: $("season").value,
+          game_id: $("game_id").value.trim(),
+          play_id: $("play_id").value,
+        });
+        const r = await fetch("/situation-lab/api/compare?" + q.toString());
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.detail || r.statusText);
+        render(data);
+        status.textContent = "Done · offline counterfactual";
+      } catch (err) {
+        $("result").hidden = true;
+        const banner = $("banner");
+        banner.hidden = false;
+        banner.className = "banner banner--err";
+        banner.textContent = String(err.message || err);
+        status.textContent = "Failed";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    $("preset").addEventListener("change", (e) => applyPreset(e.target.value));
+    $("run").addEventListener("click", run);
+    loadPresets().then(run);
+  </script>
+</body>
+</html>
