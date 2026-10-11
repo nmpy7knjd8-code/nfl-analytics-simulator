@@ -4,6 +4,8 @@
 **Depends on:** POC plan on `main` via PR #18 merge `3737fe1d2991a8b795b5c9093f54e826f8f3ba04`  
 **Source plan:** [`SPORTRADAR_SIMULATION_POC_PLAN.md`](./SPORTRADAR_SIMULATION_POC_PLAN.md)  
 **Mode:** Checklist / gate only — **no Simulation calls, no mapper code, no vendor contact**
+**Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/19  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/b555ee07562085ebb263a4dc7aacfd379eab4e04/docs/NEXT_STEPS_DELTA_SPORTRADAR_EXEC_CHECKLIST.md
 
 **Approval boundary:** **STOP** — do not run the trial, call `playback.sportradar.com`, create credentials, incur costs, implement mapper code, connect live feed, odds, or betting until explicitly authorized.
 
