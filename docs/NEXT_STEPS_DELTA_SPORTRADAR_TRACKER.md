@@ -3,6 +3,8 @@
 **Date:** 2026-10-11  
 **Main after PR #21:** `53c34c3`  
 **Branch:** `cursor/sportradar-blocker-tracker-c0ef` (docs-only PR, **not merged**)
+**PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/22  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/573cc6d868a45f118f2b3f07de1aef3581fda3c4/docs/NEXT_STEPS_DELTA_SPORTRADAR_TRACKER.md
 
 ## What landed
 

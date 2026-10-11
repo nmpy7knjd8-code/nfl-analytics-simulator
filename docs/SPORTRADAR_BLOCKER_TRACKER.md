@@ -4,6 +4,8 @@
 **Main:** clarifications via PR #21 merge `53c34c3df7018c6d253967f8d51aca2ddf14f095`  
 **Sources on main:** `SPORTRADAR_IMPLEMENTATION_CLARIFICATIONS.md`, `SPORTRADAR_BLOCKER_RESOLUTION.md`, `SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`, `SPORTRADAR_SIMULATION_POC_PLAN.md`, `FEED_EVALUATION.md`, `LICENSING_AND_DATA_SOURCES.md`, `contracts/pre_snap.py`  
 **Mode:** Tracker only — no Simulation/API/vendor/mapper/live/costs
+**Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/22  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/573cc6d868a45f118f2b3f07de1aef3581fda3c4/docs/NEXT_STEPS_DELTA_SPORTRADAR_TRACKER.md
 
 **Locked:** Path A = **unsupported** (E1–E3 not in repo). `PreSnapProvider` = `fixture`\|`demo` closed. Unknown aliases/enums → reject. Preserve recorded-demo + historical.
 
