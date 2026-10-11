@@ -46,7 +46,32 @@ git branch -M main
 git push -u origin main
 ```
 
-## Optional: feature branch + PR
+## Phase 2 branch + PR (ready locally)
+
+Branch `cursor/phase2-historical-ingest-a4c3` is committed locally (`d4c102e`) but **not pushed** — this environment had no `gh auth` / `GH_TOKEN` (do not use chat-pasted tokens).
+
+```bash
+cd /agent/nfl-analytics-simulator
+git checkout cursor/phase2-historical-ingest-a4c3
+git push -u origin cursor/phase2-historical-ingest-a4c3
+gh pr create --title "Phase 2: 2023 historical ingest + Game Explorer replay" --body "$(cat <<'EOF'
+## Summary
+- Restores Phase 1 `backend/` (missing on `main`) and implements 2023-only nflreadpy==0.1.5 ingest → immutable raw + canonical Parquet/DuckDB.
+- FastAPI: list/get games + ordered plays. Next.js Game Explorer with Historical truth labels.
+- **Scope:** historical replay only. No model training. No decision lab (Phase 6).
+
+## Schema ownership
+Phase 2 owns ingest/canonical contracts on this branch. Parallel EP/EPA or research agents should use separate branches/PRs and **document any shared schema changes in their PR description** — do not silently rewrite ingest contracts mid-flight.
+
+## Test plan
+- [x] `cd backend && pip install -e ".[dev,phase2]" && pytest -q` → 16 passed
+- [x] `cd frontend && npm run typecheck && npm test && npm run build`
+- [x] `python -m nfl_sim.ingest --season 2023` + API smoke on `2023_01_DET_KC`
+EOF
+)"
+```
+
+## Optional: feature branch + PR (Phase 1 historical)
 
 ```bash
 git checkout -b cursor/phase1-scaffold-93a9
