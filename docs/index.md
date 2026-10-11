@@ -5,6 +5,7 @@
 → **[Open the full checklist (HANDOFF.md)](HANDOFF.md)**  
 → **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check  
 → **[EP/EPA audit gate](../reports/ep/AUDIT.md)** — Stage A merge readiness  
+→ **[Current-state audit packet](CURRENT_STATE_AUDIT_PACKET.md)** — pre-merge Stage A snapshot for external review  
 
 | Quick links | |
 | --- | --- |
