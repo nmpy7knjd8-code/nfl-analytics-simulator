@@ -4,7 +4,7 @@
 **Main after PR #21:** `53c34c3`  
 **Branch:** `cursor/sportradar-blocker-tracker-c0ef` (docs-only PR, **not merged**)
 **PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/22  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/573cc6d868a45f118f2b3f07de1aef3581fda3c4/docs/NEXT_STEPS_DELTA_SPORTRADAR_TRACKER.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/d72e7379ea7d28872d1683f45d3c7c95c4050b34/docs/NEXT_STEPS_DELTA_SPORTRADAR_TRACKER.md
 
 ## What landed
 
