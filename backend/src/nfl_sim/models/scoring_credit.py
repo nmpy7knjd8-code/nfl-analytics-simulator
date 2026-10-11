@@ -1,8 +1,8 @@
-"""EPA scoring-credit conventions and diagnostics (Task A).
+"""EPA scoring-credit conventions and diagnostics (Task A / D015).
 
-Convention A = current ``epa.py`` formulas (no realized next-score cash).
-Convention B = Convention A plus next-score class value R on the scoring play
-(from the snap posteam perspective; XP/2PT excluded).
+Convention A = legacy Stage A formulas (no realized next-score cash) — diagnostic only.
+Convention B = production (``epa.py``): A base plus next-score class value R on the
+scoring play (snap posteam perspective; XP/2PT excluded, R=0).
 
 Never loads season 2023.
 """
@@ -101,13 +101,14 @@ def convention_a_epa(
     is_timeout: np.ndarray,
     is_terminal: np.ndarray,
 ) -> np.ndarray:
-    """Current production formulas (``model_epa_from_eps``)."""
+    """Legacy Stage A formulas (no ``realized_r`` overlay) — diagnostic only."""
     return model_epa_from_eps(
         ep_before,
         ep_after_raw,
         possession_change=possession_change,
         is_timeout=is_timeout,
         is_terminal=is_terminal,
+        realized_r=None,
     )
 
 

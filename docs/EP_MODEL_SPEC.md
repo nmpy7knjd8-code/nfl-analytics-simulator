@@ -175,19 +175,23 @@ For play i, `ep_before = EP(state_i_pre)`.
 
 When scoring EPA for historical rows, `ep_after` uses the **model** EP (same artifact), never reference `ep`.
 
-### 6.2 EPA formulas (possession-aware)
+### 6.2 EPA formulas (possession-aware) — **Convention B** (D015, 2026-10-11)
 
-Let `ep_before` be EP for possession team at snap. Let `ep_after_raw` be model EP for the team possessing at the post state (0 if terminal with no offense).
+Let `ep_before` be EP for possession team at snap. Let `ep_after_raw` be model EP for the team possessing at the post state (0 if terminal with no offense). Let \(R\) be the **realized next-score class value on this row** from snap `posteam` perspective ∈ {+7,+3,+2,0,−2,−3,−7} (XP/2PT rows → \(R=0\); see `docs/EPA_CONVENTION_B_ATTRIBUTION.md`).
 
 | Case | Detection | `model_epa` |
 | --- | --- | --- |
 | Timeout / clock-only no play | `play_type == timeout` (or equivalent) | **0** |
-| End of half / end of game | no next scrimmage state in half/game | **0 − ep_before** (= `-ep_before`) |
-| Same possession continues | next posteam == current posteam | `ep_after_raw − ep_before` |
-| Possession change | next posteam ≠ current posteam | `(-ep_after_raw) − ep_before` |
-| Scoring play that ends possession epoch | next state is kickoff/other; treat via possession change / terminal rules above | as above |
+| **Scoring play (Convention B overlay)** | non-timeout and \(\|R\| > 0\) | **`R − ep_before`** (overrides PC/terminal/same-poss) |
+| End of half / end of game (no score) | no next scrimmage; \(R=0\) | **0 − ep_before** (= `-ep_before`) |
+| Same possession continues | next posteam == current posteam; \(R=0\) | `ep_after_raw − ep_before` |
+| Possession change (non-score) | next posteam ≠ current posteam; \(R=0\) | `(-ep_after_raw) − ep_before` |
 
-**Rationale for possession change:** EP is always “for the team about to snap.” After a change, the next EP is an opponent quantity; the play’s value for the original team is `-ep_after_raw - ep_before`.
+**Rationale for possession change (non-score):** EP is always “for the team about to snap.” After a change, the next EP is an opponent quantity; the play’s value for the original team is `-ep_after_raw - ep_before`.
+
+**Rationale for score overlay:** EPA is change in expected next-score value. On the scoring play, cashed value is \(R\), so \(\mathrm{EPA}=R-\mathrm{ep\_before}\) (nflfastR-comparable on TD/FG/safety). Try/KO remain separate rows (\(R=0\)); project does **not** adopt nflfastR PAT \(1-\mathrm{ep}\) overlays (TD already +7).
+
+**Supersession:** Pre-D015 Stage A treated scoring via PC/terminal only (no \(R\) cash). That convention is retained only as diagnostic **Convention A** in `scoring_credit.py`, not production.
 
 ### 6.3 Penalties and no-plays
 
@@ -195,28 +199,29 @@ Let `ep_before` be EP for possession team at snap. Let `ep_after_raw` be model E
 * Do **not** naïve-subtract EP across a possession meaning change.
 * Simplification (documented): we do not re-implement full NFL penalty replay logic beyond observed next state.
 
-### 6.4 Accounting identities (Stage A convention)
+### 6.4 Accounting identities (Convention B)
 
 Define \(V_i\) = model EP for the team about to snap. EPA cases as in §6.2.
 
-| Identity | Holds under Stage A? | Coverage |
+| Identity | Holds under Convention B? | Coverage |
 | --- | --- | --- |
-| Same-possession contiguous chain (no timeout): \(\sum\mathrm{EPA}=V_{\mathrm{after\,last}}-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season historical sample |
-| Chain ending terminal (same possession): \(\sum\mathrm{EPA}=-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season sample |
-| Possession change: \(\mathrm{EPA}=-V_{\mathrm{after}}-V_{\mathrm{before}}\) | **Yes** (by definition) | Unit tests |
-| Realized next-score cashing: \(\sum\mathrm{EPA}=R-V_0\) | **No** — scoring does not cash \(R\) into `ep_after` | Documented exclusion |
+| Same-possession contiguous chain (no timeout, no score): \(\sum\mathrm{EPA}=V_{\mathrm{after\,last}}-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season historical sample |
+| Chain ending terminal (same possession, no score): \(\sum\mathrm{EPA}=-V_{\mathrm{before\,first}}\) | **Yes** | Synthetic + train-season sample |
+| Possession change (non-score): \(\mathrm{EPA}=-V_{\mathrm{after}}-V_{\mathrm{before}}\) | **Yes** (by definition) | Unit tests |
+| Realized next-score cashing: \(\sum\mathrm{EPA}_B=R_{\mathrm{end}}-V_0\) | **Yes** — scoring overlay \(R-\mathrm{ep}\) | Task A synthetics + lake-`ep` diagnostic (2019–2022); project-model surface pending joblib restore |
 
-**Exclusions from telescoping checks:** timeouts (EPA≡0), possession-change plays (sign-flip space), score-cash residual, and **2023 holdout** (never used to tune conventions).
+**Exclusions from telescoping checks:** timeouts (EPA≡0), non-score possession-change chains where applicable, discontinuous links, and **2023 holdout** (never used to tune conventions).
 
 ### 6.5 Invariants
 
 * Probabilities for the 7 classes sum to 1 (±1e-6).
 * EP ∈ [−7, 7] for any valid probability vector with the Stage A values.
 * Timeout EPA == 0.
-* Terminal EPA == `-ep_before`.
-* Possession-change EPA == `-ep_after - ep_before` (not `ep_after - ep_before`).
+* Terminal EPA (no score) == `-ep_before`.
+* Possession-change EPA (no score) == `-ep_after - ep_before` (not `ep_after - ep_before`).
+* Scoring EPA == `R - ep_before` when \(\|R\|>0\).
 * Feature matrix contains none of the forbidden names/columns (§2).
-* XP / two-point tries are **not** independent next-score labels.
+* XP / two-point tries are **not** independent next-score labels (\(R=0\) on those rows).
 
 ---
 

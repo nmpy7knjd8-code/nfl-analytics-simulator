@@ -1,0 +1,96 @@
+{
+  "label": "Verified against Task A parquet cache on convention-b-gate branch; NOT a fresh lake reload",
+  "n_eligible": 163235,
+  "overall_mae": {
+    "convention_a": {
+      "n": 163235,
+      "mean_conv": -0.3500470656948941,
+      "mean_ref": -0.005012999586177744,
+      "mean_signed_diff": -0.34503406610871634,
+      "mae": 0.3761159361998334,
+      "median_ae": 0.0,
+      "pct_negative_conv": 60.60710019297332,
+      "pct_negative_ref": 55.15361288939259
+    },
+    "convention_b": {
+      "n": 163235,
+      "mean_conv": -0.008517915707243862,
+      "mean_ref": -0.005012999586177744,
+      "mean_signed_diff": -0.0035049161210661166,
+      "mae": 0.00621938695001926,
+      "median_ae": 0.0,
+      "pct_negative_conv": 55.1799552791987,
+      "pct_negative_ref": 55.15361288939259
+    }
+  },
+  "td_offense_mae": {
+    "convention_a": {
+      "n": 5509,
+      "mean_conv": -5.603365891652895,
+      "mean_ref": 2.4065921204915544,
+      "mean_signed_diff": -8.009958012144448,
+      "mae": 8.009958012144448,
+      "median_ae": 8.029070476070046,
+      "pct_negative_conv": 99.60065347612998,
+      "pct_negative_ref": 0.0
+    },
+    "convention_b": {
+      "n": 5509,
+      "mean_conv": 2.4065921204915544,
+      "mean_ref": 2.4065921204915544,
+      "mean_signed_diff": 0.0,
+      "mae": 0.0,
+      "median_ae": 0.0,
+      "pct_negative_conv": 0.0,
+      "pct_negative_ref": 0.0
+    },
+    "pct_negative_epa_on_score": {
+      "convention_a": 99.60065347612998,
+      "convention_b": 0.0,
+      "reference": 0.0
+    }
+  },
+  "fg_made_mae": {
+    "convention_a": {
+      "n": 3554,
+      "mean_conv": -3.2830119690598987,
+      "mean_ref": 0.6310978335131491,
+      "mean_signed_diff": -3.9141098025730474,
+      "mae": 3.924634866335522,
+      "median_ae": 3.9836203160812147,
+      "pct_negative_conv": 99.46539110861,
+      "pct_negative_ref": 0.0
+    },
+    "convention_b": {
+      "n": 3554,
+      "mean_conv": 0.6310978335131491,
+      "mean_ref": 0.6310978335131491,
+      "mean_signed_diff": 0.0,
+      "mae": 0.0,
+      "median_ae": 0.0,
+      "pct_negative_conv": 0.0,
+      "pct_negative_ref": 0.0
+    },
+    "pct_negative_epa_on_score": {
+      "convention_a": 99.46539110861,
+      "convention_b": 0.0,
+      "reference": 0.0
+    }
+  },
+  "identity": {
+    "intervals_checked": 11198,
+    "epoch_form": {
+      "ok": 11198,
+      "fail": 0,
+      "pass": true
+    },
+    "max_abs_residual": 4.440892098500626e-16
+  },
+  "seasons": [
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "holdout_2023_in_parquet": false
+}

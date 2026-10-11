@@ -255,14 +255,29 @@ def test_xp_and_two_point_not_independent_next_score_labels():
     assert labels.iloc[2] == "NoScore"
 
 
-def test_realized_points_identity_does_not_hold_under_stage_a_score_convention():
-    """Documented: Stage A does not cash score points into ep_after, so ΣEPA ≠ R − EP0."""
-    # Synthetic: ep_before=2, score TD (+7), next snap opponent ep_after_raw=1.0 → possession change
-    # EPA = -1 - 2 = -3, but R - EP0 = 7 - 2 = 5. Residual is expected under locked spec.
+def test_realized_points_identity_holds_under_convention_b_score_overlay():
+    """D015 Convention B: scoring overlay cashes R, so EPA = R − EP0 on the score play."""
+    # Synthetic: ep_before=2, TD (+7), next snap opponent ep_after_raw=1.0
+    # Without R: PC would give -3; with realized_r=7: EPA = 5.
+    r = compute_epa(
+        2.0,
+        ep_after_raw=1.0,
+        possession_change=True,
+        is_timeout=False,
+        is_terminal=False,
+        realized_r=7.0,
+    )
+    assert r.case == "scoring"
+    assert r.model_epa == pytest.approx(7.0 - 2.0)
+    residual = r.model_epa - (7.0 - 2.0)
+    assert abs(residual) < 1e-9
+
+
+def test_legacy_convention_a_omits_score_cash_without_realized_r():
+    """Diagnostic Convention A path: omit realized_r → PC/terminal formulas (no overlay)."""
     r = compute_epa(2.0, ep_after_raw=1.0, possession_change=True, is_timeout=False, is_terminal=False)
-    realized = 7.0
-    residual = r.model_epa - (realized - 2.0)
-    assert abs(residual) > 1.0
+    assert r.case == "possession_change"
+    assert r.model_epa == pytest.approx(-1.0 - 2.0)
 
 
 def test_accounting_identity_on_training_season_sample():
