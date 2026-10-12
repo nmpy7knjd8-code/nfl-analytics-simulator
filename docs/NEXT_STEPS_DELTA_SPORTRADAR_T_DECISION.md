@@ -3,6 +3,8 @@
 **Date:** 2026-10-12  
 **Main tip:** `b483ac0`  
 **Branch:** `cursor/sportradar-t-decision-request-c0ef` (docs-only PR, **not merged**)
+**PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/25  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/6895a6ddb084a870feecf22f52ad95b69a51559a/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
 
 ## What landed
 
