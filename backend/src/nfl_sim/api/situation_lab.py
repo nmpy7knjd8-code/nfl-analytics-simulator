@@ -547,4 +547,70 @@ def create_situation_lab_router() -> APIRouter:
                 status_code=500, detail=f"offline mapper compare failed: {exc}"
             ) from exc
 
+    # --- Fourth-down quiz (offline; reuses freeze + compare; no live feed) ---
+
+    @router.get("/situation-lab/api/quiz/pack")
+    def quiz_pack() -> dict[str, Any]:
+        """Curated situations without model reveal (hide until lock-in)."""
+        from nfl_sim.quiz.pack import public_pack
+
+        try:
+            return public_pack()
+        except (FileNotFoundError, ValueError) as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    @router.get("/situation-lab/api/quiz/pack/full")
+    def quiz_pack_full() -> dict[str, Any]:
+        """Full pack including reveal (for static Pages export / offline client).
+
+        Clients must still hide ``reveal`` until lock-in. Not a live feed.
+        """
+        from nfl_sim.quiz.pack import load_curated_pack
+
+        try:
+            data = load_curated_pack()
+        except (FileNotFoundError, ValueError) as exc:
+            raise HTTPException(status_code=500, detail=str(exc)) from exc
+        return {
+            **data,
+            "offline": True,
+            "live_feed": False,
+            "hide_reveal_until_lock_in": True,
+        }
+
+    @router.post("/situation-lab/api/quiz/score")
+    def quiz_score(body: dict[str, Any]) -> dict[str, Any]:
+        """Score a choice against baked reveal (or optional live freeze rematerialize).
+
+        Body: ``{situation_id, choice, session?}``. Does not recompute WP math.
+        """
+        from nfl_sim.quiz.pack import get_pack_item, reveal_for_item
+        from nfl_sim.quiz.scoring import score_quiz_choice, update_session_stats
+
+        situation_id = body.get("situation_id")
+        choice = body.get("choice")
+        if not situation_id or not choice:
+            raise HTTPException(
+                status_code=400, detail="situation_id and choice are required"
+            )
+        try:
+            item = get_pack_item(str(situation_id))
+            scored = score_quiz_choice(str(choice), reveal_for_item(item))
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+        session = update_session_stats(body.get("session"), scored)
+        return {
+            "situation_id": situation_id,
+            "offline": True,
+            "live_feed": False,
+            "scored": scored,
+            "session": session,
+            "label": item.get("label"),
+            "situation": item.get("situation"),
+            "source": item.get("source"),
+        }
+
     return router

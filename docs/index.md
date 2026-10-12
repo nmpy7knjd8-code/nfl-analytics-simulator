@@ -3,6 +3,7 @@
 **Use this page as the single handoff link.**
 
 → **[Fan demo (example data)](demo/)** — Game Explorer + 4th & short (no live feed)  
+→ **[Fourth-down quiz](demo/quiz/)** — offline Situation → Lock in → Reveal (auto-start)  
 → **[Open the full checklist (HANDOFF.md)](HANDOFF.md)**  
 → **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check  
 → **[EP/EPA audit gate](../reports/ep/AUDIT.md)** — Stage A merge readiness  
@@ -10,6 +11,8 @@
 | Quick links | |
 | --- | --- |
 | [Fan demo](demo/) | static UI (fixtures only) |
+| [Fourth-down quiz](demo/quiz/) | offline decision game |
+| [Quiz mode notes](FOURTH_DOWN_QUIZ_MODE.md) | MVP pointer |
 | [GitHub repository](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator) | code + docs |
 | [Phase 2 review](PHASE2_REVIEW.md) | acceptance + what to verify |
 | [EP model spec](EP_MODEL_SPEC.md) | Stage A target / EPA |

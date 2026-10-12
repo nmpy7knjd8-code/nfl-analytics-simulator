@@ -1,0 +1,318 @@
+{
+  "schema_version": "fourth_down_quiz_pack.v1",
+  "offline": true,
+  "live_feed": false,
+  "scorer": "compare_transition_modes / FourthDownAnalyzer (baked from committed reports)",
+  "primary_config": "pooled_improved when available; else analyzer baseline",
+  "items": [
+    {
+      "id": "flip-lac-den",
+      "label": "LAC @ DEN \u2014 4th & 14 late",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_18_LAC_DEN",
+        "play_id": 3897.0,
+        "note": "Documented legacy\u2192improved recommendation flip; values from compare_transition_modes pooled_improved",
+        "report": "reports/punt_clock_transitions/flip_example/compare_transitions.json"
+      },
+      "situation": {
+        "posteam": "LAC",
+        "defteam": "DEN",
+        "home_team": "DEN",
+        "away_team": "LAC",
+        "posteam_score": 28,
+        "defteam_score": 31,
+        "score_differential": -3,
+        "qtr": 4,
+        "game_seconds_remaining": 207,
+        "half_seconds_remaining": 207,
+        "yardline_100": 64,
+        "down": 4,
+        "distance": 14,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 2
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "punt",
+        "inconclusive": false,
+        "margin": 0.011349040034516478,
+        "values": {
+          "go": 0.3238449884850281,
+          "fg": 0.33516907538235,
+          "punt": 0.3465181154168665
+        },
+        "layman_why": "Punting looks best here (~34.7% win chance) \u2014 higher modeled win chance than going for it or a field goal (edge \u2248 0.011 WP).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "recommendation_changed_legacy_to_improved": true
+      }
+    },
+    {
+      "id": "anchor-bal-nyj",
+      "label": "BAL @ NYJ \u2014 4th & 1 early",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_01_BAL_NYJ",
+        "play_id": 368.0,
+        "note": "Decision-lab freeze harness; FourthDownAnalyzer values",
+        "report": "reports/decision_lab/lab_result.json"
+      },
+      "situation": {
+        "posteam": "BAL",
+        "defteam": "NYJ",
+        "home_team": "NYJ",
+        "away_team": "BAL",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 1,
+        "game_seconds_remaining": 3296,
+        "half_seconds_remaining": 1496,
+        "yardline_100": 51,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 3
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.0597269265786724,
+        "values": {
+          "fg": 0.5081698704888293,
+          "go": 0.5950525234370392,
+          "punt": 0.5353255968583668
+        },
+        "layman_why": "Going for it looks best here (~59.5% win chance) \u2014 higher modeled win chance than a field goal or punting (edge \u2248 0.060 WP).",
+        "transition_mode": "legacy",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Clock \u22126s per branch",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+          "Empirics fit REG train 2019\u20132021 only"
+        ]
+      }
+    },
+    {
+      "id": "synth-midfield-go",
+      "label": "Midfield 4th & 1 \u2014 tied late",
+      "kind": "synthetic_report",
+      "source": {
+        "season": 2022,
+        "game_id": null,
+        "play_id": null,
+        "note": "From reports/fourth_down/examples.json \u2014 same FourthDownAnalyzer path",
+        "report": "reports/fourth_down/examples.json"
+      },
+      "situation": {
+        "posteam": "OFF",
+        "defteam": "DEF",
+        "home_team": "HOME",
+        "away_team": "AWAY",
+        "posteam_score": 17,
+        "defteam_score": 17,
+        "score_differential": 0,
+        "qtr": 4,
+        "game_seconds_remaining": 360,
+        "half_seconds_remaining": 360,
+        "yardline_100": 55,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 2
+      },
+      "historical_action": null,
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.048567821574068804,
+        "values": {
+          "go": 0.5194686756090621,
+          "fg": 0.4398329214961012,
+          "punt": 0.47090085403499327
+        },
+        "layman_why": "Going for it looks best here (~51.9% win chance) \u2014 higher modeled win chance than a field goal or punting (edge \u2248 0.049 WP).",
+        "transition_mode": "legacy",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Clock \u22126s per branch",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+          "Empirics fit REG train 2019\u20132021 only"
+        ]
+      }
+    },
+    {
+      "id": "synth-near-tie",
+      "label": "Opponent territory \u2014 near-tie",
+      "kind": "synthetic_report",
+      "source": {
+        "season": 2022,
+        "game_id": null,
+        "play_id": null,
+        "note": "From reports/fourth_down/examples.json \u2014 same FourthDownAnalyzer path",
+        "report": "reports/fourth_down/examples.json"
+      },
+      "situation": {
+        "posteam": "OFF",
+        "defteam": "DEF",
+        "home_team": "HOME",
+        "away_team": "AWAY",
+        "posteam_score": 17,
+        "defteam_score": 20,
+        "score_differential": -3,
+        "qtr": 4,
+        "game_seconds_remaining": 120,
+        "half_seconds_remaining": 120,
+        "yardline_100": 33,
+        "down": 4,
+        "distance": 4,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 2
+      },
+      "historical_action": null,
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.001725025814178438,
+        "values": {
+          "go": 0.3953430685765138,
+          "fg": 0.39361804276233536,
+          "punt": 0.3411080798943861
+        },
+        "layman_why": "Too close to call \u2014 go, field goal, and punt win chances are nearly tied (edge \u2248 0.002 WP).",
+        "transition_mode": "legacy",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Clock \u22126s per branch",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+          "Empirics fit REG train 2019\u20132021 only"
+        ]
+      }
+    },
+    {
+      "id": "synth-own-field-go",
+      "label": "Own territory 4th & 2",
+      "kind": "synthetic_report",
+      "source": {
+        "season": 2022,
+        "game_id": null,
+        "play_id": null,
+        "note": "From reports/fourth_down/examples.json \u2014 same FourthDownAnalyzer path",
+        "report": "reports/fourth_down/examples.json"
+      },
+      "situation": {
+        "posteam": "OFF",
+        "defteam": "DEF",
+        "home_team": "HOME",
+        "away_team": "AWAY",
+        "posteam_score": 21,
+        "defteam_score": 17,
+        "score_differential": 4,
+        "qtr": 3,
+        "game_seconds_remaining": 600,
+        "half_seconds_remaining": 600,
+        "yardline_100": 70,
+        "down": 4,
+        "distance": 2,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 2
+      },
+      "historical_action": null,
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.024539784169830492,
+        "values": {
+          "go": 0.6528099780451126,
+          "fg": 0.5965778410688761,
+          "punt": 0.6282701938752822
+        },
+        "layman_why": "Going for it looks best here (~65.3% win chance) \u2014 higher modeled win chance than a field goal or punting (edge \u2248 0.025 WP).",
+        "transition_mode": "legacy",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Clock \u22126s per branch",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+          "Empirics fit REG train 2019\u20132021 only"
+        ]
+      }
+    },
+    {
+      "id": "synth-fg-range",
+      "label": "Field-goal range 4th & 8",
+      "kind": "synthetic_report",
+      "source": {
+        "season": 2022,
+        "game_id": null,
+        "play_id": null,
+        "note": "From reports/fourth_down/examples.json \u2014 same FourthDownAnalyzer path",
+        "report": "reports/fourth_down/examples.json"
+      },
+      "situation": {
+        "posteam": "OFF",
+        "defteam": "DEF",
+        "home_team": "HOME",
+        "away_team": "AWAY",
+        "posteam_score": 17,
+        "defteam_score": 17,
+        "score_differential": 0,
+        "qtr": 4,
+        "game_seconds_remaining": 90,
+        "half_seconds_remaining": 90,
+        "yardline_100": 20,
+        "down": 4,
+        "distance": 8,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 2
+      },
+      "historical_action": null,
+      "reveal": {
+        "recommendation": "fg",
+        "inconclusive": false,
+        "margin": 0.037179717242688315,
+        "values": {
+          "go": 0.5430499672061955,
+          "fg": 0.5802296844488838,
+          "punt": 0.4795262186503
+        },
+        "layman_why": "A field goal looks best here (~58.0% win chance) \u2014 higher modeled win chance than going for it or punting (edge \u2248 0.037 WP).",
+        "transition_mode": "legacy",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Clock \u22126s per branch",
+          "FG distance = yardline_100 + 17; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 empirical mean opponent yardline (blocked punts excluded from fit)",
+          "Empirics fit REG train 2019\u20132021 only"
+        ]
+      }
+    }
+  ]
+}
