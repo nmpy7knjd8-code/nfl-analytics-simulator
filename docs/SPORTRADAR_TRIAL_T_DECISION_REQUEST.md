@@ -1,27 +1,28 @@
 # Sportradar Simulation — decision request for authorize **T**
 
 **Date:** 2026-10-12  
-**Main tip at audit:** `b483ac0d45b6b06a17ab0f0a31fe46ba5e90d806`  
-**Sources on main:** `SPORTRADAR_BLOCKER_TRACKER.md`, `SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`, `SPORTRADAR_BLOCKER_RESOLUTION.md`  
+**Main tip (post #24 merge):** `58d51a8ac0f39faa595f5051b501589ae7b378ee`  
+**Sources on main:** `SPORTRADAR_BLOCKER_TRACKER.md`, `SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`, `SPORTRADAR_BLOCKER_RESOLUTION.md`, `OFFLINE_PRE_SNAP_MAPPER.md`  
 **Mode:** Prerequisites only — **no Simulation, HTTP, vendor contact, credentials, or costs**
 **Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/25  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/117222e02844bceedd390514a6c228500a514a95/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7a95daede73491ab5bd4e3680e35e130f419412b/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
 
 **No legal conclusions.** Public “no API key” docs are not a clearance.
 
-**Proposed trial shape (prefer minimal):** one NFL Simulation game → process in memory → emit redacted field-coverage / latency metrics only → **no persistent provider JSON** in repo, CI, or long-lived disk. Path A stays unsupported; `live_feed=false`; fail-closed `receive_2h_ko`; recorded-demo + historical unchanged.
+**Proposed trial shape (prefer minimal):** one NFL Simulation game → process in memory → emit redacted field-coverage / latency metrics only → **no persistent provider JSON** in repo, CI, or long-lived disk. Path A stays unsupported; `live_feed=false`; fail-closed `receive_2h_ko`; recorded-demo + historical unchanged. Offline mapper is on main (PR #24).
 
 ---
 
-## Part A note — PR #24
+## Part A — PR #24 (resolved)
 
-| Claim | Actual |
+| Item | Actual |
 | --- | --- |
-| “#24 merged on main” | **False** — PR #24 is **OPEN** @ `5ad06fc`; mergeCommit null |
-| Main tip | `b483ac0` — offline mapper **not** on main |
-| Mapper tests | Green on **PR branch** tip only (see status) |
+| PR #24 | **MERGED** — merge SHA `58d51a8ac0f39faa595f5051b501589ae7b378ee` (tip was `5ad06fc`) |
+| Main tip | `58d51a8ac0f39faa595f5051b501589ae7b378ee` |
+| Offline mapper on main | **Yes** |
+| Pytest on main | `test_offline_mapper` + `test_pre_snap_adapter` + `test_recorded_demo` → **63 passed**, exit 0 |
 
-Merge of #24 is a **separate** approval from authorize **T**.
+Authorize **T** remains a **separate** decision from the #24 merge.
 
 ---
 
@@ -58,8 +59,6 @@ Please answer **yes/no** (or N/A) and then authorize **T** explicitly:
 
 6. **Authorize T:** Explicitly authorize the one-game Simulation trial under the answers above (still **not** production live feed, odds, or betting)?  
    - [ ] **Authorize T — Yes** - [ ] No
-
-**Also separate (not T):** Merge PR #24 offline mapper to main? Yes / No
 
 ---
 
