@@ -15,13 +15,18 @@ const TABS = [
     label: "4th down",
     match: (p: string) => p.startsWith("/decide"),
   },
+  {
+    href: "/quiz",
+    label: "Quiz",
+    match: (p: string) => p.startsWith("/quiz"),
+  },
 ] as const;
 
 export function AppNav() {
   const pathname = usePathname() || "/";
 
   return (
-    <nav className="app-nav" aria-label="Primary">
+    <nav className="app-nav app-nav-4" aria-label="Primary">
       {TABS.map((tab) => {
         const current = tab.match(pathname);
         return (
