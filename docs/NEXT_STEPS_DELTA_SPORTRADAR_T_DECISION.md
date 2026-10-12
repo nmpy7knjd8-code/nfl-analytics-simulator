@@ -4,6 +4,7 @@
 **Main tip:** `58d51a8` (PR #24 offline mapper merged)  
 **Branch:** `cursor/sportradar-t-decision-request-c0ef` (docs-only PR, **not merged**)
 **PR:** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/25  
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/66482cd161abf53780ffb367213a50ef36c99bd6/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
 
 ## What landed
 

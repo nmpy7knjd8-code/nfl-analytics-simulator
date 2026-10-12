@@ -5,7 +5,7 @@
 **Sources on main:** `SPORTRADAR_BLOCKER_TRACKER.md`, `SPORTRADAR_SIMULATION_EXECUTION_CHECKLIST.md`, `SPORTRADAR_BLOCKER_RESOLUTION.md`, `OFFLINE_PRE_SNAP_MAPPER.md`  
 **Mode:** Prerequisites only — **no Simulation, HTTP, vendor contact, credentials, or costs**
 **Docs PR (unmerged):** https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/25  
-**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/7a95daede73491ab5bd4e3680e35e130f419412b/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
+**Public delta:** https://raw.githubusercontent.com/nmpy7knjd8-code/nfl-analytics-simulator/66482cd161abf53780ffb367213a50ef36c99bd6/docs/NEXT_STEPS_DELTA_SPORTRADAR_T_DECISION.md
 
 **No legal conclusions.** Public “no API key” docs are not a clearance.
 
