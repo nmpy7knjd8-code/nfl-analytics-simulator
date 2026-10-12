@@ -2,26 +2,21 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <>
-      <section className="hero" aria-label="Introduction">
-        <h1>NFL Analytics Simulator</h1>
-        <p>
-          Reconstruct real NFL games from historical play-by-play. Phase 2 is
-          replay only — imported reference stats are labeled historical, not
-          trained here.
-        </p>
-        <div className="cta-row">
+    <section className="hero page" aria-label="NFL Analytics Simulator" id="main">
+      <div className="hero-field" aria-hidden />
+      <div className="hero-copy">
+        <h1 className="hero-brand">NFL Analytics Simulator</h1>
+        <p className="hero-headline">Tough calls, plain English.</p>
+        <p className="hero-support">Replay real games — or ask go, kick, or punt?</p>
+        <div className="cta-stack">
           <Link className="btn btn-primary" href="/games">
-            Open Game Explorer
+            Open games
+          </Link>
+          <Link className="btn btn-secondary" href="/decide">
+            Try 4th &amp; short
           </Link>
         </div>
-      </section>
-      <main className="main">
-        <p className="muted">
-          Season scope: <span className="mono">2023</span> via nflreadpy 0.1.5 ·
-          DuckDB + Parquet lake · no decision lab in this phase.
-        </p>
-      </main>
-    </>
+      </div>
+    </section>
   );
 }

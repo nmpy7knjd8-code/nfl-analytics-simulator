@@ -2,7 +2,7 @@
   "name": "nfl-analytics-simulator-web",
   "private": true,
   "version": "0.2.0",
-  "description": "Phase 2 — historical game list + play-by-play replay UI",
+  "description": "Fan-facing Next.js UI — Game Explorer + 4th-&-short explainer",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
