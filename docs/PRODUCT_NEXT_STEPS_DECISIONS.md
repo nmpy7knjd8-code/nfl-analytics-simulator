@@ -1,7 +1,7 @@
 # Product next steps — decisions needed for a **full finished product**
 
 **Date:** 2026-10-12  
-**Mode:** Decision request only — **no PR merges**, no Sportradar/vendor calls, no live feed, no paid keys  
+**Mode:** Answers recorded 2026-10-12 — Phase P authorized only (demo polish / PR hygiene). No Sportradar/vendor calls, no live feed, no paid keys; no Phase A/F/L model/feed/live work.  
 **Sources:** Project notes (Cursor Agent Store — not public); [`SPORTRADAR_TRIAL_T_DECISION_REQUEST.md`](./SPORTRADAR_TRIAL_T_DECISION_REQUEST.md), [`SPORTRADAR_TRIAL_T_REPORT.md`](./SPORTRADAR_TRIAL_T_REPORT.md), [`OFFLINE_PRE_SNAP_MAPPER.md`](./OFFLINE_PRE_SNAP_MAPPER.md), [`FEED_EVALUATION.md`](./FEED_EVALUATION.md), [`DECISIONS_AND_FORWARD_PLAN.md`](./DECISIONS_AND_FORWARD_PLAN.md); open PR context in Project notes  
 **Prior decision pattern:** Same shape as the Sportradar **T** request — answer prompts, then work proceeds only under what you authorize
 
@@ -11,12 +11,12 @@
 
 ## 1. Where we are
 
-- **Checkable fan demo is live** on GitHub Pages: [demo](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) (PR [#26](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/26) — live, **awaiting Merge** to pin Pages to `main`).
+- **Checkable fan demo is on main** via PR [#26](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/26) (merged); Pages source pinned to `main` `/docs`; [demo](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) remains the checkable v1 URL.
 - **Offline pre-snap mapper is on main** (PR #24); adapter + recorded-demo + mapper tests green (**63** passed). Path A stays **unsupported**; missing `receive_2h_ko` → fail-closed.
 - **Sportradar Simulation trial T completed** under free/keyless + Persist **No** — see [`SPORTRADAR_TRIAL_T_REPORT.md`](./SPORTRADAR_TRIAL_T_REPORT.md): 7 HTTP calls, BAL@KC sim, mapper **0 ok / 6 fail-closed** (designed), **no** raw persist, **`live_feed=false`**, no odds/live/betting.
-- **T acceptance matrix incomplete under sparse budget:** ≥3 situation changes and ≥5 fourth-down yardline spot-checks **not met** (natural-time clock; stopped rather than long-poll). Longer session needs an explicit HTTP-budget raise.
-- **Open PR hygiene pending your call:** #26 merge; close #10 after #26 (superseded); close #5 (recommended); keep #4 open; #6 next-steps docs still open.
-- **Hard gates still locked without new auth:** Convention B / EP artifact **promote**, isotonic WP persist, production live feed, paid keys, odds/betting. Fan UI constraints remain: B&W + sparse blue accent; short layman **Why** on recommendations.
+- **T acceptance matrix incomplete under sparse budget:** ≥3 situation changes and ≥5 fourth-down yardline spot-checks **not met** (natural-time clock; stopped rather than long-poll). Longer session remains unauthorized (recorded-only).
+- **PR hygiene (P2):** #26 merged; #10 merged with #26 packaging (superseded content on main); #5 closed; #4 and #6 kept open.
+- **Hard gates remain locked (P6–P8):** Convention B land / EP promote / isotonic WP persist / 4th-decision-lab polish all **No**; live/paid/commercial **hard defer**; persist **no raw vendor data**. Fan UI constraints remain: B&W + sparse blue accent; short layman **Why** on recommendations.
 
 ---
 
@@ -26,10 +26,10 @@ Phased checklist for **this** project (simulation + analytics engine → situati
 
 ### Phase P — Demo polish (checkable v1)
 
-- [ ] Merge [#26](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/26) so Pages stays pinned to `main`
-- [ ] Close [#10](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/10) after #26; close [#5](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/5) (stale open-D015 snapshot)
-- [ ] Decide keep/merge [#4](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/4) / [#6](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/6) or leave open
-- [ ] Accept current Pages demo as **checkable v1**, or authorize a bounded fan-UI polish pass (still B&W + layman Why; no sportsbook look)
+- [x] Merge [#26](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/26) so Pages stays pinned to `main`
+- [x] [#10](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/10) resolved with #26 (merged/superseded on main); close [#5](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/5) (stale open-D015 snapshot)
+- [x] Keep [#4](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/4) and [#6](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/6) open
+- [x] Accept current Pages demo as **checkable v1** (no polish pass)
 
 ### Phase A — Analytics depth (historical engine)
 
@@ -144,58 +144,52 @@ Answer each **P** prompt. Recommended defaults are suggestions only — your wri
 - Path A derive / inventing `receive_2h_ko` (unsupported by product sign-off).
 - Odds, betting, sportsbook layouts, college football.
 - Counsel deep-dive on Simulations ToS unless you choose P7 authorize or change Persist from No.
-- Closing or merging PRs until you answer P1–P2 (agents will not merge without you).
+- Re-opening Phase A/F/L or model/feed/live work without a new product authorize (Phase P only).
 
 ---
 
-## 5. Reply template
-
-Copy, fill, send:
+## 5. Reply template (filled 2026-10-12)
 
 ```text
 PRODUCT NEXT STEPS — answers (2026-10-12)
 
-P1 Merge #26: Yes / No / Defer — ________
+P1 Merge #26: Yes
 P2 PR hygiene:
-  #10: Close after #26 / Keep / Defer — ________
-  #5:  Close / Keep / Defer — ________
-  #4:  Keep open / Merge / Close / Defer — ________
-  #6:  Keep open / Merge / Close / Defer — ________
-P3 Demo v1: Accept checkable v1 / Polish pass (notes: ____) / Defer
-P4 Mapper: Stay fail-closed / Invest coverage (no Path A) / Defer
-P5 Simulation: Authorize longer T (max HTTP/wall: ____; Persist No) / Recorded-only / Defer
+  #10: Close after #26
+  #5:  Close
+  #4:  Keep open
+  #6:  Keep open
+P3 Demo v1: Accept checkable v1 (no polish pass)
+P4 Mapper: Stay fail-closed (Path A unsupported)
+P5 Simulation: Recorded-only for now
 P6 Model gates:
-  Convention B production land: Yes / No / Defer
-  EP artifact promote: Yes / No / Defer
-  Isotonic WP persist: Yes / No / Defer
-  4th-down / decision-lab polish: Yes / No / Defer
-P7 Live / paid keys / commercial: Authorize (scope: ____) / Hard defer / Defer
-P8 Persist production: No raw / Ephemeral only / Derived OK (____) / Raw + L7 SLA: ____
-P9 Finished-product definition: Accept recommended bar / Custom in: ____ / Custom out: ____
+  Convention B production land: No
+  EP artifact promote: No
+  Isotonic WP persist: No
+  4th-down / decision-lab polish: No
+P7 Live / paid keys / commercial: Hard defer
+P8 Persist production: No raw vendor data
+P9 Finished-product definition: Accept recommended bar
 
-Explicit authorize next phase (pick one):
-  [ ] Phase P only (demo polish / PR hygiene)
-  [ ] Phase P + A (analytics depth under P6 Yes items)
-  [ ] Include Phase F feed work under P4/P5/P8
-  [ ] Include Phase L live (only if P7 Authorize)
-  [ ] Stop — decisions only, no further build yet
+Explicit authorize next phase:
+  [x] Phase P only (demo polish / PR hygiene)
 ```
 
 ---
 
 ## Recorded answers
 
-*(empty — fill when product owner replies)*
+**Recorded:** 2026-10-12 (product owner). Authoritative for Phase P execution.
 
 | Gate | Answer | Notes |
 | --- | --- | --- |
-| P1 | — | |
-| P2 | — | |
-| P3 | — | |
-| P4 | — | |
-| P5 | — | |
-| P6 | — | |
-| P7 | — | |
-| P8 | — | |
-| P9 | — | |
-| Next phase | — | |
+| P1 | **Yes — Merge #26** | Merged; Pages → `main` `/docs` |
+| P2 | **#10** Close after #26 · **#5** Close · **#4** Keep open · **#6** Keep open | #10 landed via #26 packaging (merged); #5 closed |
+| P3 | **Accept checkable v1** | No polish pass |
+| P4 | **Stay fail-closed** | Path A unsupported |
+| P5 | **Recorded-only** | No longer Simulation T / HTTP budget raise |
+| P6 | **All No** | Convention B land / EP promote / isotonic WP persist / 4th-decision-lab polish |
+| P7 | **Hard defer** | Live / paid keys / commercial |
+| P8 | **No raw vendor data** | Persist policy for production |
+| P9 | **Accept recommended finished-product bar** | Live/odds/Path A remain out unless expanded |
+| Next phase | **Phase P only** | Demo polish / PR hygiene — do **not** start A/F/L model, feed, or live work |
