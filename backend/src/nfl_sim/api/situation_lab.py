@@ -30,6 +30,11 @@ RECORDED_DEMO_DISCLAIMER = (
     "not live odds or betting advice. Path A uncalibrated WP + REG train empirics only."
 )
 
+OFFLINE_MAPPER_DISCLAIMER = (
+    "Offline estimate from an offline provider-frame mapper — not a live feed, "
+    "not live odds or betting advice. Path A uncalibrated WP + REG train empirics only."
+)
+
 
 def layman_why_from_config(cfg: dict[str, Any]) -> str:
     """One-line plain-English why from existing summary fields only (no rescoring)."""
@@ -436,6 +441,110 @@ def create_situation_lab_router() -> APIRouter:
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(
                 status_code=500, detail=f"recorded demo frame failed: {exc}"
+            ) from exc
+
+    @router.get("/situation-lab/api/offline-mapper/frames")
+    def offline_mapper_frames() -> dict[str, Any]:
+        from nfl_sim.providers.offline_mapper import list_frames
+
+        return {
+            "items": list_frames(),
+            "scope": "offline_provider_mapper",
+            "live_feed": False,
+            "fan_ui": False,
+            "mode": "offline_mapper",
+            "provider_enum": ["fixture", "demo"],
+        }
+
+    @router.get("/situation-lab/api/offline-mapper/map/{frame_id}")
+    def offline_mapper_map_only(frame_id: str) -> dict[str, Any]:
+        """Map bundled offline frame → snapshot only (no Lab score)."""
+        from nfl_sim.providers.offline_mapper import (
+            FRAME_REGISTRY,
+            OfflineMapperError,
+            map_frame_id,
+        )
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+
+        try:
+            snap = map_frame_id(frame_id)
+            return {
+                "snapshot": snap,
+                "frame_id": frame_id,
+                "live_feed": False,
+                "mode": "offline_mapper",
+                "provider": snap["source"]["provider"],
+                "note": FRAME_REGISTRY.get(frame_id, {}).get("note"),
+            }
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except (OfflineMapperError, PreSnapAdapterError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    @router.get("/situation-lab/api/offline-mapper/compare/{frame_id}")
+    def offline_mapper_compare(frame_id: str) -> dict[str, Any]:
+        """Map bundled frame → existing adapter → Situation Lab. Rejects have no configs."""
+        from nfl_sim.providers.offline_mapper import (
+            FRAME_REGISTRY,
+            OfflineMapperError,
+            map_frame_id,
+        )
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+
+        try:
+            snap = map_frame_id(frame_id)
+            payload = build_situation_lab_payload_from_snapshot(snap)
+            payload["truth_labels"]["play"] = "offline_mapper"
+            payload["truth_labels"]["disclaimer"] = OFFLINE_MAPPER_DISCLAIMER
+            payload["play"]["truth"] = "offline_mapper"
+            payload["offline_mapper"] = {
+                "frame_id": frame_id,
+                "note": FRAME_REGISTRY.get(frame_id, {}).get("note"),
+                "provider": snap["source"]["provider"],
+                "live_feed": False,
+                "mode": "offline_mapper",
+                "yardline_100": snap["situation"]["yardline_100"],
+            }
+            return payload
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except (OfflineMapperError, PreSnapAdapterError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"offline mapper compare failed: {exc}"
+            ) from exc
+
+    @router.post("/situation-lab/api/offline-mapper/compare")
+    def offline_mapper_compare_body(body: dict[str, Any]) -> dict[str, Any]:
+        """POST offline_provider_frame.v1 → map → adapter → Lab."""
+        from nfl_sim.providers.offline_mapper import OfflineMapperError, map_offline_frame
+        from nfl_sim.providers.pre_snap import PreSnapAdapterError
+
+        try:
+            snap = map_offline_frame(body)
+            payload = build_situation_lab_payload_from_snapshot(snap)
+            payload["truth_labels"]["play"] = "offline_mapper"
+            payload["truth_labels"]["disclaimer"] = OFFLINE_MAPPER_DISCLAIMER
+            payload["play"]["truth"] = "offline_mapper"
+            payload["offline_mapper"] = {
+                "provider": snap["source"]["provider"],
+                "live_feed": False,
+                "mode": "offline_mapper",
+                "yardline_100": snap["situation"]["yardline_100"],
+            }
+            return payload
+        except (OfflineMapperError, PreSnapAdapterError) as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(
+                status_code=500, detail=f"offline mapper compare failed: {exc}"
             ) from exc
 
     return router
