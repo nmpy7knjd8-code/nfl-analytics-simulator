@@ -2,10 +2,13 @@ import Link from "next/link";
 import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays } from "../../../lib/api";
-
-export const dynamic = "force-dynamic";
+import { FIXTURE_GAMES } from "../../../lib/fixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
+
+export function generateStaticParams() {
+  return FIXTURE_GAMES.items.map((g) => ({ gameId: g.game_id }));
+}
 
 function formatClock(halfSeconds: number | null | undefined): string {
   if (halfSeconds == null) return "—";

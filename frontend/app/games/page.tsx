@@ -3,8 +3,6 @@ import { ExampleBanner } from "../../components/ExampleBanner";
 import { TruthChip } from "../../components/TruthChip";
 import { fetchGames } from "../../lib/api";
 
-export const dynamic = "force-dynamic";
-
 export default async function GamesPage() {
   const result = await fetchGames(2023);
   const { data: games, source, banner } = result;
