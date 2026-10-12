@@ -1,15 +1,25 @@
 import Link from "next/link";
+import { ExampleBanner } from "../../../components/ExampleBanner";
+import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays } from "../../../lib/api";
-
-export const dynamic = "force-dynamic";
+import { FIXTURE_GAMES } from "../../../lib/fixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
+
+export function generateStaticParams() {
+  return FIXTURE_GAMES.items.map((g) => ({ gameId: g.game_id }));
+}
 
 function formatClock(halfSeconds: number | null | undefined): string {
   if (halfSeconds == null) return "—";
   const m = Math.floor(halfSeconds / 60);
   const s = halfSeconds % 60;
   return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function winChanceLabel(wp: number | null | undefined): string | null {
+  if (wp == null || Number.isNaN(wp)) return null;
+  return `${Math.round(wp * 100)}% win chance`;
 }
 
 export default async function GameReplayPage({ params }: Props) {
@@ -25,11 +35,14 @@ export default async function GameReplayPage({ params }: Props) {
     error = e instanceof Error ? e.message : "Failed to load game";
   }
 
+  const source = game?.source ?? plays?.source;
+  const banner = game?.banner ?? plays?.banner;
+
   return (
-    <main className="main">
-      <p style={{ marginBottom: "1rem" }}>
-        <Link href="/games">← All games</Link>
-      </p>
+    <main className="main page" id="main">
+      <Link className="back-link" href="/games">
+        ← Games
+      </Link>
 
       {error ? (
         <div className="error-band" role="alert">
@@ -37,55 +50,63 @@ export default async function GameReplayPage({ params }: Props) {
         </div>
       ) : null}
 
+      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
+
       {game && plays ? (
         <>
           <header className="section-head">
             <div className="overline">
-              <span className="truth-chip">Historical</span>
-              <span className="mono muted">{game.game_id}</span>
-            </div>
-            <h1>
-              {game.away_team_id} @ {game.home_team_id}
-            </h1>
-            <p>
-              Week {game.week} · {game.game_date} · final{" "}
-              <span className="mono">
-                {game.away_score ?? "—"}–{game.home_score ?? "—"}
+              <TruthChip kind="historical" />
+              <span className="muted">
+                Week {game.data.week} · {game.data.game_date}
               </span>
-              . Plays shown in source order.
-            </p>
+            </div>
+            <div className="scoreboard">
+              <h1 className="scoreboard-matchup">
+                {game.data.away_team_id} @ {game.data.home_team_id}
+              </h1>
+              <span className="scoreboard-final">
+                {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
+              </span>
+            </div>
+            <p>Scroll the story.</p>
           </header>
 
-          <p className="muted" style={{ marginBottom: "0.75rem" }}>
-            {plays.total} plays
-          </p>
+          <p className="list-count">{plays.data.total} plays</p>
 
-          <div className="play-list" role="list">
-            {plays.items.map((p) => (
-              <article className="play-row" role="listitem" key={`${p.game_id}-${p.play_id}`}>
-                <div className="play-meta mono">#{p.play_index}</div>
-                <div className="play-meta">Q{p.quarter}</div>
-                <div className="play-meta mono">
-                  {p.down != null ? `${p.down}&${p.distance}` : "—"} ·{" "}
-                  {p.yardline_100 != null ? `${p.yardline_100}` : "—"} ·{" "}
-                  {formatClock(p.half_seconds_remaining ?? null)}
-                </div>
-                <p className="play-desc">
-                  <strong>{p.play_type}</strong>
-                  {p.possession_team_id ? ` · ${p.possession_team_id}` : ""}
-                  {p.description ? ` — ${p.description}` : ""}
-                </p>
-                <div className="ref-stats" title="Imported nflverse/nflfastR reference columns">
-                  ref EP {p.reference?.ep?.toFixed?.(2) ?? "—"} · WP{" "}
-                  {p.reference?.wp != null ? (p.reference.wp * 100).toFixed(1) + "%" : "—"}
-                </div>
-              </article>
-            ))}
+          <div className="play-feed" role="list">
+            {plays.data.items.map((p) => {
+              const chance = winChanceLabel(p.reference?.wp ?? null);
+              return (
+                <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
+                  <div className="play-top">
+                    <span className="play-meta">
+                      Q{p.quarter}
+                      {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
+                      {formatClock(p.half_seconds_remaining ?? null)}
+                    </span>
+                    <span className="play-meta">#{p.play_index}</span>
+                  </div>
+                  <p className="play-desc">
+                    {p.description ? (
+                      p.description
+                    ) : (
+                      <>
+                        <strong>{p.play_type}</strong>
+                        {p.possession_team_id ? ` · ${p.possession_team_id}` : ""}
+                      </>
+                    )}
+                  </p>
+                  {chance ? <div className="win-chance">{chance}</div> : null}
+                </article>
+              );
+            })}
           </div>
 
           <aside className="disclaimer">
-            {plays.reference_disclaimer} These are not predictions from models
-            trained in this repository.
+            {source === "example"
+              ? "Short example replay — connect the API for full 2023 play-by-play."
+              : "Win chance is an estimate at the snap — not a bet."}
           </aside>
         </>
       ) : null}

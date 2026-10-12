@@ -1,21 +1,23 @@
 # Frontend — NFL Analytics Simulator
 
-Phase 2 ships a minimal Next.js **Game Explorer**: list 2023 historical games and replay ordered play-by-play. Truth chips mark data as **Historical**. Imported `ep`/`epa`/`wp` are labeled as nflverse/nflfastR reference columns — not models trained here.
+Fan-facing Next.js UI with a **phone-app** shell (bottom tabs, large taps, mobile-first column): branded home, **Games** replay, and **4th & short** explainer.
 
-No decision-lab / 4th-down / clock-management UI in this phase (see roadmap Phase 6).
+Truth chips mark **Historical** / **Predicted** / **Simulated**. When the FastAPI lake is not running, Games falls back to labeled **example** fixtures so `npm run dev` still works.
+
+No betting / odds UI. Fourth-down numbers are fixtures until the offline scorer API is wired (`POST /models/fourth-down` hook left in the explainer).
 
 ## Commands
 
 ```bash
-# API must be running with 2023 lake ingested
-cd ../backend && python -m nfl_sim.api
-
-cd ../frontend
+cd frontend
 npm install
 npm run dev          # http://localhost:3000
 npm run typecheck
-npm test             # contract tests
+npm test
 npm run build
+npm run build:pages  # static export → frontend/out (copy to docs/demo for GitHub Pages)
 ```
 
-Env: `NFL_SIM_API_ORIGIN` (default `http://127.0.0.1:8000`).
+Optional live API: `NFL_SIM_API_ORIGIN` (default `http://127.0.0.1:8000`). Without it, example data is used automatically.
+
+**GitHub Pages demo:** `NFL_SIM_STATIC_EXPORT=1` builds fixtures-only HTML under `docs/demo/` → [demo site](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/). No Sportradar / live feed.

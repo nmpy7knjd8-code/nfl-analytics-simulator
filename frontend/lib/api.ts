@@ -1,6 +1,15 @@
 import type { CanonicalPlay, GameSummary } from "../contracts";
+import {
+  FIXTURE_BANNER,
+  FIXTURE_GAMES,
+  fixtureGame,
+  fixturePlays,
+} from "./fixtures";
 
 const API_BASE = process.env.NFL_SIM_API_ORIGIN ?? "http://127.0.0.1:8000";
+/** Static Pages / offline demo — never call the API (fixtures only). */
+const DEMO_ONLY =
+  process.env.NFL_SIM_STATIC_EXPORT === "1" || process.env.NFL_SIM_DEMO_ONLY === "1";
 
 export type GamesResponse = {
   items: GameSummary[];
@@ -20,9 +29,18 @@ export type PlaysResponse = {
   reference_disclaimer: string;
 };
 
+export type DataSource = "live" | "example";
+
+export type Sourced<T> = {
+  data: T;
+  source: DataSource;
+  banner?: string;
+};
+
 async function getJson<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     next: { revalidate: 30 },
+    signal: AbortSignal.timeout(800),
   });
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText} for ${path}`);
@@ -30,14 +48,47 @@ async function getJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function fetchGames(season = 2023): Promise<GamesResponse> {
-  return getJson(`/games?season=${season}&limit=500`);
+export async function fetchGames(season = 2023): Promise<Sourced<GamesResponse>> {
+  if (DEMO_ONLY) {
+    return { data: FIXTURE_GAMES, source: "example", banner: FIXTURE_BANNER };
+  }
+  try {
+    const data = await getJson<GamesResponse>(`/games?season=${season}&limit=500`);
+    return { data, source: "live" };
+  } catch {
+    return { data: FIXTURE_GAMES, source: "example", banner: FIXTURE_BANNER };
+  }
 }
 
-export function fetchGame(gameId: string): Promise<GameSummary> {
-  return getJson(`/games/${encodeURIComponent(gameId)}`);
+export async function fetchGame(gameId: string): Promise<Sourced<GameSummary>> {
+  if (!DEMO_ONLY) {
+    try {
+      const data = await getJson<GameSummary>(`/games/${encodeURIComponent(gameId)}`);
+      return { data, source: "live" };
+    } catch {
+      /* fall through to fixtures */
+    }
+  }
+  const data = fixtureGame(gameId);
+  if (!data) throw new Error(`Game not found: ${gameId}`);
+  return { data, source: "example", banner: FIXTURE_BANNER };
 }
 
-export function fetchPlays(gameId: string): Promise<PlaysResponse> {
-  return getJson(`/games/${encodeURIComponent(gameId)}/plays?limit=2000`);
+export async function fetchPlays(gameId: string): Promise<Sourced<PlaysResponse>> {
+  if (!DEMO_ONLY) {
+    try {
+      const data = await getJson<PlaysResponse>(
+        `/games/${encodeURIComponent(gameId)}/plays?limit=2000`,
+      );
+      return { data, source: "live" };
+    } catch {
+      /* fall through to fixtures */
+    }
+  }
+  const data = fixturePlays(gameId);
+  if (!data) throw new Error(`Plays not found: ${gameId}`);
+  return { data, source: "example", banner: FIXTURE_BANNER };
 }
+
+/** Future hook — sibling agent may add real fourth-down scoring on another branch. */
+export const FOURTH_DOWN_API_PATH = "/models/fourth-down";

@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Source_Sans_3, Syne } from "next/font/google";
-import Link from "next/link";
+import { AppNav } from "../components/AppNav";
 import "./globals.css";
 
 const syne = Syne({
@@ -24,23 +24,26 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "NFL Analytics Simulator",
   description:
-    "Historical NFL play-by-play reconstruction. Phase 2 — replay only; no trained models yet.",
+    "See real NFL games play by play, and explore tough calls like fourth-and-short — in plain English.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0a0a0b",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${syne.variable} ${sourceSans.variable} ${ibmPlexMono.variable}`}>
       <body>
-        <div className="shell">
-          <header className="topbar">
-            <Link href="/" className="brand">
-              NFL Analytics Simulator
-            </Link>
-            <nav className="nav" aria-label="Primary">
-              <Link href="/games">Game Explorer</Link>
-            </nav>
-          </header>
-          {children}
+        <div className="app-shell">
+          <a className="sr-only" href="#main">
+            Skip to content
+          </a>
+          <div className="app-stage">{children}</div>
+          <AppNav />
         </div>
       </body>
     </html>
