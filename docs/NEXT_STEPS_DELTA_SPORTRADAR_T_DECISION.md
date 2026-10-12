@@ -1,0 +1,19 @@
+# Delta summary + next steps (Sportradar T decision request)
+
+**Date:** 2026-10-12  
+**Main tip:** `b483ac0`  
+**Branch:** `cursor/sportradar-t-decision-request-c0ef` (docs-only PR, **not merged**)
+
+## What landed
+
+* Compact L1/L2/L7 decision request for authorize **T**
+* Prefer no persistent Simulation capture (L7 N/A)
+* Note: PR #24 offline mapper still **OPEN** (not on main)
+
+## Approval needed
+
+Answer L1/L2 (+ persist/L7), then explicitly **Authorize T**. Separately: merge #24?
+
+## Single best next step
+
+Product/counsel sign L1+L2 with no-persist → Authorize T — still no production live wire.
