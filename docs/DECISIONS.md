@@ -95,7 +95,44 @@
 * **Artifact:** `ep_model.joblib` missing → project-model pre/post **Blocked** (`reports/ep/ARTIFACT_PROVENANCE.md`).
 * **Brief:** `docs/DECISIONS_AND_FORWARD_PLAN.md` (successor to open-D015 PR #5 text).
 
+## D016 — Situation WP: Path A prototype (2026-10-11)
+
+* **Status:** Accepted (prototype on main via PR #8)
+* **Decision:** Situation WP with no odds or market features; train 2019–2021, calibrate on 2022, report on 2023. Isotonic persistence is gated (P6–P8). nfeloml/nflfastR are for reference only.
+* **Evidence:** `reports/wp/EVALUATION.md`, `metrics.json`, `calibration_*.csv`.
+
+## D017 — Decision tools stay offline and labeled (2026-10-11)
+
+* **Status:** Accepted (PRs #9, #11, #14)
+* **Decision:** The fourth-down analyzer (go/FG/punt) and the historical decision lab run offline on a frozen lake. Outputs are labeled historical observation, model prediction, or counterfactual simulation. They are not presented as live recommendations.
+* **Evidence:** `reports/fourth_down/`, `reports/decision_lab/`, `docs/HISTORICAL_DECISION_LAB.md`.
+
+## D018 — Season-aware transitions + punt variance / outcome-dependent clock (2026-10-11)
+
+* **Status:** Accepted on the decision-lab harness (PRs #12, #13)
+* **Decision:** Convert/FG/punt empirics may be season-aware. Punt outcomes are variance-aware and the clock depends on the outcome. These are compared against the pooled baseline in reports, not silently swapped in.
+* **Evidence:** `reports/season_aware_transitions/`, `reports/punt_clock_transitions/`.
+
+## D019 — Feed choice and Sportradar trial T (2026-10-11 to 2026-10-12)
+
+* **Status:** Accepted with limits (PRs #17–#25)
+* **Decision:** Sportradar Simulation was evaluated as the candidate feed. The offline pre-snap mapper fails closed on a missing `receive_2h_ko`, and Path A is unsupported. One keyless trial T ran: 7 HTTP calls, no raw persistence, `live_feed=false`. The acceptance matrix was incomplete. No production live feed, paid keys, or raw vendor JSON persistence.
+* **Evidence:** `docs/FEED_EVALUATION.md`, `docs/SPORTRADAR_TRIAL_T_REPORT.md`, `docs/OFFLINE_PRE_SNAP_MAPPER.md`.
+
+## D020 — Product P1–P9 answers (2026-10-12)
+
+* **Status:** Accepted (PR #27)
+* **Decision:** Merge the Pages demo (#26). PR hygiene: #5 closed, #10 superseded. Accept the demo as checkable v1. Only Phase P is authorized; Phases A, F and L need explicit approval; live/paid/commercial work is a hard defer. Fan UI uses black and white with a sparse blue accent and a short plain-language "Why" on recommendations.
+* **Evidence:** `docs/PRODUCT_NEXT_STEPS_DECISIONS.md`.
+
+## D021 — GitHub Pages is a fixture-only static demo (2026-10-12)
+
+* **Status:** Accepted (PRs #26, #28, #29)
+* **Decision:** Pages serves `main` `/docs`: a static landing page (`index.html`, `.nojekyll`) and the Next.js static export under `docs/demo/` built from fixtures. No backend, live data or report files are served. Markdown docs are linked via GitHub blob URLs. Generated large data (`reports/**/*.parquet`) is gitignored and published as release assets.
+
 ## Open decisions (user)
+
+_Items 1–3 below are historical (pre-PR #7/#8); current open gates are tracked in D020 / PRODUCT_NEXT_STEPS_DECISIONS.md._
 
 1. Authorize push/merge of Convention B branch after review.
 2. Restore original `ep_model.joblib` (or authorize explicit new-artifact rebuild) before model-surface acceptance.
