@@ -36,8 +36,7 @@ export default function AboutPage() {
       <h2>Data</h2>
       <p>
         Play-by-play data:{" "}
-        <a href="https://github.com/nflverse/nflverse-data">nflverse</a> (CC BY 4.0). Not affiliated with the NFL. No betting
-        content.
+        <a href="https://github.com/nflverse/nflverse-data">nflverse</a> (CC BY 4.0). Not affiliated with the NFL.
       </p>
       <p>
         <Link href="/">Back to Today&apos;s 5 →</Link>

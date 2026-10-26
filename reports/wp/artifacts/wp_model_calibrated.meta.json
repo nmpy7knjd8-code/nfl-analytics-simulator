@@ -1,0 +1,56 @@
+{
+  "artifact": "wp_model_calibrated.joblib",
+  "base_model": {
+    "C_frozen": 0.25,
+    "note": "Base WP refit with frozen C=0.25 on train only; calibrator never sees 2023",
+    "path": "A_no_ep_feature",
+    "train_n": 115646,
+    "train_seasons": [
+      2019,
+      2020,
+      2021
+    ],
+    "val_n": 39347,
+    "val_season": 2022
+  },
+  "calibration_n": 39347,
+  "calibration_season": 2022,
+  "command": "python3 -m nfl_sim.models wp-calibrate --out /workspace/nfl-analytics-simulator/reports/wp --C 0.25 --folds 5",
+  "data_hash": {
+    "combined_sha256": "e488318785cf024946cb8152214dbd1c0224e16899bcb4ea49b39dec120bd401",
+    "season_sha256": {
+      "2019": "a333ea2eb682727e38a0cf4cd3227ea87cde8968aa514787a9a8d3b5c1d61a89",
+      "2020": "a478532555ad09a1bfd146e8f2ff7487e809246a731f4560cb2b848fe917b76f",
+      "2021": "a5fc2665520582073b65dcc44058db6dc36f2b532bf8ca558e98eead87271d3a",
+      "2022": "96a5c375da47e7bb19be8d81d4bcc1074570651480bbdf7fb5f7dd7cfb4a395b"
+    }
+  },
+  "default_for_api": false,
+  "method": "isotonic",
+  "oof_metrics": {
+    "brier": 0.19257894470649262,
+    "ece_decile": 0.002231298083800166,
+    "empirical_win_rate": 0.5093399750933998,
+    "label": "isotonic_oof_ablation",
+    "log_loss": 0.5640815967465259,
+    "mean_p": 0.5092976879776091,
+    "n": 39347
+  },
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1"
+  },
+  "recommendation": "improved",
+  "seed": 42,
+  "uncalibrated_metrics": {
+    "brier": 0.19611045855700418,
+    "ece_decile": 0.05450084847880284,
+    "empirical_win_rate": 0.5093399750933998,
+    "label": "uncalibrated",
+    "log_loss": 0.5749267926938539,
+    "mean_p": 0.5077993341929724,
+    "n": 39347
+  }
+}

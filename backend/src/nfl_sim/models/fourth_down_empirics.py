@@ -29,13 +29,24 @@ CONVERT_BINS: tuple[tuple[int, int], ...] = (
     (11, 99),
 )
 
-# Kick distance bins for FG
+# PRODUCT rule, not a model limit: we never OFFER a field goal longer than this.
+# Kicks past 64 yd are real (nflverse has makes of 66–68 yd); the make model below
+# still prices them from the data, but p_make flags them out_of_range and the
+# analyzer drops the FG option.
+MAX_FG_DISTANCE = 64
+
+# Make-probability tail: from TAIL_START yd up to the longest attempt in the fit data,
+# p_make comes from a logistic fit on every attempt >= TAIL_FIT_FROM yd (no hardcoded
+# record distance). Past the longest attempt in the data there is no evidence: p = 0.
+TAIL_START = 60
+TAIL_FIT_FROM = 50
+
+# Kick distance bins for FG (top bin ends at MAX_FG_DISTANCE — no 60–80 catch-all)
 FG_BINS: tuple[tuple[int, int], ...] = (
     (18, 29),
     (30, 39),
     (40, 49),
     (50, 59),
-    (60, 80),
 )
 
 # Pre-punt yardline_100 bins
@@ -51,10 +62,12 @@ def _bin_rate(bins: tuple[tuple[int, int], ...], x: float, table: dict[tuple[int
     for lo, hi in bins:
         if lo <= x <= hi:
             return table[(lo, hi)]
-    # fallback nearest outer
+    # Below the first bin: clamp to it (e.g. very short distances). Above the last bin
+    # we refuse instead of silently reusing the top bin's rate — that silent clamp is
+    # how 70+ yd field goals used to get a real make probability.
     if x < bins[0][0]:
         return table[bins[0]]
-    return table[bins[-1]]
+    raise ValueError(f"{x} is beyond the last bin {bins[-1]}")
 
 
 def _build_convert_table(yd: pd.Series, conv: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
@@ -70,6 +83,44 @@ def _build_convert_table(yd: pd.Series, conv: pd.Series) -> dict[tuple[int, int]
     return convert_tbl
 
 
+def _logit_fit(x: np.ndarray, y: np.ndarray, iters: int = 50) -> tuple[float, float]:
+    """Logistic regression y ~ a + b*x by Newton/IRLS (tiny, dependency-free)."""
+    X = np.column_stack([np.ones_like(x), x])
+    w = np.zeros(2)
+    for _ in range(iters):
+        p = 1.0 / (1.0 + np.exp(-(X @ w)))
+        H = X.T @ (X * (p * (1 - p))[:, None]) + 1e-6 * np.eye(2)
+        step = np.linalg.solve(H, X.T @ (y - p))
+        w += step
+        if np.abs(step).max() < 1e-10:
+            break
+    return float(w[0]), float(w[1])
+
+
+def _build_fg_tail(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
+    """1-yd bins from TAIL_START to the longest attempt, priced by a logistic fit."""
+    ok = kd.notna()
+    kd, made = kd[ok].astype(float), made[ok].astype(bool)
+    if kd.empty or kd.max() < TAIL_START:
+        return {}
+    fit = kd >= TAIL_FIT_FROM
+    if int(fit.sum()) < 10 or made[fit].nunique() < 2:
+        return {}
+    a, b = _logit_fit(kd[fit].to_numpy(), made[fit].to_numpy().astype(float))
+    longest = int(kd.max())
+    tail: dict[tuple[int, int], dict[str, Any]] = {}
+    for yd in range(TAIL_START, longest + 1):
+        at = kd.round().eq(yd)
+        tail[(yd, yd)] = {
+            "n": int(at.sum()),
+            "made": int(made[at].sum()),
+            "p_make": float(1.0 / (1.0 + np.exp(-(a + b * yd)))),
+            "filter": f"REG field_goal; logistic tail fit on {int(fit.sum())} attempts >= {TAIL_FIT_FROM} yd "
+                      f"(longest attempt {longest} yd)",
+        }
+    return tail
+
+
 def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
     fg_tbl: dict[tuple[int, int], dict[str, Any]] = {}
     for lo, hi in FG_BINS:
@@ -80,6 +131,7 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
             "p_make": float(made[m].mean()) if n else 0.5,
             "filter": "REG play_type=field_goal",
         }
+    fg_tbl.update(_build_fg_tail(kd, made))
     return fg_tbl
 
 
@@ -242,6 +294,9 @@ class FourthDownEmpirics:
                 pd.to_numeric(df.loc[fg_s, "kick_distance"], errors="coerce"),
                 df.loc[fg_s, "field_goal_result"].astype("string").str.lower().eq("made"),
             )
+            if not any(lo >= TAIL_START for lo, _ in fg_by_season[s_i]):
+                # Too few long kicks in one season to fit a tail: reuse the pooled tail.
+                fg_by_season[s_i].update({k: v for k, v in fg_tbl.items() if k[0] >= TAIL_START})
             pu_s = pu & s_mask
             yl_s = pd.to_numeric(df.loc[pu_s, "yardline_100"], errors="coerce")
             kick_s = pd.to_numeric(df.loc[pu_s, "kick_distance"], errors="coerce")
@@ -365,7 +420,18 @@ class FourthDownEmpirics:
         mode: EmpiricsMode = "pooled",
     ) -> tuple[float, dict[str, Any]]:
         _, fg_tbl, _, resolved = self._tables_for(season, mode=mode)
-        row = dict(_bin_rate(FG_BINS, float(kick_distance), fg_tbl))
+        kd = float(kick_distance)
+        # Bins come from the table itself so older pickled tables still resolve.
+        bins = tuple(sorted(fg_tbl))
+        if kd > bins[-1][1]:
+            row = {"n": 0, "p_make": 0.0, "beyond_data": True,
+                   "filter": f"kick_distance > longest attempt in the data ({bins[-1][1]} yd)"}
+        else:
+            row = dict(_bin_rate(bins, round(kd) if kd >= TAIL_START else kd, fg_tbl))
+        if kd > MAX_FG_DISTANCE:
+            # Product rule: priced from the data, but never offered.
+            row["out_of_range"] = True
+            row["filter"] = f"{row['filter']}; not offered: kick_distance > {MAX_FG_DISTANCE} yd"
         row = {**row, "empirics_resolve": resolved}
         return float(row["p_make"]), row
 
