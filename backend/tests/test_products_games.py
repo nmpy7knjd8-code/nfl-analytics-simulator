@@ -50,8 +50,10 @@ def test_index_matches_nflverse_final_scores_100pct(season, schedules):
             r["home_team"], r["away_team"], int(r["home_score"]), int(r["away_score"]), int(r["week"]), str(r["gameday"]))
 
 
-def test_game_files_exist_for_fixtures():
-    assert len(_game_files()) >= 3
+@pytest.mark.parametrize("season", games.SEASONS)
+def test_every_index_game_has_a_game_file(season):
+    for g in _index(season)["games"]:
+        assert (GAMES / f"{g['id']}.json").exists(), g["id"]
 
 
 @pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
@@ -72,7 +74,7 @@ def test_game_file_wp_home_side_ends_at_result(path):
     for p in doc["plays"]:
         fd = p["fourth_down"]
         if fd is not None:
-            assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 17 <= 64)
+            assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 18 <= 64)
 
 
 def test_home_view_flip_from_synthetic_rows():
