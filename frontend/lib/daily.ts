@@ -161,6 +161,9 @@ export function practiceSet(seed: string, items: DailyItem[] = DAILY_ITEMS, size
 /* ---------- Options + scoring ---------- */
 
 export const MAX_FG_YARDS = 64;
+/** One label everywhere (QA2 M8). */
+export const CLOSE_LABEL = "Close call — half credit";
+
 /** "Close call" when the best two options are within 2 win-chance points. */
 export const CLOSE_CALL_GAP = 0.02;
 
@@ -217,7 +220,8 @@ export function scoreCall(pick: QuizChoice, item: DailyItem): ScoredCall {
   const [best, bestV] = ranked[0];
   const gap = ranked.length > 1 ? bestV - ranked[1][1] : 1;
   const closeCall = gap < CLOSE_CALL_GAP;
-  const mine = item.reveal.values[pick];
+  // Only offered options count: a missing or too-far Kick is never Close (½) or Right.
+  const mine = ranked.find(([id]) => id === pick)?.[1];
   let result: CallResult;
   if (mine == null) result = "wrong";
   else if (closeCall && bestV - mine < CLOSE_CALL_GAP) result = "close";

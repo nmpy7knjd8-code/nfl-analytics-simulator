@@ -246,7 +246,7 @@ export type FourthDownScenario = {
   footnote: string;
 };
 
-/** Within this gap (win-chance points), treat top options as too close to call. */
+/** Within this gap (win-chance points), treat top options as a Close call. */
 export const RECOMMENDATION_MARGIN = 0.02;
 
 export type Recommendation =
@@ -390,7 +390,7 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
   },
   {
     id: "demo-4th-3",
-    title: "Too close to call",
+    title: "Close call — half credit",
     setup:
       "Up three late in the fourth. 4th and 3 from your own 45 — go for the dagger, or punt and play defense?",
     apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",

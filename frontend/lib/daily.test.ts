@@ -5,6 +5,7 @@ import { QUIZ_PACK } from "./quiz";
 import { slim } from "../scripts/build-daily-pack.mjs";
 import dailyPack from "./dailyPack.json";
 import {
+  CLOSE_LABEL, rankedValues,
   cycleDays, dailySet, dateKey, emptyStreak, msUntilNextSet, optionStates, recordDaily,
   scoreCall, shareText, DAILY_ITEMS, type DailyItem, visibleStreak, dailyStats, dayNumber, DAILY_SET_SIZE,
 } from "./daily";
@@ -121,4 +122,31 @@ test("rounded daily values keep every model pick and close-call verdict", () => 
       assert.equal(a.result, b.result, it.id);
     }
   }
+});
+
+test("H4: no Field goal button or credit when yard line + 18 is over 64", () => {
+  let far = 0;
+  for (const it of DAILY_ITEMS) {
+    const fg = optionStates(it).find((o) => o.id === "fg")!;
+    const tooFar = it.situation.yardline_100 + 18 > 64;
+    if (tooFar) {
+      far++;
+      assert.equal(fg.shown, false, `${it.id} shows Kick at ${it.situation.yardline_100 + 18} yd`);
+      assert.ok(!rankedValues(it).some(([id]) => id === "fg"));
+      const s = scoreCall("fg", it);
+      assert.equal(s.result, "wrong");
+      assert.equal(s.credit, 0, "a missing field goal never earns half credit");
+    }
+    for (const [, v] of rankedValues(it)) assert.equal(typeof v, "number");
+  }
+  assert.ok(far > 0);
+});
+
+test("H4: a choice missing from reveal.values is never shown or credited", () => {
+  const it = DAILY_ITEMS.find((i) => Object.keys(i.reveal.values).length === 3 && i.situation.yardline_100 + 18 <= 64)!;
+  const { fg: _drop, ...rest } = it.reveal.values;
+  const noFg = { ...it, reveal: { ...it.reveal, values: rest } } as typeof it;
+  assert.ok(!rankedValues(noFg).some(([id]) => id === "fg"));
+  assert.equal(scoreCall("fg", noFg).credit, 0);
+  assert.equal(CLOSE_LABEL, "Close call — half credit");
 });

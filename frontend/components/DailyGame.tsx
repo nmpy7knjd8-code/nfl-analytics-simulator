@@ -7,7 +7,7 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
+  dailySet, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
@@ -15,7 +15,7 @@ import { CardSkeleton, EmptyState } from "./EmptyState";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
 const HOWTO_KEY = "fourth-and-daily.seen-howto.v1";
-const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
+const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: CLOSE_LABEL, wrong: "Not the best call" };
 
 type Mode = "daily" | "practice" | "yesterday";
 

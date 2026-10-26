@@ -3,6 +3,7 @@
  * Every sentence is built from the file's own numbers; nothing is invented.
  */
 import type { QuizChoice } from "./quiz";
+import { CLOSE_LABEL } from "./daily";
 
 export type FourthDownCheck = {
   close_call: boolean;
@@ -136,7 +137,7 @@ const NAME: Record<QuizChoice, string> = { go: "Go", fg: "Kick", punt: "Punt" };
 export function grade(fd: FourthDownCheck): FourthDownGrade | null {
   if (!fd.actual) return null;
   if (fd.actual === fd.recommendation) return { label: `Matched: ${NAME[fd.recommendation]}`, tone: "match" };
-  if (fd.close_call) return { label: `Close call: ${NAME[fd.actual]} or ${NAME[fd.recommendation]}`, tone: "close" };
+  if (fd.close_call) return { label: `${CLOSE_LABEL}: ${NAME[fd.actual]} or ${NAME[fd.recommendation]}`, tone: "close" };
   const mine = fd.wp[fd.actual];
   const best = fd.wp[fd.recommendation];
   const cost = mine != null && best != null ? ` (−${((best - mine) * 100).toFixed(1)} pts)` : "";

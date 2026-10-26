@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { QuizChoice } from "../lib/quiz";
-import { DAILY_ITEMS } from "../lib/daily";
+import { CLOSE_CALL_GAP, CLOSE_LABEL, DAILY_ITEMS } from "../lib/daily";
 import {
   checkSituation, clock, fieldText, marginText, MAX_DISTANCE, MIN_DISTANCE, situationFromItem, whatCouldChange,
   type CheckSituation, type FourthDownGrid,
@@ -109,11 +109,11 @@ export function FourthDownChecker() {
         {result ? (
           <>
             <p className="ck-rec">{NAME[result.best]}</p>
-            {result.closeCall ? <p className="ck-close">Close call: the top two are under 2 pts apart.</p> : null}
+            {result.closeCall ? <p className="ck-close">{CLOSE_LABEL}: the top two are under {Math.round(CLOSE_CALL_GAP * 100)} pts apart.</p> : null}
             <ul className="fd-bars" aria-label="Chance to win by choice">
-              {result.options.filter((o) => o.shown).map((o) => {
+              {result.options.filter((o) => o.shown && !o.disabled && result.item.reveal.values[o.id] != null).map((o) => {
                 const v = result.item.reveal.values[o.id];
-                const off = o.disabled || v == null;
+                const off = false;
                 return (
                   <li key={o.id} className={`fd-bar${o.id === result.best ? " is-best" : ""}`}>
                     <span className="fd-bar-label">{SHORT[o.id]}</span>

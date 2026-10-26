@@ -62,5 +62,6 @@ export function whyText(item: DailyItem, scored: ScoredCall): string {
 /** Points of win chance the pick cost vs the best option (0 if it was the best). */
 export function cost(item: DailyItem, scored: ScoredCall): number {
   const best = rankedValues(item)[0][1];
-  return best - (item.reveal.values[scored.pick] ?? 0);
+  const mine = rankedValues(item).find(([id]) => id === scored.pick)?.[1];
+  return mine == null ? 0 : best - mine;
 }
