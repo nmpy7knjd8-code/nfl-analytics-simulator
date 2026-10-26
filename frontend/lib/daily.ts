@@ -105,6 +105,11 @@ export function dayNumber(key: string): number {
   return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(2026, 0, 1)) / 86_400_000);
 }
 
+/** Public set number: Jan 1, 2026 (ET) is Fourth & Daily #1. */
+export function setNumber(key: string): number {
+  return dayNumber(key) + 1;
+}
+
 function shuffled(items: DailyItem[], seed: string): DailyItem[] {
   const rand = rng(hash(seed));
   const pool = [...items].sort((a, b) => a.id.localeCompare(b.id));

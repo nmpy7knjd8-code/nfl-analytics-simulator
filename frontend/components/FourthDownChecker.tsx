@@ -120,14 +120,14 @@ export function FourthDownChecker() {
                     <span className="fd-bar-track">
                       <span className="fd-bar-fill" style={{ width: off ? 0 : `${Math.round(v! * 100)}%` }} />
                     </span>
-                    <span className="fd-bar-num">{off ? (o.id === "fg" ? "Too far" : "—") : `${(v! * 100).toFixed(1)}%`}</span>
+                    <span className="fd-bar-num">{off ? (o.id === "fg" ? "Too far" : "—") : `${Math.round(v! * 100)}%`}</span>
                   </li>
                 );
               })}
             </ul>
             {result.ranked.length > 1 ? (
               <p className="fd-why">
-                <strong>Why:</strong> {NAME[result.best]} gives the offense a {(result.ranked[0][1] * 100).toFixed(1)}% chance to win, {(result.gap * 100).toFixed(1)} pts more than {SHORT[result.ranked[1][0]]}.
+                <strong>Why:</strong> {NAME[result.best]} gives the offense a {Math.round(result.ranked[0][1] * 100)}% chance to win, {result.gap * 100 < 1 ? "less than 1 point" : `${Math.round(result.gap * 100)} ${Math.round(result.gap * 100) === 1 ? "point" : "points"}`} more than {SHORT[result.ranked[1][0]]}.
                 {fgOff ? ` Kick is off: ${fgOff}, past the 64-yd limit.` : ""}
               </p>
             ) : null}
