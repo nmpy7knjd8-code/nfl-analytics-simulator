@@ -5,8 +5,14 @@ import quizPack from "../../frontend/lib/quizPack.json";
 
 const games = FIXTURE_GAMES.items;
 const plays = games.flatMap((g) => fixturePlays(String(g.game_id))?.items ?? []);
-const wpPoints = Object.values(WP_FIXTURES).flatMap((s) =>
-  s.points.map((p) => ({ ...p, game_id: s.game_id })),
+// WinProbabilitySeries contract (#42): points carry game_seconds_elapsed; check.py wants
+// game_seconds_remaining for regulation quarters.
+const wpPoints = Object.values(WP_FIXTURES).flatMap(({ series }) =>
+  series.points.map((p) => ({
+    ...p,
+    game_id: series.game_id,
+    game_seconds_remaining: p.quarter <= 4 ? 3600 - p.game_seconds_elapsed : null,
+  })),
 );
 process.stdout.write(
   JSON.stringify({ games, plays, wpPoints, wpGameIds: Object.keys(WP_FIXTURES), scenarios: FOURTH_DOWN_SCENARIOS, quiz: quizPack }),
