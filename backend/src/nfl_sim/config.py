@@ -14,9 +14,9 @@ class Settings(BaseSettings):
     duckdb_path: Path = REPO_ROOT / "data" / "canonical" / "nfl.duckdb"
     parquet_dir: Path = REPO_ROOT / "data" / "canonical" / "parquet"
     raw_dir: Path = REPO_ROOT / "data" / "raw"
-    # nflreadpy 0.1.5 requires Path (not str) for cache_dir
+    # nflreadpy 0.1.x requires Path (not str) for cache_dir
     nflreadpy_cache_dir: Path = REPO_ROOT / ".cache" / "nflreadpy"
-    nflreadpy_version: str = "0.1.5"
+    nflreadpy_version: str = "0.1.5"  # minimum supported; pin is >=0.1.5,<0.2
     train_seasons: tuple[int, ...] = (2019, 2020, 2021)
     validate_season: int = 2022
     test_season: int = 2023

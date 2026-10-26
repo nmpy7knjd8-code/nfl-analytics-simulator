@@ -18,8 +18,14 @@ PINNED_SEASON_SHA256: dict[int, str] = {
     2020: "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
     2021: "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
     2022: "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
-    # Phase 2 operational pin (unchanged through backfill).
-    2023: "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d",
+    # Re-pinned 2026-10-26: nflverse republished 2023 (same 49,665 rows). The
+    # Phase 2 digest b8417df9… is kept in SUPERSEDED_SEASON_SHA256.
+    2023: "e258815943b9dbe7d561444681da87df8958a51444c1ba4b9336419540d51508",
+}
+
+# Every digest a season has been pinned to, oldest first (audit trail for the mutable tag).
+SUPERSEDED_SEASON_SHA256: dict[int, tuple[str, ...]] = {
+    2023: ("b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d",),
 }
 
 PREVIOUS_PINNED_SEASON_SHA256: dict[int, str] = {

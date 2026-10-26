@@ -1,0 +1,70 @@
+name: Pages
+
+# Builds the Pages site from source: a fresh frontend static export (build:pages)
+# at the site root, plus static files from docs/ and redirects from old /demo/ paths
+# (scripts/pages/assemble.py).
+# The build job runs on every PR and push. The deploy job only runs on main
+# once the repo variable PAGES_VIA_ACTIONS is "true" (set it after switching
+# Settings > Pages > Source to "GitHub Actions"), so it can't fail or race
+# the current branch-based deploy before the switch.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend
+        working-directory: frontend
+        run: npm ci
+      - name: Build static export
+        working-directory: frontend
+        run: npm run build:pages
+      - name: Assemble site (app at root + redirects from old /demo/ paths)
+        run: python3 scripts/pages/assemble.py
+      - name: Verify site
+        run: |
+          for f in index.html daily/index.html fourth-down/index.html games/index.html 404.html favicon.svg \
+                   demo/index.html demo/quiz/index.html demo/decide/index.html demo/games/index.html \
+                   quiz/index.html decide/index.html; do
+            test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
+            echo "ok $f"
+          done
+          grep -q '/nfl-analytics-simulator/_next/' _site/index.html
+          grep -q 'url=/nfl-analytics-simulator/daily/' _site/quiz/index.html
+          grep -q 'url=/nfl-analytics-simulator/"' _site/demo/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.PAGES_VIA_ACTIONS == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
