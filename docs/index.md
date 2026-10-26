@@ -6,7 +6,7 @@
 → **[Fourth-down quiz](demo/quiz/)** — offline Situation → Lock in → Reveal (auto-start)  
 → **[Open the full checklist (HANDOFF.md)](HANDOFF.md)**  
 → **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check  
-→ **[EP/EPA audit gate](../reports/ep/AUDIT.md)** — Stage A merge readiness  
+→ **[EP/EPA audit gate](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/reports/ep/AUDIT.md)** — Stage A merge readiness  
 
 | Quick links | |
 | --- | --- |
@@ -24,7 +24,7 @@
 | [Model validation](MODEL_VALIDATION.md) | WP / metrics rules |
 | [UI design system](UI_DESIGN_SYSTEM.md) | visual direction |
 | [UI screen specs](UI_SCREEN_SPECS.md) | eight screens |
-| [AGENTS.md](AGENTS.md) | process + stack |
+| [AGENTS.md](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/AGENTS.md) | process + stack |
 | [Roadmap](ROADMAP.md) | phase gates |
 
 **Phase 3 Stage A:** audit gate **PASS** — merge via PR #3 (not PR #2 as-is) · era excluded · focused nflverse reconciliation documented · next: WP after merge · live adapters last.
