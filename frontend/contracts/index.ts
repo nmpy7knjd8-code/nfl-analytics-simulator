@@ -218,6 +218,13 @@ export interface WinProbabilityPoint {
   home_wp_post: number;
   delta_home_wp: number;
   is_swing: boolean;
+  /** Q2, ≤120 s left: nflverse WP quirk zone; excluded from Game Story ranking. */
+  is_end_of_half?: boolean;
+  /** Q4, ≤120 s left: down-weighted (0.5) in Game Story ranking. */
+  is_low_clock_before_half?: boolean;
+  wp_quirk_reason?: "overtime" | "end_of_half" | "low_clock_before_half" | null;
+  /** 1.0 normal, 0.5 overtime / low clock before half, 0.0 end of half. */
+  story_weight?: number;
 }
 
 export interface WinProbabilitySeries {
@@ -235,4 +242,6 @@ export interface WinProbabilitySeries {
   has_overtime: boolean;
   points: WinProbabilityPoint[];
   swing_play_ids: string[];
+  /** Swing plays for Game Story: weight > 0, ranked by |delta| × story_weight. */
+  story_swing_play_ids?: string[];
 }

@@ -81,9 +81,13 @@ describe("Win-probability contract", () => {
       points: [
         { play_id: "4204", play_index: 1027, quarter: 4, is_overtime: false,
           game_seconds_elapsed: 3563, possession_team_id: "DET",
-          home_wp_pre: 0.082, home_wp_post: 0, delta_home_wp: -0.082, is_swing: true },
+          home_wp_pre: 0.082, home_wp_post: 0, delta_home_wp: -0.082, is_swing: true,
+          // 0:37 left in Q4 → low clock before half: kept on the chart, down-weighted in Game Story
+          is_end_of_half: false, is_low_clock_before_half: true,
+          wp_quirk_reason: "low_clock_before_half", story_weight: 0.5 },
       ],
       swing_play_ids: ["4204"],
+      story_swing_play_ids: ["4204"],
     };
     assert.equal(series.points.at(-1)!.home_wp_post, 0); // KC (home) lost
     assert.deepEqual(series.swing_play_ids, series.points.filter((p) => p.is_swing).map((p) => p.play_id));
