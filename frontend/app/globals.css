@@ -1691,3 +1691,11 @@ body { font-variant-numeric: tabular-nums; }
 .wi-card { min-width: 0; max-width: 100%; box-sizing: border-box; }
 .wi-foot { flex-wrap: wrap; }
 @media (max-width: 480px) { .wi-card { aspect-ratio: auto; gap: 0.6rem; } }
+
+/* QA2 M3: keep chart text readable when the SVG scales down on phones (~12px rendered). */
+@media (max-width: 640px) {
+  .gs-axis { font-size: 14px; }
+  .gs-dot-n { font-size: 11px; }
+}
+.fd-scoring { font-size: 0.875rem; margin: 0.75rem 0 0; }
+.fd-choices .fd-scoring { grid-column: 1 / -1; }

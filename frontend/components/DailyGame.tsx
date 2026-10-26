@@ -7,7 +7,7 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, type CallResult, type ScoredCall, type StreakState,
+  dailySet, CLOSE_CALL_GAP, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
@@ -16,6 +16,9 @@ const PROGRESS_KEY = "fourth-and-daily.progress.v1";
 const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
 
 type Mode = "daily" | "practice";
+
+/** QA2 M6: say how the score works, including the Close call tolerance (CLOSE_CALL_GAP = 2 pts). */
+const SCORING_TEXT = `Score: Right call = 1, Close call = ½, otherwise 0. A Close call is when the top options are within ${Math.round(CLOSE_CALL_GAP * 100)} points of win chance, so it's never counted wrong.`;
 
 function storage(): Storage | undefined {
   try {
@@ -189,6 +192,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
         <h2 id="fd-end-title" className="fd-end-score">
           {formatScore(credit)}/{items.length}
         </h2>
+        <p className="fd-muted fd-scoring">{SCORING_TEXT}</p>
         <p className="fd-end-squares" aria-label="Your calls">
           {done.map((s, i) => (
             <span key={i} className={`fd-sq is-${s.result}`} title={RESULT_NAME[s.result]} />
@@ -275,6 +279,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
                 {o.id === "fg" && o.note ? <small>{o.note}</small> : null}
               </button>
             ))}
+          <p className="fd-muted fd-scoring">{SCORING_TEXT}</p>
         </div>
       ) : (
         <div className="fd-reveal" aria-live="polite">
