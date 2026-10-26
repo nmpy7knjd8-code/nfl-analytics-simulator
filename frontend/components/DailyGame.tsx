@@ -7,16 +7,17 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, setNumber, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
+  dailySet, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
+import { CardSkeleton, EmptyState } from "./EmptyState";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
 const HOWTO_KEY = "fourth-and-daily.seen-howto.v1";
 const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
 
-type Mode = "daily" | "practice";
+type Mode = "daily" | "practice" | "yesterday";
 
 /** QA2 M6: say how the score works, including the Close call tolerance (CLOSE_CALL_GAP = 2 pts). */
 const SCORING_TEXT = `Score: Right call = 1, Close call = ½, otherwise 0. A Close call is when the top options are within ${Math.round(CLOSE_CALL_GAP * 100)} points of win chance, so it's never counted wrong.`;
@@ -106,6 +107,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const [copied, setCopied] = useState<string | null>(null);
   const [pending, setPending] = useState<QuizChoice | null>(null);
   const [howto, setHowto] = useState(false);
+  const [restoredDone, setRestoredDone] = useState(false);
   const choiceRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Client-only: the day is the viewer's current ET date.
@@ -127,6 +129,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
         if (p && p.date === key && Array.isArray(p.picks)) {
           setPicks(p.picks);
           setIndex(p.picks.filter(Boolean).length);
+          if (p.picks.length > 0 && p.picks.every(Boolean)) setRestoredDone(true);
         }
       } catch {
         /* ignore bad saves */
@@ -149,7 +152,9 @@ export function DailyGame({ mode }: { mode: Mode }) {
 
   const items = useMemo(() => {
     if (!today) return [];
-    return mode === "daily" ? dailySet(today) : practiceSet(String(seed));
+    if (mode === "daily") return dailySet(today);
+    if (mode === "yesterday") return dailySet(shiftDay(today, -1));
+    return practiceSet(String(seed));
   }, [today, seed, mode]);
 
   const scores = useMemo(
@@ -178,14 +183,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
   }, [finished, mode, today, streak, scores, items.length]);
 
   if (!today || !items.length) {
-    return (
-      <section className="fd-card" aria-busy="true">
-        <p className="fd-muted" aria-live="polite">
-          Loading today&apos;s 5 — real 4th downs from NFL games. Pick Go, Kick or Punt, then see what the coach did and what
-          the numbers say.
-        </p>
-      </section>
-    );
+    return <CardSkeleton label={mode === "daily" ? "Loading today's 5" : "Loading 5 real 4th downs"} />;
   }
 
   const shown = visibleStreak(streak ?? { current: 0, best: 0, last_completed: null, history: [] }, today);
@@ -234,10 +232,17 @@ export function DailyGame({ mode }: { mode: Mode }) {
     const share = shareText(today, done.map((s) => s.result), shown, url);
     const stats = mode === "daily" && streak ? dailyStats(streak, today) : null;
     const maxDays = stats ? Math.max(1, ...stats.score_distribution) : 1;
+    const playedCard = mode === "daily" && restoredDone ? (
+      <EmptyState kind="played" title="You've played today's five" body={<p>Come back tomorrow at midnight ET for the next set.</p>} action={{ label: "Play yesterday's five", href: "/daily/yesterday/" }}>
+        <p className="fd-countdown" aria-label="Time until the next set">{formatCountdown(msUntilNextSet(new Date(now)))}</p>
+      </EmptyState>
+    ) : null;
     return (
+      <>
+      {playedCard}
       <section className="fd-card fd-end" aria-labelledby="fd-end-title">
         <h2 id="fd-end-title" className="fd-end-title">
-          {mode === "daily" ? `Fourth & Daily #${setNumber(today)}` : "Practice set"}
+          {mode === "daily" ? `Fourth & Daily #${setNumber(today)}` : mode === "yesterday" ? `Fourth & Daily #${setNumber(shiftDay(today, -1))} (yesterday)` : "Practice set"}
         </h2>
         <p className="fd-end-score" aria-label={`Score ${formatScore(credit)} out of ${items.length}`}>
           {formatScore(credit)}/{items.length}
@@ -278,7 +283,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
             <div className="fd-actions">
               <button
                 type="button"
-                className="fd-btn fd-btn-primary fd-share"
+                className={`fd-btn fd-share${restoredDone ? "" : " fd-btn-primary"}`}
                 onClick={async () => {
                   const nav = navigator as Navigator & { share?: (d: ShareData) => Promise<void> };
                   if (nav.share) {
@@ -301,7 +306,12 @@ export function DailyGame({ mode }: { mode: Mode }) {
               </button>
             </div>
             {copied ? <p className="fd-muted fd-copied" aria-live="polite">{copied}</p> : null}
+            {!restoredDone ? <p><Link href="/daily/yesterday/">Play yesterday&apos;s five</Link> (practice, doesn&apos;t count for streaks)</p> : null}
           </>
+        ) : mode === "yesterday" ? (
+          <div className="fd-actions">
+            <Link className="fd-btn fd-btn-primary fd-empty-btn" href="/">Back to today&apos;s five</Link>
+          </div>
         ) : (
           <div className="fd-actions">
             <button type="button" className="fd-btn fd-btn-primary" onClick={playAgain}>
@@ -310,11 +320,13 @@ export function DailyGame({ mode }: { mode: Mode }) {
           </div>
         )}
       </section>
+      </>
     );
   }
 
   const item = items[index];
   const scored = scores[index];
+  const classic = mode !== "practice" && seasonMode(mode === "yesterday" ? shiftDay(today, -1) : today) === "classic";
   const opts = optionStates(item);
   const choices = opts.filter((o) => o.shown);
   const enabled = choices.filter((o) => !o.disabled);
@@ -345,14 +357,17 @@ export function DailyGame({ mode }: { mode: Mode }) {
     <section className="fd-card" aria-label={`Call ${index + 1} of ${items.length}`}>
       <HowTo open={howto} onClose={closeHowto} />
       <div className="fd-card-top">
-        <span className="fd-count">Call {index + 1} of {items.length}</span>
+        <span className="fd-count">
+          Call {index + 1} of {items.length}
+          {classic ? <> <span className="fd-classic">Classic</span></> : null}
+        </span>
         <span className="fd-top-right">
           {mode === "daily" ? (
             <span className="fd-count" aria-label={`Current streak ${shown} ${shown === 1 ? "day" : "days"}`}>
               Streak: {shown} {shown === 1 ? "day" : "days"}
             </span>
           ) : (
-            <span className="fd-count">Practice</span>
+            <span className="fd-count">{mode === "yesterday" ? "Yesterday · practice" : "Practice"}</span>
           )}
           <button type="button" className="fd-help" aria-label="How to play" onClick={() => setHowto(true)}>?</button>
         </span>
@@ -362,7 +377,8 @@ export function DailyGame({ mode }: { mode: Mode }) {
       </div>
       <p className="fd-scoreboard">{scoreboardText(item)}</p>
       <Field item={item} />
-      <p className="fd-game">{gameText(item)}</p>
+      {!classic || revealed ? <p className="fd-game">{gameText(item)}</p> : <p className="fd-game fd-muted">Classic play from 2019-25. The season shows after you answer.</p>}
+      {mode === "daily" && shown === 0 && index === 0 && !revealed ? <p className="fd-muted fd-newstreak">New streak starts today.</p> : null}
 
       {!revealed || !scored ? (
         <div className="fd-pick">

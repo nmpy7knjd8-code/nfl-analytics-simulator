@@ -139,6 +139,20 @@ export function dailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = D
   return shuffled(items, `daily-cycle:${cycle}`).slice(slot * size, slot * size + size);
 }
 
+/** The ET date key `n` days from `key` (n may be negative). */
+export function shiftDay(key: string, n: number): string {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+}
+
+export type SeasonMode = "season" | "classic";
+
+/** February through August there are no NFL games, so the Daily runs as "Classic" (plays from 2019-25). */
+export function seasonMode(key: string): SeasonMode {
+  const m = Number(key.split("-")[1]);
+  return m >= 2 && m <= 8 ? "classic" : "season";
+}
+
 /** Random practice round (not tied to the date). */
 export function practiceSet(seed: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
   return shuffled(items, `practice:${seed}`).slice(0, size);
