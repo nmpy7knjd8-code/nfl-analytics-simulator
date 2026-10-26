@@ -1,48 +1,36 @@
 import Link from "next/link";
-import { ExampleBanner } from "../../components/ExampleBanner";
-import { TruthChip } from "../../components/TruthChip";
-import { fetchGames } from "../../lib/api";
+import { readGameFile } from "../../lib/gameFiles";
+import { longDate, STORY_GAME_IDS, winner } from "../../lib/gameStory";
 
-export default async function GamesPage() {
-  const result = await fetchGames(2023);
-  const { data: games, source, banner } = result;
+export const metadata = { title: "Games · Fourth & Daily" };
 
+export default function GamesPage() {
+  const games = STORY_GAME_IDS.map((id) => readGameFile(id).game);
   return (
-    <main className="main page" id="main">
-      <header className="section-head">
-        <div className="overline">
-          <TruthChip kind="historical" />
-          <span className="muted">2023</span>
-        </div>
+    <main className="fd-page" id="main">
+      <header className="fd-head">
         <h1>Games</h1>
-        <p>Pick a matchup — walk the story play by play.</p>
+        <p className="fd-sub">Every play, the win chance after it, and the 4th-down calls. Real nflverse data.</p>
       </header>
-
-      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
-
-      <p className="list-count">
-        {games.total} {source === "live" ? "from your lake" : "examples"}
-      </p>
-
-      <ul className="game-list">
-        {games.items.map((g) => (
-          <li key={g.game_id}>
-            <Link className="game-row" href={`/games/${encodeURIComponent(g.game_id)}`}>
-              <span className="game-row-main">
-                <span className="game-row-matchup">
-                  {g.away_team_id} @ {g.home_team_id}
+      <ul className="gs-list">
+        {games.map((g) => {
+          const w = winner(g);
+          return (
+            <li key={g.id}>
+              <Link className="gs-row" href={`/games/${g.id}/`}>
+                <span className="gs-row-teams">
+                  <span className={w === g.away ? "is-win" : undefined}>{g.away} {g.away_score}</span>
+                  {" @ "}
+                  <span className={w === g.home ? "is-win" : undefined}>{g.home} {g.home_score}</span>
+                  {g.overtime ? " (OT)" : ""}
                 </span>
-                <span className="game-row-meta">
-                  Week {g.week} · {g.game_date}
-                </span>
-              </span>
-              <span className="game-row-score">
-                {g.away_score ?? "—"}–{g.home_score ?? "—"}
-              </span>
-            </Link>
-          </li>
-        ))}
+                <span className="fd-muted">{g.season} Week {g.week} · {longDate(g.date)}</span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
+      <p className="fd-muted">More seasons are coming as game files are published.</p>
     </main>
   );
 }

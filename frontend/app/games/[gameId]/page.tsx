@@ -1,139 +1,122 @@
 import Link from "next/link";
-import { ExampleBanner } from "../../../components/ExampleBanner";
-import { TruthChip } from "../../../components/TruthChip";
-import { fetchGame, fetchPlays } from "../../../lib/api";
-import { FIXTURE_GAMES } from "../../../lib/fixtures";
-import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
-import { findSwingPlays, seriesFromPlays } from "../../../lib/winProbability";
-import { fixtureWinProbability } from "../../../lib/wpFixtures";
+import { notFound } from "next/navigation";
+import { GameChart } from "../../../components/GameChart";
+import { GameScrubber, type ScrubPoint } from "../../../components/GameScrubber";
+import { OpenPlayFromHash } from "../../../components/OpenPlayFromHash";
+import { readGameFile } from "../../../lib/gameFiles";
+import {
+  grade, hasStory, longDate, narrator, numberedSwings, periodName, quarters, STORY_GAME_IDS, winner, wpLabel,
+} from "../../../lib/gameStory";
 
 type Props = { params: Promise<{ gameId: string }> };
 
 export function generateStaticParams() {
-  return FIXTURE_GAMES.items.map((g) => ({ gameId: g.game_id }));
+  return STORY_GAME_IDS.map((gameId) => ({ gameId }));
 }
 
-function formatClock(halfSeconds: number | null | undefined): string {
-  if (halfSeconds == null) return "—";
-  const m = Math.floor(halfSeconds / 60);
-  const s = halfSeconds % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
-}
-
-function winChanceLabel(wp: number | null | undefined): string | null {
-  if (wp == null || Number.isNaN(wp)) return null;
-  return `${Math.round(wp * 100)}% win chance`;
-}
-
-export default async function GameReplayPage({ params }: Props) {
+export async function generateMetadata({ params }: Props) {
   const { gameId } = await params;
-  const id = decodeURIComponent(gameId);
+  if (!hasStory(gameId)) return {};
+  const g = readGameFile(gameId).game;
+  return { title: `${g.away} @ ${g.home}, ${g.season} Week ${g.week} · Fourth & Daily` };
+}
 
-  let error: string | null = null;
-  let game: Awaited<ReturnType<typeof fetchGame>> | null = null;
-  let plays: Awaited<ReturnType<typeof fetchPlays>> | null = null;
-  try {
-    [game, plays] = await Promise.all([fetchGame(id), fetchPlays(id)]);
-  } catch (e) {
-    error = e instanceof Error ? e.message : "Failed to load game";
-  }
+function downText(down: number | null, togo: number, yl: number | null, posteam: string | null, defteam: string) {
+  if (down == null) return "";
+  const spot = yl == null ? "" : yl === 50 ? " at midfield" : yl < 50 ? ` at ${defteam} ${yl}` : ` at ${posteam} ${100 - yl}`;
+  return `${down}${["", "st", "nd", "rd", "th"][down]} & ${togo}${spot}`;
+}
 
-  // Live API data with reference WP wins; otherwise the clearly labeled example series.
-  const liveSeries =
-    game && plays && plays.source === "live"
-      ? seriesFromPlays(id, game.data.home_team_id, game.data.away_team_id, plays.data.items)
-      : null;
-  const wpSeries =
-    liveSeries && liveSeries.points.length >= 2 ? liveSeries : fixtureWinProbability(id);
-  const swings = wpSeries ? findSwingPlays(wpSeries) : [];
-
-  const source = game?.source ?? plays?.source;
-  const banner = game?.banner ?? plays?.banner;
+export default async function GameStoryPage({ params }: Props) {
+  const { gameId } = await params;
+  if (!hasStory(gameId)) notFound();
+  const file = readGameFile(gameId);
+  const g = file.game;
+  const w = winner(g);
+  const swings = numberedSwings(file);
+  const swingN = new Map(swings.map((s) => [s.play.play_id, s.n]));
+  const story = narrator(file);
+  const other = (t: string | null) => (t === g.home ? g.away : g.home);
+  const scrub: ScrubPoint[] = file.plays.map((p) => ({
+    label: `${periodName(p.qtr)} ${p.clock}`,
+    wp: wpLabel(p.home_wp_after, g.home, g.away),
+    score: `${g.away} ${p.away_score} – ${g.home} ${p.home_score}`,
+    text: p.text,
+  }));
 
   return (
-    <main className="main page" id="main">
-      <Link className="back-link" href="/games">
-        ← Games
-      </Link>
+    <main className="fd-page gs-page" id="main">
+      <OpenPlayFromHash />
+      <Link className="gs-back" href="/games/">← Games</Link>
+      <header className="gs-head">
+        <h1 className="gs-score">
+          <span className={w === g.away ? "is-win" : undefined}>{g.away} {g.away_score}</span>
+          <span className="gs-at"> @ </span>
+          <span className={w === g.home ? "is-win" : undefined}>{g.home} {g.home_score}</span>
+          {g.overtime ? <span className="gs-at"> · OT</span> : null}
+        </h1>
+        <p className="fd-muted">
+          {longDate(g.date)} · {g.season} Week {g.week} · {g.stadium}
+        </p>
+      </header>
 
-      {error ? (
-        <div className="error-band" role="alert">
-          {error}
+      <section className="fd-card" aria-labelledby="gs-chart-h">
+        <h2 id="gs-chart-h" className="gs-h2">{g.home} win chance</h2>
+        <GameChart file={file} swings={swings} />
+        <GameScrubber points={scrub} />
+      </section>
+
+      <section className="fd-card" aria-labelledby="gs-story-h">
+        <h2 id="gs-story-h" className="gs-h2">The story</h2>
+        <div className="gs-narr">
+          {story.map((s) => <p key={s}>{s}</p>)}
         </div>
-      ) : null}
+        <ol className="gs-swings" aria-label="Swing plays">
+          {swings.map((s) => (
+            <li key={s.play.play_id}>
+              <a href={`#play-${s.play.play_id}`}>
+                <span className="gs-n">{s.n}</span>
+                <span>
+                  <strong>{periodName(s.play.qtr)} {s.play.clock}</strong> · {wpLabel(s.play.home_wp, g.home, g.away)} → {wpLabel(s.play.home_wp_after, g.home, g.away)}
+                  <span className="gs-swing-text">{s.play.text}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
+      <section aria-labelledby="gs-plays-h" className="gs-plays">
+        <h2 id="gs-plays-h" className="gs-h2">Every play</h2>
+        {quarters(file).map((q) => (
+          <details key={q.qtr} className="gs-q">
+            <summary>{periodName(q.qtr)} · {q.plays.length} plays</summary>
+            <ol className="gs-playlist">
+              {q.plays.map((p) => {
+                const n = swingN.get(p.play_id);
+                const gr = p.fourth_down ? grade(p.fourth_down) : null;
+                return (
+                  <li key={p.play_id} id={`play-${p.play_id}`} className={n ? "gs-play is-swing" : "gs-play"}>
+                    <div className="gs-play-top">
+                      <span>
+                        {n ? <span className="gs-n">{n}</span> : null}
+                        {p.clock}{p.posteam && p.down ? ` · ${p.posteam} ${downText(p.down, p.ydstogo, p.yardline_100, p.posteam, other(p.posteam))}` : ""}
+                      </span>
+                      <span className="gs-wp">{wpLabel(p.home_wp_after, g.home, g.away)}</span>
+                    </div>
+                    <p className="gs-play-text">{p.text}</p>
+                    {gr ? <p className={`gs-grade is-${gr.tone}`}>4th down · {gr.label}</p> : null}
+                  </li>
+                );
+              })}
+            </ol>
+          </details>
+        ))}
+      </section>
 
-      {game && plays ? (
-        <>
-          <header className="section-head">
-            <div className="overline">
-              <TruthChip kind="historical" />
-              <span className="muted">
-                Week {game.data.week} · {game.data.game_date}
-              </span>
-            </div>
-            <div className="scoreboard">
-              <h1 className="scoreboard-matchup">
-                {game.data.away_team_id} @ {game.data.home_team_id}
-              </h1>
-              <span className="scoreboard-final">
-                {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
-              </span>
-            </div>
-            <p>Scroll the story.</p>
-          </header>
-
-          {wpSeries ? (
-            <section aria-labelledby="wp-head">
-              <h2 id="wp-head">Win chance</h2>
-              {wpSeries.source === "example" ? (
-                <p className="muted">Example chart — not model output.</p>
-              ) : null}
-              <WinProbabilityChart series={wpSeries} swings={swings} />
-              {swings.length ? <h3>Swing plays</h3> : null}
-              <SwingPlayList swings={swings} />
-            </section>
-          ) : null}
-
-          <p className="list-count">{plays.data.total} plays</p>
-
-          <div className="play-feed" role="list">
-            {plays.data.items.map((p) => {
-              const chance = winChanceLabel(p.reference?.wp ?? null);
-              return (
-                <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
-                  <div className="play-top">
-                    <span className="play-meta">
-                      Q{p.quarter}
-                      {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
-                      {formatClock(p.half_seconds_remaining ?? null)}
-                    </span>
-                    <span className="play-meta">#{p.play_index}</span>
-                  </div>
-                  <p className="play-desc">
-                    {p.description ? (
-                      p.description
-                    ) : (
-                      <>
-                        <strong>{p.play_type}</strong>
-                        {p.possession_team_id ? ` · ${p.possession_team_id}` : ""}
-                      </>
-                    )}
-                  </p>
-                  {chance ? <div className="win-chance">{chance}</div> : null}
-                </article>
-              );
-            })}
-          </div>
-
-          <aside className="disclaimer">
-            {source === "example"
-              ? "Short example replay — connect the API for full 2023 play-by-play."
-              : "Win chance is an estimate at the snap — not a bet."}
-          </aside>
-        </>
-      ) : null}
+      <p className="fd-muted gs-source">
+        Source: {file.provenance.source} play-by-play via nflreadpy {file.provenance.nflreadpy_version} · data {file.provenance.data_sha256.slice(0, 12)} · built {file.provenance.build_date}. Win chance is nflverse&apos;s model; 4th-down calls are this site&apos;s engine.
+      </p>
     </main>
   );
 }
