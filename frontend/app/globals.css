@@ -1582,3 +1582,64 @@ body { font-variant-numeric: tabular-nums; }
 .fd-prose h1 { font-size: 1.75rem; margin: 0; }
 .fd-prose h2 { font-size: 1.2rem; margin: 0.5rem 0 0; }
 .fd-prose p, .fd-prose ul { margin: 0; }
+
+/* ---------- Phase 3: 4th-down checker + Game Story (C3/C4) ---------- */
+.fd-links { margin: 0; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.fd-links a, .gs-back, .gs-swings a, .ck-src a { color: var(--color-blue); }
+.fd-links a { display: inline-flex; align-items: center; min-height: 44px; }
+.gs-h2 { font-size: 1.125rem; margin: 0; }
+.ck-h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+.ck-summary { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ck-steps { display: grid; gap: 0.5rem; }
+.ck-step { display: grid; grid-template-columns: 1fr 44px 6.5rem 44px; align-items: center; gap: 0.5rem; font-variant-numeric: tabular-nums; }
+.ck-step-label { color: var(--color-ink-secondary); }
+.ck-step-val { text-align: center; font-weight: 800; }
+.ck-fixed { grid-column: 3; }
+.ck-step-btn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid #52525b; background: #1c1c1f; color: #fff; font: inherit; font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+.ck-step-btn:hover:not(:disabled) { background: #27272a; }
+.ck-step-btn:disabled { color: #71717a; border-color: #3f3f46; cursor: not-allowed; }
+.ck-step-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
+.ck-rec { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-blue); }
+.ck-close { margin: 0; font-weight: 700; }
+.ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
+.ck-src { font-size: 0.875rem; }
+.fd-bar-num, .gs-wp, .gs-readout, .gs-score, .gs-row-teams { font-variant-numeric: tabular-nums; }
+.gs-back { display: inline-flex; align-items: center; min-height: 44px; }
+.gs-head { display: grid; gap: 0.25rem; }
+.gs-score { margin: 0; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; color: var(--color-ink-secondary); }
+.gs-score .is-win, .gs-row-teams .is-win { font-weight: 800; color: #fff; }
+.gs-at { color: var(--color-ink-muted); }
+.gs-chart { width: 100%; height: auto; display: block; }
+.gs-grid { stroke: #27272a; stroke-width: 1; }
+.gs-mid { stroke: #3f3f46; stroke-dasharray: 3 3; }
+.gs-axis { fill: #a1a1aa; font-size: 11px; }
+.gs-line { fill: none; stroke: var(--color-blue); stroke-width: 2.25; stroke-linejoin: round; }
+.gs-dot { fill: #fff; stroke: #0a0a0a; stroke-width: 2; }
+.gs-dot-n { fill: #0a0a0a; font-size: 11px; font-weight: 800; }
+.gs-scrub { display: grid; gap: 0.25rem; }
+.gs-scrub-label { font-size: 0.875rem; color: var(--color-ink-secondary); }
+.gs-scrub input { width: 100%; min-height: 44px; accent-color: var(--color-blue); }
+.gs-readout { margin: 0; display: grid; }
+.gs-readout-text { color: var(--color-ink-secondary); font-size: 0.875rem; }
+.gs-narr p { margin: 0 0 0.4rem; }
+.gs-swings { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.gs-swings a { display: grid; grid-template-columns: 28px 1fr; gap: 0.5rem; text-decoration: none; color: #fff; min-height: 44px; }
+.gs-swings strong { color: #fff; }
+.gs-swing-text { display: block; color: var(--color-ink-secondary); font-size: 0.875rem; }
+.gs-n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: #0a0a0a; font-size: 0.75rem; font-weight: 800; margin-right: 0.35rem; }
+.gs-plays { display: grid; gap: 0.5rem; }
+.gs-q { background: #121214; border: 1px solid #2a2a2e; border-radius: 12px; }
+.gs-q summary { min-height: 44px; display: flex; align-items: center; padding: 0 1rem; font-weight: 700; cursor: pointer; }
+.gs-playlist { list-style: none; margin: 0; padding: 0 1rem 0.5rem; }
+.gs-play { padding: 0.6rem 0; border-top: 1px solid #27272a; scroll-margin-top: 5rem; }
+.gs-play:target { outline: 2px solid var(--color-blue); outline-offset: 2px; border-radius: 6px; }
+.gs-play-top { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.875rem; color: var(--color-ink-secondary); }
+.gs-wp { font-weight: 700; color: #fff; white-space: nowrap; }
+.gs-play-text { margin: 0.2rem 0 0; font-size: 0.9375rem; }
+.gs-grade { margin: 0.3rem 0 0; font-size: 0.8125rem; font-weight: 700; display: inline-block; padding: 0.1rem 0.45rem; border-radius: 6px; border: 1px solid #3f3f46; }
+.gs-grade.is-match { border-color: var(--color-blue); color: var(--color-blue); }
+.gs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.gs-row { display: grid; gap: 0.15rem; padding: 0.85rem 1rem; background: #121214; border: 1px solid #2a2a2e; border-radius: 12px; color: var(--color-ink-secondary); text-decoration: none; min-height: 44px; }
+.gs-row:hover { border-color: #52525b; }
+.gs-row-teams { font-size: 1.125rem; }
+.gs-source { font-size: 0.8125rem; }

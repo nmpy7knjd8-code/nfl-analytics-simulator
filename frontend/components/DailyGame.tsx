@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { QuizChoice } from "../lib/quiz";
 import type { DailyItem } from "../lib/daily";
@@ -9,6 +10,7 @@ import {
   dailySet, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
+import { playIdFromItemId, storyHref } from "../lib/gameStory";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
 const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
@@ -284,6 +286,12 @@ export function DailyGame({ mode }: { mode: Mode }) {
           <Bars item={item} scored={scored} />
           <p className="fd-why">
             <strong>Why:</strong> {whyText(item, scored)}
+          </p>
+          <p className="fd-links">
+            {storyHref(item.source.game_id, playIdFromItemId(item.id)) ? (
+              <Link href={storyHref(item.source.game_id, playIdFromItemId(item.id))!}>See this game at this play</Link>
+            ) : null}
+            <Link href={`/fourth-down/?play=${encodeURIComponent(item.id)}`}>Open in the 4th-down checker</Link>
           </p>
           <div className="fd-actions">
             <button type="button" className="fd-btn fd-btn-primary" onClick={nextCard}>
