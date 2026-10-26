@@ -1,6 +1,6 @@
-import { quarterClockFromGame } from "../lib/clock";
 import {
   ballProgress,
+  formatClock,
   yardLineCaption,
   type QuizSituation,
 } from "../lib/quiz";
@@ -76,7 +76,7 @@ function FieldTrack({ situation }: { situation: QuizSituation }) {
 }
 
 export function QuizSituationCard({ situation }: { situation: QuizSituation }) {
-  const clock = quarterClockFromGame(situation.qtr, situation.game_seconds_remaining);
+  const clock = formatClock(situation.quarter_seconds_remaining);
   const yardText = yardLineCaption(situation.yardline_100, situation.posteam);
   const downText = `${ordinalDown(situation.down)} & ${situation.distance}`;
 
