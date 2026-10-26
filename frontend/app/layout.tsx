@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Source_Sans_3, Syne } from "next/font/google";
 import { AppNav } from "../components/AppNav";
 import "./globals.css";
+import { shareMetadata } from "../lib/share";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -21,11 +22,14 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
 });
 
-export const metadata: Metadata = {
+export const metadata: Metadata = shareMetadata({
   title: "NFL Analytics Simulator",
   description:
     "See real NFL games play by play, and explore tough calls like fourth-and-short — in plain English.",
-};
+  path: "/",
+  card: "home",
+  alt: "Fourth & Daily — real NFL fourth downs, would you go for it? Data: nflverse",
+});
 
 export const viewport: Viewport = {
   width: "device-width",

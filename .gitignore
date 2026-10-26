@@ -46,3 +46,4 @@ reports/**/*.parquet
 
 # Pages assembly output
 _site/
+frontend/public/og/
