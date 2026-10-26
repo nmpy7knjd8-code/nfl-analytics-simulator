@@ -6,6 +6,7 @@ const isStaticExport = process.env.NFL_SIM_STATIC_EXPORT === "1";
 const pagesBasePath = "/nfl-analytics-simulator";
 
 const nextConfig: NextConfig = {
+  env: { NEXT_PUBLIC_BASE_PATH: isStaticExport ? pagesBasePath : "" },
   ...(isStaticExport
     ? {
         output: "export" as const,
