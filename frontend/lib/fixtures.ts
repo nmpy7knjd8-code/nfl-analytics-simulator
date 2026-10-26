@@ -92,9 +92,9 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: 28,
     possession_team_id: "KC",
     play_type: "pass",
-    description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
+    description: "Patrick Mahomes pass incomplete on fourth down. Detroit takes over.",
     yards_gained: 0,
-    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.08, home_wp: 0.08, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -186,8 +186,6 @@ export type FourthDownScenario = {
   id: string;
   title: string;
   setup: string;
-  /** Hook for future POST /models/fourth-down once sibling API exists. */
-  apiHook: string;
   situation: {
     offense: string;
     defense: string;
@@ -205,7 +203,6 @@ export type FourthDownScenario = {
    * Always shown next to the recommendation — not model metrics.
    */
   whyRecommended: string;
-  footnote: string;
 };
 
 /** Within this gap (win-chance points), treat top options as too close to call. */
@@ -241,7 +238,6 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     title: "Fourth-and-short near midfield",
     setup:
       "Your team is down by a field goal late in the third. It’s 4th and 1 from the opponent’s 42.",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "DET",
       defense: "KC",
@@ -290,15 +286,12 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "You're already behind, and 4th-and-1 is a high-percentage chance to keep the drive alive. A long field goal or a punt both give up the ball without solving the score.",
-    footnote:
-      "Example comparison for product demo. When the offline 4th-down scorer lands, these bars will call that API instead of fixtures.",
   },
   {
     id: "demo-4th-2",
     title: "Goal-to-go late",
     setup:
       "Tied game, two minutes left. Fourth-and-goal from the 2. Do you go for the win, or take the chip-shot kick?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "BUF",
       defense: "NYJ",
@@ -347,15 +340,12 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "Tied late from the 2, going for it plays to win on this snap. A field goal only puts you up three and still leaves them a chance to answer.",
-    footnote:
-      "Example comparison for product demo. Goal-line spots usually drop the punt option in a real decision tool.",
   },
   {
     id: "demo-4th-3",
     title: "Too close to call",
     setup:
       "Up three late in the fourth. 4th and 3 from your own 45 — go for the dagger, or punt and play defense?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "PHI",
       defense: "TB",
@@ -404,7 +394,5 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — there’s no clear winner.",
-    footnote:
-      "Example inconclusive case for product demo — shown so fans see when the call is a coin-flip, not a slam dunk.",
   },
 ];

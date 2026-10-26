@@ -190,18 +190,6 @@ button {
 
 .page {
   width: 100%;
-  animation: page-enter var(--duration-slow) var(--ease-emphasized);
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 @keyframes truth-crossfade {
@@ -300,7 +288,6 @@ button {
   z-index: 1;
   width: 100%;
   padding: 2rem var(--page-pad-x) calc(1.75rem + var(--safe-bottom));
-  animation: page-enter var(--duration-slow) var(--ease-emphasized);
 }
 
 .hero-brand {
@@ -397,7 +384,6 @@ button {
 .decide-page {
   width: 100%;
   padding: calc(1.25rem + var(--safe-top)) var(--page-pad-x) 1.75rem;
-  animation: page-enter var(--duration-slow) var(--ease-emphasized);
 }
 
 .section-head {
@@ -987,17 +973,6 @@ button {
   border-top: 1px solid var(--color-divider);
   color: var(--color-ink) !important;
   font-weight: 500;
-}
-
-.decide-footnote {
-  margin: 1.15rem 0 0.25rem;
-  font-size: var(--text-caption);
-}
-
-.decide-api-hook {
-  font-size: 0.65rem;
-  margin: 0;
-  opacity: 0.65;
 }
 
 @media (min-width: 720px) {
