@@ -148,3 +148,91 @@ export interface SimulationResult {
   distributions: Record<string, OutcomeBucket[]>;
   sample_paths?: Record<string, unknown>[];
 }
+
+// ---------------------------------------------------------------------------
+// API endpoints + response shapes (Phase 0). JSON Schemas generated from the
+// backend Pydantic models live in contracts/schema/*.schema.json
+// (regenerate: python backend/scripts/export_contracts.py).
+// ---------------------------------------------------------------------------
+
+export const API_ENDPOINTS = {
+  health: "/health",
+  games: "/games", // ?season=2023&week=&season_type=&limit=&offset=
+  game: (gameId: string) => `/games/${encodeURIComponent(gameId)}`,
+  plays: (gameId: string) => `/games/${encodeURIComponent(gameId)}/plays`, // ?limit=&offset=
+  winProbability: (gameId: string) =>
+    `/games/${encodeURIComponent(gameId)}/win-probability`, // ?swing_threshold=0.08
+} as const;
+
+/** Default swing-play threshold: |delta_home_wp| >= 0.08 (server-configurable). */
+export const DEFAULT_SWING_WP_THRESHOLD = 0.08;
+
+export interface HealthResponse {
+  status: "ok" | "degraded";
+  duckdb_path: string;
+  store_ready: boolean;
+  phase: number;
+  scope: "historical_replay_only";
+}
+
+export interface GamesListResponse {
+  items: GameSummary[];
+  total: number;
+  limit: number;
+  offset: number;
+  truth_label: "historical";
+}
+
+export type GameDetailResponse = GameSummary & { truth_label: "historical" };
+
+export interface PlaysResponse {
+  game_id: string;
+  items: CanonicalPlay[];
+  total: number;
+  limit: number;
+  offset: number;
+  truth_label: "historical";
+  reference_disclaimer: string;
+}
+
+export type GameResult = "home_win" | "away_win" | "tie";
+
+/**
+ * One point per play on the win-chance chart.
+ * - Perspective: HOME team (`home_wp_*` = P(home wins)). Not possession team.
+ * - `home_wp_pre`: before the snap. `home_wp_post`: next play's pre-snap value,
+ *   or the final result on the last play (1 home win / 0 home loss / 0.5 tie).
+ * - `is_swing`: |delta_home_wp| >= series.swing_threshold.
+ * - Overtime: quarter 5, `is_overtime` true; `game_seconds_elapsed` keeps
+ *   counting past 3600 (REG OT 600 s, POST OT 900 s) so the x-axis never rewinds.
+ */
+export interface WinProbabilityPoint {
+  play_id: string;
+  play_index: number;
+  quarter: number;
+  is_overtime: boolean;
+  game_seconds_elapsed: number;
+  possession_team_id?: string | null;
+  description?: string | null;
+  home_wp_pre: number;
+  home_wp_post: number;
+  delta_home_wp: number;
+  is_swing: boolean;
+}
+
+export interface WinProbabilitySeries {
+  game_id: string;
+  home_team_id: string;
+  away_team_id: string;
+  home_score?: number | null;
+  away_score?: number | null;
+  result?: GameResult | null;
+  perspective: "home";
+  timing: "pre_snap";
+  swing_threshold: number;
+  source: "nflverse_reference_home_wp";
+  truth_label: "historical";
+  has_overtime: boolean;
+  points: WinProbabilityPoint[];
+  swing_play_ids: string[];
+}

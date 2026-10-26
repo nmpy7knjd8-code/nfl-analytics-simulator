@@ -1,4 +1,6 @@
-import type { CanonicalPlay, GameSummary } from "../contracts";
+import { API_ENDPOINTS, type CanonicalPlay, type GameSummary, type WinProbabilitySeries } from "../contracts";
+import type { ChartSeries } from "./winProbability";
+import { fixtureWinProbability } from "./wpFixtures";
 import {
   FIXTURE_BANNER,
   FIXTURE_GAMES,
@@ -88,6 +90,22 @@ export async function fetchPlays(gameId: string): Promise<Sourced<PlaysResponse>
   const data = fixturePlays(gameId);
   if (!data) throw new Error(`Plays not found: ${gameId}`);
   return { data, source: "example", banner: FIXTURE_BANNER };
+}
+
+/**
+ * GET /games/{id}/win-probability (contract: WinProbabilitySeries). Falls back to the
+ * labeled example fixture when the API is unavailable. Never derived from reference.wp.
+ */
+export async function fetchWinProbability(gameId: string): Promise<ChartSeries | null> {
+  if (!DEMO_ONLY) {
+    try {
+      const series = await getJson<WinProbabilitySeries>(API_ENDPOINTS.winProbability(gameId));
+      return { series, origin: "live", note: "Win chance from nflverse play-by-play (home team)." };
+    } catch {
+      /* fall through to fixtures */
+    }
+  }
+  return fixtureWinProbability(gameId);
 }
 
 /** Future hook — sibling agent may add real fourth-down scoring on another branch. */

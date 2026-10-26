@@ -1,0 +1,179 @@
+{
+  "description": "Frozen pre-play state (inputs only). No outcome logic.\n\nAligns with DATA_EXPERIMENT \u00a73.2. Reference model scores (ep/wp) are\noptional and never treated as observed state.",
+  "properties": {
+    "away_team_id": {
+      "title": "Away Team Id",
+      "type": "string"
+    },
+    "defense_team_id": {
+      "title": "Defense Team Id",
+      "type": "string"
+    },
+    "defteam_score": {
+      "title": "Defteam Score",
+      "type": "integer"
+    },
+    "defteam_timeouts": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Defteam Timeouts",
+      "type": "integer"
+    },
+    "distance": {
+      "minimum": 0,
+      "title": "Distance",
+      "type": "integer"
+    },
+    "down": {
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Down",
+      "type": "integer"
+    },
+    "game_id": {
+      "title": "Game Id",
+      "type": "string"
+    },
+    "game_seconds_remaining": {
+      "minimum": 0,
+      "title": "Game Seconds Remaining",
+      "type": "integer"
+    },
+    "half_seconds_remaining": {
+      "minimum": 0,
+      "title": "Half Seconds Remaining",
+      "type": "integer"
+    },
+    "home_team_id": {
+      "title": "Home Team Id",
+      "type": "string"
+    },
+    "is_home_possession": {
+      "title": "Is Home Possession",
+      "type": "boolean"
+    },
+    "play_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Play Id"
+    },
+    "possession_team_id": {
+      "title": "Possession Team Id",
+      "type": "string"
+    },
+    "posteam_score": {
+      "title": "Posteam Score",
+      "type": "integer"
+    },
+    "posteam_timeouts": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Posteam Timeouts",
+      "type": "integer"
+    },
+    "quarter": {
+      "maximum": 5,
+      "minimum": 1,
+      "title": "Quarter",
+      "type": "integer"
+    },
+    "receive_2h_ko": {
+      "description": "Derived (not in nflverse Parquet); nflfastR-compatible",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Receive 2H Ko",
+      "type": "integer"
+    },
+    "reference_ep": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Ep"
+    },
+    "reference_wp": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Wp"
+    },
+    "roof": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Roof"
+    },
+    "score_differential": {
+      "description": "posteam \u2212 defteam at snap",
+      "title": "Score Differential",
+      "type": "integer"
+    },
+    "season": {
+      "title": "Season",
+      "type": "integer"
+    },
+    "season_type": {
+      "default": "REG",
+      "title": "Season Type",
+      "type": "string"
+    },
+    "week": {
+      "title": "Week",
+      "type": "integer"
+    },
+    "yardline_100": {
+      "maximum": 99,
+      "minimum": 1,
+      "title": "Yardline 100",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "game_id",
+    "season",
+    "week",
+    "possession_team_id",
+    "defense_team_id",
+    "home_team_id",
+    "away_team_id",
+    "is_home_possession",
+    "down",
+    "distance",
+    "yardline_100",
+    "quarter",
+    "half_seconds_remaining",
+    "game_seconds_remaining",
+    "score_differential",
+    "posteam_score",
+    "defteam_score",
+    "posteam_timeouts",
+    "defteam_timeouts",
+    "receive_2h_ko"
+  ],
+  "title": "GameSituation",
+  "type": "object"
+}

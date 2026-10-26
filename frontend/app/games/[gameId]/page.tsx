@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { periodName, quarterClockFromHalf } from "../../../lib/clock";
 import { shareMetadata } from "../../../lib/share";
 import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
-import { fetchGame, fetchPlays } from "../../../lib/api";
+import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
-import { findSwingPlays, seriesFromPlays } from "../../../lib/winProbability";
-import { fixtureWinProbability } from "../../../lib/wpFixtures";
+import { findSwingPlays } from "../../../lib/winProbability";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -29,16 +29,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function formatClock(halfSeconds: number | null | undefined): string {
+function formatClock(quarter: number, halfSeconds: number | null | undefined): string {
   if (halfSeconds == null) return "—";
-  const m = Math.floor(halfSeconds / 60);
-  const s = halfSeconds % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
+  return quarterClockFromHalf(quarter, halfSeconds);
 }
 
-function winChanceLabel(wp: number | null | undefined): string | null {
-  if (wp == null || Number.isNaN(wp)) return null;
-  return `${Math.round(wp * 100)}% win chance`;
+/** reference.wp is the possession team's pre-snap chance; always say whose it is. */
+function winChanceLabel(wp: number | null | undefined, team: string | null | undefined): string | null {
+  if (wp == null || Number.isNaN(wp) || !team) return null;
+  return `${team} ${Math.round(wp * 100)}% win chance`;
 }
 
 export default async function GameReplayPage({ params }: Props) {
@@ -54,14 +53,9 @@ export default async function GameReplayPage({ params }: Props) {
     error = e instanceof Error ? e.message : "Failed to load game";
   }
 
-  // Live API data with reference WP wins; otherwise the clearly labeled example series.
-  const liveSeries =
-    game && plays && plays.source === "live"
-      ? seriesFromPlays(id, game.data.home_team_id, game.data.away_team_id, plays.data.items)
-      : null;
-  const wpSeries =
-    liveSeries && liveSeries.points.length >= 2 ? liveSeries : fixtureWinProbability(id);
-  const swings = wpSeries ? findSwingPlays(wpSeries) : [];
+  // Contract endpoint first; otherwise the clearly labeled example series.
+  const wpSeries = game ? await fetchWinProbability(id) : null;
+  const swings = wpSeries ? findSwingPlays(wpSeries.series) : [];
 
   const source = game?.source ?? plays?.source;
   const banner = game?.banner ?? plays?.banner;
@@ -103,10 +97,10 @@ export default async function GameReplayPage({ params }: Props) {
           {wpSeries ? (
             <section aria-labelledby="wp-head">
               <h2 id="wp-head">Win chance</h2>
-              {wpSeries.source === "example" ? (
+              {wpSeries.origin === "example" ? (
                 <p className="muted">Example chart — not model output.</p>
               ) : null}
-              <WinProbabilityChart series={wpSeries} swings={swings} />
+              <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} />
             </section>
@@ -116,14 +110,14 @@ export default async function GameReplayPage({ params }: Props) {
 
           <div className="play-feed" role="list">
             {plays.data.items.map((p) => {
-              const chance = winChanceLabel(p.reference?.wp ?? null);
+              const chance = winChanceLabel(p.reference?.wp ?? null, p.possession_team_id);
               return (
                 <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
                   <div className="play-top">
                     <span className="play-meta">
-                      Q{p.quarter}
+                      {periodName(p.quarter)}
                       {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
-                      {formatClock(p.half_seconds_remaining ?? null)}
+                      {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
                     </span>
                     <span className="play-meta">#{p.play_index}</span>
                   </div>
