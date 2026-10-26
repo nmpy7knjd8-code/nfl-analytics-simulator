@@ -37,6 +37,16 @@
           "title": "Home Wp Pre",
           "type": "number"
         },
+        "is_end_of_half": {
+          "default": false,
+          "title": "Is End Of Half",
+          "type": "boolean"
+        },
+        "is_low_clock_before_half": {
+          "default": false,
+          "title": "Is Low Clock Before Half",
+          "type": "boolean"
+        },
         "is_overtime": {
           "title": "Is Overtime",
           "type": "boolean"
@@ -71,6 +81,30 @@
           "minimum": 1,
           "title": "Quarter",
           "type": "integer"
+        },
+        "story_weight": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Story Weight",
+          "type": "number"
+        },
+        "wp_quirk_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "overtime",
+                "end_of_half",
+                "low_clock_before_half"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wp Quirk Reason"
         }
       },
       "required": [
@@ -164,6 +198,13 @@
       "default": "nflverse_reference_home_wp",
       "title": "Source",
       "type": "string"
+    },
+    "story_swing_play_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Story Swing Play Ids",
+      "type": "array"
     },
     "swing_play_ids": {
       "items": {

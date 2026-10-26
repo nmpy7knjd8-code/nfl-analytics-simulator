@@ -345,54 +345,52 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     id: "demo-4th-3",
     title: "Too close to call",
     setup:
-      "Up three late in the fourth. 4th and 3 from your own 45 — go for the dagger, or punt and play defense?",
+      "Colts up three on the Packers with 1:58 left (2020, Week 11). 4th and 4 at the Green Bay 36 — a 54-yard kick, go for it, or punt?",
+    // Real play: nflverse 2020_11_GB_IND play_id 3892. Win chances from the offline
+    // 4th-down engine (fourth_down_engine.v1); FG distance = yardline_100 + 18 = 54 yd.
     situation: {
-      offense: "PHI",
-      defense: "TB",
+      offense: "IND",
+      defense: "GB",
       down: 4,
-      distance: 3,
-      yardline_100: 55,
+      distance: 4,
+      yardline_100: 36,
       quarter: 4,
-      clock: "2:40",
-      scoreOffense: 24,
-      scoreDefense: 21,
+      clock: "1:58",
+      scoreOffense: 31,
+      scoreDefense: 28,
     },
     options: [
+      {
+        id: "fg",
+        label: "Kick a field goal",
+        shortLabel: "Kick",
+        winChance: 0.667,
+        whatUsuallyHappens:
+          "A 54-yard try is makeable but far from automatic. A make puts you up six; a miss hands them the ball near their own 44.",
+        plainResult: "Up six with under two minutes if it's good — they still need only a touchdown.",
+        why: "Points now force them to score a touchdown, but a 54-yarder misses often enough to keep this close.",
+      },
       {
         id: "go",
         label: "Go for it",
         shortLabel: "Go",
-        winChance: 0.71,
+        winChance: 0.657,
         whatUsuallyHappens:
-          "4th and 3 is makeable, but a miss gives them the ball near midfield with time to tie.",
-        plainResult:
-          "Convert and you can ice the game. Fail and you gift them a short field.",
-        why: "A first down lets you run clock — but a miss is dangerous while protecting a small lead.",
+          "4th and 4 converts a bit under half the time. Convert and you can run out much of the clock; fail and they start at their own 36.",
+        plainResult: "Convert and you can nearly end it. Fail and they need only a field goal to tie from good position.",
+        why: "A first down lets you drain the clock — but a stop gives them a short field while you lead by just three.",
       },
       {
         id: "punt",
         label: "Punt",
         shortLabel: "Punt",
-        winChance: 0.7,
-        whatUsuallyHappens:
-          "You flip the field and make them drive the length of the field to tie.",
-        plainResult:
-          "Conservative: force a long scoring drive against the clock.",
-        why: "You already lead — making them go the long way is often enough.",
-      },
-      {
-        id: "fg",
-        label: "Kick a field goal",
-        shortLabel: "Kick",
-        winChance: 0.54,
-        whatUsuallyHappens:
-          "From ~62 yards this is a low-percentage try; miss and they start with good position.",
-        plainResult:
-          "A make makes it a two-score game, but the miss risk is high from here.",
-        why: "Too long to trust — the miss risk outweighs the two-score cushion.",
+        winChance: 0.623,
+        whatUsuallyHappens: "From the 36 a punt nets little — often a touchback to the 20.",
+        plainResult: "Safest on this snap, but you gain only about 16 yards of field position.",
+        why: "Too close to the end zone for a punt to buy much field position.",
       },
     ],
     whyRecommended:
-      "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — there’s no clear winner.",
+      "Kicking and going land about one point apart here — either is defensible. (The Colts went for it: Rivers hit Hines for 13 yards and a first down.)",
   },
 ];
