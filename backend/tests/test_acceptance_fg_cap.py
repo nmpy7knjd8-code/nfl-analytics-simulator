@@ -76,6 +76,6 @@ DATA_FILES = sorted(
 
 @pytest.mark.parametrize("path", DATA_FILES, ids=lambda p: str(p.relative_to(REPO)))
 def test_committed_data_has_no_fg_past_64(path):
-    bad = [f"{where}: {int(yl) + 17}-yd FG" for where, yl in _fg_values(json.loads(path.read_text()))
-           if yl + 17 > MAX_FG]
+    bad = [f"{where}: {int(yl) + 18}-yd FG" for where, yl in _fg_values(json.loads(path.read_text()))
+           if yl + 18 > MAX_FG]
     assert not bad, "\n".join(bad)

@@ -6,7 +6,7 @@
 SITE_JSON comes from dump_site_data.ts. Checks:
   1. schedule truth: every game's teams/week/date/score == nflverse schedule
   2. every game id referenced anywhere exists in nflverse
-  3. no FG offered/valued past 64 yd (yardline_100 + 17)
+  3. no FG offered/valued past 64 yd (yardline_100 + 18, as in the engine since #64)
   4. every clock is a 0:00-15:00 quarter clock
   5. every team code is a real NFL code
   6. built HTML has no developer text; /quiz/ and /demo/games/ are redirect pages
@@ -143,8 +143,8 @@ def main() -> int:
             team(t, f"4th-down scenario {sc['id']}")
         m = re.fullmatch(r"(\d+):(\d\d)", s.get("clock", ""))
         clock_ok(int(m[1]) * 60 + int(m[2]) if m else -1, f"4th-down scenario {sc['id']}")
-        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + 17 > MAX_FG:
-            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + 17}-yd FG")
+        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + 18 > MAX_FG:
+            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + 18}-yd FG")
 
     for it in data["quiz"]["items"]:
         s, label = it["situation"], f"quiz item {it['id']}"
@@ -155,8 +155,8 @@ def main() -> int:
         qs = s.get("quarter_seconds_remaining")
         clock_ok(qs if qs is not None else qsec_from_game(q, s.get("game_seconds_remaining")), label)
         fg = (it.get("reveal") or {}).get("values", {}).get("fg")
-        if fg is not None and s["yardline_100"] + 17 > MAX_FG:
-            fail(f"FG: {label} values a {s['yardline_100'] + 17}-yd FG (FG win chance {fg:.3f})")
+        if fg is not None and s["yardline_100"] + 18 > MAX_FG:
+            fail(f"FG: {label} values a {s['yardline_100'] + 18}-yd FG (FG win chance {fg:.3f})")
         gid = (it.get("source") or {}).get("game_id")
         if gid and gid not in sched:
             fail(f"schedule: {label} cites game {gid}, which does not exist in nflverse")
