@@ -61,9 +61,25 @@ test("swing plays are biggest first, at most 3, with a Why", () => {
   assert.match(pick6.why, /turnover/);
 });
 
+test("BUF@NYJ: Week 1, 2023-09-11, NYJ (home) wins 22–16 in OT", () => {
+  const g = fixtureGame("2023_01_BUF_NYJ")!;
+  assert.equal(g.week, 1);
+  assert.equal(g.game_date, "2023-09-11");
+  assert.equal(g.home_team_id, "NYJ");
+  assert.equal(g.home_score, 22);
+  assert.equal(g.away_score, 16);
+  assert.equal(fixtureGame("2023_02_BUF_NYJ"), null);
+  const s = WP_FIXTURES["2023_01_BUF_NYJ"].series;
+  assert.equal(s.home_team_id, "NYJ");
+  assert.equal(s.result, "home_win");
+  assert.equal(s.has_overtime, true);
+  assert.ok(s.points.some((p) => p.is_overtime && p.game_seconds_elapsed > 3600));
+  assert.equal(s.points.at(-1)!.home_wp_post, 1);
+});
+
 test("clock labels from game_seconds_elapsed, including OT", () => {
   assert.equal(clockLabel({ quarter: 3, is_overtime: false, game_seconds_elapsed: 2075 }), "Q3 10:25");
   assert.equal(clockLabel({ quarter: 5, is_overtime: true, game_seconds_elapsed: 3748 }), "OT 7:32");
-  const ot = WP_FIXTURES["2023_02_BUF_NYJ"].series.points.find((p) => p.is_overtime)!;
+  const ot = WP_FIXTURES["2023_01_BUF_NYJ"].series.points.find((p) => p.is_overtime)!;
   assert.equal(clockLabel(ot), "OT 7:32");
 });

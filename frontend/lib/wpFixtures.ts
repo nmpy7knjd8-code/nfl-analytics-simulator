@@ -78,13 +78,13 @@ export const WP_FIXTURES: Record<string, ChartSeries> = {
     [9, 4, 45, "KC", "Mahomes pass incomplete on fourth down. Detroit takes over.", 0.03],
     [10, 4, 30, "DET", "Lions kneel to run out the clock.", 0],
   ]),
-  "2023_02_BUF_NYJ": build("2023_02_BUF_NYJ", "NYJ", "BUF", { home: 22, away: 16 }, 0.35, [
+  "2023_01_BUF_NYJ": build("2023_01_BUF_NYJ", "NYJ", "BUF", { home: 22, away: 16 }, 0.35, [
     [1, 1, 900, "BUF", "Opening kickoff.", 0.35],
     [2, 1, 200, "BUF", "Bills touchdown.", 0.28],
     [3, 2, 300, "NYJ", "Jets field goal.", 0.38],
     [4, 3, 500, "NYJ", "Fumble recovered by the Jets.", 0.47],
     [5, 4, 400, "NYJ", "Jets field goal ties the game.", 0.55],
-    [6, 5, 452, "NYJ", "Punt return touchdown in overtime.", 1],
+    [6, 5, 452, "NYJ", "Xavier Gipson punt return touchdown in overtime. Jets win 22–16.", 1],
   ]),
   "2023_03_PHI_TB": build("2023_03_PHI_TB", "TB", "PHI", { home: 11, away: 25 }, 0.4, [
     [1, 1, 900, "PHI", "Opening kickoff.", 0.4],
