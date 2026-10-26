@@ -60,7 +60,9 @@ jobs:
           for f in og/home.png og/daily.png og/fourth-down.png og/games.png; do test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }; done
           grep -q 'name="twitter:card" content="summary_large_image"' _site/index.html
           grep -q 'property="og:image" content="https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/og/daily.png"' _site/daily/index.html
-          for g in _site/games/*/index.html; do id=$(basename "$(dirname "$g")"); test -s "_site/og/games/$id.png" || { echo "missing card for $id"; exit 1; }; grep -q "og/games/$id.png" "$g" || { echo "no og:image on $g"; exit 1; }; done
+          # Game pages come from the Next export (frontend/out), i.e. generateStaticParams over the
+          # game list; redirect stubs for renamed ids (assemble.py GAME_ID_MOVES) are not game pages.
+          n=0; for g in frontend/out/games/*/index.html; do id=$(basename "$(dirname "$g")"); n=$((n+1)); test -s "_site/og/games/$id.png" || { echo "missing card for $id"; exit 1; }; grep -q "og/games/$id.png" "_site/games/$id/index.html" || { echo "no og:image on games/$id"; exit 1; }; echo "ok card games/$id"; done; test "$n" -gt 0 || { echo "no game pages built"; exit 1; }
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

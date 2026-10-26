@@ -69,7 +69,7 @@ def _toy_empirics() -> FourthDownEmpirics:
             (30, 39): {"n": 50, "p_make": 0.90, "filter": "toy"},
             (40, 49): {"n": 50, "p_make": 0.75, "filter": "toy"},
             (50, 59): {"n": 50, "p_make": 0.60, "filter": "toy"},
-            (60, 80): {"n": 10, "p_make": 0.30, "filter": "toy"},
+            (60, 64): {"n": 10, "p_make": 0.30, "filter": "toy"},
         },
         punt_by_yardline={
             (1, 40): {"n": 20, "mean_opp_yardline_100": 88.0, "filter": "toy"},
@@ -196,7 +196,9 @@ def test_run_decision_lab_reuses_analyzer():
     df = _sample_frame()
     az = FourthDownAnalyzer(_toy_wp_model(), _toy_empirics())
     result = run_decision_lab(az, df.iloc[0], convert_delta=-0.35, make_delta=0.0)
-    assert set(result.analysis.actions) == {"go", "fg", "punt"}
+    kd = result.analysis.situation["kick_distance"]
+    expected = {"go", "fg", "punt"} if kd <= 64 else {"go", "punt"}
+    assert set(result.analysis.actions) == expected
     assert result.play.provenance["game_id"] == "2022_01_AAA_BBB"
     assert result.sensitivity is not None
     assert "recommendation_changed" in result.sensitivity
