@@ -206,6 +206,7 @@ def test_api_compare_pre_snap_post(client: TestClient, flip_raw: dict):
     assert r.json()["live_feed"] is False
 
 
+@pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing (API loads model before validating)")
 def test_api_rejects_stale(client: TestClient, flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     bad["source"]["freshness"] = "stale"
@@ -214,6 +215,7 @@ def test_api_rejects_stale(client: TestClient, flip_raw: dict):
     assert "stale" in r.json()["detail"].lower()
 
 
+@pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing (API loads model before validating)")
 def test_api_rejects_missing_field(client: TestClient, flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     del bad["situation"]["yardline_100"]

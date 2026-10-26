@@ -65,6 +65,20 @@ For every implemented model, record:
 
 Compare probabilistic predictions using suitable metrics, including Brier score, log loss, and calibration. Compare numerical predictions using suitable error metrics. Include simple baselines and chronological evaluation. Accuracy alone does not establish decision quality or causality.
 
+## Workstream ownership
+
+One agent edits a shared file at a time; the lead integrator resolves conflicts.
+
+| Workstream | Owns | Must not edit casually |
+| --- | --- | --- |
+| Architecture / integrator | `docs/ARCHITECTURE.md`, `DECISIONS.md`, `DATA_DICTIONARY.md`, `ROADMAP.md`, `HANDOFF.md`, `CHANGELOG.md`, `REPO_AUDIT.md`, contracts, `AGENTS.md` | Research narrative without reconciliation |
+| Research | `RESEARCH_REGISTER.md`, `MODEL_CATALOG.md`, `LICENSING_AND_DATA_SOURCES.md`, `MODEL_VALIDATION.md` | Canonical field names (architect) |
+| Data | `backend/src/nfl_sim/ingest`, `DATA_EXPERIMENT.md`, `DATA_PIN_NOTES.md` | Contract Python/TS without architect PR |
+| Models | `backend/src/nfl_sim/models`, `reports/` | Canonical schemas |
+| Frontend / Pages | `frontend/`, `docs/demo/`, `docs/index.html`, `README.md` | Backend contracts without sync |
+| Live feeds | Feed evaluation + Sportradar docs, pre-snap adapter/mapper | Historical ingest path; no raw vendor persistence |
+| CI | `.github/workflows/` | — |
+
 ## Agent workflow
 
 Agents are bounded workstreams, not assumed to be persistent autonomous workers.

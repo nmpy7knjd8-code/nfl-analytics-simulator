@@ -3,6 +3,9 @@ import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
+import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
+import { findSwingPlays, seriesFromPlays } from "../../../lib/winProbability";
+import { fixtureWinProbability } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -34,6 +37,15 @@ export default async function GameReplayPage({ params }: Props) {
   } catch (e) {
     error = e instanceof Error ? e.message : "Failed to load game";
   }
+
+  // Live API data with reference WP wins; otherwise the clearly labeled example series.
+  const liveSeries =
+    game && plays && plays.source === "live"
+      ? seriesFromPlays(id, game.data.home_team_id, game.data.away_team_id, plays.data.items)
+      : null;
+  const wpSeries =
+    liveSeries && liveSeries.points.length >= 2 ? liveSeries : fixtureWinProbability(id);
+  const swings = wpSeries ? findSwingPlays(wpSeries) : [];
 
   const source = game?.source ?? plays?.source;
   const banner = game?.banner ?? plays?.banner;
@@ -71,6 +83,18 @@ export default async function GameReplayPage({ params }: Props) {
             </div>
             <p>Scroll the story.</p>
           </header>
+
+          {wpSeries ? (
+            <section aria-labelledby="wp-head">
+              <h2 id="wp-head">Win chance</h2>
+              {wpSeries.source === "example" ? (
+                <p className="muted">Example chart — not model output.</p>
+              ) : null}
+              <WinProbabilityChart series={wpSeries} swings={swings} />
+              {swings.length ? <h3>Swing plays</h3> : null}
+              <SwingPlayList swings={swings} />
+            </section>
+          ) : null}
 
           <p className="list-count">{plays.data.total} plays</p>
 

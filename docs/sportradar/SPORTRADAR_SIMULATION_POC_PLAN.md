@@ -8,7 +8,7 @@
 
 **Approval boundary:** **STOP** — do not start trial, contact vendors, create accounts, incur costs, call Simulation or live APIs, or wire production until explicitly authorized.
 
-Related: [`FEED_EVALUATION.md`](./FEED_EVALUATION.md), [`PRE_SNAP_ADAPTER.md`](./PRE_SNAP_ADAPTER.md), recorded demo on `main`.
+Related: [`FEED_EVALUATION.md`](../FEED_EVALUATION.md), [`PRE_SNAP_ADAPTER.md`](../PRE_SNAP_ADAPTER.md), recorded demo on `main`.
 
 ---
 

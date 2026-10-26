@@ -3,47 +3,74 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NFL Analytics — progress &amp; accuracy hub | nfl-analytics-simulator</title>
+  <title>NFL Analytics Simulator — 4th-down decisions, game explorer &amp; quiz</title>
+  <meta name="description" content="Research-grounded NFL analytics and simulation: reconstruct real games, explain fourth-down decisions, and test yourself with the quiz. Example data, no betting features." />
   <style>
-    :root { color-scheme: light dark; --fg: #111; --muted: #555; --link: #0b57d0; --bg: #fafafa; --card: #fff; --line: #ddd; }
-    @media (prefers-color-scheme: dark) {
-      :root { --fg: #f2f2f2; --muted: #aaa; --link: #8ab4ff; --bg: #0f0f10; --card: #171718; --line: #333; }
-    }
-    body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
-    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-    h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
-    p { margin: 0.5rem 0; color: var(--muted); }
-    a { color: var(--link); }
-    .demo {
-      display: block; margin: 1.25rem 0 1.5rem; padding: 1rem 1.1rem;
-      background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-      text-decoration: none; color: inherit;
-    }
-    .demo strong { display: block; font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--fg); }
-    .demo span { color: var(--muted); font-size: 0.95rem; }
-    ul { padding-left: 1.2rem; }
-    li { margin: 0.35rem 0; }
+    :root { color-scheme: light dark; --fg:#111; --muted:#555; --link:#0b57d0; --bg:#f6f7f9; --card:#fff; --line:#dde1e6; --accent:#0b57d0; --soon:#8a6d00; }
+    @media (prefers-color-scheme: dark) { :root { --fg:#f2f2f2; --muted:#a8acb3; --link:#8ab4ff; --bg:#0f1012; --card:#17181b; --line:#2c2f34; --accent:#8ab4ff; --soon:#e0c050; } }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--fg); background:var(--bg); }
+    main { max-width:60rem; margin:0 auto; padding:2.5rem 1.25rem 3rem; }
+    header h1 { font-size:2rem; margin:0 0 .4rem; letter-spacing:-.01em; }
+    header p { color:var(--muted); max-width:44rem; margin:.4rem 0; }
+    h2 { font-size:1.2rem; margin:2.25rem 0 .75rem; }
+    a { color:var(--link); }
+    .grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); }
+    .card { display:block; padding:1rem 1.1rem; background:var(--card); border:1px solid var(--line); border-radius:12px; text-decoration:none; color:inherit; }
+    a.card:hover { border-color:var(--accent); }
+    .card strong { display:block; font-size:1.05rem; margin-bottom:.25rem; }
+    .card span { color:var(--muted); font-size:.93rem; }
+    .tag { display:inline-block; font-size:.72rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--soon); margin-bottom:.3rem; }
+    ul.docs { columns:2 14rem; padding-left:1.1rem; margin:0; }
+    ul.docs li { margin:.3rem 0; }
+    footer { margin-top:3rem; color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:1rem; }
   </style>
 </head>
 <body>
-  <main>
-    <h1>NFL Analytics — progress &amp; accuracy hub</h1>
-    <p>Use this page as the single handoff link.</p>
+<main>
+  <header>
+    <h1>NFL Analytics Simulator</h1>
+    <p>Research-grounded, NFL-only analytics and simulation. Reconstruct real games play by play, see how expected points and win probability move, and understand fourth-down calls in plain football language.</p>
+    <p>Local-first and CPU-only. The public demo runs on example data with no live feed. No sports-betting features.</p>
+  </header>
 
-    <a class="demo" href="./demo/">
-      <strong>Open fan demo →</strong>
-      <span>Game Explorer + 4th &amp; short · example data only · no live feed</span>
-    </a>
+  <h2>Try it</h2>
+  <div class="grid">
+    <a class="card" href="./demo/"><strong>Fan demo →</strong><span>Branded home, Game Explorer and the 4th-&amp;-short explainer.</span></a>
+    <a class="card" href="./demo/games/"><strong>Game Explorer →</strong><span>Walk through real games play by play.</span></a>
+    <a class="card" href="./demo/decide/"><strong>4th-down decision →</strong><span>Go, punt or kick: what the numbers say and why.</span></a>
+    <a class="card" href="./demo/quiz/"><strong>Fourth-down quiz →</strong><span>Make the call yourself, then compare with the model.</span></a>
+  </div>
 
-    <ul>
-      <li><a href="./HANDOFF.md">Full checklist (HANDOFF.md)</a></li>
-      <li><a href="./PHASE2_REVIEW.md">Phase 2 review pack</a></li>
-      <li><a href="./ARCHITECTURE.md">Architecture</a></li>
-      <li><a href="./ROADMAP.md">Roadmap</a></li>
-      <li><a href="./DECISIONS.md">Decisions</a></li>
-      <li><a href="./AGENTS.md">AGENTS.md</a></li>
-      <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator">GitHub repository</a></li>
-    </ul>
-  </main>
+  <h2>Coming soon / roadmap</h2>
+  <div class="grid" id="roadmap">
+    <div class="card"><span class="tag">Coming soon</span><strong>Coach grades</strong><span>How each coach's fourth-down calls stack up.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Aggressiveness data</strong><span>Team and coach go-for-it tendencies over time.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Win-probability charts</strong><span>Game-flow WP charts for every game.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Simulator</strong><span>Replay a situation and run the alternatives.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Dashboard</strong><span>Season-level view of decisions and outcomes.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Narrator</strong><span>Plain-language play-by-play explanations.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>Two-minute trainer</strong><span>Practice end-of-half clock management.</span></div>
+    <div class="card"><span class="tag">Coming soon</span><strong>What-if cards</strong><span>Shareable cards for the calls that changed a game.</span></div>
+  </div>
+
+  <h2>Docs</h2>
+  <ul class="docs">
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/HANDOFF.md">Handoff checklist</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/ROADMAP.md">Roadmap</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/ARCHITECTURE.md">Architecture</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/DECISIONS.md">Decisions</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/FOURTH_DOWN_DESIGN.md">Fourth-down design</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/FOURTH_DOWN_QUIZ_MODE.md">Quiz mode</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/WP_MODEL_SPEC.md">Win-probability model</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/EP_MODEL_SPEC.md">Expected-points model</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/MODEL_VALIDATION.md">Model validation</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/PHASE2_REVIEW.md">Phase 2 review pack</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/docs/LICENSING_AND_DATA_SOURCES.md">Licensing &amp; data sources</a></li>
+    <li><a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/AGENTS.md">AGENTS.md</a></li>
+  </ul>
+
+  <footer>Example data only · not affiliated with the NFL · <a href="https://github.com/nmpy7knjd8-code/nfl-analytics-simulator">GitHub repository</a></footer>
+</main>
 </body>
 </html>
