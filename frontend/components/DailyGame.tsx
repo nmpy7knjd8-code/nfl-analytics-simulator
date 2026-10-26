@@ -1,18 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { QuizChoice } from "../lib/quiz";
 import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, CLOSE_CALL_GAP, type CallResult, type ScoredCall, type StreakState,
+  dailySet, setNumber, CLOSE_CALL_GAP, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
+const HOWTO_KEY = "fourth-and-daily.seen-howto.v1";
 const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
 
 type Mode = "daily" | "practice";
@@ -53,7 +54,11 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
     <ul className="fd-bars" aria-label={`${item.situation.posteam} chance to win by choice`}>
       {ranked.map(([id, v]) => (
         <li key={id} className={`fd-bar${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}`}>
-          <span className="fd-bar-label">{CHOICE_NAME[id]}</span>
+          <span className="fd-bar-label">
+            {CHOICE_NAME[id]}
+            {id === scored.pick ? <span className="fd-tag">Your pick</span> : null}
+            {id === scored.best ? <span className="fd-tag fd-tag-model">Model&apos;s pick</span> : null}
+          </span>
           <span className="fd-bar-track">
             <span className="fd-bar-fill" style={{ width: `${Math.round(v * 100)}%` }} />
           </span>
@@ -68,6 +73,28 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
 
 type Picks = (QuizChoice | null)[];
 
+function HowTo({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const d = ref.current;
+    if (!d) return;
+    if (open && !d.open) d.showModal?.();
+    if (!open && d.open) d.close();
+  }, [open]);
+  return (
+    <dialog ref={ref} className="fd-howto" aria-labelledby="fd-howto-title" onClose={onClose} onCancel={onClose}>
+      <h2 id="fd-howto-title">How to play</h2>
+      <ol>
+        <li><strong>You&apos;re the coach.</strong> Five real 4th downs a day. Pick Go, Kick or Punt, then lock it in.</li>
+        <li><strong>Win chance</strong> is the model&apos;s estimate of how often the team with the ball goes on to win after each call. The call with the highest win chance is the right call.</li>
+        <li><strong>Close call:</strong> when the top options are within {Math.round(CLOSE_CALL_GAP * 100)} points of win chance, either one gets ½ and is never counted wrong.</li>
+      </ol>
+      <p className="fd-muted">Right call = 1, Close call = ½, otherwise 0. New set at midnight ET. Everything stays in this browser.</p>
+      <form method="dialog"><button type="submit" className="fd-btn fd-btn-primary">Got it</button></form>
+    </dialog>
+  );
+}
+
 export function DailyGame({ mode }: { mode: Mode }) {
   const [today, setToday] = useState<string | null>(null);
   const [seed, setSeed] = useState(0);
@@ -77,6 +104,9 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const [streak, setStreak] = useState<StreakState | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [copied, setCopied] = useState<string | null>(null);
+  const [pending, setPending] = useState<QuizChoice | null>(null);
+  const [howto, setHowto] = useState(false);
+  const choiceRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Client-only: the day is the viewer's current ET date.
   useEffect(() => {
@@ -85,6 +115,11 @@ export function DailyGame({ mode }: { mode: Mode }) {
     setSeed(Date.now());
     const s = loadStreak(storage());
     setStreak(s);
+    try {
+      if (!storage()?.getItem(HOWTO_KEY)) setHowto(true);
+    } catch {
+      /* no storage: don't nag */
+    }
     if (mode === "daily") {
       try {
         const raw = storage()?.getItem(PROGRESS_KEY);
@@ -155,16 +190,27 @@ export function DailyGame({ mode }: { mode: Mode }) {
 
   const shown = visibleStreak(streak ?? { current: 0, best: 0, last_completed: null, history: [] }, today);
 
-  function choose(c: QuizChoice) {
-    if (revealed) return;
+  function closeHowto() {
+    setHowto(false);
+    try {
+      storage()?.setItem(HOWTO_KEY, "1");
+    } catch {
+      /* not persisted */
+    }
+  }
+
+  function lockIn(c: QuizChoice | null = pending) {
+    if (revealed || !c) return;
     const p = [...picks];
     while (p.length < items.length) p.push(null);
     p[index] = c;
     setPicks(p);
+    setPending(null);
     setRevealed(true);
   }
 
   function nextCard() {
+    setPending(null);
     setRevealed(false);
     setIndex((i) => i + 1);
   }
@@ -174,6 +220,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
     setPicks([]);
     setIndex(0);
     setRevealed(false);
+    setPending(null);
     setCopied(null);
   }
 
@@ -189,9 +236,12 @@ export function DailyGame({ mode }: { mode: Mode }) {
     const maxDays = stats ? Math.max(1, ...stats.score_distribution) : 1;
     return (
       <section className="fd-card fd-end" aria-labelledby="fd-end-title">
-        <h2 id="fd-end-title" className="fd-end-score">
-          {formatScore(credit)}/{items.length}
+        <h2 id="fd-end-title" className="fd-end-title">
+          {mode === "daily" ? `Fourth & Daily #${setNumber(today)}` : "Practice set"}
         </h2>
+        <p className="fd-end-score" aria-label={`Score ${formatScore(credit)} out of ${items.length}`}>
+          {formatScore(credit)}/{items.length}
+        </p>
         <p className="fd-muted fd-scoring">{SCORING_TEXT}</p>
         <p className="fd-end-squares" aria-label="Your calls">
           {done.map((s, i) => (
@@ -257,28 +307,79 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const item = items[index];
   const scored = scores[index];
   const opts = optionStates(item);
+  const choices = opts.filter((o) => o.shown);
+  const enabled = choices.filter((o) => !o.disabled);
+  const focusId = pending ?? enabled[0]?.id;
+
+  function onChoiceKey(e: KeyboardEvent<HTMLButtonElement>, id: QuizChoice) {
+    const k = e.key;
+    if (k === "Enter") {
+      e.preventDefault();
+      lockIn(pending ?? id);
+      return;
+    }
+    if (k === " ") {
+      e.preventDefault();
+      setPending(id);
+      return;
+    }
+    const step = k === "ArrowRight" || k === "ArrowDown" ? 1 : k === "ArrowLeft" || k === "ArrowUp" ? -1 : 0;
+    if (!step || !enabled.length) return;
+    e.preventDefault();
+    const at = Math.max(0, enabled.findIndex((o) => o.id === id));
+    const next = enabled[(at + step + enabled.length) % enabled.length].id;
+    setPending(next);
+    choiceRefs.current[choices.findIndex((o) => o.id === next)]?.focus();
+  }
+
   return (
     <section className="fd-card" aria-label={`Call ${index + 1} of ${items.length}`}>
+      <HowTo open={howto} onClose={closeHowto} />
       <div className="fd-card-top">
-        <span className="fd-count">
-          {index + 1}/{items.length}
+        <span className="fd-count">Call {index + 1} of {items.length}</span>
+        <span className="fd-top-right">
+          {mode === "daily" ? (
+            <span className="fd-count" aria-label={`Current streak ${shown} ${shown === 1 ? "day" : "days"}`}>
+              Streak: {shown} {shown === 1 ? "day" : "days"}
+            </span>
+          ) : (
+            <span className="fd-count">Practice</span>
+          )}
+          <button type="button" className="fd-help" aria-label="How to play" onClick={() => setHowto(true)}>?</button>
         </span>
-        {mode === "daily" ? <span className="fd-count">Streak {shown}</span> : <span className="fd-count">Practice</span>}
+      </div>
+      <div className="fd-progress" role="progressbar" aria-label="Calls done" aria-valuemin={0} aria-valuemax={items.length} aria-valuenow={scores.filter(Boolean).length}>
+        {items.map((_, i) => <span key={i} className={scores[i] ? "is-done" : i === index ? "is-now" : undefined} />)}
       </div>
       <p className="fd-scoreboard">{scoreboardText(item)}</p>
       <Field item={item} />
       <p className="fd-game">{gameText(item)}</p>
 
       {!revealed || !scored ? (
-        <div className="fd-choices" role="group" aria-label="Your call">
-          {opts
-            .filter((o) => o.shown)
-            .map((o) => (
-              <button key={o.id} type="button" className="fd-choice" disabled={o.disabled} onClick={() => choose(o.id)}>
+        <div className="fd-pick">
+          {index === 0 ? <p className="fd-hint" id="fd-hint">Pick a call, then lock it in. Arrow keys move, Enter locks it in.</p> : null}
+          <div className="fd-choices" role="radiogroup" aria-label="Your call" aria-describedby={index === 0 ? "fd-hint" : undefined}>
+            {choices.map((o, i) => (
+              <button
+                key={o.id}
+                ref={(el) => { choiceRefs.current[i] = el; }}
+                type="button"
+                role="radio"
+                aria-checked={pending === o.id}
+                tabIndex={o.id === focusId ? 0 : -1}
+                className={`fd-choice${pending === o.id ? " is-picked" : ""}`}
+                disabled={o.disabled}
+                onClick={() => setPending(o.id)}
+                onKeyDown={(e) => onChoiceKey(e, o.id)}
+              >
                 <span>{CHOICE_NAME[o.id]}</span>
                 {o.id === "fg" && o.note ? <small>{o.note}</small> : null}
               </button>
             ))}
+          </div>
+          <button type="button" className="fd-btn fd-btn-primary fd-lock" disabled={!pending} onClick={() => lockIn()}>
+            {pending ? `Lock in ${CHOICE_NAME[pending]}` : "Pick a call"}
+          </button>
           <p className="fd-muted fd-scoring">{SCORING_TEXT}</p>
         </div>
       ) : (
