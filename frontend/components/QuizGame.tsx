@@ -60,9 +60,10 @@ export function QuizGame() {
     setPhase("situation");
   }
 
-  const sourceLine = item.source.game_id
-    ? `${item.source.game_id} · play ${item.source.play_id}`
-    : "Offline curated situation";
+  const sourceLine =
+    item.source.season && item.source.week
+      ? `${item.situation.away_team} @ ${item.situation.home_team} · ${item.source.season} Week ${item.source.week}`
+      : "";
 
   return (
     <div className="quiz-shell">
