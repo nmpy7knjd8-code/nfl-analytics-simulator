@@ -1,7 +1,16 @@
 import Link from "next/link";
 import { ExampleBanner } from "../../components/ExampleBanner";
 import { TruthChip } from "../../components/TruthChip";
+import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
+
+export const metadata = shareMetadata({
+  title: "Games — NFL Analytics Simulator",
+  description: "Replay NFL games play by play with the win-chance swing of every play.",
+  path: "/games/",
+  card: "games",
+  alt: "NFL game stories: every play's win-chance swing. Data: nflverse",
+});
 
 export default async function GamesPage() {
   const result = await fetchGames(2023);

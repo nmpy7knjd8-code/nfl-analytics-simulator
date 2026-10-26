@@ -215,17 +215,18 @@ def build_situation_lab_payload_from_snapshot(
         source_dict,
     )
 
+    # Validate input before touching model artifacts so bad snapshots get 400, not 503.
+    try:
+        snap = parse_pre_snap_snapshot(raw)
+        row = snapshot_to_decision_row(snap)
+    except PreSnapAdapterError:
+        raise
     analyzer = _load_analyzer()
     if analyzer is None:
         raise FileNotFoundError(
             f"Missing WP artifact: {WP_MODEL_ARTIFACT}. "
             "Train Path A WP first (uncalibrated primary; do not persist isotonic as default)."
         )
-    try:
-        snap = parse_pre_snap_snapshot(raw)
-        row = snapshot_to_decision_row(snap)
-    except PreSnapAdapterError:
-        raise
     cmp = compare_transition_modes(analyzer, row, empirics_mode="pooled")
     payload = _payload_from_compare(
         cmp,
