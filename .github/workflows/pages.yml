@@ -53,6 +53,11 @@ jobs:
             echo "ok $f"
           done
           grep -q '/nfl-analytics-simulator/demo/_next/' _site/demo/index.html
+          for f in favicon.svg 404.html quiz/index.html games/index.html decide/index.html demo/icon.svg; do
+            test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
+            echo "ok $f"
+          done
+          grep -q 'url=../demo/quiz/' _site/quiz/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
