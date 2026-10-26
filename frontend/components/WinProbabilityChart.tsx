@@ -1,4 +1,4 @@
-import type { SwingPlay, WinProbabilitySeries } from "../lib/winProbability";
+import { clockLabel, type SwingPlay, type WinProbabilitySeries } from "../lib/winProbability";
 
 const W = 640;
 const H = 220;
@@ -18,7 +18,7 @@ export function WinProbabilityChart({
   // Overtime plays have 0 secs in regulation; spread by index past 0 so they stay visible.
   const x = (i: number) => {
     const p = pts[i];
-    const elapsed = p.quarter > 4 ? maxSecs + 300 : maxSecs - p.game_seconds_remaining;
+    const elapsed = p.quarter > 4 ? maxSecs + 300 * (1 - (p.ot_seconds_remaining ?? 0) / 600) : maxSecs - p.game_seconds_remaining;
     const span = pts.some((q) => q.quarter > 4) ? maxSecs + 300 : maxSecs - minSecs;
     return PAD.l + (elapsed / span) * (W - PAD.l - PAD.r);
   };
@@ -44,6 +44,9 @@ export function WinProbabilityChart({
             </g>
           );
         })}
+        {pts.some((p) => p.quarter > 4) ? (
+          <text x={W - PAD.r - 22} y={H - 8} className="wp-axis">OT</text>
+        ) : null}
         <path d={path} className="wp-line" />
         {pts.map((p, i) =>
           swingIds.has(p.play_id) ? (
@@ -55,7 +58,7 @@ export function WinProbabilityChart({
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Blue dots are the biggest swing plays. {series.source_note}
+        {series.away_team_id}). Each point is the chance at the snap. Blue dots are the biggest swing plays. {series.source_note}
       </figcaption>
     </figure>
   );
@@ -68,7 +71,7 @@ export function SwingPlayList({ swings }: { swings: SwingPlay[] }) {
       {swings.map((s) => (
         <li key={s.point.play_id} className="swing-item">
           <div className="play-meta">
-            Q{s.point.quarter > 4 ? "OT" : s.point.quarter} · {s.favored_team_id} +
+            {clockLabel(s.point)} · {s.favored_team_id} +
             {Math.round(Math.abs(s.delta) * 100)}%
           </div>
           <p className="play-desc">{s.point.description}</p>

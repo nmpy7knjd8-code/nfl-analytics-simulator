@@ -5,16 +5,25 @@
  * publish a WP-series shape (owned by NFL Data & Models, Phase 0). When it lands,
  * replace `WinProbabilitySeries` with the contract type and keep the adapters below.
  *
- * Convention: `home_wp` is the HOME team's chance to win after the play, in [0, 1].
+ * Conventions (match nflverse reference columns):
+ *  - `home_wp` is the HOME team's win chance, in [0, 1].
+ *  - Each point is PRE-SNAP: the chance at the snap of that play. The play at index i
+ *    therefore "causes" points[i+1].home_wp − points[i].home_wp.
+ *  - Swing plays: until the backend publishes a swing flag in frontend/contracts
+ *    (planned rule |ΔWP| ≥ 0.08), the frontend applies the same 0.08 cutoff itself as a
+ *    fixture fallback. Prefer the backend flag once it exists.
  */
+export const SWING_THRESHOLD_FALLBACK = 0.08;
 import type { CanonicalPlay } from "../contracts";
 
 export interface WinProbabilityPoint {
   play_id: string;
   play_index: number;
   quarter: number;
-  /** Seconds left in regulation, 3600 → 0. */
+  /** Seconds left in regulation, 3600 → 0 (0 for overtime plays). */
   game_seconds_remaining: number;
+  /** Overtime only: seconds left in the OT period. */
+  ot_seconds_remaining?: number | null;
   home_wp: number;
   possession_team_id?: string | null;
   description?: string | null;
@@ -60,15 +69,18 @@ export function seriesFromPlays(
     }
     const secs =
       p.game_seconds_remaining ??
-      (p.half_seconds_remaining != null && p.quarter <= 4
-        ? p.half_seconds_remaining + (p.quarter <= 2 ? 1800 : 0)
-        : null);
+      (p.quarter > 4
+        ? 0
+        : p.half_seconds_remaining != null
+          ? p.half_seconds_remaining + (p.quarter <= 2 ? 1800 : 0)
+          : null);
     if (home == null || secs == null || Number.isNaN(home)) continue;
     points.push({
       play_id: p.play_id,
       play_index: p.play_index,
       quarter: p.quarter,
       game_seconds_remaining: secs,
+      ot_seconds_remaining: p.quarter > 4 ? (p.half_seconds_remaining ?? null) : null,
       home_wp: clamp01(home),
       possession_team_id: p.possession_team_id,
       description: p.description,
@@ -99,17 +111,27 @@ function whyText(delta: number, p: WinProbabilityPoint, favored: string): string
   }.`;
 }
 
-/** Biggest win-chance changes, largest first. A play must move ≥ minSwing to count. */
+/** Clock label for a point: "Q3 12:05" or "OT 7:32". */
+export function clockLabel(p: WinProbabilityPoint): string {
+  const fmt = (t: number) => `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(2, "0")}`;
+  if (p.quarter > 4) return p.ot_seconds_remaining != null ? `OT ${fmt(p.ot_seconds_remaining)}` : "OT";
+  const inQuarter = p.game_seconds_remaining - (4 - p.quarter) * 900;
+  return `Q${p.quarter} ${fmt(Math.max(0, Math.min(900, inQuarter)))}`;
+}
+
+/**
+ * Biggest win-chance changes, largest first. Points are pre-snap, so the change between
+ * point i and i+1 belongs to the play at i. Fallback cutoff: see SWING_THRESHOLD_FALLBACK.
+ */
 export function findSwingPlays(
   series: WinProbabilitySeries,
   limit = 3,
-  minSwing = 0.08,
+  minSwing = SWING_THRESHOLD_FALLBACK,
 ): SwingPlay[] {
   const out: SwingPlay[] = [];
-  for (let i = 1; i < series.points.length; i++) {
-    const prev = series.points[i - 1];
+  for (let i = 0; i + 1 < series.points.length; i++) {
     const cur = series.points[i];
-    const delta = cur.home_wp - prev.home_wp;
+    const delta = series.points[i + 1].home_wp - cur.home_wp;
     if (Math.abs(delta) < minSwing) continue;
     const favored = delta > 0 ? series.home_team_id : series.away_team_id;
     out.push({ point: cur, delta, favored_team_id: favored, why: whyText(delta, cur, favored) });
