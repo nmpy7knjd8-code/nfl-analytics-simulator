@@ -5,53 +5,15 @@
 
 import type { CanonicalPlay, GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
+import { GAME_FACTS } from "./gameFacts";
 
 export const FIXTURE_BANNER =
   "Example data — not live. Shows how the product will feel once the API is connected.";
 
+/** Game facts come only from nflverse (lib/gameFacts.json, generated + checked in CI). */
 export const FIXTURE_GAMES: GamesResponse = {
-  items: [
-    {
-      game_id: "2023_01_DET_KC",
-      league: "NFL",
-      season: 2023,
-      week: 1,
-      season_type: "REG",
-      game_date: "2023-09-07",
-      home_team_id: "KC",
-      away_team_id: "DET",
-      home_score: 20,
-      away_score: 21,
-      stadium: "GEHA Field at Arrowhead Stadium",
-    },
-    {
-      game_id: "2023_01_BUF_NYJ",
-      league: "NFL",
-      season: 2023,
-      week: 1,
-      season_type: "REG",
-      game_date: "2023-09-11",
-      home_team_id: "NYJ",
-      away_team_id: "BUF",
-      home_score: 22,
-      away_score: 16,
-      stadium: "MetLife Stadium",
-    },
-    {
-      game_id: "2023_03_PHI_TB",
-      league: "NFL",
-      season: 2023,
-      week: 3,
-      season_type: "REG",
-      game_date: "2023-09-25",
-      home_team_id: "TB",
-      away_team_id: "PHI",
-      home_score: 11,
-      away_score: 25,
-      stadium: "Raymond James Stadium",
-    },
-  ],
-  total: 3,
+  items: GAME_FACTS.map(({ overtime: _ot, ...g }) => ({ ...g, league: "NFL" }) as GameSummary),
+  total: GAME_FACTS.length,
   limit: 500,
   offset: 0,
   truth_label: "historical",
