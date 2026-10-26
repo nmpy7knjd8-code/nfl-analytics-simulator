@@ -19,7 +19,7 @@ def _x(**kw):
     return EngineInput(**{**base, **kw})
 
 
-@pytest.mark.parametrize("yl,opts", [(1, ("go", "fg")), (35, ("go", "fg")), (36, ("go", "fg", "punt")),
+@pytest.mark.parametrize("yl,opts", [(1, ("go", "fg")), (34, ("go", "fg")), (35, ("go", "fg", "punt")),
                                      (46, ("go", "fg", "punt")), (47, ("go", "punt")), (99, ("go", "punt"))])
 def test_option_rules(engine, yl, opts):
     out = engine.evaluate(_x(yardline_100=yl, distance=1))

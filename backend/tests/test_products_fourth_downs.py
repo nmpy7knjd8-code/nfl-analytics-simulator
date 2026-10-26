@@ -31,5 +31,5 @@ def test_engine_rules_hold_on_every_play(table):
     for yl, e in zip(table["yardline_100"], table["engine"]):
         d = json.loads(e)
         assert ("fg" in d["wp"]) == (yl + 18 <= 64)
-        assert ("punt" in d["wp"]) == (yl >= 36)
+        assert ("punt" in d["wp"]) == (yl >= 35)
         assert d["recommendation"] in d["wp"]
