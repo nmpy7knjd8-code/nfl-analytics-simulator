@@ -22,8 +22,8 @@ jobs:
           cache-dependency-path: backend/pyproject.toml
       - name: Install backend
         run: python -m pip install -e ".[dev,phase2,models]"
-      - name: Pytest
-        run: python -m pytest -q
+      - name: Pytest (unit; integration tests need the ingested lake / network)
+        run: python -m pytest -q -m "not integration"
 
   frontend:
     runs-on: ubuntu-latest
