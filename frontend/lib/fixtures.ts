@@ -20,9 +20,8 @@ export const FIXTURE_GAMES: GamesResponse = {
       game_date: "2023-09-07",
       home_team_id: "KC",
       away_team_id: "DET",
-      // Real result: Lions won 21–20 at Arrowhead (2023 Week 1).
-      home_score: 20,
-      away_score: 21,
+      home_score: 21,
+      away_score: 20,
       stadium: "GEHA Field at Arrowhead Stadium",
     },
     {
@@ -58,6 +57,7 @@ export const FIXTURE_GAMES: GamesResponse = {
   truth_label: "historical",
 };
 
+/** Example only. reference.wp = possession team's pre-snap win chance (nflverse style); home_wp = KC's. */
 const DET_KC_PLAYS: CanonicalPlay[] = [
   {
     play_id: "1",
@@ -145,10 +145,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Lions 21, Chiefs 20.",
+    description: "Final — Chiefs 21, Lions 20.",
     yards_gained: 0,
-    // `wp` is possession-team (DET) view; home (KC) view is 0.0 because KC lost.
-    reference: { wp: 1.0, home_wp: 0.0 },
+    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
+    reference: { wp: 0.0, home_wp: 1.0 },
   },
 ];
 
