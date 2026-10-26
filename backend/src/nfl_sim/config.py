@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     train_seasons: tuple[int, ...] = (2019, 2020, 2021)
     validate_season: int = 2022
     test_season: int = 2023
+    holdout_seasons: tuple[int, ...] = (2024, 2025)
+    ingest_seasons: tuple[int, ...] = (2019, 2020, 2021, 2022, 2023, 2024, 2025)
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]

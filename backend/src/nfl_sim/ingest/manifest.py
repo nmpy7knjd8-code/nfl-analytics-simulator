@@ -20,6 +20,9 @@ PINNED_SEASON_SHA256: dict[int, str] = {
     2022: "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
     # Phase 2 operational pin (unchanged through backfill).
     2023: "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d",
+    # Phase 0 additions (retrieved 2026-10-26; holdout only, never fit/tune).
+    2024: "3fd2896bc0b911b615142d2f1fabae54a4bbba5ab7b73b28187b118ef8af6a3b",
+    2025: "c6ecedd6d678cc37ed316b23ef84ee1ec6abb69c514bb11868a7ebd5a367df29",
 }
 
 PREVIOUS_PINNED_SEASON_SHA256: dict[int, str] = {
@@ -37,6 +40,8 @@ PINNED_SEASON_ROW_COUNTS: dict[int, int] = {
     2021: 49_922,
     2022: 49_434,
     2023: 49_665,
+    2024: 49_492,
+    2025: 48_771,
 }
 
 PBP_RELEASE_URL_TEMPLATE = (
