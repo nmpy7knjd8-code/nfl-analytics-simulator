@@ -353,7 +353,9 @@ def compare_empirics_modes(
         },
         "recommendation_changed": sp["recommendation"] != ss["recommendation"],
         "value_deltas": {
-            k: float(ss["values"][k] - sp["values"][k]) for k in ("go", "fg", "punt")
+            k: float(ss["values"][k] - sp["values"][k])
+            for k in ("go", "fg", "punt")
+            if k in ss["values"] and k in sp["values"]
         },
     }
 
@@ -405,7 +407,9 @@ def compare_transition_modes(
         "pooled_improved": {"summary": si, "analysis": improved.analysis.to_dict()},
         "recommendation_changed_legacy_to_improved": sl["recommendation"] != si["recommendation"],
         "value_deltas_legacy_to_improved": {
-            k: float(si["values"][k] - sl["values"][k]) for k in ("go", "fg", "punt")
+            k: float(si["values"][k] - sl["values"][k])
+            for k in ("go", "fg", "punt")
+            if k in si["values"] and k in sl["values"]
         },
         "clock_deltas_improved": (improved.analysis.empirics_meta or {}).get("clock_deltas_used"),
     }
@@ -463,5 +467,6 @@ def summarize_lab(result: DecisionLabResult) -> dict[str, Any]:
         "transition_mode": a.empirics_meta.get("transition_mode"),
         "clock_deltas_used": a.empirics_meta.get("clock_deltas_used"),
         "p_convert": a.actions["go"].components.get("p_convert"),
-        "p_make": a.actions["fg"].components.get("p_make"),
+        "p_make": a.actions["fg"].components.get("p_make") if "fg" in a.actions else 0.0,
+        "fg_in_range": "fg" in a.actions,
     }

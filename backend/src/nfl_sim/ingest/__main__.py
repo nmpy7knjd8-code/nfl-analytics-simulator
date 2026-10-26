@@ -1,4 +1,4 @@
-"""CLI: python -m nfl_sim.ingest [--season 2023] [--seasons 2019,2020,2021,2022]."""
+"""CLI: python -m nfl_sim.ingest [--season 2023] [--seasons 2019,2020,2021,2022 | --seasons all]."""
 
 from __future__ import annotations
 
@@ -10,6 +10,10 @@ from nfl_sim.ingest.pipeline import ingest_season
 
 
 def _parse_seasons(args: argparse.Namespace) -> list[int]:
+    if args.seasons and args.seasons.strip().lower() == "all":
+        from nfl_sim.config import settings
+
+        return list(settings.ingest_seasons)
     if args.seasons:
         out: list[int] = []
         for part in args.seasons.split(","):
@@ -35,7 +39,7 @@ def main(argv: list[str] | None = None) -> int:
         "--seasons",
         type=str,
         default=None,
-        help="Comma-separated seasons (overrides --season), e.g. 2019,2020,2021,2022",
+        help="Comma-separated seasons (overrides --season), e.g. 2019,2020,2021,2022, or `all` for config ingest_seasons (2019–2025)",
     )
     args = parser.parse_args(argv)
     seasons = _parse_seasons(args)

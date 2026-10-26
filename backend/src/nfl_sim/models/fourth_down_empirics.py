@@ -29,13 +29,18 @@ CONVERT_BINS: tuple[tuple[int, int], ...] = (
     (11, 99),
 )
 
-# Kick distance bins for FG
+# Longest FG we will ever model. NFL record is 66 yd (2023); attempts past 64 are
+# vanishingly rare, so anything longer is "out of range": p_make = 0 and the FG
+# option is dropped by the analyzer.
+MAX_FG_DISTANCE = 64
+
+# Kick distance bins for FG (top bin ends at MAX_FG_DISTANCE — no 60–80 catch-all)
 FG_BINS: tuple[tuple[int, int], ...] = (
     (18, 29),
     (30, 39),
     (40, 49),
     (50, 59),
-    (60, 80),
+    (60, MAX_FG_DISTANCE),
 )
 
 # Pre-punt yardline_100 bins
@@ -51,10 +56,12 @@ def _bin_rate(bins: tuple[tuple[int, int], ...], x: float, table: dict[tuple[int
     for lo, hi in bins:
         if lo <= x <= hi:
             return table[(lo, hi)]
-    # fallback nearest outer
+    # Below the first bin: clamp to it (e.g. very short distances). Above the last bin
+    # we refuse instead of silently reusing the top bin's rate — that silent clamp is
+    # how 70+ yd field goals used to get a real make probability.
     if x < bins[0][0]:
         return table[bins[0]]
-    return table[bins[-1]]
+    raise ValueError(f"{x} is beyond the last bin {bins[-1]}")
 
 
 def _build_convert_table(yd: pd.Series, conv: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
@@ -72,6 +79,7 @@ def _build_convert_table(yd: pd.Series, conv: pd.Series) -> dict[tuple[int, int]
 
 def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
     fg_tbl: dict[tuple[int, int], dict[str, Any]] = {}
+    kd = kd.where(kd <= MAX_FG_DISTANCE)  # 65+ yd attempts never inform in-range rates
     for lo, hi in FG_BINS:
         m = kd.ge(lo) & kd.le(hi)
         n = int(m.sum())
@@ -365,7 +373,16 @@ class FourthDownEmpirics:
         mode: EmpiricsMode = "pooled",
     ) -> tuple[float, dict[str, Any]]:
         _, fg_tbl, _, resolved = self._tables_for(season, mode=mode)
-        row = dict(_bin_rate(FG_BINS, float(kick_distance), fg_tbl))
+        if float(kick_distance) > MAX_FG_DISTANCE:
+            return 0.0, {
+                "n": 0,
+                "p_make": 0.0,
+                "out_of_range": True,
+                "filter": f"kick_distance > {MAX_FG_DISTANCE} yd — out of range",
+                "empirics_resolve": resolved,
+            }
+        # Bins come from the table itself so older pickled tables still resolve.
+        row = dict(_bin_rate(tuple(sorted(fg_tbl)), float(kick_distance), fg_tbl))
         row = {**row, "empirics_resolve": resolved}
         return float(row["p_make"]), row
 

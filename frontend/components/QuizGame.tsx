@@ -31,6 +31,7 @@ export function QuizGame() {
   const [selected, setSelected] = useState<QuizChoice | null>(null);
   const [session, setSession] = useState<SessionStats>(emptySession);
   const [showAssumptions, setShowAssumptions] = useState(false);
+  const [finished, setFinished] = useState(false);
 
   // Auto-start: first curated item is index 0 — no start gate.
   const item = items[index] ?? items[0];
@@ -54,15 +55,29 @@ export function QuizGame() {
   }
 
   function next() {
-    setIndex(index + 1 >= items.length ? 0 : index + 1);
+    if (index + 1 >= items.length) {
+      setFinished(true);
+      return;
+    }
+    setIndex(index + 1);
     setSelected(null);
     setShowAssumptions(false);
     setPhase("situation");
   }
 
-  const sourceLine = item.source.game_id
-    ? `${item.source.game_id} · play ${item.source.play_id}`
-    : "Offline curated situation";
+  function playAgain() {
+    setSession(emptySession);
+    setIndex(0);
+    setSelected(null);
+    setShowAssumptions(false);
+    setPhase("situation");
+    setFinished(false);
+  }
+
+  const sourceLine =
+    item.source.season && item.source.week
+      ? `${item.situation.away_team} @ ${item.situation.home_team} · ${item.source.season} Week ${item.source.week}`
+      : "";
 
   return (
     <div className="quiz-shell">
@@ -76,7 +91,23 @@ export function QuizGame() {
             : ""}
         </div>
 
-        {/* One card: scoreboard + track + choices on first paint */}
+        {finished ? (
+          <article className="quiz-play-card quiz-end" aria-live="polite">
+            <h2>Practice done</h2>
+            <p className="quiz-result">
+              {session.exact} right · {session.near_tie} close · {session.incorrect} wrong
+            </p>
+            <p className="quiz-why">
+              Score {pct(session.accuracy)} over {session.answered} calls. Best streak: {session.best_streak}.
+            </p>
+            <div className="quiz-reveal-actions">
+              <button type="button" className="quiz-lock" onClick={playAgain}>
+                Play again
+              </button>
+            </div>
+          </article>
+        ) : (
+        /* One card: scoreboard + track + choices on first paint */
         <article className="quiz-play-card">
           <QuizSituationCard situation={item.situation} />
 
@@ -127,7 +158,7 @@ export function QuizGame() {
                       className={`quiz-value${rec ? " is-rec" : ""}${picked ? " is-picked" : ""}`}
                     >
                       <span>{CHOICE_LABELS[id]}</span>
-                      <span className="quiz-value-pct">{pct(v)}</span>
+                      <span className="quiz-value-pct">{item.situation.posteam} {pct(v)}</span>
                     </li>
                   );
                 })}
@@ -142,7 +173,7 @@ export function QuizGame() {
               ) : null}
               <div className="quiz-reveal-actions">
                 <button type="button" className="quiz-lock" onClick={next}>
-                  {index + 1 >= items.length ? "Play again" : "Next situation"}
+                  {index + 1 >= items.length ? "See results" : "Next situation"}
                 </button>
                 <button
                   type="button"
@@ -162,6 +193,7 @@ export function QuizGame() {
             </div>
           ) : null}
         </article>
+        )}
 
         <p className="quiz-source">{sourceLine}</p>
       </div>

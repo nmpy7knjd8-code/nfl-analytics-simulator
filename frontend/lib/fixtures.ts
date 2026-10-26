@@ -5,53 +5,15 @@
 
 import type { CanonicalPlay, GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
+import { GAME_FACTS } from "./gameFacts";
 
 export const FIXTURE_BANNER =
   "Example data — not live. Shows how the product will feel once the API is connected.";
 
+/** Game facts come only from nflverse (lib/gameFacts.json, generated + checked in CI). */
 export const FIXTURE_GAMES: GamesResponse = {
-  items: [
-    {
-      game_id: "2023_01_DET_KC",
-      league: "NFL",
-      season: 2023,
-      week: 1,
-      season_type: "REG",
-      game_date: "2023-09-07",
-      home_team_id: "KC",
-      away_team_id: "DET",
-      home_score: 21,
-      away_score: 20,
-      stadium: "GEHA Field at Arrowhead Stadium",
-    },
-    {
-      game_id: "2023_02_BUF_NYJ",
-      league: "NFL",
-      season: 2023,
-      week: 2,
-      season_type: "REG",
-      game_date: "2023-09-17",
-      home_team_id: "NYJ",
-      away_team_id: "BUF",
-      home_score: 22,
-      away_score: 16,
-      stadium: "MetLife Stadium",
-    },
-    {
-      game_id: "2023_03_PHI_TB",
-      league: "NFL",
-      season: 2023,
-      week: 3,
-      season_type: "REG",
-      game_date: "2023-09-25",
-      home_team_id: "TB",
-      away_team_id: "PHI",
-      home_score: 11,
-      away_score: 25,
-      stadium: "Raymond James Stadium",
-    },
-  ],
-  total: 3,
+  items: GAME_FACTS.map(({ overtime: _ot, ...g }) => ({ ...g, league: "NFL" }) as GameSummary),
+  total: GAME_FACTS.length,
   limit: 500,
   offset: 0,
   truth_label: "historical",
@@ -130,9 +92,9 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: 28,
     possession_team_id: "KC",
     play_type: "pass",
-    description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
+    description: "Patrick Mahomes pass incomplete on fourth down. Detroit takes over.",
     yards_gained: 0,
-    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.08, home_wp: 0.08, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -145,10 +107,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Chiefs 21, Lions 20.",
+    description: "Final — Lions 21, Chiefs 20.",
     yards_gained: 0,
-    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
-    reference: { wp: 0.0, home_wp: 1.0 },
+    // Final state: DET (away) won 21–20. DET has the ball, so DET wp = 1, home (KC) wp = 0.
+    reference: { wp: 1.0, home_wp: 0.0 },
   },
 ];
 
@@ -224,8 +186,6 @@ export type FourthDownScenario = {
   id: string;
   title: string;
   setup: string;
-  /** Hook for future POST /models/fourth-down once sibling API exists. */
-  apiHook: string;
   situation: {
     offense: string;
     defense: string;
@@ -243,7 +203,6 @@ export type FourthDownScenario = {
    * Always shown next to the recommendation — not model metrics.
    */
   whyRecommended: string;
-  footnote: string;
 };
 
 /** Within this gap (win-chance points), treat top options as too close to call. */
@@ -279,7 +238,6 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     title: "Fourth-and-short near midfield",
     setup:
       "Your team is down by a field goal late in the third. It’s 4th and 1 from the opponent’s 42.",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "DET",
       defense: "KC",
@@ -328,15 +286,12 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "You're already behind, and 4th-and-1 is a high-percentage chance to keep the drive alive. A long field goal or a punt both give up the ball without solving the score.",
-    footnote:
-      "Example comparison for product demo. When the offline 4th-down scorer lands, these bars will call that API instead of fixtures.",
   },
   {
     id: "demo-4th-2",
     title: "Goal-to-go late",
     setup:
       "Tied game, two minutes left. Fourth-and-goal from the 2. Do you go for the win, or take the chip-shot kick?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "BUF",
       defense: "NYJ",
@@ -385,15 +340,12 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "Tied late from the 2, going for it plays to win on this snap. A field goal only puts you up three and still leaves them a chance to answer.",
-    footnote:
-      "Example comparison for product demo. Goal-line spots usually drop the punt option in a real decision tool.",
   },
   {
     id: "demo-4th-3",
     title: "Too close to call",
     setup:
       "Up three late in the fourth. 4th and 3 from your own 45 — go for the dagger, or punt and play defense?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "PHI",
       defense: "TB",
@@ -442,7 +394,5 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — there’s no clear winner.",
-    footnote:
-      "Example inconclusive case for product demo — shown so fans see when the call is a coin-flip, not a slam dunk.",
   },
 ];
