@@ -251,7 +251,8 @@ class FourthDownAnalyzer:
             p_conv = float(np.clip(p_convert_override, 0.0, 1.0))
         kd = kick_distance(sit)
         p_make, fg_meta = self.empirics.p_make(kd, season=sit.season, mode=empirics_mode)
-        if p_make_override is not None:
+        fg_in_range = not fg_meta.get("out_of_range", False)
+        if p_make_override is not None and fg_in_range:
             p_make = float(np.clip(p_make_override, 0.0, 1.0))
         punt_yl, punt_meta = self.empirics.punt_opp_yardline(
             sit.yardline_100, season=sit.season, mode=empirics_mode
@@ -345,7 +346,11 @@ class FourthDownAnalyzer:
                     "clock_delta_fail": clk["go_fail"],
                 },
             ),
-            "fg": ActionValue(
+            "punt": ActionValue("punt", float(v_punt), punt_components),
+        }
+        # Out-of-range FG (> MAX_FG_DISTANCE) is not an option at all.
+        if fg_in_range:
+            actions["fg"] = ActionValue(
                 "fg",
                 float(v_fg),
                 {
@@ -357,9 +362,7 @@ class FourthDownAnalyzer:
                     "clock_delta_make": clk["fg_make"],
                     "clock_delta_miss": clk["fg_miss"],
                 },
-            ),
-            "punt": ActionValue("punt", float(v_punt), punt_components),
-        }
+            )
         ordered = sorted(actions.values(), key=lambda a: a.value_wp, reverse=True)
         best, second = ordered[0], ordered[1]
         margin = float(best.value_wp - second.value_wp)
@@ -421,7 +424,7 @@ def sensitivity_example(
     """Baseline vs alternate probs; report whether recommendation changes."""
     base = analyzer.analyze(sit, empirics_mode=empirics_mode, transition_mode=transition_mode)
     p0 = base.actions["go"].components["p_convert"]
-    m0 = base.actions["fg"].components["p_make"]
+    m0 = base.actions["fg"].components["p_make"] if "fg" in base.actions else 0.0
     alt = analyzer.analyze(
         sit,
         p_convert_override=float(np.clip(p0 + convert_delta, 0.0, 1.0)),
