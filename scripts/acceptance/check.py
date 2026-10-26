@@ -6,10 +6,14 @@
 SITE_JSON comes from dump_site_data.ts. Checks:
   1. schedule truth: every game's teams/week/date/score == nflverse schedule
   2. every game id referenced anywhere exists in nflverse
-  3. no FG offered/valued past 64 yd (yardline_100 + 17)
+  3. no FG offered/valued past 64 yd (yardline_100 + 18, as in the engine since #64)
   4. every clock is a 0:00-15:00 quarter clock
   5. every team code is a real NFL code
   6. built HTML has no developer text; /quiz/ and /demo/games/ are redirect pages
+  7. QA2 guards on text the user sees (quiz + 4th-down copy, and the visible text of
+     every built page): no placeholder teams (OFF/DEF/HOME/AWAY, Team A, "Offense vs
+     Defense"), no play ids / game ids, no bare "WP" label, no "Offline curated", no
+     model jargon. JSON keys and URLs are not shown, so they are not scanned.
 Prints every failure, exits 1 if any.
 """
 import csv, io, json, os, re, sys, urllib.request
@@ -19,6 +23,63 @@ MAX_FG = 64
 DEV_TEXT = ["POST ", "play_id", "yardline_100", "isotonic", "apiHook", "not on main",
             "sibling API", "localhost:", "TODO", "Path A", "uncalibrated"]
 fails: list[str] = []
+
+# QA2 guards. Case-sensitive on purpose: "home team" / "the offense" are fine copy,
+# but an all-caps OFF/HOME token or "Team A" is a placeholder.
+PLACEHOLDER_RES = [
+    (re.compile(r"(?<![A-Za-z])(OFF|DEF|HOME|AWAY|OPP|POS)(?![A-Za-z])"), "placeholder team code"),
+    (re.compile(r"\bTeam [A-Z12]\b"), "placeholder team name"),
+    (re.compile(r"\b(Offense|Home|Away) vs\.? (Defense|Away|Home)\b"), "placeholder matchup"),
+]
+SHOWN_DEV_RES = [
+    (re.compile(r"\bWP\b"), "bare 'WP' label"),
+    (re.compile(r"Offline curated", re.I), "'Offline curated'"),
+    (re.compile(r"\bplay(?:_id)? ?#?\d{2,}\b"), "play id"),
+    (re.compile(r"\b\d{4}_\d{2}_[A-Z]{2,3}_[A-Z]{2,3}\b"), "raw game id"),
+    (re.compile(r"\b(isotonic|uncalibrated|Path A|yardline_100|empirics|mode=)", re.I), "model jargon"),
+    (re.compile(r"edge ≈"), "raw edge value"),
+]
+# Fields the quiz / 4th-down UI renders as text.
+QUIZ_SHOWN = [("label",), ("source", "note"), ("reveal", "layman_why"), ("reveal", "assumptions")]
+SCENARIO_SKIP_KEYS = {"id", "offense", "defense", "clock", "href", "image", "game_id", "play_id"}
+
+
+_shown: dict[tuple[str, str], list[str]] = {}
+
+
+def shown_text_checks(text: str, where: str, group: str | None = None) -> None:
+    """Collect hits grouped by (where-kind, rule) so 365 quiz items give one line, not 365."""
+    for rx, what in PLACEHOLDER_RES + SHOWN_DEV_RES:
+        m = rx.search(text)
+        if m:
+            s = max(0, m.start() - 30)
+            ctx = " ".join(text[s:m.end() + 30].split())
+            _shown.setdefault((group or where, what), []).append(f"{where}: {m.group(0)!r} in \"…{ctx}…\"")
+
+
+def flush_shown() -> None:
+    for (group, what), hits in _shown.items():
+        more = f" (+{len(hits) - 3} more)" if len(hits) > 3 else ""
+        fail(f"shown text: {group} has {what} in {len(hits)} place(s): " + " | ".join(hits[:3]) + more)
+
+
+def strings(obj, skip=frozenset()):
+    if isinstance(obj, str):
+        yield obj
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from strings(v, skip)
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            if k not in skip:
+                yield from strings(v, skip)
+
+
+def visible_text(page: str) -> str:
+    import html as _html
+    page = re.sub(r"<(script|style|noscript|template)\b.*?</\1>", " ", page, flags=re.S | re.I)
+    page = re.sub(r"<head\b.*?</head>", " ", page, flags=re.S | re.I)
+    return _html.unescape(re.sub(r"<[^>]+>", " ", page))
 
 
 def fail(msg: str) -> None:
@@ -82,8 +143,8 @@ def main() -> int:
             team(t, f"4th-down scenario {sc['id']}")
         m = re.fullmatch(r"(\d+):(\d\d)", s.get("clock", ""))
         clock_ok(int(m[1]) * 60 + int(m[2]) if m else -1, f"4th-down scenario {sc['id']}")
-        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + 17 > MAX_FG:
-            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + 17}-yd FG")
+        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + 18 > MAX_FG:
+            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + 18}-yd FG")
 
     for it in data["quiz"]["items"]:
         s, label = it["situation"], f"quiz item {it['id']}"
@@ -94,13 +155,33 @@ def main() -> int:
         qs = s.get("quarter_seconds_remaining")
         clock_ok(qs if qs is not None else qsec_from_game(q, s.get("game_seconds_remaining")), label)
         fg = (it.get("reveal") or {}).get("values", {}).get("fg")
-        if fg is not None and s["yardline_100"] + 17 > MAX_FG:
-            fail(f"FG: {label} values a {s['yardline_100'] + 17}-yd FG (FG win chance {fg:.3f})")
+        if fg is not None and s["yardline_100"] + 18 > MAX_FG:
+            fail(f"FG: {label} values a {s['yardline_100'] + 18}-yd FG (FG win chance {fg:.3f})")
         gid = (it.get("source") or {}).get("game_id")
         if gid and gid not in sched:
             fail(f"schedule: {label} cites game {gid}, which does not exist in nflverse")
 
+    for it in data["quiz"]["items"]:
+        for keys in QUIZ_SHOWN:
+            v = it
+            for k in keys:
+                v = v.get(k) if isinstance(v, dict) else None
+            for s in strings(v):
+                shown_text_checks(s, f"quiz item {it['id']}", f"quiz {'.'.join(keys)}")
+    for sc in data["scenarios"]:
+        for s in strings(sc, SCENARIO_SKIP_KEYS):
+            shown_text_checks(s, f"4th-down scenario {sc['id']}")
+
     if site:
+        for root, _, files in os.walk(site):
+            for f in files:
+                if not f.endswith(".html"):
+                    continue
+                path = os.path.join(root, f)
+                page = open(path, encoding="utf-8", errors="replace").read()
+                if 'http-equiv="refresh"' in page:
+                    continue  # redirect stubs only show the target URL
+                shown_text_checks(visible_text(page), f"page /{os.path.relpath(path, site)}")
         for root, _, files in os.walk(site):
             for f in files:
                 if not f.endswith(".html"):
@@ -115,6 +196,7 @@ def main() -> int:
             if not os.path.exists(p) or 'http-equiv="refresh"' not in open(p).read():
                 fail(f"redirect: /{rel.removesuffix('index.html')} is not a redirect page")
 
+    flush_shown()
     for f in fails:
         print("FAIL", f)
     print(f"{len(fails)} acceptance failure(s)")
