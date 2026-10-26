@@ -1,0 +1,41 @@
+name: Model artifacts
+
+# Rebuilds the gitignored model binaries (EP, WP, calibrated WP) from pinned
+# nflverse data. Run manually, or push a tag like `models-v1` to also attach
+# them to a GitHub release.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["models-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend
+        working-directory: backend
+        run: python -m pip install -e ".[dev,phase2,models]"
+      - name: Build artifacts
+        run: bash backend/scripts/build_model_artifacts.sh
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-artifacts-${{ github.sha }}
+          path: |
+            reports/ep/artifacts/
+            reports/wp/artifacts/
+            reports/wp/calibration_eval.json
+      - name: Attach to release (tags only)
+        if: startsWith(github.ref, 'refs/tags/models-v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "Model binaries rebuilt from pinned nflverse data (fit 2019–2021, select/calibrate 2022)."
+          gh release upload "$GITHUB_REF_NAME" reports/ep/artifacts/*.joblib reports/wp/artifacts/*.joblib reports/wp/artifacts/*.meta.json reports/ep/artifacts/*.meta.json --clobber
