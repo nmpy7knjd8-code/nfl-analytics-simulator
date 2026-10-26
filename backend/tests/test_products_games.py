@@ -6,6 +6,8 @@ import json
 import pandas as pd
 import pytest
 
+from nfl_sim.products.game_compact import compact, expand
+
 from nfl_sim.products import games
 from nfl_sim.products.meta import PRODUCTS_DIR
 
@@ -58,7 +60,9 @@ def test_every_index_game_has_a_game_file(season):
 
 @pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
 def test_game_file_wp_home_side_ends_at_result(path):
-    doc = json.loads(path.read_text())
+    raw = json.loads(path.read_text())
+    assert raw["schema_version"] == "game.v2" and path.stat().st_size < 150_000
+    doc = expand(raw)
     g = doc["game"]
     assert doc["wp_perspective"] == "home" and doc["provenance"]["source"] == "nflverse"
     idx = {x["id"]: x for x in _index(g["season"])["games"]}
@@ -75,6 +79,32 @@ def test_game_file_wp_home_side_ends_at_result(path):
         fd = p["fourth_down"]
         if fd is not None:
             assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 18 <= 64)
+
+
+def test_game_files_total_size_budget():
+    total = sum(p.stat().st_size for p in _game_files())
+    assert total < 60_000_000, f"{total / 1e6:.1f} MB"
+
+
+def test_compact_round_trip_restores_v1():
+    v1 = {"schema_version": "game.v1", "provenance": {"source": "nflverse", "data_sha256": "x", "build_date": "d",
+                                                      "license": "CC BY 4.0"},
+          "game": {"id": "t", "home": "OAK", "away": "DEN"}, "wp_perspective": "home", "swing_threshold": 0.08,
+          "final_home_wp": 1.0, "swing_play_ids": [2],
+          "plays": [
+              {"play_id": 1, "qtr": 4, "clock": "0:30", "posteam": "LV", "down": 4, "ydstogo": 2, "yardline_100": 30,
+               "text": "(0:30) run", "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
+               "home_score": 3, "away_score": 7,
+               "fourth_down": {"recommendation": "go", "close_call": False, "gap_pts": 3.21, "wp": {"go": 0.41, "fg": 0.38},
+                               "home_wp": {"go": 0.41, "fg": 0.38}, "options": ["go", "fg"], "actual": "go",
+                               "kick_distance": 48, "engine_version": "e1"}},
+              {"play_id": 2, "qtr": 4, "clock": "0:05", "posteam": "LV", "down": 1, "ydstogo": 10, "yardline_100": 5,
+               "text": "(0:05) pass TD", "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
+               "home_score": 10, "away_score": 7, "fourth_down": None}]}
+    back = expand(compact(v1))
+    v1["plays"][0]["home_wp"] = 0.412
+    assert back["plays"] == v1["plays"]  # LV-vs-OAK code mismatch handled by is_home_offense
+    assert back["schema_version"] == "game.v1"
 
 
 def test_home_view_flip_from_synthetic_rows():

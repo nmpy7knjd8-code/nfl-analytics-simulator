@@ -16,6 +16,7 @@ import pandas as pd
 
 from nfl_sim.models.wp_series import build_wp_series
 from nfl_sim.products import fourth_downs
+from nfl_sim.products.game_compact import compact
 from nfl_sim.products.meta import provenance, write_json
 
 SEASONS = fourth_downs.SEASONS
@@ -124,7 +125,7 @@ def build(index_only: bool = False, seasons=SEASONS) -> dict[int, int]:
         fds = fd[fd["season"] == season]
         for gid, plays in pbp.groupby("game_id"):
             if gid in by_id:
-                write_json(f"games/{gid}.json", game_doc(by_id[gid], plays, fourth_lookup(fds, gid), prov))
+                write_json(f"games/{gid}.json", compact(game_doc(by_id[gid], plays, fourth_lookup(fds, gid), prov)))
     return counts
 
 
