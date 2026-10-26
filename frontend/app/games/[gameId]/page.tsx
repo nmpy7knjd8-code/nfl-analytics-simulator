@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { periodName, quarterClockFromHalf } from "../../../lib/clock";
 import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays } from "../../../lib/api";
@@ -13,16 +14,15 @@ export function generateStaticParams() {
   return FIXTURE_GAMES.items.map((g) => ({ gameId: g.game_id }));
 }
 
-function formatClock(halfSeconds: number | null | undefined): string {
+function formatClock(quarter: number, halfSeconds: number | null | undefined): string {
   if (halfSeconds == null) return "—";
-  const m = Math.floor(halfSeconds / 60);
-  const s = halfSeconds % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
+  return quarterClockFromHalf(quarter, halfSeconds);
 }
 
-function winChanceLabel(wp: number | null | undefined): string | null {
-  if (wp == null || Number.isNaN(wp)) return null;
-  return `${Math.round(wp * 100)}% win chance`;
+/** reference.wp is the possession team's pre-snap chance; always say whose it is. */
+function winChanceLabel(wp: number | null | undefined, team: string | null | undefined): string | null {
+  if (wp == null || Number.isNaN(wp) || !team) return null;
+  return `${team} ${Math.round(wp * 100)}% win chance`;
 }
 
 export default async function GameReplayPage({ params }: Props) {
@@ -100,14 +100,14 @@ export default async function GameReplayPage({ params }: Props) {
 
           <div className="play-feed" role="list">
             {plays.data.items.map((p) => {
-              const chance = winChanceLabel(p.reference?.wp ?? null);
+              const chance = winChanceLabel(p.reference?.wp ?? null, p.possession_team_id);
               return (
                 <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
                   <div className="play-top">
                     <span className="play-meta">
-                      Q{p.quarter}
+                      {periodName(p.quarter)}
                       {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
-                      {formatClock(p.half_seconds_remaining ?? null)}
+                      {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
                     </span>
                     <span className="play-meta">#{p.play_index}</span>
                   </div>
