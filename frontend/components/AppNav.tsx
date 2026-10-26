@@ -11,14 +11,14 @@ const TABS = [
     match: (p: string) => p.startsWith("/games"),
   },
   {
-    href: "/decide",
+    href: "/fourth-down",
     label: "4th down",
-    match: (p: string) => p.startsWith("/decide"),
+    match: (p: string) => p.startsWith("/fourth-down") || p.startsWith("/decide"),
   },
   {
-    href: "/quiz",
+    href: "/daily",
     label: "Quiz",
-    match: (p: string) => p.startsWith("/quiz"),
+    match: (p: string) => p.startsWith("/daily") || p.startsWith("/quiz"),
   },
 ] as const;
 

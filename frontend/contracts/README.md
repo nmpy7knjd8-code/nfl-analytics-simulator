@@ -1,0 +1,22 @@
+# Frontend contracts
+
+- `index.ts`: TypeScript mirrors of the backend Pydantic models, plus API endpoint paths and response shapes.
+- `schema/*.schema.json`: JSON Schemas generated from the Pydantic models (`python backend/scripts/export_contracts.py`). A backend test fails if they drift.
+
+## Endpoints
+
+| Path | Response |
+| --- | --- |
+| `GET /health` | `HealthResponse` |
+| `GET /games?season=&week=&season_type=&limit=&offset=` | `GamesListResponse` |
+| `GET /games/{game_id}` | `GameDetailResponse` |
+| `GET /games/{game_id}/plays?limit=&offset=` | `PlaysResponse` |
+| `GET /games/{game_id}/win-probability?swing_threshold=0.08` | `WinProbabilitySeries` |
+
+## Win probability conventions
+
+- **Perspective:** home team. `home_wp_pre` / `home_wp_post` = P(home team wins). `CanonicalPlay.reference.wp` is the *possession* team's WP (nflverse); don't chart it directly.
+- **Timing:** `home_wp_pre` is before the snap. `home_wp_post` is the next play's pre-snap value; on the last play it is the final result (1 home win, 0 home loss, 0.5 tie).
+- **Swing play:** `is_swing` when `|delta_home_wp| >= swing_threshold`. Default 0.08; per-request `?swing_threshold=`, server default `NFL_SIM_SWING_WP_THRESHOLD`. `swing_play_ids` lists them in order.
+- **Overtime:** quarter 5, `is_overtime: true`, `has_overtime` on the series. `game_seconds_elapsed` keeps counting past 3600 (regular-season OT 600 s, postseason OT 900 s), so the x-axis never rewinds. A regular-season tie ends at 0.5.
+- **Source:** nflverse/nflfastR published `home_wp` (`truth_label: "historical"`), not this project's model.
