@@ -48,6 +48,8 @@ packages = ["src/nfl_sim"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+# Network/lake tests are opt-in: run with `pytest -m integration`.
+addopts = "-m 'not integration'"
 markers = [
   "integration: tests that require ingested 2023 lake or network download",
 ]
