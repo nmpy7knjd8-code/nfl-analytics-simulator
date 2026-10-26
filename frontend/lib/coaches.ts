@@ -17,6 +17,19 @@ export type CoachCall = {
   wp_cost_pts: number;
   result: string;
   desc: string;
+  /** coaches.v1.1 (#56): nflverse win chance before the snap (offense, 0-1). */
+  wp_before: number | null;
+  /** Engine's expected win chance after the option the coach chose. */
+  wp_after_chosen: number;
+  /** Engine's expected win chance after its best option. */
+  wp_after_best: number;
+  /** nflverse win chance after the real play. */
+  wp_after_actual: number | null;
+  /** Signed: +gap if he made the best call, else minus the cost. */
+  decision_value_pts: number;
+  /** Rough: mixes nflverse and our engine. + means the play beat the plan. */
+  outcome_vs_expected_pts: number | null;
+  net_value_pts: number;
 };
 
 export type Coach = {
@@ -37,10 +50,19 @@ export type Coach = {
   grade: string | null;
   best: CoachCall[];
   worst: CoachCall[];
+  /** coaches.v1.1: games with at least one 4th-down call. */
+  games: number;
+  /** Sum of win-chance points given up (= -net_wp_pts). */
+  wp_cost_pts_total: number;
+  /** Signed sum of call values over clear calls. */
+  decision_value_pts: number;
+  /** Rough (two models). */
+  outcome_vs_expected_pts: number;
+  net_value_pts: number;
 };
 
 export type CoachSeason = {
-  schema_version: "coaches.v1";
+  schema_version: "coaches.v1.1";
   engine_version: string;
   provenance: { source: string; build_date: string; license: string; nflreadpy_version: string };
   season: number;
@@ -88,6 +110,20 @@ export function pctText(x: number | null): string {
   return x == null ? "—" : `${Math.round(x * 100)}%`;
 }
 
+/** "Win chance 48% before · 52% after his call · 55% after the best call · 61% after the real play" */
+export function callWinChances(c: CoachCall): string {
+  const parts = [
+    c.wp_before != null ? `${pctText(c.wp_before)} before` : null,
+    `${pctText(c.wp_after_chosen)} after his call`,
+    c.actual === c.recommendation ? null : `${pctText(c.wp_after_best)} after the best call`,
+    c.wp_after_actual != null ? `${pctText(c.wp_after_actual)} after the real play` : null,
+  ].filter(Boolean);
+  return `Win chance ${parts.join(" · ")}`;
+}
+
+export const ROUGH_NOTE =
+  "“Beat expectation” is rough: it compares nflverse's win chance after the real play with our 4th-down model's estimate, two different models.";
+
 export function signedPts(x: number): string {
   const r = Math.round(x * 10) / 10;
   return `${r > 0 ? "+" : r < 0 ? "−" : ""}${Math.abs(r).toFixed(1)}`;
@@ -103,7 +139,7 @@ export function seasonHref(season: number): string {
 
 /** Sorted by net win chance, best first. */
 export function rankCoaches(cs: Coach[]): Coach[] {
-  return [...cs].sort((a, b) => b.net_wp_pts - a.net_wp_pts || a.coach.localeCompare(b.coach));
+  return [...cs].sort((a, b) => b.decision_value_pts - a.decision_value_pts || a.coach.localeCompare(b.coach));
 }
 
 const CALL: Record<CoachCall["actual"], string> = { go: "went for it", punt: "punted", fg: "kicked the field goal" };

@@ -5,7 +5,9 @@ import {
   type Coach,
   type CoachCall,
   SEASONS,
+  ROUGH_NOTE,
   callLine,
+  callWinChances,
   callStoryHref,
   callVerdict,
   coachHref,
@@ -47,6 +49,11 @@ function CallList({ title, calls, team, kind }: { title: string; calls: CoachCal
                   </span>{" "}
                   Play {c.result}.
                 </p>
+                <p className="co-call-wp">{callWinChances(c)}.</p>
+                <p className="co-call-val">
+                  Call value <span className={c.decision_value_pts < 0 ? "co-neg" : undefined}>{signedPts(c.decision_value_pts)}</span>
+                  {c.outcome_vs_expected_pts != null ? <> · Beat expectation (rough) {signedPts(c.outcome_vs_expected_pts)}</> : null}
+                </p>
                 <p className="co-call-desc fd-muted">{c.desc}</p>
                 {href ? <Link href={href} className="co-call-link">See this play in Game Story</Link> : null}
               </li>
@@ -68,11 +75,16 @@ function CoachBlock({ c, season }: { c: Coach; season: number }) {
         <div><dt>Went when he should</dt><dd>{pctText(wentWhenShould(c))}{c.should_go ? <span className="co-of"> of {c.should_go}</span> : null}</dd></div>
         <div><dt>Kicked when he should&apos;ve gone</dt><dd>{c.kicked_when_should_go}</dd></div>
         <div><dt>Went when he should&apos;ve kicked</dt><dd>{c.went_when_should_kick}</dd></div>
-        <div><dt>Net win chance</dt><dd className={c.net_wp_pts < 0 ? "co-neg" : undefined}>{signedPts(c.net_wp_pts)} pts</dd></div>
+        <div><dt>Games</dt><dd>{c.games}</dd></div>
+        <div><dt>Win chance given up</dt><dd>{c.wp_cost_pts_total.toFixed(1)} pts</dd></div>
+        <div><dt>Call value</dt><dd className={c.decision_value_pts < 0 ? "co-neg" : undefined}>{signedPts(c.decision_value_pts)} pts</dd></div>
+        <div><dt>Beat expectation (rough)</dt><dd>{signedPts(c.outcome_vs_expected_pts)} pts</dd></div>
+        <div><dt>Net value (rough)</dt><dd className={c.net_value_pts < 0 ? "co-neg" : undefined}>{signedPts(c.net_value_pts)} pts</dd></div>
         <div><dt>Grade</dt><dd className={`co-grade co-grade-${g.kind}`}>{g.text}</dd></div>
       </dl>
       <CallList title="Best 5 calls" calls={c.best} team={c.team} kind="best" />
       <CallList title="Worst 5 calls" calls={c.worst} team={c.team} kind="worst" />
+      <p className="fd-muted co-def" role="note">{ROUGH_NOTE}</p>
       <p className="fd-muted"><Link href={seasonHref(season)}>All {season} coaches</Link></p>
     </article>
   );

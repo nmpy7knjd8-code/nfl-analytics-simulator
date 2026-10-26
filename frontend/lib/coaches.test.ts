@@ -1,11 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { callWinChances, ROUGH_NOTE } from "./coaches";
 import { SEASONS, readSeason, gradeCell, wentWhenShould, callStoryHref, coachHref, signedPts, MIN_CALLS } from "./coaches";
 
 test("every season file is coaches.v1 with min 20 calls", () => {
   for (const s of SEASONS) {
     const d = readSeason(s);
-    assert.equal(d.schema_version, "coaches.v1");
+    assert.equal(d.schema_version, "coaches.v1.1");
     assert.equal(d.season, s);
     assert.equal(d.min_calls_for_grade, MIN_CALLS);
     assert.ok(d.coaches.length >= 30);
@@ -55,4 +56,20 @@ test("best/worst calls are 5 each and link to Game Story only when it exists", (
         if (h) assert.ok(h.startsWith(`/games/${call.game_id}/`) && h.includes(String(call.play_id)));
       }
     }
+});
+
+test("v1.1 fields: signed call value and the four win chances", () => {
+  for (const s of SEASONS) {
+    for (const c of readSeason(s).coaches) {
+      assert.equal(typeof c.games, "number");
+      assert.ok(Math.abs(c.wp_cost_pts_total + c.net_wp_pts) < 0.05, "cost total = -net_wp_pts");
+      for (const k of [...c.best, ...c.worst]) {
+        const line = callWinChances(k);
+        assert.match(line, /after his call/);
+        if (k.actual === k.recommendation) assert.ok(k.decision_value_pts >= 0);
+        else assert.ok(Math.abs(k.decision_value_pts + k.wp_cost_pts) < 0.05);
+      }
+    }
+  }
+  assert.match(ROUGH_NOTE, /rough/);
 });
