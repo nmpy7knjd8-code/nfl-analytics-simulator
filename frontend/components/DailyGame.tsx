@@ -7,7 +7,7 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, fieldGoalYards, MAX_FG_YARDS, type CallResult, type ScoredCall, type StreakState,
+  dailySet, emptyStreak, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, fieldGoalYards, MAX_FG_YARDS, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
@@ -206,7 +206,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
     return <CardSkeleton label={mode === "daily" ? "Loading today's 5" : "Loading 5 real 4th downs"} />;
   }
 
-  const shown = visibleStreak(streak ?? { current: 0, best: 0, last_completed: null, history: [] }, today);
+  const shown = visibleStreak(streak ?? emptyStreak(), today);
 
   function closeHowto() {
     setHowto(false);

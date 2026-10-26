@@ -59,8 +59,9 @@ test("streak counts across the ET boundary and resets after a missed day", () =>
   s = recordDaily(s, { date: "2026-10-27", credit: 5, answered: 5 });
   assert.equal(s.current, 2, "replaying a day doesn't double count");
   assert.equal(visibleStreak(s, "2026-10-28"), 2);
-  assert.equal(visibleStreak(s, "2026-10-29"), 0);
-  s = recordDaily(s, { date: "2026-10-29", credit: 1, answered: 5 });
+  assert.equal(visibleStreak(s, "2026-10-29"), 2, "one missed day: weekly timeout covers it");
+  assert.equal(visibleStreak(s, "2026-10-30"), 0, "two missed days in one week");
+  s = recordDaily(s, { date: "2026-10-30", credit: 1, answered: 5 });
   assert.equal(s.current, 1);
   assert.equal(s.best, 2);
   assert.deepEqual(dailyStats(s, "2026-10-29").score_distribution, [0, 1, 0, 1, 1, 0]);

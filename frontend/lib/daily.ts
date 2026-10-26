@@ -252,10 +252,42 @@ export type StreakState = {
   best: number;
   last_completed: string | null;
   history: DailyResult[];
+  /** Missed days saved by the weekly timeout (one per Mon-Sun ET week, no stacking). */
+  shield_days: string[];
 };
 
 export function emptyStreak(): StreakState {
-  return { current: 0, best: 0, last_completed: null, history: [] };
+  return { current: 0, best: 0, last_completed: null, history: [], shield_days: [] };
+}
+
+/** ET Monday that starts the week holding `key`. */
+export function mondayOf(key: string): string {
+  const [y, m, d] = key.split("-").map(Number);
+  const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  return shiftDay(key, -((dow + 6) % 7));
+}
+
+/**
+ * Try to cover every missed day strictly between `last` and `next` with weekly timeouts.
+ * Each Mon-Sun week gets one timeout; a week that already used one can't save another day.
+ * Returns the new shield list, or null if the streak can't be saved.
+ */
+export function coverMissed(shields: string[], last: string, next: string): string[] | null {
+  const used = new Set(shields.map(mondayOf));
+  const out = [...shields];
+  for (let k = shiftDay(last, 1); k < next; k = shiftDay(k, 1)) {
+    const w = mondayOf(k);
+    if (used.has(w)) return null;
+    used.add(w);
+    out.push(k);
+  }
+  return out;
+}
+
+/** True if this week's timeout is still unused (as of `today`). */
+export function timeoutAvailable(s: StreakState, today: string): boolean {
+  const w = mondayOf(today);
+  return !s.shield_days.some((d) => mondayOf(d) === w);
 }
 
 function dayDiff(a: string, b: string): number {
@@ -269,19 +301,50 @@ export function recordDaily(prev: StreakState, result: DailyResult): StreakState
   if (prev.last_completed === result.date) return prev;
   const gap = prev.last_completed ? dayDiff(prev.last_completed, result.date) : null;
   if (gap != null && gap < 0) return prev;
-  const current = gap === 1 ? prev.current + 1 : 1;
+  let shield_days = prev.shield_days ?? [];
+  let current = 1;
+  if (gap === 1) current = prev.current + 1;
+  else if (gap != null && gap > 1 && prev.current > 0) {
+    const covered = coverMissed(shield_days, prev.last_completed!, result.date);
+    if (covered) {
+      shield_days = covered;
+      current = prev.current + 1;
+    }
+  }
   return {
     current,
     best: Math.max(prev.best, current),
     last_completed: result.date,
     history: [...prev.history, result].slice(-365),
+    shield_days: shield_days.slice(-120),
   };
 }
 
-/** Streak as shown today: drops to 0 if a day was missed. */
+/** Streak as shown today: alive if every missed day so far can still be covered by a weekly timeout. */
 export function visibleStreak(s: StreakState, today: string): number {
   if (!s.last_completed) return 0;
-  return dayDiff(s.last_completed, today) <= 1 ? s.current : 0;
+  if (dayDiff(s.last_completed, today) <= 1) return s.current;
+  return coverMissed(s.shield_days ?? [], s.last_completed, today) ? s.current : 0;
+}
+
+export type CalendarDay = { key: string; state: "played" | "shield" | "missed" | "today" | "future" };
+
+/** Weeks (Mon-Sun rows) of days for the calendar, oldest first, ending with this week. */
+export function streakCalendar(s: StreakState, today: string, weeks = 12): CalendarDay[][] {
+  const played = new Set(s.history.map((h) => h.date));
+  const shields = new Set(s.shield_days ?? []);
+  const start = shiftDay(mondayOf(today), -7 * (weeks - 1));
+  const out: CalendarDay[][] = [];
+  for (let w = 0; w < weeks; w++) {
+    const row: CalendarDay[] = [];
+    for (let i = 0; i < 7; i++) {
+      const key = shiftDay(start, w * 7 + i);
+      const state = played.has(key) ? "played" : shields.has(key) ? "shield" : key === today ? "today" : key > today ? "future" : "missed";
+      row.push({ key, state });
+    }
+    out.push(row);
+  }
+  return out;
 }
 
 export type DailyStats = {
@@ -352,6 +415,7 @@ export function loadStreak(storage: StorageLike | undefined): StreakState {
       best: v.best,
       last_completed: v.last_completed ?? null,
       history: Array.isArray(v.history) ? v.history : [],
+      shield_days: Array.isArray(v.shield_days) ? v.shield_days.filter((d) => typeof d === "string") : [],
     };
   } catch {
     return emptyStreak();
