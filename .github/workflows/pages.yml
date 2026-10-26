@@ -1,7 +1,8 @@
 name: Pages
 
-# Builds the Pages site from source: docs/ (landing page + static files)
-# with docs/demo/ replaced by a fresh frontend static export (build:pages).
+# Builds the Pages site from source: a fresh frontend static export (build:pages)
+# at the site root, plus static files from docs/ and redirects from old /demo/ paths
+# (scripts/pages/assemble.py).
 # The build job runs on every PR and push. The deploy job only runs on main
 # once the repo variable PAGES_VIA_ACTIONS is "true" (set it after switching
 # Settings > Pages > Source to "GitHub Actions"), so it can't fail or race
@@ -37,27 +38,19 @@ jobs:
       - name: Build static export
         working-directory: frontend
         run: npm run build:pages
-      - name: Assemble site
+      - name: Assemble site (app at root + redirects from old /demo/ paths)
+        run: python3 scripts/pages/assemble.py
+      - name: Verify site
         run: |
-          rm -rf _site
-          mkdir _site
-          cp -a docs/. _site/
-          rm -rf _site/demo
-          mkdir -p _site/demo
-          cp -a frontend/out/. _site/demo/
-          touch _site/.nojekyll _site/demo/.nojekyll
-      - name: Verify landing page and demo routes
-        run: |
-          for f in index.html demo/index.html demo/quiz/index.html demo/games/index.html demo/decide/index.html; do
+          for f in index.html daily/index.html fourth-down/index.html games/index.html 404.html favicon.svg \
+                   demo/index.html demo/quiz/index.html demo/decide/index.html demo/games/index.html \
+                   quiz/index.html decide/index.html; do
             test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
             echo "ok $f"
           done
-          grep -q '/nfl-analytics-simulator/demo/_next/' _site/demo/index.html
-          for f in favicon.svg 404.html quiz/index.html games/index.html decide/index.html demo/icon.svg; do
-            test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
-            echo "ok $f"
-          done
-          grep -q 'url=../demo/quiz/' _site/quiz/index.html
+          grep -q '/nfl-analytics-simulator/_next/' _site/index.html
+          grep -q 'url=/nfl-analytics-simulator/daily/' _site/quiz/index.html
+          grep -q 'url=/nfl-analytics-simulator/"' _site/demo/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
