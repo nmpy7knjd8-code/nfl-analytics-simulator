@@ -40,6 +40,21 @@ def game_seconds_elapsed(quarter: int, game_seconds_remaining: int | None, seaso
     return REGULATION_SECONDS + max(0, _ot_period_seconds(season_type) - int(game_seconds_remaining))
 
 
+LOW_CLOCK_SECONDS = 120
+STORY_WEIGHT = {None: 1.0, "end_of_half": 0.0, "overtime": 0.5, "low_clock_before_half": 0.5}
+
+
+def wp_quirk_reason(quarter: int, game_seconds_elapsed_: int) -> str | None:
+    """Where nflverse WP is known to misbehave (see contracts.win_probability)."""
+    if quarter >= 5:
+        return "overtime"
+    if quarter == 2 and 1800 - game_seconds_elapsed_ <= LOW_CLOCK_SECONDS:
+        return "end_of_half"
+    if quarter == 4 and REGULATION_SECONDS - game_seconds_elapsed_ <= LOW_CLOCK_SECONDS:
+        return "low_clock_before_half"
+    return None
+
+
 def home_wp_of(play: dict[str, Any]) -> float | None:
     """Home-team pre-snap WP. Prefer reference.home_wp; fall back to the
     possession-team `wp` flipped when the away team has the ball."""
@@ -84,19 +99,25 @@ def build_wp_series(
             post = pre
         delta = post - pre
         q = int(p["quarter"])
+        elapsed = game_seconds_elapsed(q, p.get("game_seconds_remaining"), season_type)
+        reason = wp_quirk_reason(q, elapsed)
         points.append(
             WinProbabilityPoint(
                 play_id=str(p["play_id"]),
                 play_index=int(p["play_index"]),
                 quarter=q,
                 is_overtime=q >= 5,
-                game_seconds_elapsed=game_seconds_elapsed(q, p.get("game_seconds_remaining"), season_type),
+                game_seconds_elapsed=elapsed,
                 possession_team_id=p.get("possession_team_id"),
                 description=p.get("description"),
                 home_wp_pre=pre,
                 home_wp_post=post,
                 delta_home_wp=delta,
                 is_swing=abs(delta) >= swing_threshold - 1e-12,
+                is_end_of_half=reason == "end_of_half",
+                is_low_clock_before_half=reason == "low_clock_before_half",
+                wp_quirk_reason=reason,
+                story_weight=STORY_WEIGHT[reason],
             )
         )
     return WinProbabilitySeries(
@@ -110,4 +131,11 @@ def build_wp_series(
         has_overtime=any(pt.is_overtime for pt in points),
         points=points,
         swing_play_ids=[pt.play_id for pt in points if pt.is_swing],
+        story_swing_play_ids=story_ranking(points),
     )
+
+
+def story_ranking(points: list[WinProbabilityPoint]) -> list[str]:
+    ranked = sorted((pt for pt in points if pt.is_swing and pt.story_weight > 0),
+                    key=lambda pt: (-abs(pt.delta_home_wp) * pt.story_weight, pt.play_index))
+    return [pt.play_id for pt in ranked]
