@@ -10,7 +10,7 @@
 | Prior application repo | None linked to this cloud run |
 | Pre-existing tests / CI | None |
 | GPU assumptions | None — local CPU-only |
-| GitHub auth | Unavailable at audit time — see `PUSH_WHEN_AUTH.md` |
+| GitHub auth | Unavailable at audit time — PUSH_WHEN_AUTH.md since removed (auth now available) |
 
 ## Discarded false start
 
