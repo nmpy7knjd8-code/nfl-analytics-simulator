@@ -7,7 +7,7 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, setNumber, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
+  dailySet, setNumber, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
@@ -243,7 +243,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
           {formatScore(credit)}/{items.length}
         </p>
         <p className="fd-muted fd-scoring">{SCORING_TEXT}</p>
-        <p className="fd-end-squares" aria-label="Your calls">
+        <p className="fd-end-squares" role="img" aria-label={shareLabel(done.map((s) => s.result))}>
           {done.map((s, i) => (
             <span key={i} className={`fd-sq is-${s.result}`} title={RESULT_NAME[s.result]} />
           ))}
@@ -278,11 +278,20 @@ export function DailyGame({ mode }: { mode: Mode }) {
             <div className="fd-actions">
               <button
                 type="button"
-                className="fd-btn fd-btn-primary"
+                className="fd-btn fd-btn-primary fd-share"
                 onClick={async () => {
+                  const nav = navigator as Navigator & { share?: (d: ShareData) => Promise<void> };
+                  if (nav.share) {
+                    try {
+                      await nav.share({ text: share });
+                      return;
+                    } catch (e) {
+                      if ((e as DOMException)?.name === "AbortError") return;
+                    }
+                  }
                   try {
                     await navigator.clipboard.writeText(share);
-                    setCopied("Copied — paste it anywhere.");
+                    setCopied("Copied. Paste it anywhere.");
                   } catch {
                     setCopied(share);
                   }

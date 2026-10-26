@@ -290,7 +290,8 @@ export function dailyStats(s: StreakState, today: string): DailyStats {
 
 /* ---------- Share (spoiler-free) ---------- */
 
-const SHARE_GLYPH: Record<CallResult, string> = { right: "🟦", wrong: "⬜", close: "½" };
+/** Blue = right call, black = not the best call, small blue diamond = Close call (½). */
+export const SHARE_GLYPH: Record<CallResult, string> = { right: "🟦", wrong: "⬛", close: "🔹" };
 
 export function formatScore(credit: number): string {
   return Number.isInteger(credit) ? String(credit) : credit.toFixed(1).replace(/\.0$/, "");
@@ -302,10 +303,20 @@ export function shortDate(key: string): string {
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 }
 
-/** Only squares, score and streak: no teams, plays or answers. */
+/**
+ * Spoiler-free share: "Fourth & Daily #N · 4/5 · streak X", the squares, then the link.
+ * No teams, situations, answers or themes, so friends can still play.
+ */
 export function shareText(key: string, results: CallResult[], streak: number, url: string): string {
   const credit = results.reduce((a, r) => a + (r === "right" ? 1 : r === "close" ? 0.5 : 0), 0);
-  return `Fourth & Daily · ${shortDate(key)}\n${results.map((r) => SHARE_GLYPH[r]).join("")}\n${formatScore(credit)}/${results.length} · streak ${streak}\n${url}`;
+  return `Fourth & Daily #${setNumber(key)} · ${formatScore(credit)}/${results.length} · streak ${streak}\n${results.map((r) => SHARE_GLYPH[r]).join("")}\n${url}`;
+}
+
+/** Screen-reader label for the squares, e.g. "4 of 5 right". */
+export function shareLabel(results: CallResult[]): string {
+  const right = results.filter((r) => r === "right").length;
+  const close = results.filter((r) => r === "close").length;
+  return `${right} of ${results.length} right${close ? `, ${close} close ${close === 1 ? "call" : "calls"}` : ""}`;
 }
 
 /* ---------- Storage ---------- */

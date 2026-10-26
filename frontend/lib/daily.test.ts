@@ -67,7 +67,9 @@ test("streak counts across the ET boundary and resets after a missed day", () =>
 
 test("share text has no spoilers", () => {
   const t = shareText("2026-10-26", ["right", "right", "wrong", "right", "close"], 4, "https://x.test/");
-  assert.equal(t, "Fourth & Daily · Oct 26\n🟦🟦⬜🟦½\n3.5/5 · streak 4\nhttps://x.test/");
+  assert.equal(t, `Fourth & Daily #${dayNumber("2026-10-26") + 1} · 3.5/5 · streak 4\n🟦🟦⬛🟦🔹\nhttps://x.test/`);
+  assert.equal(t, shareText("2026-10-26", ["right", "right", "wrong", "right", "close"], 4, "https://x.test/"), "same input, same text");
+  assert.doesNotMatch(t, /\b(own|opp|yd|yards?|Q[1-4])\b/i, "no yard lines or clocks");
   const teams = new Set(DAILY_ITEMS.flatMap((i) => [i.situation.posteam, i.situation.defteam]));
   for (const tm of teams) assert.ok(!new RegExp(`\\b${tm}\\b`).test(t));
   assert.doesNotMatch(t, /\b(go|kick|punt|field goal|4th)\b/i);

@@ -1733,3 +1733,4 @@ body { font-variant-numeric: tabular-nums; }
 @media (max-width: 480px) { .fd-page { padding-inline: 12px; } .fd-card { padding-inline: 1rem; } }
 .fd-404-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; padding: 0; margin: 0; list-style: none; } .fd-404-links a { display: inline-flex; min-height: 48px; align-items: center; text-decoration: underline; }
 .fd-toofar { margin: 0; font-size: 0.875rem; color: #d4d4d8; }
+.fd-share { width: 100%; min-height: 52px; }
