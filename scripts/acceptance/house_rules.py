@@ -8,7 +8,8 @@ on the site (daily quiz, 4th-down page, Game Story / games).
   2. No betting: no odds formats, lines or stakes language.
   3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
   4. No team logos in the built site.
-  5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios).
+  5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios;
+     kick distance = yardline_100 + 18, as in the engine since #64).
 Prints every failure, exits 1 if any.
 """
 import html, json, os, re, sys
@@ -89,10 +90,10 @@ def main() -> int:
 
     # Daily game never offers a kick over 64 yd.
     for it in data["quiz"]["items"]:
-        if "fg" in (it.get("reveal") or {}).get("values", {}) and it["situation"]["yardline_100"] + 17 > MAX_FG:
+        if "fg" in (it.get("reveal") or {}).get("values", {}) and it["situation"]["yardline_100"] + 18 > MAX_FG:
             fails.append(f"FG cap: quiz item {it['id']} offers a {it['situation']['yardline_100'] + 17}-yd kick")
     for sc in data["scenarios"]:
-        if any(o["id"] == "fg" for o in sc["options"]) and sc["situation"]["yardline_100"] + 17 > MAX_FG:
+        if any(o["id"] == "fg" for o in sc["options"]) and sc["situation"]["yardline_100"] + 18 > MAX_FG:
             fails.append(f"FG cap: 4th-down scenario {sc['id']} offers a {sc['situation']['yardline_100'] + 17}-yd kick")
 
     for f in fails:
