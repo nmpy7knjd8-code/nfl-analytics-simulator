@@ -41,7 +41,7 @@ describe("fourth-down quiz pack + scoring", () => {
       assert.ok(/^[A-Z]{2,3}$/.test(s.posteam) && /^[A-Z]{2,3}$/.test(s.defteam), i.id);
       assert.ok(s.quarter_seconds_remaining >= 0 && s.quarter_seconds_remaining <= 900, i.id);
       assert.ok(s.qtr >= 1 && s.qtr <= 4, i.id);
-      if (s.yardline_100 + 17 > 64) assert.ok(!("fg" in i.reveal.values), `${i.id} offers an out-of-range FG`);
+      if (s.yardline_100 + 18 > 64) assert.ok(!("fg" in i.reveal.values), `${i.id} offers an out-of-range FG`);
     }
   });
 });
