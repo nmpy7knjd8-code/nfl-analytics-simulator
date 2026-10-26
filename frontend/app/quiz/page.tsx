@@ -1,4 +1,4 @@
-import { QuizGame } from "../../components/QuizGame";
+import { DailyQuiz } from "../../components/DailyQuiz";
 
 export const metadata = {
   title: "Fourth Down Quiz — NFL Analytics Simulator",
@@ -9,7 +9,7 @@ export const metadata = {
 export default function QuizPage() {
   return (
     <main className="quiz-page" id="main">
-      <QuizGame />
+      <DailyQuiz />
     </main>
   );
 }

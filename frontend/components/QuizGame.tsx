@@ -11,6 +11,7 @@ import {
   scoreQuizChoice,
   updateSession,
   type QuizChoice,
+  type QuizItem,
   type QuizPhase,
   type QuizResult,
   type SessionStats,
@@ -24,8 +25,14 @@ function resultLabel(result: QuizResult): string {
   return "Incorrect";
 }
 
-export function QuizGame() {
-  const items = QUIZ_ITEMS;
+export type QuizGameProps = {
+  /** Defaults to the full practice pack. */
+  items?: QuizItem[];
+  /** Fires once when the last item in `items` is locked in. */
+  onSetComplete?: (session: SessionStats) => void;
+};
+
+export function QuizGame({ items = QUIZ_ITEMS, onSetComplete }: QuizGameProps = {}) {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<QuizPhase>("situation");
   const [selected, setSelected] = useState<QuizChoice | null>(null);
@@ -48,7 +55,9 @@ export function QuizGame() {
   function lockIn() {
     if (!selected) return;
     const result = scoreQuizChoice(selected, item.reveal);
-    setSession((s) => updateSession(s, result));
+    const nextSession = updateSession(session, result);
+    setSession(nextSession);
+    if (index + 1 >= items.length) onSetComplete?.(nextSession);
     setShowAssumptions(false);
     setPhase("reveal");
   }
