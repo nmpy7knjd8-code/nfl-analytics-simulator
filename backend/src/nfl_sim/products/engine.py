@@ -24,7 +24,7 @@ TRANSITION_MODE = "improved"
 EMPIRICS_MODE = "pooled"
 PUNT_MIN_YARDLINE_100 = 36  # punt only from the opponent 36 or farther back
 CLOSE_CALL_PTS = 2.0
-FG_SNAP_YARDS = 17  # kick distance = yardline_100 + 17
+from nfl_sim.models.fourth_down import FG_SNAP_YARDS  # noqa: E402  (one source: yardline_100 + 18)
 DECIMALS = 4
 
 Option = Literal["go", "fg", "punt"]

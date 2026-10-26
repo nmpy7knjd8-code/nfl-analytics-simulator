@@ -20,16 +20,16 @@ def _x(**kw):
 
 
 @pytest.mark.parametrize("yl,opts", [(1, ("go", "fg")), (35, ("go", "fg")), (36, ("go", "fg", "punt")),
-                                     (47, ("go", "fg", "punt")), (48, ("go", "punt")), (99, ("go", "punt"))])
+                                     (46, ("go", "fg", "punt")), (47, ("go", "punt")), (99, ("go", "punt"))])
 def test_option_rules(engine, yl, opts):
     out = engine.evaluate(_x(yardline_100=yl, distance=1))
     assert out.options == opts and set(out.wp) == set(opts)
     assert out.recommendation in opts
-    assert out.kick_distance == yl + 17
+    assert out.kick_distance == yl + 18
 
 
 def test_no_field_goal_beyond_64_yards_ever(engine):
-    for yl in range(48, 100):
+    for yl in range(47, 100):
         assert "fg" not in engine.evaluate(_x(yardline_100=yl, distance=1)).wp
 
 
@@ -69,7 +69,7 @@ def test_clock_derivation():
 def test_grid_cells_equal_engine_values(engine, monkeypatch):
     """Checker (grid) and quiz (engine) return identical values for the same situation."""
     monkeypatch.setattr(grid, "_ENGINE", engine)
-    for t, s, d, yl in [(0, 0, 0, 1), (7, 6, 2, 40), (6, 12, 8, 99), (3, 4, 5, 47), (4, 5, 1, 48)]:
+    for t, s, d, yl in [(0, 0, 0, 1), (7, 6, 2, 40), (6, 12, 8, 99), (3, 4, 5, 46), (4, 5, 1, 47)]:
         x = grid.grid_input(t, s, d, yl)
         c = grid.cell(x)
         out = engine.evaluate(x)
