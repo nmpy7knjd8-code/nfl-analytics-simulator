@@ -9,7 +9,7 @@ export default function HomePage() {
         <p className="hero-headline">Tough calls, plain English.</p>
         <p className="hero-support">Replay real games — or ask go, kick, or punt?</p>
         <div className="cta-stack">
-          <Link className="btn btn-primary" href="/quiz">
+          <Link className="btn btn-primary" href="/daily">
             Fourth-down quiz
           </Link>
           <Link className="btn btn-secondary" href="/games">

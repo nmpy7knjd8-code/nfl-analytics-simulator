@@ -836,6 +836,7 @@ def cmd_wp_calibrate(args: argparse.Namespace) -> int:
         n_splits=int(args.folds),
         include_isotonic=not args.skip_isotonic,
         command=cmd,
+        save_artifact=not args.no_save_artifact,
     )
     _append_wp_calibration_section(out, payload)
     print(
@@ -1056,6 +1057,11 @@ def main(argv: list[str] | None = None) -> int:
         "--skip-isotonic",
         action="store_true",
         help="Skip isotonic OOF ablation",
+    )
+    p_wpc.add_argument(
+        "--no-save-artifact",
+        action="store_true",
+        help="Do not write artifacts/wp_model_calibrated.joblib (+ .meta.json)",
     )
     p_wpc.set_defaults(func=cmd_wp_calibrate)
 

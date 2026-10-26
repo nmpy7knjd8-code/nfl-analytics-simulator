@@ -46,3 +46,7 @@ reports/**/*.parquet
 
 # Phase 1 product build cache (regenerate: python -m nfl_sim.products.fourth_downs)
 data/products/
+
+# Pages assembly output
+_site/
+frontend/public/og/
