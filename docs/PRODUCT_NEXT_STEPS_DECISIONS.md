@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-12  
 **Mode:** Answers recorded 2026-10-12 — Phase P authorized only (demo polish / PR hygiene). No Sportradar/vendor calls, no live feed, no paid keys; no Phase A/F/L model/feed/live work.  
-**Sources:** Project notes (Cursor Agent Store — not public); [`SPORTRADAR_TRIAL_T_DECISION_REQUEST.md`](./SPORTRADAR_TRIAL_T_DECISION_REQUEST.md), [`SPORTRADAR_TRIAL_T_REPORT.md`](./SPORTRADAR_TRIAL_T_REPORT.md), [`OFFLINE_PRE_SNAP_MAPPER.md`](./OFFLINE_PRE_SNAP_MAPPER.md), [`FEED_EVALUATION.md`](./FEED_EVALUATION.md), [`DECISIONS_AND_FORWARD_PLAN.md`](./DECISIONS_AND_FORWARD_PLAN.md); open PR context in Project notes  
+**Sources:** Project notes (Cursor Agent Store — not public); [`sportradar/SPORTRADAR_TRIAL_T_DECISION_REQUEST.md`](sportradar/SPORTRADAR_TRIAL_T_DECISION_REQUEST.md), [`sportradar/SPORTRADAR_TRIAL_T_REPORT.md`](sportradar/SPORTRADAR_TRIAL_T_REPORT.md), [`OFFLINE_PRE_SNAP_MAPPER.md`](./OFFLINE_PRE_SNAP_MAPPER.md), [`FEED_EVALUATION.md`](./FEED_EVALUATION.md), [`DECISIONS.md`](./DECISIONS.md); open PR context in Project notes  
 **Prior decision pattern:** Same shape as the Sportradar **T** request — answer prompts, then work proceeds only under what you authorize
 
 **No legal conclusions.** Free/keyless Simulations access is not clearance for production live, commercial licensing, or persistent vendor data.
@@ -13,7 +13,7 @@
 
 - **Checkable fan demo is on main** via PR [#26](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/pull/26) (merged); Pages source pinned to `main` `/docs`; [demo](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) remains the checkable v1 URL.
 - **Offline pre-snap mapper is on main** (PR #24); adapter + recorded-demo + mapper tests green (**63** passed). Path A stays **unsupported**; missing `receive_2h_ko` → fail-closed.
-- **Sportradar Simulation trial T completed** under free/keyless + Persist **No** — see [`SPORTRADAR_TRIAL_T_REPORT.md`](./SPORTRADAR_TRIAL_T_REPORT.md): 7 HTTP calls, BAL@KC sim, mapper **0 ok / 6 fail-closed** (designed), **no** raw persist, **`live_feed=false`**, no odds/live/betting.
+- **Sportradar Simulation trial T completed** under free/keyless + Persist **No** — see [`sportradar/SPORTRADAR_TRIAL_T_REPORT.md`](sportradar/SPORTRADAR_TRIAL_T_REPORT.md): 7 HTTP calls, BAL@KC sim, mapper **0 ok / 6 fail-closed** (designed), **no** raw persist, **`live_feed=false`**, no odds/live/betting.
 - **T acceptance matrix incomplete under sparse budget:** ≥3 situation changes and ≥5 fourth-down yardline spot-checks **not met** (natural-time clock; stopped rather than long-poll). Longer session remains unauthorized (recorded-only).
 - **PR hygiene (P2):** #26 merged; #10 merged with #26 packaging (superseded content on main); #5 closed; #4 and #6 kept open.
 - **Hard gates remain locked (P6–P8):** Convention B land / EP promote / isotonic WP persist / 4th-decision-lab polish all **No**; live/paid/commercial **hard defer**; persist **no raw vendor data**. Fan UI constraints remain: B&W + sparse blue accent; short layman **Why** on recommendations.

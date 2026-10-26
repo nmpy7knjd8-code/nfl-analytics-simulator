@@ -24,7 +24,7 @@
 | [Model validation](MODEL_VALIDATION.md) | WP / metrics rules |
 | [UI design system](UI_DESIGN_SYSTEM.md) | visual direction |
 | [UI screen specs](UI_SCREEN_SPECS.md) | eight screens |
-| [AGENTS.md](AGENTS.md) | process + stack |
+| [AGENTS.md](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/AGENTS.md) | process + stack |
 | [Roadmap](ROADMAP.md) | phase gates |
 
 **Phase 3 Stage A:** audit gate **PASS** — merge via PR #3 (not PR #2 as-is) · era excluded · focused nflverse reconciliation documented · next: WP after merge · live adapters last.

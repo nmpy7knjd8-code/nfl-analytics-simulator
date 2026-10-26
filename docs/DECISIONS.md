@@ -93,7 +93,7 @@
 * **Decision:** Production EPA uses Convention B: scoring plays with \(\|R\|>0\) → `EPA = R − ep_before`; non-score timeout/terminal/same-poss/PC unchanged; XP/2PT \(R=0\`.
 * **Evidence:** Task A lake-`ep` diagnostics (2019–2022); `docs/EPA_CONVENTION_B_ATTRIBUTION.md`; `EP_MODEL_SPEC` §6; synthetics.
 * **Artifact:** `ep_model.joblib` missing → project-model pre/post **Blocked** (`reports/ep/ARTIFACT_PROVENANCE.md`).
-* **Brief:** `docs/DECISIONS_AND_FORWARD_PLAN.md` (successor to open-D015 PR #5 text).
+* **Brief:** formerly `docs/DECISIONS_AND_FORWARD_PLAN.md` (folded into this file, ROADMAP and CHANGELOG; see git history).
 
 ## D016 — Situation WP: Path A prototype (2026-10-11)
 
@@ -117,7 +117,7 @@
 
 * **Status:** Accepted with limits (PRs #17–#25)
 * **Decision:** Sportradar Simulation was evaluated as the candidate feed. The offline pre-snap mapper fails closed on a missing `receive_2h_ko`, and Path A is unsupported. One keyless trial T ran: 7 HTTP calls, no raw persistence, `live_feed=false`. The acceptance matrix was incomplete. No production live feed, paid keys, or raw vendor JSON persistence.
-* **Evidence:** `docs/FEED_EVALUATION.md`, `docs/SPORTRADAR_TRIAL_T_REPORT.md`, `docs/OFFLINE_PRE_SNAP_MAPPER.md`.
+* **Evidence:** `docs/FEED_EVALUATION.md`, `docs/sportradar/SPORTRADAR_TRIAL_T_REPORT.md`, `docs/OFFLINE_PRE_SNAP_MAPPER.md`.
 
 ## D020 — Product P1–P9 answers (2026-10-12)
 

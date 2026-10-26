@@ -1,10 +1,11 @@
 # Changelog
 
-One entry per merged PR, newest first within each area. Times are merge dates (UTC). This file replaces the per-PR `NEXT_STEPS_DELTA_*` notes; the original note each entry came from is named in *(was …)*.
+One entry per merged PR, newest first within each area. Times are merge dates (UTC). This file replaces the per-PR `NEXT_STEPS_DELTA_*` notes (removed; see git history); the original note each entry came from is named in *(was …)*.
 
 ## Unreleased
 
 - Docs refresh: HANDOFF, ROADMAP, DECISIONS D016–D021, CHANGELOG, AGENTS ownership table.
+- Cleanup: removed NEXT_STEPS_DELTA_* notes, DECISIONS_AND_FORWARD_PLAN.md, docs/AGENTS.md, docs/AGENT_OWNERSHIP.md, PUSH_WHEN_AUTH.md (both), duplicate punt_clock_transitions top-level copies; moved Sportradar docs to `docs/sportradar/`; scoring-credit parquet moved to [release asset](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/releases/tag/data-scoring-credit-2019-2022).
 - CI workflow (backend pytest; frontend test/typecheck/build/static export); `reports/**/*.parquet` gitignored.
 
 ## Product / UI / Pages
