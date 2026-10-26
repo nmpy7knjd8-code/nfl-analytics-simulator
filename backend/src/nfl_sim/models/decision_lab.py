@@ -15,6 +15,7 @@ import pandas as pd
 from nfl_sim.ingest.derive import derive_receive_2h_ko
 from nfl_sim.models.dataset import load_raw_seasons
 from nfl_sim.models.fourth_down import (
+    FG_SNAP_YARDS,
     FourthDownAnalyzer,
     FourthDownResult,
     FourthDownSituation,
@@ -226,7 +227,7 @@ def freeze_play(row: pd.Series | dict[str, Any]) -> HistoricalFourthDown:
         "posteam_timeouts": sit.posteam_timeouts,
         "defteam_timeouts": sit.defteam_timeouts,
         "is_home_possession": sit.is_home_possession,
-        "kick_distance_if_fg": sit.yardline_100 + 17,
+        "kick_distance_if_fg": sit.yardline_100 + FG_SNAP_YARDS,
     }
     for col in STATE_COLUMNS:
         if col in data:
