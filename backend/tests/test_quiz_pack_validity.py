@@ -52,7 +52,7 @@ def test_item_is_a_real_play(item):
 
 @pytest.mark.parametrize("item", ITEMS, ids=lambda i: i["id"])
 def test_no_field_goal_beyond_64_yards(item):
-    kick = item["situation"]["yardline_100"] + 17
+    kick = item["situation"]["yardline_100"] + 18
     r = item["reveal"]
     if kick > MAX_FG_DISTANCE:
         assert "fg" not in r["values"], f"{kick}-yd FG offered"
@@ -68,3 +68,16 @@ def test_pack_has_a_real_mix():
     for a in ("go", "fg", "punt"):
         assert recs.count(a) >= len(ITEMS) * 0.15
     assert recs.count("inconclusive") <= len(ITEMS) * 0.2
+
+
+def test_close_call_is_under_two_points_of_win_chance():
+    # Brief: "Close call" when the best two options are within 2 pts of win chance.
+    for item in ITEMS:
+        r = item["reveal"]
+        if r["margin"] is not None:
+            assert r["inconclusive"] == (r["margin"] < 0.02), item["id"]
+
+
+def test_assumptions_use_nflverse_kick_distance():
+    for item in ITEMS:
+        assert not any("+ 17" in a for a in item["reveal"].get("assumptions", [])), item["id"]
