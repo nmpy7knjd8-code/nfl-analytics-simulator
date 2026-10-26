@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     train_seasons: tuple[int, ...] = (2019, 2020, 2021)
     validate_season: int = 2022
     test_season: int = 2023
+    holdout_seasons: tuple[int, ...] = (2024, 2025)
+    ingest_seasons: tuple[int, ...] = (2019, 2020, 2021, 2022, 2023, 2024, 2025)
     # Swing play: |delta home WP| >= this (env NFL_SIM_SWING_WP_THRESHOLD)
     swing_wp_threshold: float = 0.08
     api_host: str = "127.0.0.1"
