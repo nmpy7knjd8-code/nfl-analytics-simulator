@@ -1,25 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Source_Sans_3, Syne } from "next/font/google";
+import localFont from "next/font/local";
 import { AppNav } from "../components/AppNav";
 import "./globals.css";
 import { shareMetadata } from "../lib/share";
 
-const syne = Syne({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
+// Self-hosted (app/fonts, OFL) so builds never fetch from Google Fonts.
+const syne = localFont({
+  src: "./fonts/syne-latin-wght-normal.woff2",
+  weight: "400 800",
   variable: "--font-syne",
+  display: "swap",
 });
 
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const sourceSans = localFont({
+  src: "./fonts/source-sans-3-latin-wght-normal.woff2",
+  weight: "200 900",
   variable: "--font-source-sans",
+  display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const ibmPlexMono = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono-latin-400-normal.woff2", weight: "400" },
+    { path: "./fonts/ibm-plex-mono-latin-500-normal.woff2", weight: "500" },
+    { path: "./fonts/ibm-plex-mono-latin-600-normal.woff2", weight: "600" },
+  ],
   variable: "--font-ibm-plex-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = shareMetadata({
