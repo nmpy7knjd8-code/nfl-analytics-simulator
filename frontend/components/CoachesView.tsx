@@ -35,13 +35,14 @@ export function CoachScatter({ data, team }: { data: CoachSeason; team?: string 
   const y = (v: number) => T + ((hi - v) / (hi - lo)) * (H - T - B);
   const sel = cs.filter((c) => c.team === team);
   const rest = cs.filter((c) => c.team !== team);
-  const tick = (v: number) => Math.round(v);
+  // Units on every tick, and a real minus sign, so a summed swing never reads like a price line.
+  const tick = (v: number) => `${v < 0 ? "\u2212" : "+"}${Math.abs(Math.round(v))} pts`;
   return (
     <figure className="co-fig">
       <svg viewBox={`0 0 ${W} ${H}`} className="co-scatter" role="img" aria-label={`Each dot is a ${data.season} head coach: go rate across, net win chance up and down.${sel.length ? ` ${team} in blue.` : ""}`}>
         <line x1={L} x2={W - R} y1={y(0)} y2={y(0)} className="co-zero" />
         <line x1={L} x2={L} y1={T} y2={H - B} className="co-axis" />
-        <text x={L - 6} y={y(hi) + 4} textAnchor="end" className="co-tick">+{tick(hi)}</text>
+        <text x={L - 6} y={y(hi) + 4} textAnchor="end" className="co-tick">{tick(hi)}</text>
         <text x={L - 6} y={y(0) + 4} textAnchor="end" className="co-tick">0</text>
         <text x={L - 6} y={y(lo) + 4} textAnchor="end" className="co-tick">{tick(lo)}</text>
         <text x={L} y={H - B + 16} className="co-tick">0%</text>

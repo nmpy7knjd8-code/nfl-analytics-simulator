@@ -24,6 +24,63 @@ from nfl_sim.models.wp_model import WPModel, calibration_table
 
 Method = Literal["platt", "isotonic"]
 
+CALIBRATED_ARTIFACT_NAME = "wp_model_calibrated.joblib"
+CALIBRATED_META_NAME = "wp_model_calibrated.meta.json"
+
+
+class CalibratedWPModel:
+    """Frozen base WPModel + a calibrator fit on validate 2022 only.
+
+    Saved as a separate candidate artifact; it does not replace the uncalibrated
+    primary (`wp_model.joblib`) that the API loads by default.
+    """
+
+    def __init__(self, base: WPModel, method: Method, calibrator: Any, meta: dict[str, Any]):
+        self.base = base
+        self.method = method
+        self.calibrator = calibrator
+        self.meta = meta
+
+    @classmethod
+    def fit(cls, base: WPModel, p_raw: np.ndarray, y: np.ndarray, *, method: Method) -> "CalibratedWPModel":
+        y = np.asarray(y).astype(int)
+        if method == "platt":
+            cal: Any = LogisticRegression(solver="lbfgs", max_iter=1000, random_state=RANDOM_SEED)
+            cal.fit(_clip_p(p_raw).reshape(-1, 1), y)
+        elif method == "isotonic":
+            cal = IsotonicRegression(out_of_bounds="clip")
+            cal.fit(_clip_p(p_raw), y.astype(float))
+        else:
+            raise ValueError(f"Unknown method {method}")
+        return cls(base, method, cal, {"method": method, "calibration_n": int(len(y))})
+
+    def calibrate(self, p_raw: np.ndarray) -> np.ndarray:
+        p = _clip_p(np.asarray(p_raw, dtype=float))
+        if self.method == "platt":
+            return self.calibrator.predict_proba(p.reshape(-1, 1))[:, 1]
+        return self.calibrator.predict(p)
+
+    def predict_wp(self, df: pd.DataFrame) -> np.ndarray:
+        return self.calibrate(self.base.predict_wp(df))
+
+    def save(self, path: Path, *, meta_path: Path | None = None) -> None:
+        import joblib
+
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        joblib.dump(self, path)
+        if meta_path is not None:
+            meta_path.write_text(json.dumps(self.meta, indent=2, sort_keys=True, default=str) + "\n")
+
+    @staticmethod
+    def load(path: Path) -> "CalibratedWPModel":
+        import joblib
+
+        obj = joblib.load(path)
+        if not isinstance(obj, CalibratedWPModel):
+            raise TypeError(f"{path} is not a CalibratedWPModel")
+        return obj
+
 
 def _ece_from_table(cal: pd.DataFrame) -> float:
     if cal.empty or int(cal["n"].sum()) == 0:
@@ -99,6 +156,7 @@ def run_wp_calibration_eval(
     n_splits: int = 5,
     include_isotonic: bool = True,
     command: str | None = None,
+    save_artifact: bool = True,
 ) -> dict[str, Any]:
     """Freeze WP@C on train; evaluate calibration on validate 2022 only."""
     # Train+val only — never load 2023 into this evaluation path
@@ -237,4 +295,29 @@ def run_wp_calibration_eval(
     (out_dir / "calibration_eval.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     cal_all = pd.concat(cal_tables.values(), ignore_index=True)
     cal_all.to_csv(out_dir / "calibration_compare.csv", index=False)
+
+    if save_artifact:
+        # Persist the chosen calibrator (Platt unless isotonic justified), fit on all of
+        # validate 2022. Separate candidate; does not replace the uncalibrated primary.
+        method: Method = "isotonic" if isotonic_justified else "platt"
+        cal_model = CalibratedWPModel.fit(model, p_raw, y, method=method)
+        chosen = methods["isotonic_oof_ablation" if method == "isotonic" else "platt_oof_primary"]
+        cal_model.meta.update(
+            {
+                "artifact": CALIBRATED_ARTIFACT_NAME,
+                "base_model": payload["base_model"],
+                "calibration_season": VAL_SEASON,
+                "oof_metrics": chosen,
+                "uncalibrated_metrics": uncal,
+                "recommendation": recommendation,
+                "default_for_api": False,
+                "data_hash": payload["data_hash"],
+                "packages": packages,
+                "seed": RANDOM_SEED,
+                "command": command,
+            }
+        )
+        art = out_dir / "artifacts"
+        cal_model.save(art / CALIBRATED_ARTIFACT_NAME, meta_path=art / CALIBRATED_META_NAME)
+        payload["calibrated_artifact"] = str(art / CALIBRATED_ARTIFACT_NAME)
     return payload
