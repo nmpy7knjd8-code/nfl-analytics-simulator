@@ -146,7 +146,7 @@ export const MAX_FG_YARDS = 64;
 export const CLOSE_CALL_GAP = 0.02;
 
 export function fieldGoalYards(item: DailyItem): number {
-  return Math.round(item.situation.yardline_100 + 17);
+  return Math.round(item.situation.yardline_100 + 18);
 }
 
 export type OptionState = { id: QuizChoice; shown: boolean; disabled: boolean; note?: string };

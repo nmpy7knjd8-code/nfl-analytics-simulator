@@ -43,3 +43,7 @@ frontend/tsconfig.tsbuildinfo
 
 # Large generated report data (publish as release assets / CI artifacts instead)
 reports/**/*.parquet
+
+# Pages assembly output
+_site/
+frontend/public/og/
