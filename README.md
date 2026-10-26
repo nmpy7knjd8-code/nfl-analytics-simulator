@@ -1,6 +1,6 @@
 # NFL Analytics Simulator
 
-**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ · **Fan demo:** [/demo/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) · **Fourth-down quiz:** [/demo/quiz/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/quiz/)
+**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ — Fourth & Daily: five real 4th downs a day ([practice](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/practice/), [how it works](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/about/)). Old `/demo/` links redirect.
 
 NFL-only analytics built on nflverse play-by-play: reconstruct real games, estimate expected points (EP/EPA) and win chance (WP), and explain fourth-down calls in plain English. There are no betting or odds features.
 
@@ -14,7 +14,7 @@ The demo uses fixture/example data and does not call the backend. Known data err
 
 ## How the site is built
 
-The site is built from `main` by [`.github/workflows/pages.yml`](.github/workflows/pages.yml): the landing page and static files come from `docs/`, and the demo is a fresh `npm run build:pages` static export of `frontend/` placed at `/demo/`. The workflow builds on every PR and push. Deployment from Actions turns on once the repo's Pages source is set to "GitHub Actions" and the repo variable `PAGES_VIA_ACTIONS` is `true`; until then Pages serves `main` `/docs`, including the committed `docs/demo/` export.
+The site is built from `main` by [`.github/workflows/pages.yml`](.github/workflows/pages.yml): `npm run build:pages` makes a static export of `frontend/` that is the whole site, served at the root, plus redirect pages for old `/demo/`, `/quiz/` and `/decide/` links (`frontend/scripts/write-redirects.mjs`). The workflow builds on every PR and push and deploys from `main` when the repo variable `PAGES_VIA_ACTIONS` is `true`.
 
 Short links `/quiz/`, `/games/` and `/decide/` redirect to the demo.
 

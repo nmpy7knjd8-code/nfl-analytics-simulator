@@ -1,47 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Source_Sans_3, Syne } from "next/font/google";
-import { AppNav } from "../components/AppNav";
+import { AppNav, TopBar } from "../components/AppNav";
 import "./globals.css";
 
-const syne = Syne({
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-syne",
-});
-
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-source-sans",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-ibm-plex-mono",
-});
-
 export const metadata: Metadata = {
-  title: "NFL Analytics Simulator",
-  description:
-    "See real NFL games play by play, and explore tough calls like fourth-and-short — in plain English.",
+  title: "Fourth & Daily — five real 4th downs a day",
+  description: "Every day, five real NFL 4th downs. Go, kick or punt? See what the coach did and what the numbers say.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0a0a0b",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${sourceSans.variable} ${ibmPlexMono.variable}`}>
+    <html lang="en">
       <body>
         <div className="app-shell">
           <a className="sr-only" href="#main">
             Skip to content
           </a>
+          <TopBar />
           <div className="app-stage">{children}</div>
           <AppNav />
         </div>
