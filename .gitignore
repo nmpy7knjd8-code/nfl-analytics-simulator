@@ -51,3 +51,7 @@ frontend/public/og/
 # Phase 1 product build cache (regenerate: python -m nfl_sim.products.fourth_downs)
 data/products/
 
+
+# Per-game files (game.v2): hosted as release asset games-v2, not in git.
+# Fetch: GAMES_RELEASE_TAG=games-v2 scripts/pages/game_files_release.sh fetch
+frontend/public/data/games/

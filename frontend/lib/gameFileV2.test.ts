@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { expandGameV2, type GameFileV2 } from "./gameFileV2";
 
 test("game.v2 DET@KC expands to the real nflverse play list with all swing plays", () => {
-  const raw = JSON.parse(readFileSync(new URL("../public/data/games/2023_01_DET_KC.json", import.meta.url), "utf8")) as GameFileV2;
+  const raw = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_DET_KC.json", import.meta.url), "utf8")) as GameFileV2;
   const g = expandGameV2(raw);
   assert.equal(g.schema_version, "game.v1");
   assert.equal(g.plays.length, 179);
