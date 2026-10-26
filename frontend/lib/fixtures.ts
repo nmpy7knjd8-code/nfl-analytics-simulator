@@ -57,6 +57,7 @@ export const FIXTURE_GAMES: GamesResponse = {
   truth_label: "historical",
 };
 
+/** Example only. reference.wp = possession team's pre-snap win chance (nflverse style); home_wp = KC's. */
 const DET_KC_PLAYS: CanonicalPlay[] = [
   {
     play_id: "1",
@@ -85,7 +86,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "pass",
     description: "Jared Goff pass short middle to Amon-Ra St. Brown for 8 yards.",
     yards_gained: 8,
-    reference: { wp: 0.48, ep: 1.1 },
+    reference: { wp: 0.48, home_wp: 0.52, ep: 1.1 },
   },
   {
     play_id: "3",
@@ -100,7 +101,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "rush",
     description: "David Montgomery right tackle for 3 yards (first down).",
     yards_gained: 3,
-    reference: { wp: 0.5, ep: 1.4 },
+    reference: { wp: 0.5, home_wp: 0.5, ep: 1.4 },
   },
   {
     play_id: "4",
@@ -116,7 +117,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     description:
       "Fourth-and-1 — Detroit goes for it. Montgomery short gain; first down.",
     yards_gained: 2,
-    reference: { wp: 0.55, ep: 2.2 },
+    reference: { wp: 0.55, home_wp: 0.45, ep: 2.2 },
   },
   {
     play_id: "5",
@@ -131,7 +132,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "pass",
     description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
     yards_gained: 0,
-    reference: { wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -146,7 +147,8 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "other",
     description: "Final — Chiefs 21, Lions 20.",
     yards_gained: 0,
-    reference: { wp: 1.0 },
+    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
+    reference: { wp: 0.0, home_wp: 1.0 },
   },
 ];
 

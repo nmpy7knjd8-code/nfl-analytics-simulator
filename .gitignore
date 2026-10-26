@@ -40,3 +40,6 @@ frontend/tsconfig.tsbuildinfo
 # IDE
 .idea/
 .vscode/
+
+# Large generated report data (publish as release assets / CI artifacts instead)
+reports/**/*.parquet

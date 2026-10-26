@@ -19,7 +19,7 @@ Research-grounded **NFL-only** analytics and simulation (historical-first). Loca
 - [Licensing & data sources](LICENSING_AND_DATA_SOURCES.md)
 - [UI design system](UI_DESIGN_SYSTEM.md)
 - [UI screen specs](UI_SCREEN_SPECS.md)
-- [AGENTS.md](AGENTS.md)
+- [AGENTS.md](../AGENTS.md)
 - [Handoff checklist](HANDOFF.md)
 
 ## Stack (locked)
