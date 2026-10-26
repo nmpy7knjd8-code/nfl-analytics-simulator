@@ -51,11 +51,14 @@ def candidates(seasons):
     out = df[m].copy()
     out["hist"] = pt[m].map(ACTION)
     # A real team never tries a 65+ yd FG in this pool; keep the pack consistent anyway.
-    out = out[~((out["hist"] == "fg") & (out["yardline_100"] + 17 > MAX_FG_DISTANCE))]
+    out = out[~((out["hist"] == "fg") & (out["yardline_100"] + FG_SNAP_YARDS > MAX_FG_DISTANCE))]
     out["k"] = [_key(r) for r in out.itertuples()]
     return out
 
 
+FG_SNAP_YARDS = 18  # nflverse kick_distance = yardline_100 + 18 (same as the shared engine, #50)
+# Brief + shared engine (#50): a gap under 2 points of win chance is a "close call".
+CLOSE_CALL_WP = 0.02
 MAX_CLOSE_CALL_SHARE = 0.15  # "too close to call" is a fine answer, but not a third of the pack
 
 
@@ -69,6 +72,11 @@ def bake(analyzer, row, r, item_id: str | None = None) -> dict:
     item = pack_item_from_situation_lab_payload(
         item_id=item_id or f"{r.game_id}-{int(r.play_id)}", label=label(r), payload=payload,
     )
+    rv = item["reveal"]
+    if rv.get("margin") is not None:
+        rv["inconclusive"] = rv["margin"] < CLOSE_CALL_WP
+    if "assumptions" in rv:
+        rv["assumptions"] = [a.replace("yardline_100 + 17", "yardline_100 + 18") for a in rv["assumptions"]]
     sit = item["situation"]
     # Real scoreboard + real quarter clock straight from the play (no placeholders).
     sit.update(
