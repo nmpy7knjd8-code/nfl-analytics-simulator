@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 
 const TABS = [
   { href: "/", label: "Today", match: (p: string) => p === "/" || p.startsWith("/daily") && !p.startsWith("/daily/stats") },
-  { href: "/practice/", label: "Practice", match: (p: string) => p.startsWith("/practice") },
   { href: "/games/", label: "Games", match: (p: string) => p.startsWith("/games") },
-  { href: "/fourth-down/", label: "4th down", match: (p: string) => p.startsWith("/fourth-down") },
+  { href: "/coaches/", label: "Coaches", match: (p: string) => p.startsWith("/coaches") },
+  { href: "/fourth-down/", label: "Check a 4th down", match: (p: string) => p.startsWith("/fourth-down") },
 ] as const;
 
 export function TopBar() {
@@ -17,6 +17,7 @@ export function TopBar() {
         Fourth &amp; Daily
       </Link>
       <nav aria-label="More" className="fd-top-links">
+        <Link href="/practice/">Practice</Link>
         <Link href="/daily/stats/">Stats</Link>
         <Link href="/about/">About</Link>
       </nav>

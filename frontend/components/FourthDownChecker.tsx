@@ -144,6 +144,7 @@ export function FourthDownChecker() {
                 <>
                   Same numbers as the Daily: this is a real play, {gameText(real)}.{" "}
                   {realHref ? <a href={`${BASE}${realHref}`}>See this game at this play</a> : null}
+                  {real ? <>{realHref ? " · " : ""}<a href={`${BASE}/card/${encodeURIComponent(real.id)}/`}>Share as a what-if card</a></> : null}
                 </>
               ) : result.source.kind === "grid" ? (
                 <>

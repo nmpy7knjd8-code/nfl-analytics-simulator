@@ -292,6 +292,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
               <Link href={storyHref(item.source.game_id, playIdFromItemId(item.id))!}>See this game at this play</Link>
             ) : null}
             <Link href={`/fourth-down/?play=${encodeURIComponent(item.id)}`}>Open in the 4th-down checker</Link>
+            <Link href={`/card/${encodeURIComponent(item.id)}/`}>Share as a what-if card</Link>
           </p>
           <div className="fd-actions">
             <button type="button" className="fd-btn fd-btn-primary" onClick={nextCard}>
