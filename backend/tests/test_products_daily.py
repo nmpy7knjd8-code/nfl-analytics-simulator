@@ -37,7 +37,7 @@ def test_option_rules_and_kick_cap():
         s, r = i["situation"], i["reveal"]
         assert r["kick_distance"] == s["yardline_100"] + 18
         assert ("fg" in r["values"]) == (r["kick_distance"] <= 64)
-        assert ("punt" in r["values"]) == (s["yardline_100"] >= 36)
+        assert ("punt" in r["values"]) == (s["yardline_100"] >= 35)
         assert r["recommendation"] == min(r["options"], key=lambda o: (-r["values"][o], r["options"].index(o)))  # ties → option order
         for o, v in r["values"].items():
             assert r["home_values"][o] == (v if s["is_home_possession"] else pytest.approx(1 - v, abs=1e-4))
