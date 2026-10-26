@@ -53,7 +53,7 @@ export default async function CardPage({ params }: Props) {
         <Link className="fd-btn wi-btn" href={card.checkerHref}>Check this 4th down</Link>
         {card.storyHref ? <Link className="fd-btn wi-btn" href={card.storyHref}>See this game at this play</Link> : null}
       </div>
-      <p className="fd-muted">Sharing opens X with the text filled in. You choose whether to post. Win chance is the model&apos;s estimate, not a prediction to bet on.</p>
+      <p className="fd-muted">Sharing opens X with the text filled in. You choose whether to post. Win chance is the model&apos;s estimate from past games.</p>
     </main>
   );
 }

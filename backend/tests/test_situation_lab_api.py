@@ -54,9 +54,11 @@ def test_compare_flip_play_changes_recommendation(client: TestClient):
     data = r.json()
     assert data["offline"] is True
     assert data["play"]["provenance"]["game_id"] == "2022_18_LAC_DEN"
-    assert data["recommendation_changed_legacy_to_improved"] is True
-    assert data["configs"]["pooled_legacy"]["recommendation"] == "inconclusive"
+    assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
+    assert data["configs"]["pooled_legacy"]["recommendation"] == "punt"
     assert data["configs"]["pooled_improved"]["recommendation"] == "punt"
+    for cfg in data["configs"].values():
+        assert "fg" not in cfg["values"] and cfg["p_make"] == 0.0
     assert data["configs"]["pooled_improved"]["empirics_seasons"] == [2019, 2020, 2021]
     assert data["configs"]["pooled_improved"]["punt_buckets"]
     assert data["clock_deltas_improved"]["go_convert"] == 29
@@ -80,3 +82,4 @@ def test_presets_constant_default():
 
     assert any(p.get("default") for p in PRESETS)
     assert STATIC_HTML.exists()
+

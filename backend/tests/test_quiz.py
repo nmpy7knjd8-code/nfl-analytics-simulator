@@ -21,7 +21,9 @@ def test_curated_pack_has_flip_and_at_least_five():
     assert flip["source"]["game_id"] == "2022_18_LAC_DEN"
     assert float(flip["source"]["play_id"]) == 3897.0
     assert flip["reveal"]["recommendation"] == "punt"
-    assert flip["reveal"]["recommendation_changed_legacy_to_improved"] is True
+    # No legacy→improved flip once the phantom 81-yd FG is gone (FG cap).
+    assert flip["reveal"]["recommendation_changed_legacy_to_improved"] is False
+    assert "fg" not in flip["reveal"]["values"]
     # At least one near-tie for partial-credit path
     assert any(it["reveal"].get("inconclusive") for it in items)
 
