@@ -1,22 +1,20 @@
 import Link from "next/link";
+import { DailyGame } from "../components/DailyGame";
+import { TodayHeader } from "../components/TodayHeader";
+import { YesterdayCall } from "../components/YesterdayCall";
 
 export default function HomePage() {
   return (
-    <section className="hero page" aria-label="NFL Analytics Simulator" id="main">
-      <div className="hero-field" aria-hidden />
-      <div className="hero-copy">
-        <h1 className="hero-brand">NFL Analytics Simulator</h1>
-        <p className="hero-headline">Tough calls, plain English.</p>
-        <p className="hero-support">Replay real games — or ask go, kick, or punt?</p>
-        <div className="cta-stack">
-          <Link className="btn btn-primary" href="/quiz">
-            Fourth-down quiz
-          </Link>
-          <Link className="btn btn-secondary" href="/games">
-            Open games
-          </Link>
-        </div>
-      </div>
-    </section>
+    <main className="fd-page" id="main">
+      <TodayHeader />
+      <DailyGame mode="daily" />
+      <YesterdayCall />
+      <section className="fd-panel">
+        <h2>Real games, play by play</h2>
+        <p>
+          See how each game&apos;s win chance moved. <Link href="/games/">Browse games →</Link>
+        </p>
+      </section>
+    </main>
   );
 }
