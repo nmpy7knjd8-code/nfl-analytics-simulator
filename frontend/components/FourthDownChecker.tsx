@@ -56,7 +56,7 @@ export function FourthDownChecker() {
   const loading = !grid && !failed && result?.source.kind !== "play";
 
   const fgOpt = result?.options.find((o) => o.id === "fg");
-  const fgOff = fgOpt?.disabled && fgOpt.note ? fgOpt.note.replace(/^Too far: /, "a ").replace("-yd kick", "-yd try") : null;
+  const fgOff = fgOpt && !fgOpt.shown ? fgOpt.note ?? null : null;
   const real = result?.source.kind === "play" ? result.source.item : null;
   const realHref = real ? storyHref(real.source.game_id, playIdFromItemId(real.id)) : null;
 
@@ -128,7 +128,7 @@ export function FourthDownChecker() {
             {result.ranked.length > 1 ? (
               <p className="fd-why">
                 <strong>Why:</strong> {NAME[result.best]} gives the offense a {Math.round(result.ranked[0][1] * 100)}% chance to win, {result.gap * 100 < 1 ? "less than 1 point" : `${Math.round(result.gap * 100)} ${Math.round(result.gap * 100) === 1 ? "point" : "points"}`} more than {SHORT[result.ranked[1][0]]}.
-                {fgOff ? ` Kick is off: ${fgOff}, past the 64-yd limit.` : ""}
+                {fgOff ? ` ${fgOff}` : ""}
               </p>
             ) : null}
             <div>

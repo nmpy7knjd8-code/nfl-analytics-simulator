@@ -7,7 +7,7 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, setNumber, CLOSE_CALL_GAP, type CallResult, type ScoredCall, type StreakState,
+  dailySet, setNumber, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
@@ -358,6 +358,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
       {!revealed || !scored ? (
         <div className="fd-pick">
           {index === 0 ? <p className="fd-hint" id="fd-hint">Pick a call, then lock it in. Arrow keys move, Enter locks it in.</p> : null}
+          {opts.find((o) => o.id === "fg" && !o.shown) ? <p className="fd-toofar">{TOO_FAR_NOTE}</p> : null}
           <div className="fd-choices" role="radiogroup" aria-label="Your call" aria-describedby={index === 0 ? "fd-hint" : undefined}>
             {choices.map((o, i) => (
               <button

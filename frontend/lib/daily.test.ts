@@ -73,10 +73,10 @@ test("share text has no spoilers", () => {
   assert.doesNotMatch(t, /\b(go|kick|punt|field goal|4th)\b/i);
 });
 
-test("option rules: Kick disabled past 64 yd, Punt hidden inside the opponent 35", () => {
+test("option rules: Kick hidden past 64 yd, Punt hidden inside the opponent 35", () => {
   for (const it of DAILY_ITEMS) {
     const o = Object.fromEntries(optionStates(it).map((x) => [x.id, x]));
-    if (it.situation.yardline_100 + 17 > 64) assert.ok(o.fg.disabled);
+    if (it.situation.yardline_100 + 18 > 64) assert.ok(!o.fg.shown && o.fg.note === "Too far to kick (65+ yards).");
     if (it.situation.yardline_100 < 35) assert.equal(o.punt.shown, false);
     // The model's pick is always something the player can choose.
     const best = scoreCall("go", it).best;

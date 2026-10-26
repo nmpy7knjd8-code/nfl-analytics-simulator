@@ -150,19 +150,27 @@ export const MAX_FG_YARDS = 64;
 /** "Close call" when the best two options are within 2 win-chance points. */
 export const CLOSE_CALL_GAP = 0.02;
 
+/** Kick distance = yards to the end zone + 18 (snap ~8 yd behind the line + 10-yd end zone; nflverse-measured, engine 4fad7a9). */
 export function fieldGoalYards(item: DailyItem): number {
-  return Math.round(item.situation.yardline_100 + 17);
+  return Math.round(item.situation.yardline_100 + 18);
+}
+
+export const TOO_FAR_NOTE = `Too far to kick (${MAX_FG_YARDS + 1}+ yards).`;
+
+/** True when the daily game must not offer Kick (house rule: never over 64 yd). */
+export function kickTooFar(item: DailyItem): boolean {
+  return fieldGoalYards(item) > MAX_FG_YARDS || item.reveal.values.fg == null;
 }
 
 export type OptionState = { id: QuizChoice; shown: boolean; disabled: boolean; note?: string };
 
-/** Kick is disabled past 64 yards; Punt is hidden inside the opponent's 35. */
+/** Kick is hidden past 64 yards (the card shows TOO_FAR_NOTE); Punt is hidden inside the opponent's 35. */
 export function optionStates(item: DailyItem): OptionState[] {
   const fg = fieldGoalYards(item);
-  const tooFar = fg > MAX_FG_YARDS || item.reveal.values.fg == null;
+  const tooFar = kickTooFar(item);
   return [
     { id: "go", shown: true, disabled: false },
-    { id: "fg", shown: true, disabled: tooFar, note: tooFar ? `Too far: ${fg}-yd kick` : `${fg}-yd kick` },
+    { id: "fg", shown: !tooFar, disabled: false, note: tooFar ? TOO_FAR_NOTE : `${fg}-yd kick` },
     { id: "punt", shown: item.situation.yardline_100 >= 35 && item.reveal.values.punt != null, disabled: false },
   ];
 }
@@ -181,9 +189,11 @@ export type ScoredCall = {
   values: Partial<Record<QuizChoice, number>>;
 };
 
+/** Options with an engine value, best first. Kick is left out when it's too far (it isn't offered). */
 export function rankedValues(item: DailyItem): [QuizChoice, number][] {
+  const far = kickTooFar(item);
   return (Object.entries(item.reveal.values) as [QuizChoice, number][])
-    .filter(([, v]) => typeof v === "number")
+    .filter(([id, v]) => typeof v === "number" && !(id === "fg" && far))
     .sort((a, b) => b[1] - a[1]);
 }
 

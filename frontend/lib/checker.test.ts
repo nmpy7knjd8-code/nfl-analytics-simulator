@@ -48,15 +48,14 @@ test("C7: no out-of-range FG is ever offered (every grid cell and every Daily pl
           const r = checkSituation({ distance: dist, yardline_100: yl, posteam_score: Math.max(0, d), defteam_score: Math.max(0, -d), qtr: t.qtr, quarter_seconds_remaining: t.quarter_seconds_remaining, posteam_timeouts: 3, defteam_timeouts: 3 }, grid, []);
           if (!r) continue;
           const fg = r.options.find((o) => o.id === "fg")!;
-          if (yl + 17 > MAX_FG_YARDS) {
-            assert.ok(fg.disabled, `yl ${yl}`);
-            assert.equal(r.item.reveal.values.fg, undefined, `yl ${yl} has fg value`);
+          if (yl + 18 > MAX_FG_YARDS) {
+            assert.ok(!fg.shown, `yl ${yl}`);
             assert.notEqual(r.best, "fg");
           }
         }
   for (const item of DAILY_ITEMS) {
     const fg = optionStates(item).find((o) => o.id === "fg")!;
-    if (item.situation.yardline_100 + 17 > MAX_FG_YARDS) assert.ok(fg.disabled, item.id);
+    if (item.situation.yardline_100 + 18 > MAX_FG_YARDS) assert.ok(!fg.shown, item.id);
   }
 });
 
