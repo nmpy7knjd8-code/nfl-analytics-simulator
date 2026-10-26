@@ -34,7 +34,7 @@ export function WinProbabilityChart({
         <line x1={PAD.l} x2={W - PAD.r} y1={y(0.5)} y2={y(0.5)} className="wp-mid" />
         {[1, 0.5, 0].map((v) => (
           <text key={v} x={PAD.l - 6} y={y(v) + 4} textAnchor="end" className="wp-axis">
-            {Math.round(v * 100)}%
+            {series.home_team_id} {Math.round(v * 100)}%
           </text>
         ))}
         {[1, 2, 3, 4].map((q) => {

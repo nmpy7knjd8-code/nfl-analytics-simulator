@@ -108,7 +108,7 @@ function OptionPanel({
                   </span>
                 ) : null}
               </span>
-              <span className="decide-choice-caption">chance of winning</span>
+              <span className="decide-choice-caption">{scenario.situation.offense} chance of winning</span>
               <span className="decide-choice-pct">{pct(opt.winChance)}</span>
             </button>
           );
@@ -125,7 +125,7 @@ function OptionPanel({
                 style={{ width: `${Math.round(opt.winChance * 100)}%` }}
               />
             </div>
-            <span className="mono decide-bar-pct">{pct(opt.winChance)}</span>
+            <span className="mono decide-bar-pct">{scenario.situation.offense} {pct(opt.winChance)}</span>
           </div>
         ))}
       </div>
@@ -207,10 +207,6 @@ export function FourthDownLab() {
         recommendation={recommendation}
       />
 
-      <p className="decide-footnote muted">{scenario.footnote}</p>
-      <p className="decide-api-hook mono muted" title="Placeholder for sibling 4th-down API">
-        Hook: {scenario.apiHook}
-      </p>
     </div>
   );
 }
