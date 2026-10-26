@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8" /><title>Page not found · NFL Analytics Simulator</title>
+<link rel="icon" href="/nfl-analytics-simulator/favicon.svg" type="image/svg+xml" />
+<script>
+  // Send old short links (/quiz/, /games/<id>/, /decide/) to the demo app.
+  (function () {
+    var base = "/nfl-analytics-simulator/";
+    var p = location.pathname;
+    if (p.indexOf(base) === 0) {
+      var rest = p.slice(base.length);
+      if (/^(quiz|games|decide)(\/|$)/.test(rest)) location.replace(base + "demo/" + rest + location.search + location.hash);
+    }
+  })();
+</script>
+</head><body style="font-family:system-ui,sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem">
+<h1>Page not found</h1>
+<p><a href="/nfl-analytics-simulator/">Go to the NFL Analytics Simulator home page</a> or the <a href="/nfl-analytics-simulator/demo/">fan demo</a>.</p>
+</body></html>

@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { shareMetadata } from "../../../lib/share";
 import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
@@ -10,6 +12,20 @@ type Props = { params: Promise<{ gameId: string }> };
 
 export function generateStaticParams() {
   return FIXTURE_GAMES.items.map((g) => ({ gameId: g.game_id }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const id = decodeURIComponent((await params).gameId);
+  const g = FIXTURE_GAMES.items.find((x) => x.game_id === id);
+  const matchup = g ? `${g.away_team_id} ${g.away_score ?? ""} @ ${g.home_team_id} ${g.home_score ?? ""}`.replace(/ +/g, " ").trim() : id;
+  const when = g ? `Week ${g.week}, ${g.season}` : "";
+  return shareMetadata({
+    title: `${matchup} — game story`,
+    description: `Every play of ${matchup}${when ? ` (${when})` : ""} with its win-chance swing.`,
+    path: `/games/${id}/`,
+    card: `games/${id}`,
+    alt: `${matchup}${when ? `, ${when}` : ""}: the plays that swung it. Data: nflverse`,
+  });
 }
 
 function formatClock(halfSeconds: number | null | undefined): string {
