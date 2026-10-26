@@ -40,6 +40,10 @@ class FourthDownSituation:
             raise ValueError("yardline_100 out of range")
 
 
+
+# nflverse 2019–2025: kick_distance − yardline_100 is 18 on 89% of FG attempts (17 on 1%).
+FG_SNAP_YARDS = 18
+
 def _clip_clock(game: int, half: int, delta: int = CLOCK_DELTA) -> tuple[int, int]:
     d = max(0, int(delta))
     g = max(0, int(game) - d)
@@ -182,7 +186,7 @@ def state_punt(
 
 
 def kick_distance(sit: FourthDownSituation) -> int:
-    return int(sit.yardline_100 + 17)
+    return int(sit.yardline_100 + FG_SNAP_YARDS)
 
 
 @dataclass
@@ -401,7 +405,7 @@ class FourthDownAnalyzer:
             assumptions=[
                 "Path A uncalibrated WP only (no isotonic)",
                 clock_note,
-                f"FG distance = yardline_100 + 17; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
+                f"FG distance = yardline_100 + {FG_SNAP_YARDS}; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
                 "Go fail / FG miss → opponent at 100−yardline_100",
                 punt_note,
                 "Empirics fit REG train 2019–2021 only (never 2023+)",
