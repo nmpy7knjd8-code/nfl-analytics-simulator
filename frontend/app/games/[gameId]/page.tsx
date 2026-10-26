@@ -6,7 +6,7 @@ import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
-import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
+import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
 import { findSwingPlays } from "../../../lib/winProbability";
 
 type Props = { params: Promise<{ gameId: string }> };
@@ -103,6 +103,8 @@ export default async function GameReplayPage({ params }: Props) {
               <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} />
+              {wpSeries.overtimePlays.length ? <h3>Overtime</h3> : null}
+              <OvertimePlayList plays={wpSeries.overtimePlays} />
             </section>
           ) : null}
 

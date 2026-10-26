@@ -1,4 +1,4 @@
-import { clockLabel, type SwingPlay, type WinProbabilitySeries } from "../lib/winProbability";
+import { clockLabel, type OvertimePlay, type SwingPlay, type WinProbabilitySeries } from "../lib/winProbability";
 
 const W = 640;
 const H = 220;
@@ -13,16 +13,18 @@ export function WinProbabilityChart({
   swings: SwingPlay[];
   note: string;
 }) {
-  // Plot each play's pre-snap value, then the final post-snap result.
-  const last = series.points.at(-1);
+  // Plot each play's pre-snap value, then the final post-snap result. Regulation only:
+  // the line stops at 0:00 of Q4 and overtime gets a plain marker instead (house rule).
+  const reg = series.points.filter((p) => !p.is_overtime && p.quarter <= 4);
+  const last = reg.at(-1);
   const pts = last
     ? [
-        ...series.points.map((p) => ({ id: p.play_id, t: p.game_seconds_elapsed, wp: p.home_wp_pre, ot: p.is_overtime })),
-        { id: "__final", t: last.game_seconds_elapsed, wp: last.home_wp_post, ot: last.is_overtime },
+        ...reg.map((p) => ({ id: p.play_id, t: p.game_seconds_elapsed, wp: p.home_wp_pre })),
+        { id: "__final", t: series.has_overtime ? 3600 : last.game_seconds_elapsed, wp: last.home_wp_post },
       ]
     : [];
   if (pts.length < 2) return <p className="muted">Not enough win-chance data for a chart.</p>;
-  const span = Math.max(3600, ...pts.map((p) => p.t));
+  const span = 3600;
   const x = (i: number) => PAD.l + (pts[i].t / span) * (W - PAD.l - PAD.r);
   const y = (wp: number) => PAD.t + (1 - wp) * (H - PAD.t - PAD.b);
   const path = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.wp).toFixed(1)}`).join(" ");
@@ -47,20 +49,26 @@ export function WinProbabilityChart({
           );
         })}
         {series.has_overtime ? (
-          <text x={W - PAD.r - 22} y={H - 8} className="wp-axis">OT</text>
+          <g className="wp-ot-marker">
+            <line x1={W - PAD.r} x2={W - PAD.r} y1={PAD.t} y2={H - PAD.b} className="wp-ot-line" />
+            <text x={W - PAD.r - 6} y={PAD.t + 14} textAnchor="end" className="wp-ot-label">
+              Overtime: win chance not shown
+            </text>
+          </g>
         ) : null}
         <path d={path} className="wp-line" />
         {pts.map((p, i) =>
           swingIds.has(p.id) ? (
             <circle key={p.id} cx={x(i)} cy={y(p.wp)} r={5} className="wp-swing">
-              <title>{series.points[i]?.description}</title>
+              <title>{reg[i]?.description}</title>
             </circle>
           ) : null,
         )}
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Each point is the chance at the snap. Blue dots are the biggest swing plays. {note}
+        {series.away_team_id}). Each point is the chance at the snap. Blue dots are the biggest swing plays.
+        {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""} {note}
       </figcaption>
     </figure>
   );
@@ -80,6 +88,21 @@ export function SwingPlayList({ swings }: { swings: SwingPlay[] }) {
           <p className="swing-why">
             <strong>Why:</strong> {s.why}
           </p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** Overtime plays: listed like any other play, with no win-chance numbers. */
+export function OvertimePlayList({ plays }: { plays: OvertimePlay[] }) {
+  if (!plays.length) return null;
+  return (
+    <ol className="swing-list ot-list">
+      {plays.map((p) => (
+        <li key={p.play_id} className="swing-item ot-item">
+          <div className="play-meta">{clockLabel(p)}</div>
+          <p className="play-desc">{p.description}</p>
         </li>
       ))}
     </ol>
