@@ -1731,3 +1731,4 @@ body { font-variant-numeric: tabular-nums; }
 .fd-howto ol { padding-left: 1.25rem; margin: 0 0 0.75rem; display: grid; gap: 0.6rem; line-height: 1.45; }
 .fd-howto form { margin: 1rem 0 0; }
 @media (max-width: 480px) { .fd-page { padding-inline: 12px; } .fd-card { padding-inline: 1rem; } }
+.fd-404-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; padding: 0; margin: 0; list-style: none; } .fd-404-links a { display: inline-flex; min-height: 48px; align-items: center; text-decoration: underline; }

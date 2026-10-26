@@ -29,15 +29,24 @@ test("each story game matches nflverse facts: score, winner, date, week, stadium
   }
 });
 
-test("swing plays: up to 5, numbered in game order, all flagged in the file", () => {
+test("swing plays: every flagged swing, numbered in game order, all flagged in the file", () => {
   for (const id of STORY_GAME_IDS) {
     const f = load(id);
     const s = numberedSwings(f);
-    assert.ok(s.length > 0 && s.length <= 5);
+    assert.equal(s.length, f.swing_play_ids.length);
     assert.deepEqual(s.map((x) => x.n), s.map((_, i) => i + 1));
     for (const x of s) assert.ok(f.swing_play_ids.includes(x.play.play_id));
     for (let i = 1; i < s.length; i++) assert.ok(elapsed(s[i].play) >= elapsed(s[i - 1].play));
   }
+});
+
+test("M4/M5: DET@KC has all 179 plays, 12 swings, and the late kneel is 3rd & 12", () => {
+  const f = load("2023_01_DET_KC");
+  assert.equal(f.plays.length, 179);
+  assert.equal(numberedSwings(f).length, 12);
+  const kneel = f.plays.find((p) => p.clock === "0:37" && p.qtr === 4)!;
+  assert.equal(kneel.down, 3);
+  assert.equal(kneel.ydstogo, 12);
 });
 
 test("narrator: 3–5 sentences, first one states the real result", () => {

@@ -107,7 +107,7 @@ export function winner(g: GameFile["game"]): string | null {
 export type NumberedSwing = { n: number; play: GamePlay; delta: number };
 
 /** The 5 biggest flagged swings, numbered 1–5 in game order. */
-export function numberedSwings(file: GameFile, max = 5): NumberedSwing[] {
+export function numberedSwings(file: GameFile, max = Infinity): NumberedSwing[] {
   const swings = file.plays
     .filter((p) => p.swing)
     .map((p) => ({ play: p, delta: p.home_wp_after - p.home_wp }))
