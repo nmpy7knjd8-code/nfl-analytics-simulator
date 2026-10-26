@@ -1,5 +1,7 @@
 # NFL Analytics Simulator
 
+**Live:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/
+
 **Fan demo (example data, no live feed):** [https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) · **Fourth-down quiz:** [demo/quiz/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/quiz/)
 
 Research-grounded **NFL-only** analytics and simulation: reconstruct real games, validate baselines (EP → EPA → situation WP), and later run reproducible counterfactual / decision-lab simulations. Local-first, CPU-only. No sports-betting product features in the MVP.
