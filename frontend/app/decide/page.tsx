@@ -1,13 +1,17 @@
+import { shareMetadata } from "../../lib/share";
 import { ExampleBanner } from "../../components/ExampleBanner";
 import { FourthDownLab } from "../../components/FourthDownLab";
 import { TruthChip } from "../../components/TruthChip";
 import { FIXTURE_BANNER } from "../../lib/fixtures";
 
-export const metadata = {
+export const metadata = shareMetadata({
   title: "4th & short — NFL Analytics Simulator",
   description:
     "Compare go for it, kick, or punt in plain English — chance of winning, not a stats dump.",
-};
+  path: "/fourth-down/",
+  card: "fourth-down",
+  alt: "Go for it, kick, or punt? Win chance for each call. Data: nflverse",
+});
 
 export default function DecidePage() {
   return (

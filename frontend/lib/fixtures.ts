@@ -20,17 +20,17 @@ export const FIXTURE_GAMES: GamesResponse = {
       game_date: "2023-09-07",
       home_team_id: "KC",
       away_team_id: "DET",
-      home_score: 21,
-      away_score: 20,
+      home_score: 20,
+      away_score: 21,
       stadium: "GEHA Field at Arrowhead Stadium",
     },
     {
-      game_id: "2023_02_BUF_NYJ",
+      game_id: "2023_01_BUF_NYJ",
       league: "NFL",
       season: 2023,
-      week: 2,
+      week: 1,
       season_type: "REG",
-      game_date: "2023-09-17",
+      game_date: "2023-09-11",
       home_team_id: "NYJ",
       away_team_id: "BUF",
       home_score: 22,
@@ -130,9 +130,9 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: 28,
     possession_team_id: "KC",
     play_type: "pass",
-    description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
+    description: "Patrick Mahomes pass incomplete on fourth down. Detroit takes over.",
     yards_gained: 0,
-    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.08, home_wp: 0.08, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -145,10 +145,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Chiefs 21, Lions 20.",
+    description: "Final — Lions 21, Chiefs 20.",
     yards_gained: 0,
-    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
-    reference: { wp: 0.0, home_wp: 1.0 },
+    // Final state: DET (away) won 21–20. DET has the ball, so DET wp = 1, home (KC) wp = 0.
+    reference: { wp: 1.0, home_wp: 0.0 },
   },
 ];
 

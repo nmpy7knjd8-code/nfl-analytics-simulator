@@ -1,0 +1,205 @@
+{
+  "$defs": {
+    "WinProbabilityPoint": {
+      "properties": {
+        "delta_home_wp": {
+          "maximum": 1.0,
+          "minimum": -1.0,
+          "title": "Delta Home Wp",
+          "type": "number"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "game_seconds_elapsed": {
+          "minimum": 0,
+          "title": "Game Seconds Elapsed",
+          "type": "integer"
+        },
+        "home_wp_post": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Home Wp Post",
+          "type": "number"
+        },
+        "home_wp_pre": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Home Wp Pre",
+          "type": "number"
+        },
+        "is_overtime": {
+          "title": "Is Overtime",
+          "type": "boolean"
+        },
+        "is_swing": {
+          "title": "Is Swing",
+          "type": "boolean"
+        },
+        "play_id": {
+          "title": "Play Id",
+          "type": "string"
+        },
+        "play_index": {
+          "minimum": 0,
+          "title": "Play Index",
+          "type": "integer"
+        },
+        "possession_team_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Possession Team Id"
+        },
+        "quarter": {
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Quarter",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "play_id",
+        "play_index",
+        "quarter",
+        "is_overtime",
+        "game_seconds_elapsed",
+        "home_wp_pre",
+        "home_wp_post",
+        "delta_home_wp",
+        "is_swing"
+      ],
+      "title": "WinProbabilityPoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "away_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Away Score"
+    },
+    "away_team_id": {
+      "title": "Away Team Id",
+      "type": "string"
+    },
+    "game_id": {
+      "title": "Game Id",
+      "type": "string"
+    },
+    "has_overtime": {
+      "title": "Has Overtime",
+      "type": "boolean"
+    },
+    "home_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Home Score"
+    },
+    "home_team_id": {
+      "title": "Home Team Id",
+      "type": "string"
+    },
+    "perspective": {
+      "const": "home",
+      "default": "home",
+      "title": "Perspective",
+      "type": "string"
+    },
+    "points": {
+      "items": {
+        "$ref": "#/$defs/WinProbabilityPoint"
+      },
+      "title": "Points",
+      "type": "array"
+    },
+    "result": {
+      "anyOf": [
+        {
+          "enum": [
+            "home_win",
+            "away_win",
+            "tie"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Result"
+    },
+    "source": {
+      "const": "nflverse_reference_home_wp",
+      "default": "nflverse_reference_home_wp",
+      "title": "Source",
+      "type": "string"
+    },
+    "swing_play_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Swing Play Ids",
+      "type": "array"
+    },
+    "swing_threshold": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 1.0,
+      "title": "Swing Threshold",
+      "type": "number"
+    },
+    "timing": {
+      "const": "pre_snap",
+      "default": "pre_snap",
+      "title": "Timing",
+      "type": "string"
+    },
+    "truth_label": {
+      "const": "historical",
+      "default": "historical",
+      "title": "Truth Label",
+      "type": "string"
+    }
+  },
+  "required": [
+    "game_id",
+    "home_team_id",
+    "away_team_id",
+    "swing_threshold",
+    "has_overtime",
+    "points",
+    "swing_play_ids"
+  ],
+  "title": "WinProbabilitySeries",
+  "type": "object"
+}
