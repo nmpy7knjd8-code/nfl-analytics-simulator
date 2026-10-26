@@ -6,7 +6,7 @@
 → **[Fourth-down quiz](demo/quiz/)** — offline Situation → Lock in → Reveal (auto-start)  
 → **[Open the full checklist (HANDOFF.md)](HANDOFF.md)**  
 → **[Phase 2 review pack (PHASE2_REVIEW.md)](PHASE2_REVIEW.md)** — historical ingest + game replay accuracy check  
-→ **[EP/EPA audit gate](../reports/ep/AUDIT.md)** — Stage A merge readiness  
+→ **[EP/EPA audit gate](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/blob/main/reports/ep/AUDIT.md)** — Stage A merge readiness  
 
 | Quick links | |
 | --- | --- |
