@@ -148,3 +148,59 @@ export interface SimulationResult {
   distributions: Record<string, OutcomeBucket[]>;
   sample_paths?: Record<string, unknown>[];
 }
+
+// ---------------------------------------------------------------------------
+// coaches/{season}.json (backend/src/nfl_sim/products/coaches.py), schema coaches.v1.1.
+// All win chances are the OFFENSE's, 0–1; *_pts fields are win-chance points (×100).
+// v1.1 only ADDS fields; every v1 field keeps its name and meaning.
+// Caveat: wp_before / wp_after_actual are nflverse's WP model; wp_after_chosen /
+// wp_after_best are our 4th-down engine. outcome_vs_expected_pts mixes the two, so read
+// it as a rough "did the play beat the plan", not a calibrated number.
+// ---------------------------------------------------------------------------
+export type CoachCall = {
+  game_id: string; play_id: number; week: number; opponent: string; qtr: number;
+  ydstogo: number; yardline_100: number; score_differential: number;
+  actual: "go" | "fg" | "punt"; recommendation: "go" | "fg" | "punt";
+  /** v1: win-chance points lost vs the engine's best option (≥ 0). */
+  wp_cost_pts: number;
+  result: string; desc: string;
+  /** v1.1: nflverse pre-snap win chance. */
+  wp_before: number | null;
+  /** v1.1: engine expected win chance after the option the coach chose. */
+  wp_after_chosen: number;
+  /** v1.1: engine expected win chance after the engine's best option. */
+  wp_after_best: number;
+  /** v1.1: nflverse win chance after the real play (wp + wpa). */
+  wp_after_actual: number | null;
+  /** v1.1: +gap_pts if the coach chose the best option, else −wp_cost_pts. */
+  decision_value_pts: number;
+  /** v1.1: (wp_after_actual − wp_after_chosen) × 100; + means the play beat expectation. */
+  outcome_vs_expected_pts: number | null;
+  /** v1.1: decision_value_pts + outcome_vs_expected_pts (outcome 0 when null). Signed. */
+  net_value_pts: number;
+};
+
+export type CoachSeason = {
+  coach: string; team: string; calls: number; qualifying_calls: number; agreed: number;
+  should_go: number; went_when_should_go: number; kicked_when_should_go: number;
+  went_when_should_kick: number; go_rate: number;
+  /** v1: −Σ wp_cost_pts over qualifying calls (≤ 0). */
+  net_wp_pts: number;
+  min_calls_for_grade: number; gradeable: boolean; grade: null;
+  best: CoachCall[]; worst: CoachCall[];
+  /** v1.1: distinct games with ≥1 4th-down call this season. */
+  games: number;
+  /** v1.1: Σ wp_cost_pts (= −net_wp_pts). */
+  wp_cost_pts_total: number;
+  /** v1.1: sums over qualifying calls. */
+  decision_value_pts: number;
+  outcome_vs_expected_pts: number;
+  net_value_pts: number;
+};
+
+export type CoachesSeasonFile = {
+  schema_version: "coaches.v1.1"; engine_version: string; season: number;
+  qualifying_rule: string; min_calls_for_grade: number; grade_status: string;
+  provenance: Record<string, unknown>;
+  coaches: CoachSeason[];
+};
