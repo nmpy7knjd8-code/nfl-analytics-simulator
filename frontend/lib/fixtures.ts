@@ -5,53 +5,15 @@
 
 import type { CanonicalPlay, GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
+import { GAME_FACTS } from "./gameFacts";
 
 export const FIXTURE_BANNER =
   "Example data — not live. Shows how the product will feel once the API is connected.";
 
+/** Game facts come only from nflverse (lib/gameFacts.json, generated + checked in CI). */
 export const FIXTURE_GAMES: GamesResponse = {
-  items: [
-    {
-      game_id: "2023_01_DET_KC",
-      league: "NFL",
-      season: 2023,
-      week: 1,
-      season_type: "REG",
-      game_date: "2023-09-07",
-      home_team_id: "KC",
-      away_team_id: "DET",
-      home_score: 21,
-      away_score: 20,
-      stadium: "GEHA Field at Arrowhead Stadium",
-    },
-    {
-      game_id: "2023_02_BUF_NYJ",
-      league: "NFL",
-      season: 2023,
-      week: 2,
-      season_type: "REG",
-      game_date: "2023-09-17",
-      home_team_id: "NYJ",
-      away_team_id: "BUF",
-      home_score: 22,
-      away_score: 16,
-      stadium: "MetLife Stadium",
-    },
-    {
-      game_id: "2023_03_PHI_TB",
-      league: "NFL",
-      season: 2023,
-      week: 3,
-      season_type: "REG",
-      game_date: "2023-09-25",
-      home_team_id: "TB",
-      away_team_id: "PHI",
-      home_score: 11,
-      away_score: 25,
-      stadium: "Raymond James Stadium",
-    },
-  ],
-  total: 3,
+  items: GAME_FACTS.map(({ overtime: _ot, ...g }) => ({ ...g, league: "NFL" }) as GameSummary),
+  total: GAME_FACTS.length,
   limit: 500,
   offset: 0,
   truth_label: "historical",
@@ -130,9 +92,9 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: 28,
     possession_team_id: "KC",
     play_type: "pass",
-    description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
+    description: "Patrick Mahomes pass incomplete on fourth down. Detroit takes over.",
     yards_gained: 0,
-    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.08, home_wp: 0.08, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -145,10 +107,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Chiefs 21, Lions 20.",
+    description: "Final — Lions 21, Chiefs 20.",
     yards_gained: 0,
-    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
-    reference: { wp: 0.0, home_wp: 1.0 },
+    // Final state: DET (away) won 21–20. DET has the ball, so DET wp = 1, home (KC) wp = 0.
+    reference: { wp: 1.0, home_wp: 0.0 },
   },
 ];
 
@@ -224,8 +186,6 @@ export type FourthDownScenario = {
   id: string;
   title: string;
   setup: string;
-  /** Hook for future POST /models/fourth-down once sibling API exists. */
-  apiHook: string;
   situation: {
     offense: string;
     defense: string;
@@ -243,7 +203,6 @@ export type FourthDownScenario = {
    * Always shown next to the recommendation — not model metrics.
    */
   whyRecommended: string;
-  footnote: string;
 };
 
 /** Within this gap (win-chance points), treat top options as too close to call. */
@@ -279,7 +238,6 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     title: "Fourth-and-short near midfield",
     setup:
       "Your team is down by a field goal late in the third. It’s 4th and 1 from the opponent’s 42.",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "DET",
       defense: "KC",
@@ -328,15 +286,12 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "You're already behind, and 4th-and-1 is a high-percentage chance to keep the drive alive. A long field goal or a punt both give up the ball without solving the score.",
-    footnote:
-      "Example comparison for product demo. When the offline 4th-down scorer lands, these bars will call that API instead of fixtures.",
   },
   {
     id: "demo-4th-2",
     title: "Goal-to-go late",
     setup:
       "Tied game, two minutes left. Fourth-and-goal from the 2. Do you go for the win, or take the chip-shot kick?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
     situation: {
       offense: "BUF",
       defense: "NYJ",
@@ -385,64 +340,57 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
     ],
     whyRecommended:
       "Tied late from the 2, going for it plays to win on this snap. A field goal only puts you up three and still leaves them a chance to answer.",
-    footnote:
-      "Example comparison for product demo. Goal-line spots usually drop the punt option in a real decision tool.",
   },
   {
     id: "demo-4th-3",
     title: "Too close to call",
     setup:
-      "Up three late in the fourth. 4th and 3 from your own 45 — go for the dagger, or punt and play defense?",
-    apiHook: "POST /models/fourth-down (not on main yet — using example numbers)",
+      "Colts up three on the Packers with 1:58 left (2020, Week 11). 4th and 4 at the Green Bay 36 — a 54-yard kick, go for it, or punt?",
+    // Real play: nflverse 2020_11_GB_IND play_id 3892. Win chances from the offline
+    // 4th-down engine (fourth_down_engine.v1); FG distance = yardline_100 + 18 = 54 yd.
     situation: {
-      offense: "PHI",
-      defense: "TB",
+      offense: "IND",
+      defense: "GB",
       down: 4,
-      distance: 3,
-      yardline_100: 55,
+      distance: 4,
+      yardline_100: 36,
       quarter: 4,
-      clock: "2:40",
-      scoreOffense: 24,
-      scoreDefense: 21,
+      clock: "1:58",
+      scoreOffense: 31,
+      scoreDefense: 28,
     },
     options: [
+      {
+        id: "fg",
+        label: "Kick a field goal",
+        shortLabel: "Kick",
+        winChance: 0.667,
+        whatUsuallyHappens:
+          "A 54-yard try is makeable but far from automatic. A make puts you up six; a miss hands them the ball near their own 44.",
+        plainResult: "Up six with under two minutes if it's good — they still need only a touchdown.",
+        why: "Points now force them to score a touchdown, but a 54-yarder misses often enough to keep this close.",
+      },
       {
         id: "go",
         label: "Go for it",
         shortLabel: "Go",
-        winChance: 0.71,
+        winChance: 0.657,
         whatUsuallyHappens:
-          "4th and 3 is makeable, but a miss gives them the ball near midfield with time to tie.",
-        plainResult:
-          "Convert and you can ice the game. Fail and you gift them a short field.",
-        why: "A first down lets you run clock — but a miss is dangerous while protecting a small lead.",
+          "4th and 4 converts a bit under half the time. Convert and you can run out much of the clock; fail and they start at their own 36.",
+        plainResult: "Convert and you can nearly end it. Fail and they need only a field goal to tie from good position.",
+        why: "A first down lets you drain the clock — but a stop gives them a short field while you lead by just three.",
       },
       {
         id: "punt",
         label: "Punt",
         shortLabel: "Punt",
-        winChance: 0.7,
-        whatUsuallyHappens:
-          "You flip the field and make them drive the length of the field to tie.",
-        plainResult:
-          "Conservative: force a long scoring drive against the clock.",
-        why: "You already lead — making them go the long way is often enough.",
-      },
-      {
-        id: "fg",
-        label: "Kick a field goal",
-        shortLabel: "Kick",
-        winChance: 0.54,
-        whatUsuallyHappens:
-          "From ~62 yards this is a low-percentage try; miss and they start with good position.",
-        plainResult:
-          "A make makes it a two-score game, but the miss risk is high from here.",
-        why: "Too long to trust — the miss risk outweighs the two-score cushion.",
+        winChance: 0.623,
+        whatUsuallyHappens: "From the 36 a punt nets little — often a touchback to the 20.",
+        plainResult: "Safest on this snap, but you gain only about 16 yards of field position.",
+        why: "Too close to the end zone for a punt to buy much field position.",
       },
     ],
     whyRecommended:
-      "Go and punt land almost even here: one plays to end it, the other protects the lead. Either is defensible — there’s no clear winner.",
-    footnote:
-      "Example inconclusive case for product demo — shown so fans see when the call is a coin-flip, not a slam dunk.",
+      "Kicking and going land about one point apart here — either is defensible. (The Colts went for it: Rivers hit Hines for 13 yards and a first down.)",
   },
 ];

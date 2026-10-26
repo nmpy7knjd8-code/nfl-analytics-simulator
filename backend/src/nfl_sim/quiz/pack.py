@@ -21,8 +21,8 @@ HISTORICAL_REFS: list[dict[str, Any]] = [
         "season": 2022,
         "game_id": "2022_18_LAC_DEN",
         "play_id": 3897.0,
-        "label": "LAC @ DEN — 4th & 14 late",
-        "note": "Documented legacy→improved flip",
+        "label": "LAC @ DEN — 4th & 14",
+        "note": "Late 4th & 14 from own 36; FG out of range (81 yd)",
     },
     {
         "id": "anchor-bal-nyj",
@@ -105,17 +105,13 @@ def pack_item_from_situation_lab_payload(
 
     posteam = prov.get("posteam") or sit.get("posteam")
     defteam = prov.get("defteam") or sit.get("defteam")
-    # Scores may be absent on lake freeze; keep differential readable.
     sd = int(sit.get("score_differential", gs.get("score_differential") or 0))
-    posteam_score = sit.get("posteam_score")
-    defteam_score = sit.get("defteam_score")
+    # Real scores only. The pack builder overwrites these from the play row; we never
+    # invent a "neutral board" (that produced fake scoreboards fans could spot).
+    posteam_score = sit.get("posteam_score", prov.get("posteam_score"))
+    defteam_score = sit.get("defteam_score", prov.get("defteam_score"))
     if posteam_score is None or defteam_score is None:
-        # Neutral board centered so differential is visible
-        base = 14
-        if sd >= 0:
-            posteam_score, defteam_score = base + sd, base
-        else:
-            posteam_score, defteam_score = base, base - sd
+        posteam_score = defteam_score = -1  # sentinel; build_quiz_pack.py always replaces it
 
     return {
         "id": item_id,

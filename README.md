@@ -1,6 +1,6 @@
 # NFL Analytics Simulator
 
-**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ — Fourth & Daily: five real 4th downs a day ([practice](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/practice/), [how it works](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/about/)). Old `/demo/` links redirect.
+**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ · **Fourth & Daily:** [/daily/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/daily/) · **Games:** [/games/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/games/) · **Check a 4th down:** [/fourth-down/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/fourth-down/)
 
 NFL-only analytics built on nflverse play-by-play: reconstruct real games, estimate expected points (EP/EPA) and win chance (WP), and explain fourth-down calls in plain English. There are no betting or odds features.
 
@@ -10,13 +10,11 @@ NFL-only analytics built on nflverse play-by-play: reconstruct real games, estim
 - **Game Explorer:** a few fixture games, play by play, with a win-chance chart and swing plays.
 - **4th-down explainer:** sample situations with the model's recommendation and a short "Why".
 
-The demo uses fixture/example data and does not call the backend. Known data errors and fixes are tracked in issues and PRs.
+The site uses fixture/example data and does not call the backend. Known data errors and fixes are tracked in issues and PRs.
 
 ## How the site is built
 
-The site is built from `main` by [`.github/workflows/pages.yml`](.github/workflows/pages.yml): `npm run build:pages` makes a static export of `frontend/` that is the whole site, served at the root, plus redirect pages for old `/demo/`, `/quiz/` and `/decide/` links (`frontend/scripts/write-redirects.mjs`). The workflow builds on every PR and push and deploys from `main` when the repo variable `PAGES_VIA_ACTIONS` is `true`.
-
-Short links `/quiz/`, `/games/` and `/decide/` redirect to the demo.
+Every push to `main` builds and deploys the site with [`.github/workflows/pages.yml`](.github/workflows/pages.yml): `npm run build:pages` exports `frontend/` as a static site served at the root, and [`scripts/pages/assemble.py`](scripts/pages/assemble.py) adds static files from `docs/` (favicon, docs) and redirect pages for old links. `/demo/...` goes to the same page at the root, `/quiz/` to `/daily/`, and `/decide/` to `/fourth-down/`. `docs/index.html` (the old landing page) and the committed `docs/demo/` export are no longer shipped.
 
 ## Status
 
@@ -45,7 +43,7 @@ cd ../frontend
 npm ci
 npm test && npm run typecheck
 npm run dev                         # http://localhost:3000
-npm run build:pages                 # static export like the live demo (frontend/out)
+npm run build:pages && python3 ../scripts/pages/assemble.py   # same site as live, in _site/
 ```
 
 CI ([`ci.yml`](.github/workflows/ci.yml)) runs backend pytest and frontend test, typecheck and build on every PR.
