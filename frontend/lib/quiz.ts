@@ -20,6 +20,8 @@ export type QuizSituation = {
   qtr: number;
   game_seconds_remaining: number;
   half_seconds_remaining?: number;
+  /** Clock shown to fans: time left in the quarter (0:00–15:00). */
+  quarter_seconds_remaining: number;
   yardline_100: number;
   down: number;
   distance: number;
@@ -47,6 +49,8 @@ export type QuizItem = {
     season?: number | null;
     game_id?: string | null;
     play_id?: number | null;
+    week?: number | null;
+    game_date?: string | null;
     note?: string;
     report?: string;
   };
