@@ -20,7 +20,7 @@ phase2 = [
   "pandas>=2.2.0",
   "pyarrow>=18.0.0",
   "numpy>=2.1.0",
-  "nflreadpy==0.1.5",
+  "nflreadpy>=0.1.5,<0.2",
   "httpx>=0.27.0",
   "requests>=2.32.0",
 ]
