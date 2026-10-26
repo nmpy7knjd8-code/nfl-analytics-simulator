@@ -52,8 +52,8 @@ def synthetic_pbp() -> pd.DataFrame:
                 "surface": "grass",
                 "stadium": "GEHA Field at Arrowhead Stadium",
                 "home_opening_kickoff": 1,
-                "home_score": 21,
-                "away_score": 20,
+                "home_score": 20,
+                "away_score": 21,
                 "qtr": 1,
                 "half_seconds_remaining": 1800 - i * 40,
                 "game_seconds_remaining": 3600 - i * 40,
@@ -94,13 +94,15 @@ def synthetic_pbp() -> pd.DataFrame:
     rows.append(
         {
             **rows[0],
-            "game_id": "2023_02_BUF_NYJ",
+            "game_id": "2023_01_BUF_NYJ",
             "play_id": 1,
-            "week": 2,
+            "week": 1,
             "home_team": "NYJ",
             "away_team": "BUF",
             "game_date": "2023-09-11",
-            "desc": "Kickoff week2",
+            "home_score": 22,
+            "away_score": 16,
+            "desc": "Kickoff BUF@NYJ",
         }
     )
     return pd.DataFrame(rows)

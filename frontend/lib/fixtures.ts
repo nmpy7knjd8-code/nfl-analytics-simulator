@@ -5,53 +5,15 @@
 
 import type { CanonicalPlay, GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
+import { GAME_FACTS } from "./gameFacts";
 
 export const FIXTURE_BANNER =
   "Example data — not live. Shows how the product will feel once the API is connected.";
 
+/** Game facts come only from nflverse (lib/gameFacts.json, generated + checked in CI). */
 export const FIXTURE_GAMES: GamesResponse = {
-  items: [
-    {
-      game_id: "2023_01_DET_KC",
-      league: "NFL",
-      season: 2023,
-      week: 1,
-      season_type: "REG",
-      game_date: "2023-09-07",
-      home_team_id: "KC",
-      away_team_id: "DET",
-      home_score: 21,
-      away_score: 20,
-      stadium: "GEHA Field at Arrowhead Stadium",
-    },
-    {
-      game_id: "2023_02_BUF_NYJ",
-      league: "NFL",
-      season: 2023,
-      week: 2,
-      season_type: "REG",
-      game_date: "2023-09-17",
-      home_team_id: "NYJ",
-      away_team_id: "BUF",
-      home_score: 22,
-      away_score: 16,
-      stadium: "MetLife Stadium",
-    },
-    {
-      game_id: "2023_03_PHI_TB",
-      league: "NFL",
-      season: 2023,
-      week: 3,
-      season_type: "REG",
-      game_date: "2023-09-25",
-      home_team_id: "TB",
-      away_team_id: "PHI",
-      home_score: 11,
-      away_score: 25,
-      stadium: "Raymond James Stadium",
-    },
-  ],
-  total: 3,
+  items: GAME_FACTS.map(({ overtime: _ot, ...g }) => ({ ...g, league: "NFL" }) as GameSummary),
+  total: GAME_FACTS.length,
   limit: 500,
   offset: 0,
   truth_label: "historical",
@@ -145,10 +107,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Chiefs 21, Lions 20.",
+    description: "Final — Lions 21, Chiefs 20.",
     yards_gained: 0,
-    // Final state: KC (home) won. DET has the ball, so DET wp = 0, home_wp = 1.
-    reference: { wp: 0.0, home_wp: 1.0 },
+    // Final state: DET (away) won 21–20. DET has the ball, so DET wp = 1, home (KC) wp = 0.
+    reference: { wp: 1.0, home_wp: 0.0 },
   },
 ];
 

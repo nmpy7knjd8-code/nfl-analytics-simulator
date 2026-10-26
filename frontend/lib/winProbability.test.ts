@@ -50,6 +50,6 @@ test("clock labels show quarter clock and OT clock", () => {
   const base = { play_id: "x", play_index: 1, home_wp: 0.5 };
   assert.equal(clockLabel({ ...base, quarter: 3, game_seconds_remaining: 1525 }), "Q3 10:25");
   assert.equal(clockLabel({ ...base, quarter: 5, game_seconds_remaining: 0, ot_seconds_remaining: 452 }), "OT 7:32");
-  const ot = findSwingPlays(WP_FIXTURES["2023_02_BUF_NYJ"]).find((x) => x.point.quarter === 5);
+  const ot = findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"]).find((x) => x.point.quarter === 5);
   assert.ok(ot && clockLabel(ot.point) === "OT 7:32");
 });

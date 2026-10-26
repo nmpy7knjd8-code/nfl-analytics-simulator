@@ -41,12 +41,12 @@ export const WP_FIXTURES: Record<string, WinProbabilitySeries> = {
     [5, 3, 1500, 0.69, "KC", "Mahomes touchdown pass."],
     [6, 3, 1100, 0.42, "DET", "Interception returned for a touchdown by Detroit."],
     [7, 4, 600, 0.6, "KC", "Chiefs touchdown pass to retake the lead."],
-    [8, 4, 300, 0.48, "DET", "Lions field goal."],
-    [9, 4, 45, 0.85, "KC", "Mahomes scramble picks up a first down."],
-    [10, 4, 30, 1.0, "KC", "Chiefs kneel to run out the clock."],
-    [11, 4, 0, 1.0, null, "Final — Chiefs 21, Lions 20 (example result)."],
+    [8, 4, 300, 0.35, "DET", "Lions field goal takes a 21–20 lead."],
+    [9, 4, 45, 0.15, "KC", "Chiefs turnover on downs."],
+    [10, 4, 30, 0.0, "DET", "Lions kneel to run out the clock."],
+    [11, 4, 0, 0.0, null, "Final — Lions 21, Chiefs 20."],
   ]),
-  "2023_02_BUF_NYJ": build("2023_02_BUF_NYJ", "NYJ", "BUF", [
+  "2023_01_BUF_NYJ": build("2023_01_BUF_NYJ", "NYJ", "BUF", [
     [1, 1, 3600, 0.35, "BUF", "Opening kickoff."],
     [2, 1, 2900, 0.28, "BUF", "Bills touchdown."],
     [3, 2, 2100, 0.38, "NYJ", "Jets field goal."],
@@ -54,7 +54,7 @@ export const WP_FIXTURES: Record<string, WinProbabilitySeries> = {
     [5, 4, 400, 0.3, "BUF", "Bills field goal."],
     [6, 4, 0, 0.55, null, "End of regulation — tied."],
     [7, 5, 0, 1.0, "NYJ", "Punt return touchdown in overtime.", 452],
-    [8, 5, 0, 1.0, null, "Final — Jets win in overtime (example result).", 452],
+    [8, 5, 0, 1.0, null, "Final — Jets 22, Bills 16 (OT).", 452],
   ]),
   "2023_03_PHI_TB": build("2023_03_PHI_TB", "TB", "PHI", [
     [1, 1, 3600, 0.4, "PHI", "Opening kickoff."],
@@ -62,7 +62,7 @@ export const WP_FIXTURES: Record<string, WinProbabilitySeries> = {
     [3, 3, 1500, 0.18, "PHI", "Eagles touchdown pass."],
     [4, 4, 700, 0.06, "PHI", "Eagles field goal."],
     [5, 4, 120, 0.02, "TB", "Buccaneers turnover on downs."],
-    [6, 4, 0, 0.0, null, "Final (example result)."],
+    [6, 4, 0, 0.0, null, "Final — Eagles 25, Buccaneers 11."],
   ]),
 };
 
