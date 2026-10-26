@@ -22,7 +22,7 @@ from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE
 ENGINE_VERSION = "fourth_down_engine.v1"
 TRANSITION_MODE = "improved"
 EMPIRICS_MODE = "pooled"
-PUNT_MIN_YARDLINE_100 = 36  # punt only from the opponent 36 or farther back
+PUNT_MIN_YARDLINE_100 = 35  # punt offered from the opponent 35 and farther back (inclusive)
 CLOSE_CALL_PTS = 2.0
 from nfl_sim.models.fourth_down import FG_SNAP_YARDS  # noqa: E402  (one source: yardline_100 + 18)
 DECIMALS = 4
