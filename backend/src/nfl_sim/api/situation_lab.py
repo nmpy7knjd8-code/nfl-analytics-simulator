@@ -36,6 +36,12 @@ OFFLINE_MAPPER_DISCLAIMER = (
 )
 
 
+def _join_or_and(parts: list[str], word: str) -> str:
+    if len(parts) <= 2:
+        return f" {word} ".join(parts)
+    return ", ".join(parts[:-1]) + f", {word} " + parts[-1]
+
+
 def layman_why_from_config(cfg: dict[str, Any]) -> str:
     """One-line plain-English why from existing summary fields only (no rescoring)."""
     rec = cfg.get("recommendation")
@@ -52,7 +58,7 @@ def layman_why_from_config(cfg: dict[str, Any]) -> str:
     if inconclusive:
         return (
             "Too close to call — "
-            + (" and ".join(labels_short[a] for a in ("go", "fg", "punt") if not values or a in values))
+            + _join_or_and([labels_short[a] for a in ("go", "fg", "punt") if not values or a in values], "and")
             + " win chances are nearly tied"
             f"{margin_txt}."
         )
@@ -69,7 +75,7 @@ def layman_why_from_config(cfg: dict[str, Any]) -> str:
     except (TypeError, ValueError):
         best_wp = None
     wp_txt = f" (~{best_wp:.1%} win chance)" if best_wp is not None else ""
-    alt = " or ".join(labels.get(a, a) for a in others)
+    alt = _join_or_and([labels.get(a, a) for a in others], "or")
     return (
         f"{action[0].upper() + action[1:]} looks best here{wp_txt} — "
         f"higher modeled win chance than {alt}{margin_txt}."
