@@ -1497,3 +1497,34 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.75rem; }
 .swing-item { border-left: 3px solid var(--color-blue); padding: 0.5rem 0.75rem; background: var(--color-bg-elevated); }
 .swing-why { font-size: var(--text-body-sm); color: var(--color-ink-secondary); margin: 0.25rem 0 0; }
+
+/* Branded 404 (QA2 L4): black, white type, one blue accent. */
+.not-found {
+  --nf-accent: #1f6feb;
+  background: #000;
+  color: #fff;
+  min-height: 70vh;
+  padding: clamp(2rem, 8vh, 5rem) var(--page-pad-x);
+  border-radius: var(--radius-lg);
+}
+.not-found-code {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 0 0.5rem;
+  color: var(--nf-accent);
+}
+.not-found-title { font-family: var(--font-display); font-size: var(--text-h1); margin: 0 0 0.75rem; color: #fff; }
+.not-found-copy { color: rgba(255, 255, 255, 0.75); margin: 0 0 1.5rem; }
+.not-found-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; max-width: 28rem; }
+.not-found-links a {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: 0.85rem 1rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md);
+  color: #fff; text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.not-found-links a:hover, .not-found-links a:focus-visible { border-color: var(--nf-accent); outline: none; }
+.not-found-label { font-weight: 600; }
+.not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
+.not-found-links a:hover .not-found-label { color: var(--nf-accent); }
