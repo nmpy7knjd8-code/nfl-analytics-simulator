@@ -192,6 +192,28 @@ def create_app(store: CanonicalStore | None = None) -> FastAPI:
             ),
         }
 
+    @app.get("/games/{game_id}/win-probability")
+    def win_probability(
+        game_id: str,
+        swing_threshold: float | None = Query(default=None, gt=0.0, le=1.0),
+    ) -> dict[str, Any]:
+        """Home-team, pre-snap WP series with swing-play flags (nflverse reference)."""
+        from nfl_sim.models.wp_series import build_wp_series
+
+        st = get_store()
+        try:
+            game = st.get_game(game_id)
+            if game is None:
+                raise HTTPException(status_code=404, detail=f"game not found: {game_id}")
+            rows, _total = st.list_plays(game_id, limit=10_000, offset=0)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        thr = settings.swing_wp_threshold if swing_threshold is None else swing_threshold
+        series = build_wp_series(
+            _clean_game(game), [play_row_to_api_dict(r) for r in rows], swing_threshold=thr
+        )
+        return series.model_dump()
+
     @app.post("/models/ep/score")
     def score_ep(body: EpScoreRequest) -> dict[str, Any]:
         """Score Stage A model EP for a pre-play situation (503 if artifact missing)."""

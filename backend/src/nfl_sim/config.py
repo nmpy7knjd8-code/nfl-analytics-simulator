@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     train_seasons: tuple[int, ...] = (2019, 2020, 2021)
     validate_season: int = 2022
     test_season: int = 2023
+    # Swing play: |delta home WP| >= this (env NFL_SIM_SWING_WP_THRESHOLD)
+    swing_wp_threshold: float = 0.08
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     cors_origins: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
