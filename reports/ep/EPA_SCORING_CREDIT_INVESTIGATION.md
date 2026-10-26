@@ -82,7 +82,7 @@ Predictive EP metrics / 2023 holdout — **not regenerated** in Task A.
 **Script:** `backend/scripts/epa_scoring_credit_diagnostic.py`  
 **Results:** `reports/ep/scoring_credit/diagnostic_results.json`  
 **Table CSV:** `reports/ep/scoring_credit/outcome_table_2019_2022.csv`  
-**Row cache:** `reports/ep/scoring_credit/scored_conventions_2019_2022.parquet`
+**Row cache:** `reports/ep/scoring_credit/scored_conventions_2019_2022.parquet` (gitignored; download from [release asset](https://github.com/nmpy7knjd8-code/nfl-analytics-simulator/releases/tag/data-scoring-credit-2019-2022))
 
 EP surface note: nflverse `ep` — isolates EPA transition convention. **Not** a substitute project model.
 

@@ -1,7 +1,7 @@
 # RESEARCH REGISTER — Phase 1 (NFL only)
 
 **Access date:** 2026-10-11  
-**Aligned to:** `docs/AGENTS.md` fixed defaults  
+**Aligned to:** `AGENTS.md` (repo root) fixed defaults  
 **Claim level:** Literature + package docs + one verified Python install/load. **No model reproduction claimed.**
 
 ## Locked experiment window
