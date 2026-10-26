@@ -51,7 +51,7 @@ export const WP_FIXTURES: Record<string, WinProbabilitySeries> = {
     [2, 1, 2900, 0.28, "BUF", "Bills touchdown."],
     [3, 2, 2100, 0.38, "NYJ", "Jets field goal."],
     [4, 3, 1400, 0.47, "NYJ", "Fumble recovered by the Jets."],
-    [5, 4, 400, 0.3, "BUF", "Bills field goal."],
+    [5, 4, 400, 0.55, "NYJ", "Jets field goal ties the game."],
     [6, 4, 0, 0.55, null, "End of regulation — tied."],
     [7, 5, 0, 1.0, "NYJ", "Punt return touchdown in overtime.", 452],
     [8, 5, 0, 1.0, null, "Final — Jets win in overtime (example result).", 452],

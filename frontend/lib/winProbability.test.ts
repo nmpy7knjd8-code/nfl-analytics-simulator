@@ -53,3 +53,23 @@ test("clock labels show quarter clock and OT clock", () => {
   const ot = findSwingPlays(WP_FIXTURES["2023_02_BUF_NYJ"]).find((x) => x.point.quarter === 5);
   assert.ok(ot && clockLabel(ot.point) === "OT 7:32");
 });
+
+test("swing list: top 3 only, each at least 8 points, numbered by size", () => {
+  for (const s of Object.values(WP_FIXTURES)) {
+    const sw = findSwingPlays(s);
+    assert.ok(sw.length <= 3);
+    for (const x of sw) assert.ok(Math.abs(x.delta) >= 0.08);
+    for (let i = 1; i < sw.length; i++) assert.ok(Math.abs(sw[i - 1].delta) >= Math.abs(sw[i].delta));
+  }
+});
+
+test("readout fields come from contract plays, home-side scores", async () => {
+  const { fieldPosition } = await import("./winProbability");
+  const s = seriesFromPlays("g", "KC", "DET", [
+    { play_id: "1", game_id: "g", play_index: 1, quarter: 2, half_seconds_remaining: 120, down: 4, distance: 1, yardline_100: 38, possession_team_id: "DET", posteam_score: 10, defteam_score: 7, play_type: "rush", reference: { wp: 0.55 } },
+  ]);
+  const p = s.points[0];
+  assert.equal(p.home_score, 7);
+  assert.equal(p.away_score, 10);
+  assert.equal(fieldPosition(p, "KC", "DET"), "KC 38");
+});

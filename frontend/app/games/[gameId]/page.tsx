@@ -3,7 +3,7 @@ import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
-import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
+import { WinProbabilityPanel } from "../../../components/WinProbabilityChart";
 import { findSwingPlays, seriesFromPlays } from "../../../lib/winProbability";
 import { fixtureWinProbability } from "../../../lib/wpFixtures";
 
@@ -90,9 +90,12 @@ export default async function GameReplayPage({ params }: Props) {
               {wpSeries.source === "example" ? (
                 <p className="muted">Example chart — not model output.</p>
               ) : null}
-              <WinProbabilityChart series={wpSeries} swings={swings} />
-              {swings.length ? <h3>Swing plays</h3> : null}
-              <SwingPlayList swings={swings} />
+              <WinProbabilityPanel
+                series={wpSeries}
+                swings={swings}
+                // Example WP fixtures use their own play ids, so only live series link into the feed.
+                linkablePlayIds={wpSeries.source === "example" ? [] : plays.data.items.map((p) => p.play_id)}
+              />
             </section>
           ) : null}
 
@@ -102,7 +105,12 @@ export default async function GameReplayPage({ params }: Props) {
             {plays.data.items.map((p) => {
               const chance = winChanceLabel(p.reference?.wp ?? null);
               return (
-                <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
+                <article
+                  className="play-card"
+                  role="listitem"
+                  id={`play-${p.play_id}`}
+                  key={`${p.game_id}-${p.play_id}`}
+                >
                   <div className="play-top">
                     <span className="play-meta">
                       Q{p.quarter}

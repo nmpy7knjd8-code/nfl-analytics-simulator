@@ -1522,3 +1522,17 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.75rem; }
 .swing-item { border-left: 3px solid var(--color-blue); padding: 0.5rem 0.75rem; background: var(--color-bg-elevated); }
 .swing-why { font-size: var(--text-body-sm); color: var(--color-ink-secondary); margin: 0.25rem 0 0; }
+.wp-readout { border: 1px solid var(--color-border); background: var(--color-bg-elevated); padding: 0.6rem 0.8rem; min-height: 6.5rem; }
+.wp-readout-top { display: flex; justify-content: space-between; gap: 0.5rem; }
+.wp-readout .play-desc { margin: 0.25rem 0 0; }
+.wp-chart svg { touch-action: none; cursor: crosshair; }
+.wp-ot { fill: var(--color-bg-sunken); }
+.wp-cursor { stroke: var(--color-ink-muted); stroke-width: 1; }
+.wp-cursor-dot { fill: var(--color-ink); }
+.wp-swing-g { cursor: pointer; }
+.wp-swing-num { font: 700 10px var(--font-mono); fill: #fff; pointer-events: none; }
+.swing-btn { all: unset; display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.5rem; cursor: pointer; width: 100%; }
+.swing-btn:focus-visible { box-shadow: var(--shadow-focus); }
+.swing-btn > span:last-child { display: grid; gap: 0.15rem; }
+.swing-num { width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--color-blue); color: #fff; display: grid; place-items: center; font: 700 0.75rem var(--font-mono); }
+.play-card.is-highlighted { outline: 2px solid var(--color-blue); outline-offset: 2px; }

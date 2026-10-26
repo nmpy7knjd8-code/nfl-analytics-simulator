@@ -27,6 +27,12 @@ export interface WinProbabilityPoint {
   home_wp: number;
   possession_team_id?: string | null;
   description?: string | null;
+  /** Optional readout details (pre-snap). Missing stays missing. */
+  down?: number | null;
+  distance?: number | null;
+  yardline_100?: number | null;
+  home_score?: number | null;
+  away_score?: number | null;
 }
 
 export interface WinProbabilitySeries {
@@ -84,6 +90,10 @@ export function seriesFromPlays(
       home_wp: clamp01(home),
       possession_team_id: p.possession_team_id,
       description: p.description,
+      down: p.down ?? null,
+      distance: p.distance ?? null,
+      yardline_100: p.yardline_100 ?? null,
+      ...scores(p, home_team_id),
     });
   }
   return {
@@ -94,6 +104,26 @@ export function seriesFromPlays(
     source: "reference",
     source_note: "Reference win chance from play-by-play columns.",
   };
+}
+
+function scores(p: CanonicalPlay, home: string): { home_score: number | null; away_score: number | null } {
+  if (p.posteam_score == null || p.defteam_score == null || !p.possession_team_id) {
+    return { home_score: null, away_score: null };
+  }
+  const homeHasBall = p.possession_team_id === home;
+  return {
+    home_score: homeHasBall ? p.posteam_score : p.defteam_score,
+    away_score: homeHasBall ? p.defteam_score : p.posteam_score,
+  };
+}
+
+/** "KC 35" / "Opp 20"-style field position from the offense's side. */
+export function fieldPosition(p: WinProbabilityPoint, home: string, away: string): string | null {
+  if (p.yardline_100 == null || !p.possession_team_id) return null;
+  const yl = Math.round(p.yardline_100);
+  if (yl === 50) return "midfield";
+  const defense = p.possession_team_id === home ? away : home;
+  return yl > 50 ? `${p.possession_team_id} ${100 - yl}` : `${defense} ${yl}`;
 }
 
 function whyText(delta: number, p: WinProbabilityPoint, favored: string): string {
@@ -136,5 +166,6 @@ export function findSwingPlays(
     const favored = delta > 0 ? series.home_team_id : series.away_team_id;
     out.push({ point: cur, delta, favored_team_id: favored, why: whyText(delta, cur, favored) });
   }
+  // Top `limit` by size; plays under the minimum never count, so a calm game may show fewer.
   return out.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, limit);
 }
