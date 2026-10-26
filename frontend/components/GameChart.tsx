@@ -1,8 +1,8 @@
 import { elapsed, periodName, wpLabel, type GameFile, type NumberedSwing } from "../lib/gameStory";
 
-const W = 640;
-const H = 240;
-const PAD = { l: 44, r: 12, t: 14, b: 26 };
+const W = 400;
+const H = 200;
+const PAD = { l: 6, r: 12, t: 12, b: 22 };
 
 /** Home-team win chance across the game: quarter gridlines, swing dots numbered 1–5. No motion. */
 export function GameChart({ file, swings }: { file: GameFile; swings: NumberedSwing[] }) {
@@ -32,15 +32,14 @@ export function GameChart({ file, swings }: { file: GameFile; swings: NumberedSw
           </text>
         );
       })}
-      <text x={PAD.l - 6} y={PAD.t + 4} className="gs-axis" textAnchor="end">{home} 100%</text>
-      <text x={PAD.l - 6} y={y(0.5) + 4} className="gs-axis" textAnchor="end">50%</text>
-      <text x={PAD.l - 6} y={H - PAD.b} className="gs-axis" textAnchor="end">{away} 100%</text>
+      <text x={PAD.l + 2} y={PAD.t + 10} className="gs-axis">{home} wins</text>
+      <text x={PAD.l + 2} y={H - PAD.b - 4} className="gs-axis">{away} wins</text>
       <path d={d} className="gs-line" />
       {swings.map((s) => (
         <g key={s.play.play_id}>
           <title>{`${s.n}. ${periodName(s.play.qtr)} ${s.play.clock}: ${wpLabel(s.play.home_wp_after, home, away)}`}</title>
-          <circle cx={x(elapsed(s.play))} cy={y(s.play.home_wp_after)} r="9" className="gs-dot" />
-          <text x={x(elapsed(s.play))} y={y(s.play.home_wp_after) + 4} className="gs-dot-n" textAnchor="middle">{s.n}</text>
+          <circle cx={x(elapsed(s.play))} cy={y(s.play.home_wp_after)} r="8" className="gs-dot" />
+          <text x={x(elapsed(s.play))} y={y(s.play.home_wp_after) + 3.5} className="gs-dot-n" textAnchor="middle">{s.n}</text>
         </g>
       ))}
     </svg>

@@ -62,6 +62,7 @@ export default async function GameStoryPage({ params }: Props) {
 
       <section className="fd-card" aria-labelledby="gs-chart-h">
         <h2 id="gs-chart-h" className="gs-h2">{g.home} win chance</h2>
+        <p className="fd-muted gs-cap">Higher = better for {g.home}. Dashed line = 50%. Dots 1–5 = the biggest swings.</p>
         <GameChart file={file} swings={swings} />
         <GameScrubber points={scrub} />
       </section>

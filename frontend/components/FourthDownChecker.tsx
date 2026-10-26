@@ -147,7 +147,7 @@ export function FourthDownChecker() {
                 </>
               ) : result.source.kind === "grid" ? (
                 <>
-                  From the engine grid (same engine as the Daily). {result.source.assumptions.length ? `Nearest grid point: ${result.source.assumptions.join("; ")}.` : ""} The grid assumes the offense is the home team.
+                  {`From the engine grid (same engine as the Daily).${result.source.assumptions.length ? ` Nearest grid point: ${result.source.assumptions.join("; ")}.` : ""} The grid assumes the offense is the home team.`}
                 </>
               ) : null}
             </p>

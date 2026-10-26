@@ -1612,15 +1612,15 @@ body { font-variant-numeric: tabular-nums; }
 .gs-chart { width: 100%; height: auto; display: block; }
 .gs-grid { stroke: #27272a; stroke-width: 1; }
 .gs-mid { stroke: #3f3f46; stroke-dasharray: 3 3; }
-.gs-axis { fill: #a1a1aa; font-size: 11px; }
+.gs-axis { fill: #a1a1aa; font-size: 12px; }
 .gs-line { fill: none; stroke: var(--color-blue); stroke-width: 2.25; stroke-linejoin: round; }
 .gs-dot { fill: #fff; stroke: #0a0a0a; stroke-width: 2; }
-.gs-dot-n { fill: #0a0a0a; font-size: 11px; font-weight: 800; }
+.gs-dot-n { fill: #0a0a0a; font-size: 10px; font-weight: 800; }
 .gs-scrub { display: grid; gap: 0.25rem; }
 .gs-scrub-label { font-size: 0.875rem; color: var(--color-ink-secondary); }
 .gs-scrub input { width: 100%; min-height: 44px; accent-color: var(--color-blue); }
-.gs-readout { margin: 0; display: grid; }
-.gs-readout-text { color: var(--color-ink-secondary); font-size: 0.875rem; }
+.gs-readout { margin: 0; }
+.gs-readout-text { display: block; color: var(--color-ink-secondary); font-size: 0.875rem; }
 .gs-narr p { margin: 0 0 0.4rem; }
 .gs-swings { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
 .gs-swings a { display: grid; grid-template-columns: 28px 1fr; gap: 0.5rem; text-decoration: none; color: #fff; min-height: 44px; }
@@ -1643,3 +1643,4 @@ body { font-variant-numeric: tabular-nums; }
 .gs-row:hover { border-color: #52525b; }
 .gs-row-teams { font-size: 1.125rem; }
 .gs-source { font-size: 0.8125rem; }
+.gs-cap { margin: 0; font-size: 0.875rem; }
