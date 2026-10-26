@@ -20,8 +20,9 @@ export const FIXTURE_GAMES: GamesResponse = {
       game_date: "2023-09-07",
       home_team_id: "KC",
       away_team_id: "DET",
-      home_score: 21,
-      away_score: 20,
+      // Real result: Lions won 21–20 at Arrowhead (2023 Week 1).
+      home_score: 20,
+      away_score: 21,
       stadium: "GEHA Field at Arrowhead Stadium",
     },
     {
@@ -85,7 +86,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "pass",
     description: "Jared Goff pass short middle to Amon-Ra St. Brown for 8 yards.",
     yards_gained: 8,
-    reference: { wp: 0.48, ep: 1.1 },
+    reference: { wp: 0.48, home_wp: 0.52, ep: 1.1 },
   },
   {
     play_id: "3",
@@ -100,7 +101,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "rush",
     description: "David Montgomery right tackle for 3 yards (first down).",
     yards_gained: 3,
-    reference: { wp: 0.5, ep: 1.4 },
+    reference: { wp: 0.5, home_wp: 0.5, ep: 1.4 },
   },
   {
     play_id: "4",
@@ -116,7 +117,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     description:
       "Fourth-and-1 — Detroit goes for it. Montgomery short gain; first down.",
     yards_gained: 2,
-    reference: { wp: 0.55, ep: 2.2 },
+    reference: { wp: 0.55, home_wp: 0.45, ep: 2.2 },
   },
   {
     play_id: "5",
@@ -131,7 +132,7 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     play_type: "pass",
     description: "Patrick Mahomes pass incomplete. Detroit will get the ball back.",
     yards_gained: 0,
-    reference: { wp: 0.62, ep: 2.8 },
+    reference: { wp: 0.62, home_wp: 0.62, ep: 2.8 },
   },
   {
     play_id: "6",
@@ -144,9 +145,10 @@ const DET_KC_PLAYS: CanonicalPlay[] = [
     yardline_100: null,
     possession_team_id: "DET",
     play_type: "other",
-    description: "Final — Chiefs 21, Lions 20.",
+    description: "Final — Lions 21, Chiefs 20.",
     yards_gained: 0,
-    reference: { wp: 1.0 },
+    // `wp` is possession-team (DET) view; home (KC) view is 0.0 because KC lost.
+    reference: { wp: 1.0, home_wp: 0.0 },
   },
 ];
 
