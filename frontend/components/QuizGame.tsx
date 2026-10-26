@@ -11,6 +11,7 @@ import {
   scoreQuizChoice,
   updateSession,
   type QuizChoice,
+  type QuizItem,
   type QuizPhase,
   type QuizResult,
   type SessionStats,
@@ -24,8 +25,25 @@ function resultLabel(result: QuizResult): string {
   return "Incorrect";
 }
 
-export function QuizGame() {
-  const items = QUIZ_ITEMS;
+export type QuizGameProps = {
+  /** Defaults to the full practice pack. */
+  items?: QuizItem[];
+  /** Fires once when the last item in `items` is locked in. */
+  onSetComplete?: (session: SessionStats) => void;
+  /** Fires on every lock-in with that situation's outcome. */
+  onAnswer?: (result: QuizResult, item: QuizItem) => void;
+  /** Optional crowd pick shares per item id. Shown with `crowdLabel` (e.g. "Example data"). */
+  crowd?: Record<string, Partial<Record<QuizChoice, number>>>;
+  crowdLabel?: string;
+};
+
+export function QuizGame({
+  items = QUIZ_ITEMS,
+  onSetComplete,
+  onAnswer,
+  crowd,
+  crowdLabel,
+}: QuizGameProps = {}) {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<QuizPhase>("situation");
   const [selected, setSelected] = useState<QuizChoice | null>(null);
@@ -48,7 +66,10 @@ export function QuizGame() {
   function lockIn() {
     if (!selected) return;
     const result = scoreQuizChoice(selected, item.reveal);
-    setSession((s) => updateSession(s, result));
+    const nextSession = updateSession(session, result);
+    setSession(nextSession);
+    onAnswer?.(result.result, item);
+    if (index + 1 >= items.length) onSetComplete?.(nextSession);
     setShowAssumptions(false);
     setPhase("reveal");
   }
@@ -117,7 +138,8 @@ export function QuizGame() {
               </p>
               <ul className="quiz-values">
                 {CHOICES.map((id) => {
-                  const v = scored.values[id] ?? 0;
+                  const raw = scored.values[id];
+                  const v = typeof raw === "number" && Number.isFinite(raw) ? raw : null;
                   const rec =
                     !scored.inconclusive && scored.recommendation === id;
                   const picked = selected === id;
@@ -127,12 +149,30 @@ export function QuizGame() {
                       className={`quiz-value${rec ? " is-rec" : ""}${picked ? " is-picked" : ""}`}
                     >
                       <span>{CHOICE_LABELS[id]}</span>
-                      <span className="quiz-value-pct">{pct(v)}</span>
+                      <span className="quiz-value-pct">{v == null ? "—" : pct(v)}</span>
+                      {v != null ? (
+                        <span className="quiz-value-bar" aria-hidden="true">
+                          <span style={{ width: `${Math.round(v * 100)}%` }} />
+                        </span>
+                      ) : null}
                     </li>
                   );
                 })}
               </ul>
-              <p className="quiz-why">{scored.layman_why}</p>
+              <p className="quiz-why">
+                <strong>Why:</strong> {scored.layman_why}
+              </p>
+              {crowd?.[item.id] ? (
+                <p className="quiz-crowd">
+                  {crowdLabel ? <span className="quiz-crowd-label">{crowdLabel}</span> : null}{" "}
+                  {CHOICES.map((id) => {
+                    const share = crowd[item.id]?.[id];
+                    return share == null ? null : `${pct(share)} ${CHOICE_LABELS[id].toLowerCase()}`;
+                  })
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              ) : null}
               {item.historical_action ? (
                 <p className="quiz-hist">
                   What the team did:{" "}
