@@ -50,3 +50,6 @@ frontend/public/og/
 
 # Phase 1 product build cache (regenerate: python -m nfl_sim.products.fourth_downs)
 data/products/
+
+# Full per-game files (~117 MB for 2019–2025): regenerate with python -m nfl_sim.products.games
+frontend/public/data/games/20??_*_*.json
