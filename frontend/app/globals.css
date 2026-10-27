@@ -1612,3 +1612,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
   .wp-dots-narrow { display: inline; }
   .wp-swing-num { font-size: 16px; }
 }
+
+/* Live play file states (PlayFeed). */
+.play-feed-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--color-ink-secondary); margin: 0 0 8px; }
+.play-feed-retry { min-height: 48px; }
+.error-band .play-feed-retry { margin-left: 12px; }
+.play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
