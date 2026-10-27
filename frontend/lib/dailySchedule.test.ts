@@ -46,7 +46,10 @@ test("every scheduled id is in the pack; 5 distinct per day; no gaps since launc
 
 test("future schedule doesn't repeat a play within a cycle", () => {
   const dates = Object.keys(DAYS).sort().filter((d) => d > "2026-10-27");
-  const w = cycleDays(DAILY_ITEMS.filter((i) => !RETIRED.has(i.id)));
+  // Window = the pool the schedule was built from (ids it actually deals), so pack rebuilds
+  // that add unscheduled replacement items don't shrink or stretch the rule.
+  const pool = new Set(dates.flatMap((d) => DAYS[d]));
+  const w = cycleDays(DAILY_ITEMS.filter((i) => pool.has(i.id) && !RETIRED.has(i.id)));
   const last = new Map<string, number>();
   dates.forEach((d, i) => {
     for (const id of DAYS[d]) {
