@@ -51,7 +51,7 @@ FG_BINS: tuple[tuple[int, int], ...] = (
     (50, 59),
 )
 
-# Pre-punt yardline_100 bins
+# Legacy pre-punt yardline_100 bands (pre-H8 pickles and toy tests); fits are per-yard now.
 PUNT_YARDLINE_BINS: tuple[tuple[int, int], ...] = (
     (1, 40),
     (41, 60),
@@ -137,40 +137,84 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
     return fg_tbl
 
 
+# Punt outcomes are priced yard by yard (H8): a Gaussian kernel over nearby pre-punt
+# yard lines, so the punt value moves smoothly up the field instead of in flat bands.
+PUNT_KERNEL_YARDS = 4.0
+PUNT_KERNEL_MIN_N = 200.0
+PUNT_MONOTONE_FROM = 50  # widen the kernel where punts are rare (deep in opp territory)
+
+
+def _wquantile(v: np.ndarray, w: np.ndarray, q: float) -> float:
+    o = np.argsort(v)
+    v, w = v[o], w[o]
+    cw = np.cumsum(w) - 0.5 * w
+    return float(np.interp(q * w.sum(), cw, v))
+
+
 def _build_punt_table(
     yl: pd.Series,
     opp_yl: pd.Series,
     tb: pd.Series | None = None,
 ) -> dict[tuple[int, int], dict[str, Any]]:
-    """Mean + quantile buckets for variance-aware punt (TB already mapped to opp 80)."""
+    """Per-yard (1-yd bins, 1..99) kernel-smoothed punt outcome: mean + q25/q50/q75.
+
+    Non-increasing only from our own 50 back: nearer midfield touchbacks really do make
+    short punts land worse than coffin-corner ones. TB already → opp 80.
+    """
+    ok = yl.notna() & opp_yl.notna()
+    x = yl[ok].to_numpy(float)
+    v = opp_yl[ok].to_numpy(float)
+    t = tb[ok].to_numpy(float) if tb is not None else None
+    if len(x) == 0:
+        return {(y, y): {"n": 0, "mean_opp_yardline_100": 75.0, "tb_rate": None,
+                         "buckets": [{"label": "fallback", "opp_yardline_100": 75.0, "weight": 1.0}],
+                         "filter": "no punts"} for y in range(1, 100)}
+    ys = np.arange(1, 100)
+    stats = {k: np.zeros(len(ys)) for k in ("mean", "q25", "q50", "q75", "tb", "n")}
+    for i, y in enumerate(ys):
+        h = PUNT_KERNEL_YARDS
+        while True:
+            w = np.exp(-0.5 * ((x - y) / h) ** 2)
+            if w.sum() >= PUNT_KERNEL_MIN_N or h > 60:
+                break
+            h *= 1.5
+        stats["mean"][i] = float((w * v).sum() / w.sum())
+        for q, k in ((0.25, "q25"), (0.5, "q50"), (0.75, "q75")):
+            stats[k][i] = _wquantile(v, w, q)
+        stats["tb"][i] = float((w * t).sum() / w.sum()) if t is not None else np.nan
+        stats["n"][i] = float(w.sum())
+    # Past PUNT_MONOTONE_FROM (own half, no touchback pull) punting from farther back
+    # can't leave the opponent worse field: running minimum, so sparse deep-own-end-zone
+    # punts don't bend the curve back up.
+    deep = ys >= PUNT_MONOTONE_FROM
+    for k in ("mean", "q25", "q50", "q75"):
+        stats[k][deep] = np.minimum.accumulate(stats[k][deep])
     punt_tbl: dict[tuple[int, int], dict[str, Any]] = {}
-    for lo, hi in PUNT_YARDLINE_BINS:
-        m = yl.ge(lo) & yl.le(hi) & opp_yl.notna()
-        n = int(m.sum())
-        if n:
-            vals = opp_yl[m]
-            q25 = float(vals.quantile(0.25))
-            q50 = float(vals.quantile(0.50))
-            q75 = float(vals.quantile(0.75))
-            buckets = [
-                {"label": "q25", "opp_yardline_100": q25, "weight": 0.25},
-                {"label": "q50", "opp_yardline_100": q50, "weight": 0.50},
-                {"label": "q75", "opp_yardline_100": q75, "weight": 0.25},
-            ]
-            mean_yl = float(vals.mean())
-            tb_rate = float(tb[m].mean()) if tb is not None else None
-        else:
-            buckets = [{"label": "fallback", "opp_yardline_100": 75.0, "weight": 1.0}]
-            mean_yl = 75.0
-            tb_rate = None
-        punt_tbl[(lo, hi)] = {
-            "n": n,
-            "mean_opp_yardline_100": mean_yl,
-            "tb_rate": tb_rate,
-            "buckets": buckets,
-            "filter": "REG punt, punt_blocked==0; TB→opp yardline_100=80; buckets=q25/q50/q75",
+    for i, y in enumerate(ys):
+        punt_tbl[(int(y), int(y))] = {
+            "n": int(((x >= y - 0.5) & (x < y + 0.5)).sum()),
+            "kernel_n": round(stats["n"][i], 1),
+            "mean_opp_yardline_100": float(stats["mean"][i]),
+            "tb_rate": None if t is None else float(stats["tb"][i]),
+            "buckets": [
+                {"label": "q25", "opp_yardline_100": float(stats["q25"][i]), "weight": 0.25},
+                {"label": "q50", "opp_yardline_100": float(stats["q50"][i]), "weight": 0.50},
+                {"label": "q75", "opp_yardline_100": float(stats["q75"][i]), "weight": 0.25},
+            ],
+            "filter": (f"REG punt, punt_blocked==0; TB→opp yardline_100=80; Gaussian kernel "
+                       f"{PUNT_KERNEL_YARDS:g} yd (widened to >= {PUNT_KERNEL_MIN_N:g} punts); "
+                       f"non-increasing from yardline {PUNT_MONOTONE_FROM}; buckets=q25/q50/q75"),
         }
     return punt_tbl
+
+
+def _punt_row(punt_tbl: dict[tuple[int, int], dict], yardline_100: float) -> dict:
+    """Look up the punt row; works for per-yard tables and older banded pickles."""
+    bins = tuple(sorted(punt_tbl))
+    x = float(yardline_100)
+    if bins[0][0] == bins[0][1]:  # per-yard table
+        x = min(max(round(x), bins[0][0]), bins[-1][1])
+    return _bin_rate(bins, x, punt_tbl)
 
 
 def _clock_stat(dt: pd.Series) -> dict[str, Any]:
@@ -445,7 +489,7 @@ class FourthDownEmpirics:
         mode: EmpiricsMode = "pooled",
     ) -> tuple[float, dict[str, Any]]:
         _, _, punt_tbl, resolved = self._tables_for(season, mode=mode)
-        row = dict(_bin_rate(PUNT_YARDLINE_BINS, float(yardline_100), punt_tbl))
+        row = dict(_punt_row(punt_tbl, yardline_100))
         row = {**row, "empirics_resolve": resolved}
         return float(row["mean_opp_yardline_100"]), row
 
@@ -458,7 +502,7 @@ class FourthDownEmpirics:
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         """Quantile buckets for variance-aware punt expectation."""
         _, _, punt_tbl, resolved = self._tables_for(season, mode=mode)
-        row = dict(_bin_rate(PUNT_YARDLINE_BINS, float(yardline_100), punt_tbl))
+        row = dict(_punt_row(punt_tbl, yardline_100))
         buckets = list(row.get("buckets") or [])
         if not buckets:
             mean_yl = float(row.get("mean_opp_yardline_100", 75.0))

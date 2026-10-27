@@ -92,7 +92,7 @@ the 32 current nflverse abbreviations the repo uses (Rams = `LA`; `LAR`/`OAK`/`S
 `team_color3`. When color3 is missing, neutral (white/black/gray) or an exact duplicate of primary/secondary, `tertiary`
 is `team_color4` if that is a distinct non-neutral color (not within RGB distance 40 of primary/secondary); otherwise
 nflverse's color3 is kept (or color2 when color3 and color4 are both blank: NYJ, TEN). Every such team is listed with
-the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Colors only, no logos.
+the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Logos are allowed only as self-hosted nflverse logo/wordmark files (no hotlinked images).
 Regenerate with `python backend/scripts/build_team_colors.py`; checked by `frontend/lib/teamColors.test.ts`.
 
 Team logos: self-hosted under `frontend/public/teams/<ABBR>/logo.png` and `wordmark.png` for the same 32 abbreviations
