@@ -103,7 +103,7 @@ export default async function GameReplayPage({ params }: Props) {
               <h1 className="scoreboard-matchup">
                 {game.data.away_team_id} @ {game.data.home_team_id}
               </h1>
-              <span className="scoreboard-final">
+              <span className="scoreboard-final game-score">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
               </span>
             </div>
@@ -121,7 +121,15 @@ export default async function GameReplayPage({ params }: Props) {
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} series={wpSeries.series} />
               {overtimePlays.length ? <h3>Overtime</h3> : null}
-              <OvertimePlayList plays={overtimePlays} decided={game.data.home_score !== game.data.away_score} />
+              <OvertimePlayList plays={overtimePlays} decided={game.data.home_score !== game.data.away_score}
+                winner={
+                  game.data.home_score == null || game.data.away_score == null
+                    ? undefined
+                    : game.data.home_score > game.data.away_score
+                      ? game.data.home_team_id
+                      : game.data.away_team_id
+                }
+              />
             </section>
           ) : null}
 

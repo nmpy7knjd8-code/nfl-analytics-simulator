@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
+import { overtimeWhy, clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
 import { GAME_PLAY_LISTS } from "./gamePlays";
 import { openingWinChance } from "./wpFixtures";
@@ -234,4 +234,12 @@ test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", 
   assert.equal(ot.return_td, false);
   const p = { ...WP_FIXTURES["2023_01_BUF_NYJ"].series.points[0], event: ot.event, return_td: ot.return_td, yards_gained: ot.yards_gained, description: ot.description, is_overtime: true } as EventPoint;
   assert.doesNotMatch(whyText(0.3, p, "NYJ"), /returned for a touchdown/);
+});
+
+test("2355 P3-3: OT Why uses the play's own return yardage (Gipson 65)", () => {
+  const ot = SWING_EXPORT.games["2023_01_BUF_NYJ"].overtime_plays.at(-1)!;
+  const why = overtimeWhy(ot as never, "NYJ");
+  assert.equal(why, "NYJ won the game on a 65-yard punt return touchdown in overtime.");
+  assert.equal(overtimeWhy({ display_text: "Riley Patterson kicks a 41-yard field goal." } as never, "DET"), "DET won the game on a field goal in overtime.");
+  assert.match(overtimeWhy({ display_text: "X returns it 80 yards for a touchdown after the punt" } as never, "A"), /an 80-yard punt return/);
 });

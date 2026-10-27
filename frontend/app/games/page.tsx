@@ -45,7 +45,7 @@ export default async function GamesPage() {
                   Week {g.week} · {g.game_date}
                 </span>
               </span>
-              <span className="game-row-score">
+              <span className="game-row-score game-score">
                 {g.away_score ?? "—"}–{g.home_score ?? "—"}
               </span>
             </Link>

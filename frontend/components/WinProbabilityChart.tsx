@@ -5,8 +5,7 @@ import {
   type EventPoint,
   type OvertimePlay,
   type SwingPlay,
-  type WinProbabilitySeries,
-} from "../lib/winProbability";
+  type WinProbabilitySeries, overtimeWhy } from "../lib/winProbability";
 import { PenaltyText } from "./PenaltyText";
 
 /** Fan text from the export (#86): display_text, else raw nflverse desc. */
@@ -44,7 +43,7 @@ export function WinProbabilityChart({
   const path = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.wp).toFixed(1)}`).join(" ");
   // Numbered dots (UI Critic 2110 P2-B). A dot too close to an earlier one lifts on a leader line.
   // Two layouts: desktop (r 7, 18-unit threshold, 14-unit lift) and phones, where the 640-wide SVG
-  // renders at ~0.55x (2240 P2-C: r 12, 26-unit threshold, 22-unit lift). CSS shows one of them.
+  // renders at ~0.55x (2355 P2-2: r 16, 24/700 numbers, 34-unit threshold, 30-unit lift). CSS shows one of them.
   const dots = swings
     .map((s, rank) => {
       const i = pts.findIndex((p) => p.id === s.point.play_id);
@@ -63,7 +62,7 @@ export function WinProbabilityChart({
   };
   const dotLayers = [
     { cls: "wp-dots wp-dots-wide", r: 7, placed: layout(18, 14) },
-    { cls: "wp-dots wp-dots-narrow", r: 12, placed: layout(26, 22) },
+    { cls: "wp-dots wp-dots-narrow", r: 16, placed: layout(34, 30) },
   ];
 
   return (
@@ -88,7 +87,7 @@ export function WinProbabilityChart({
         {series.has_overtime ? (
           <g className="wp-ot-marker">
             <line x1={W - PAD.r} x2={W - PAD.r} y1={PAD.t} y2={H - PAD.b} className="wp-ot-line" />
-            <text x={W - PAD.r - 6} y={PAD.t + 14} textAnchor="end" className="wp-ot-label">
+            <text x={W - PAD.r - 8} y={PAD.t + 14} textAnchor="end" className="wp-ot-label">
               Overtime: win chance not shown
             </text>
           </g>
@@ -144,7 +143,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
         const raw = p.raw_desc ?? p.description ?? "";
         const text = fanText(p);
         return (
-          <li key={s.point.play_id} className="swing-item">
+          <li key={s.point.play_id} className="swing-item" id={`swing-${i + 1}`}>
             <div className="play-meta">
               <span className="swing-badge" aria-hidden="true">{i + 1}</span>
               {clockLabel(s.point)} · {swingMeta(s)}
@@ -166,7 +165,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
 }
 
 /** Overtime plays: listed like any other play, with no win-chance numbers. */
-export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePlay[]; decided?: boolean }) {
+export function OvertimePlayList({ plays, decided = true, winner }: { plays: OvertimePlay[]; decided?: boolean; winner?: string }) {
   if (!plays.length) return null;
   const lastId = plays.at(-1)!.play_id;
   return (
@@ -182,6 +181,11 @@ export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePla
             <PenaltyText text={p.penalty_text} />
           </p>
           <RawText raw={p.raw_desc ?? p.description ?? ""} text={fanText(p as EventPoint)} />
+          {decided && winner && p.play_id === lastId ? (
+            <p className="swing-why">
+              <strong>Why:</strong> {overtimeWhy(p, winner)}
+            </p>
+          ) : null}
         </li>
       ))}
     </ol>

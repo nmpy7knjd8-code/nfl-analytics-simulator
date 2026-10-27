@@ -188,3 +188,20 @@ export function findSwingPlays(
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
     .slice(0, limit);
 }
+
+/**
+ * UI Critic 2355 P3-3: Why line for the deciding OT play. Yardage comes only from the play's
+ * own text ("returns it 65 yards for a touchdown"); with no number we say no number.
+ */
+export function overtimeWhy(p: OvertimePlay, winner: string): string {
+  const t = `${p.display_text ?? ""} ${p.raw_desc ?? ""} ${p.description ?? ""}`;
+  const ret = /returns?(?: it)? (\d+) yards? for a touchdown/i.exec(t);
+  const kind = /\bpunts?\b/i.test(t) ? "punt" : /\bkicks?\b|kickoff/i.test(t) ? "kickoff" : null;
+  let how: string;
+  if (ret && kind) how = `${/^(8|11$|18$)/.test(ret[1]) ? "an" : "a"} ${ret[1]}-yard ${kind} return touchdown`;
+  else if (kind && /touchdown/i.test(t)) how = `a ${kind} return touchdown`;
+  else if (/field goal/i.test(t)) how = "a field goal";
+  else if (/touchdown/i.test(t)) how = "a touchdown";
+  else how = "this play";
+  return `${winner} won the game on ${how} in overtime.`;
+}
