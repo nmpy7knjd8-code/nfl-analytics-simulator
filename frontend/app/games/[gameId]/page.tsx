@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { shareMetadata } from "../../../lib/share";
 import { TruthChip } from "../../../components/TruthChip";
+import { TeamLogo } from "../../../components/TeamLogo";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
@@ -101,7 +102,7 @@ export default async function GameReplayPage({ params }: Props) {
             </div>
             <div className="scoreboard">
               <h1 className="scoreboard-matchup">
-                {game.data.away_team_id} @ {game.data.home_team_id}
+                <TeamLogo abbr={game.data.away_team_id} size={32} /> {game.data.away_team_id} @ <TeamLogo abbr={game.data.home_team_id} size={32} /> {game.data.home_team_id}
               </h1>
               <span className="scoreboard-final">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}

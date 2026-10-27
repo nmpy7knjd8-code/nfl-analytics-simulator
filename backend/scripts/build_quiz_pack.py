@@ -76,6 +76,37 @@ CLOSE_CALL_WP = 0.02
 MAX_CLOSE_CALL_SHARE = 0.15  # "too close to call" is a fine answer, but not a third of the pack
 
 
+def item_id_of(r) -> str:
+    return f"{r.game_id}-{int(r.play_id)}"
+
+
+def keep_item(item: dict) -> bool:
+    """Whether a baked item may stay in the pack (hook for per-item filters)."""
+    return True
+
+
+def stable_select(existing_ids, rebake, fresh, n: int):
+    """Keep every existing item that still qualifies, under its old id; fill gaps from fresh.
+
+    Product UI pins the daily schedule by item id (dailySchedule.json), so a rebuild must
+    only update values in place (#119 swapped 15 ids and reshuffled every daily set).
+    rebake(id) -> item or None (None = play left the pool or no longer qualifies);
+    fresh is an iterable of new items, best first. Returns (items, dropped_ids).
+    """
+    kept, dropped = [], []
+    for iid in existing_ids:
+        item = rebake(iid)
+        (kept if item is not None else dropped).append(item if item is not None else iid)
+    seen = {it["id"] for it in kept} | set(dropped)
+    for item in fresh:
+        if len(kept) >= n:
+            break
+        if item["id"] not in seen:
+            kept.append(item)
+            seen.add(item["id"])
+    return kept[:n], dropped
+
+
 def label(r) -> str:
     return f"{r.away_team} @ {r.home_team} — 4th & {int(r.ydstogo)}"
 
@@ -84,7 +115,7 @@ def bake(analyzer, row, r, item_id: str | None = None) -> dict:
     cmp = compare_transition_modes(analyzer, row, empirics_mode="pooled")
     payload = _payload_from_compare(cmp, truth_play="historical", disclaimer="")
     item = pack_item_from_situation_lab_payload(
-        item_id=item_id or f"{r.game_id}-{int(r.play_id)}", label=label(r), payload=payload,
+        item_id=item_id or item_id_of(r), label=label(r), payload=payload,
     )
     rv = item["reveal"]
     if rv.get("margin") is not None:
@@ -115,6 +146,8 @@ def main() -> int:
     ap.add_argument("--seasons", default="2022,2023")
     ap.add_argument("--rewrite-text", action="store_true",
                     help="re-apply fan-language text to the existing pack (no lake/WP needed)")
+    ap.add_argument("--fresh", action="store_true",
+                    help="ignore the existing pack's ids (reshuffles the pinned daily schedule!)")
     a = ap.parse_args()
     if a.rewrite_text:
         pack = json.loads(QUIZ_PACK_PATH.read_text())
@@ -139,22 +172,63 @@ def main() -> int:
         pinned.append(bake(analyzer, hit.loc[r.Index], r, item_id=ref["id"]))
     pool = pool.drop(index=[i for ref in HISTORICAL_REFS for i in pool.index[
         (pool["game_id"] == ref["game_id"]) & (pool["play_id"] == float(ref["play_id"]))]])
-    for action, share in MIX.items():
-        quota = round(a.n * share)
-        close_quota = int(quota * MAX_CLOSE_CALL_SHARE)
-        got = close = 0
-        sub = pool[pool["hist"] == action].sort_values("k")
-        for r in sub.itertuples():
-            if got >= quota:
-                break
-            item = bake(analyzer, sub.loc[r.Index], r)
+    pinned_ids = {ref["id"] for ref in HISTORICAL_REFS}
+    existing = [] if a.fresh or not QUIZ_PACK_PATH.exists() else [
+        it["id"] for it in json.loads(QUIZ_PACK_PATH.read_text())["items"] if it["id"] not in pinned_ids]
+    by_id = {item_id_of(r): (i, r) for i, r in zip(pool.index, pool.itertuples())}
+
+    def rebake(iid):
+        if iid not in by_id:
+            return None
+        i, r = by_id[iid]
+        item = bake(analyzer, pool.loc[i], r)
+        return item if keep_item(item) else None
+
+    def fresh():
+        # New plays only fill slots freed by dropped items, in the target action mix.
+        taken = {k: 0 for k in MIX}
+        close = 0
+        subs = {k: iter(pool[(pool["hist"] == k) & ~pool.index.isin(
+            [by_id[e][0] for e in existing if e in by_id])].sort_values("k").itertuples()) for k in MIX}
+        while subs:
+            act = min(subs, key=lambda k: taken[k] / MIX[k])
+            r = next(subs[act], None)
+            if r is None:
+                del subs[act]
+                continue
+            item = bake(analyzer, pool.loc[r.Index], r)
+            if not keep_item(item):
+                continue
             if item["reveal"]["inconclusive"]:
-                if close >= close_quota:
+                if close >= int(a.n * MAX_CLOSE_CALL_SHARE):
                     continue
                 close += 1
-            items.append(item)
-            got += 1
-    items.sort(key=lambda it: hashlib.sha256(it["id"].encode()).hexdigest())
+            taken[act] += 1
+            yield item
+
+    if existing:
+        items, dropped = stable_select(existing, rebake, fresh(), a.n - len(pinned))
+        if dropped:
+            print(f"DROPPED {len(dropped)} ids (check dailySchedule.json): {sorted(dropped)}")
+    else:
+        for action, share in MIX.items():
+            quota = round(a.n * share)
+            close_quota = int(quota * MAX_CLOSE_CALL_SHARE)
+            got = close = 0
+            sub = pool[pool["hist"] == action].sort_values("k")
+            for r in sub.itertuples():
+                if got >= quota:
+                    break
+                item = bake(analyzer, sub.loc[r.Index], r)
+                if not keep_item(item):
+                    continue
+                if item["reveal"]["inconclusive"]:
+                    if close >= close_quota:
+                        continue
+                    close += 1
+                items.append(item)
+                got += 1
+        items.sort(key=lambda it: hashlib.sha256(it["id"].encode()).hexdigest())
     items = pinned + items[: a.n - len(pinned)]
     pack = {
         "schema_version": "fourth_down_quiz_pack.v2",

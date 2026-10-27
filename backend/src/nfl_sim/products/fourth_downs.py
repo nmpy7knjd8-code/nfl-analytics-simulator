@@ -1,7 +1,8 @@
 """Every regulation 4th down 2019–2025 from nflverse, valued once by the shared engine.
 
 Real-game what-ifs are team-aware: the offense/defense conversion and kicker FG shifts
-(empirical Bayes, that season's earlier games only; models/team_strength.py) and the game's
+(empirical Bayes, that season's earlier games only; models/team_strength.py; the league curves
+and priors are fit on 2019–2023, so they are in-sample for 2019–2023 games) and the game's
 pregame spread go into the separate spread WP model. Both are internal inputs: the table keeps
 only the shift columns, never the spread, and no fan field carries either.
 
@@ -115,7 +116,8 @@ def _eval(row: dict):
 def build(procs: int = 8) -> pd.DataFrame:
     strength = team_strength_model()
     PRIORS_REPORT.parent.mkdir(parents=True, exist_ok=True)
-    PRIORS_REPORT.write_text(json.dumps(strength.priors(), indent=2, sort_keys=True) + "\n")
+    from nfl_sim.models.team_strength import FIT_SAMPLE
+    PRIORS_REPORT.write_text(json.dumps({**strength.priors(), "fit": FIT_SAMPLE}, indent=2, sort_keys=True) + "\n")
     df = pd.concat([candidate_rows(s, strength) for s in SEASONS], ignore_index=True)
     with Pool(procs, initializer=_init) as pool:
         df["engine"] = pool.map(_eval, df.to_dict("records"), chunksize=128)

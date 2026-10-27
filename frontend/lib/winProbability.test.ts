@@ -272,3 +272,12 @@ test("article before yardage: 'an' for 8, 11, 18, 80–89; 'a' otherwise", () =>
   for (const n of [1, 7, 10, 20, 21, 28, 38, 65, 79, 90, 99, 100, 111]) assert.equal(yardArticle(n), "a", String(n));
   assert.match(whyText(0.2, { ...base(), event: "pass", yardline_100: 60, yards_gained: 81 } as EventPoint, "DET"), /an 81-yard gain/);
 });
+
+test("QA 0116 N8: safeties and blocked kicks name the real cause, not the sack or punt", () => {
+  const w = (event: string, description: string) => whyText(0.2, { ...base(), event, description, yards_gained: 0 } as EventPoint, "DET");
+  assert.match(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /a safety gave the defense 2 points/);
+  assert.doesNotMatch(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /sack lost yards/);
+  assert.match(w("punt", "(2:00) M.Haack punt is BLOCKED by J.Doe, recovered by NE at IND 2."), /a blocked punt/);
+  assert.match(w("field_goal", "(0:03) 44 yard field goal is BLOCKED."), /a blocked field goal/);
+  assert.match(w("other", "(5:01) J.Goff sacked at DET 20 for -8 yards."), /a sack lost yards/);
+});
