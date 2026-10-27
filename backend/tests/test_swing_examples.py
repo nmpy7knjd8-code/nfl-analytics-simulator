@@ -274,7 +274,7 @@ def test_qa_2315_sentences():
     assert _by_id("2023_01_BUF_NYJ", "2151")["display_text"] == (
         "Breece Hall is stopped for a loss of 4 yards. He fumbles out of bounds; NYJ keeps the ball.")
     assert _by_id("2023_01_DET_KC", "1273")["display_text"] == (
-        "Botched snap: Frank Ragnow fumbles, and Jared Goff recovers. Jared Goff is stopped for no gain.")
+        "Botched snap: Frank Ragnow fumbles, and Jared Goff recovers at KC 27, a loss of 10 yards.")
     assert _by_id("2023_03_PHI_TB", "1987")["display_text"] == (
         "Baker Mayfield is sacked for a loss of 11 yards. He fumbles, and Robert Hainsey recovers.")
 
