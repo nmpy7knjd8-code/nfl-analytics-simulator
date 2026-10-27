@@ -7,7 +7,7 @@ import { GameScrubber, type ScrubPoint } from "../../../components/GameScrubber"
 import { OpenPlayFromHash } from "../../../components/OpenPlayFromHash";
 import { readGameFile } from "../../../lib/gameFiles";
 import {
-  grade, hasStory, longDate, narrator, numberedSwings, periodName, quarters, STORY_GAME_IDS, winner, wpLabel,
+  grade, hasStory, regulationOnly, longDate, narrator, numberedSwings, periodName, quarters, STORY_GAME_IDS, winner, wpLabel,
 } from "../../../lib/gameStory";
 
 type Props = { params: Promise<{ gameId: string }> };
@@ -42,13 +42,14 @@ export default async function GameStoryPage({ params }: Props) {
   const file = readGameFile(gameId);
   const g = file.game;
   const w = winner(g);
-  const swings = numberedSwings(file);
+  const reg = regulationOnly(file);
+  const swings = numberedSwings(reg);
   const swingN = new Map(swings.map((s) => [s.play.play_id, s.n]));
-  const story = narrator(file);
+  const story = narrator(reg);
   const other = (t: string | null) => (t === g.home ? g.away : g.home);
   const scrub: ScrubPoint[] = file.plays.map((p) => ({
     label: `${periodName(p.qtr)} ${p.clock}`,
-    wp: wpLabel(p.home_wp_after, g.home, g.away),
+    wp: p.qtr > 4 ? "Overtime: no win chance shown" : wpLabel(p.home_wp_after, g.home, g.away),
     score: `${g.away} ${p.away_score} – ${g.home} ${p.home_score}`,
     text: p.text,
   }));
@@ -72,7 +73,7 @@ export default async function GameStoryPage({ params }: Props) {
       <section className="fd-card" aria-labelledby="gs-chart-h">
         <h2 id="gs-chart-h" className="gs-h2">{g.home} win chance</h2>
         <p className="fd-muted gs-cap">Higher = better for {g.home}. Dashed line = 50%. Dots 1–5 = the biggest swings.</p>
-        <GameChart file={file} swings={swings} />
+        <GameChart file={reg} swings={swings} />
         <GameScrubber points={scrub} />
       </section>
 
@@ -112,7 +113,7 @@ export default async function GameStoryPage({ params }: Props) {
                         {n ? <span className="gs-n">{n}</span> : null}
                         {p.clock}{p.posteam && p.down ? ` · ${p.posteam} ${downText(p.down, p.ydstogo, p.yardline_100, p.posteam, other(p.posteam))}` : ""}
                       </span>
-                      <span className="gs-wp">{wpLabel(p.home_wp_after, g.home, g.away)}</span>
+                      {p.qtr > 4 ? null : <span className="gs-wp">{wpLabel(p.home_wp_after, g.home, g.away)}</span>}
                     </div>
                     <p className="gs-play-text">{p.text}</p>
                     {gr ? <p className={`gs-grade is-${gr.tone}`}>4th down · {gr.label}</p> : null}
