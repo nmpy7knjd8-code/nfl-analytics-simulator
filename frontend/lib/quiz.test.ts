@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { CLOSE_LABEL } from "./labels";
 import {
   QUIZ_ITEMS,
+  availableChoices,
   emptySession,
   scoreQuizChoice,
   updateSession,
@@ -43,5 +45,32 @@ describe("fourth-down quiz pack + scoring", () => {
       assert.ok(s.qtr >= 1 && s.qtr <= 4, i.id);
       if (s.yardline_100 + 18 > 64) assert.ok(!("fg" in i.reveal.values), `${i.id} offers an out-of-range FG`);
     }
+  });
+});
+
+describe("H4: only offered options, never a kick past 64 yd", () => {
+  it("no FG choice when yards to the end zone + 18 is over 64", () => {
+    let far = 0;
+    for (const i of QUIZ_ITEMS) {
+      const opts = availableChoices(i);
+      if (i.situation.yardline_100 + 18 > 64) {
+        far++;
+        assert.ok(!opts.includes("fg"), `${i.id} offers a ${i.situation.yardline_100 + 18}-yd FG`);
+      }
+      for (const c of opts) assert.equal(typeof i.reveal.values[c], "number", `${i.id} shows a row with no value`);
+    }
+    assert.ok(far > 0);
+  });
+
+  it("a missing or too-far option never earns half credit on a close call", () => {
+    const reveal = { recommendation: "inconclusive", inconclusive: true, margin: 0.01, values: { go: 0.4, punt: 0.41 }, layman_why: "" };
+    assert.deepEqual([scoreQuizChoice("fg", reveal).credit, scoreQuizChoice("go", reveal).credit], [0, 0.5]);
+    const fgReveal = { ...reveal, values: { go: 0.4, fg: 0.41, punt: 0.4 } };
+    assert.equal(scoreQuizChoice("fg", fgReveal, { yardline_100: 50 }).credit, 0);
+    assert.equal(scoreQuizChoice("fg", fgReveal, { yardline_100: 30 }).credit, 0.5);
+  });
+
+  it("M8: one close-call label", () => {
+    assert.equal(CLOSE_LABEL, "Close call");
   });
 });
