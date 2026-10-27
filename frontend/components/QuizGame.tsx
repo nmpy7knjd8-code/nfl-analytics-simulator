@@ -172,8 +172,8 @@ export function QuizGame() {
                       key={id}
                       className={`quiz-value${rec ? " is-rec" : ""}${isPicked ? " is-picked" : ""}${off ? " is-off" : ""}${close ? " is-close" : ""}`}
                     >
-                      <span>{CHOICE_LABELS[id]}</span>
-                      <span className="quiz-value-right">{tag ? <span className="quiz-tag">{tag}</span> : null}{off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${rowPct[id] ?? pct(v)}`}</span>}</span>
+                      <span className="quiz-value-name">{CHOICE_LABELS[id]}{tag ? <span className="quiz-tag">{tag}</span> : null}</span>
+                      {off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${rowPct[id] ?? pct(v)}`}</span>}
                     </li>
                   );
                 })}
