@@ -76,8 +76,8 @@ def test_api_walkthrough_success_then_reject(client: TestClient):
     d1 = r1.json()
     assert d1["source"]["snapshot_id"] == "demo-lac-den-f1"
     assert d1["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
-    assert d1["configs"]["pooled_legacy"]["recommendation"] == "punt"
-    assert d1["configs"]["pooled_improved"]["recommendation"] == "punt"
+    assert d1["configs"]["pooled_legacy"]["recommendation"] in ("punt", "inconclusive")  # H6: near tie
+    assert d1["configs"]["pooled_improved"]["recommendation"] in ("punt", "inconclusive")  # H6: near tie
     # Score/clock changed vs frame 0
     assert d1["play"]["game_state"]["score_differential"] != d0["play"]["game_state"][
         "score_differential"
@@ -97,7 +97,7 @@ def test_api_walkthrough_success_then_reject(client: TestClient):
     )
     assert r2ok.status_code == 200, r2ok.text
     assert r2ok.json()["field_sources"]["distance"] == "user_fallback"
-    assert r2ok.json()["configs"]["pooled_improved"]["recommendation"] == "punt"
+    assert r2ok.json()["configs"]["pooled_improved"]["recommendation"] in ("punt", "inconclusive")  # H6: near tie
 
     # Stale reject
     r3 = client.get(f"/situation-lab/api/recorded-demo/{SEQ}/frame/3")

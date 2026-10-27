@@ -19,6 +19,7 @@ from nfl_sim.models.dataset import data_hash_for_seasons, split_frames
 from nfl_sim.models.features import assert_no_leakage_columns
 from nfl_sim.models.split import forbid_test_season_in_fit
 from nfl_sim.models.wp_features import (
+    WP_MODEL_FEATURES,
     WP_NUMERIC_FEATURES,
     WP_SCORE_TIME_FEATURES,
     WPFeatureBuilder,
@@ -76,7 +77,9 @@ class ScoreTimeBaseline:
 
 @dataclass
 class WPModel:
-    feature_builder: WPFeatureBuilder = field(default_factory=WPFeatureBuilder)
+    feature_builder: WPFeatureBuilder = field(
+        default_factory=lambda: WPFeatureBuilder(columns=WP_MODEL_FEATURES)
+    )
     classifier: LogisticRegression | None = None
     meta: dict[str, Any] = field(default_factory=dict)
 
@@ -328,3 +331,4 @@ def train_and_evaluate_wp(
     cal.to_csv(out_dir / "calibration_val.csv", index=False)
 
     return metrics
+
