@@ -17,7 +17,7 @@ export default async function GamesPage() {
   const { data: games } = result;
 
   return (
-    <main className="main page" id="main">
+    <main className="main page games-dark" data-theme="dark" id="main">
       <header className="section-head">
         <div className="overline">
           <TruthChip kind="historical" />

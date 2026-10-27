@@ -77,7 +77,7 @@ export default async function GameReplayPage({ params }: Props) {
 
 
   return (
-    <main className="main page" id="main">
+    <main className="main page games-dark" data-theme="dark" id="main">
       <Link className="back-link" href="/games">
         ← Games
       </Link>
