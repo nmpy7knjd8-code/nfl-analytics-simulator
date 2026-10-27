@@ -41,6 +41,8 @@ export interface SwingPlay {
   yards_gained: number | null;
   /** Interception or fumble returned for a TD by the defense. */
   return_td: boolean;
+  /** Punt or kickoff returned for a TD (nflverse return_touchdown). Never true together with return_td. */
+  kick_return_td: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
   /** Penalty sentence(s) after the play; null on "No play" rows (the flag is display_text) and flag-free plays. */
