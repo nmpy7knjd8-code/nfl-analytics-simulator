@@ -53,7 +53,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Skip to content
           </a>
           <TopBar />
-          <div className="app-stage">{children}</div>
+          <div className="app-stage">
+            {children}
+            <footer className="site-legal">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</footer>
+          </div>
           <AppNav />
         </div>
       </body>
