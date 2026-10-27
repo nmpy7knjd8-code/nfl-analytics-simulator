@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const matchup = g ? `${g.away_team_id} ${g.away_score ?? ""} @ ${g.home_team_id} ${g.home_score ?? ""}`.replace(/ +/g, " ").trim() : id;
   const when = g ? `Week ${g.week}, ${g.season}` : "";
   return shareMetadata({
-    title: `${matchup} — game story`,
+    title: `${matchup} game story · Fourth & Daily`,
     description: `Every play of ${matchup}${when ? ` (${when})` : ""} with its win-chance swing.`,
     path: `/games/${id}/`,
     card: `games/${id}`,
@@ -121,7 +121,16 @@ export default async function GameReplayPage({ params }: Props) {
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} series={wpSeries.series} />
               {overtimePlays.length ? <h3>Overtime</h3> : null}
-              <OvertimePlayList plays={overtimePlays} decided={game.data.home_score !== game.data.away_score} />
+              <OvertimePlayList
+                plays={overtimePlays}
+                winner={
+                  game.data.home_score == null || game.data.away_score == null || game.data.home_score === game.data.away_score
+                    ? null
+                    : game.data.home_score > game.data.away_score
+                      ? game.data.home_team_id
+                      : game.data.away_team_id
+                }
+              />
             </section>
           ) : null}
 
