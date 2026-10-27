@@ -1557,7 +1557,8 @@ body { font-variant-numeric: tabular-nums; }
 .quiz-value-name, .fd-bar-label { display: flex; flex-direction: column; gap: 2px; }
 .quiz-tag { font-size: 0.75rem; color: #d4d4d8; margin: 0; }
 /* #98 / 2236: a Correct pick is solid white; on a Close call the better option is solid and the pick dashed. No red. */
-.fd-bar { border-radius: 8px; padding: 2px 4px; }
+.fd-bar { border-radius: 8px; padding: 2px 4px; min-height: 3.25rem; align-items: center; grid-template-columns: 6.5rem 1fr 4.75rem; }
+.quiz-value { min-height: 3.25rem; align-items: center; }
 .fd-bar.is-rec { outline: 1.5px solid #f0f0f4; }
 .fd-bar.res-close.is-close { outline: 1.5px solid #f0f0f4; }
 .fd-bar.res-right.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
