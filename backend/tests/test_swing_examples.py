@@ -115,14 +115,16 @@ def test_fourth_down_failed_matches_pbp():
 
 
 def test_opening_win_chance_is_nflverse_first_real_play():
-    expected = {"2023_01_BUF_NYJ": 0.5668, "2023_01_DET_KC": 0.5668, "2023_03_PHI_TB": 0.5463}
+    # nflverse's published spread-aware pre-snap WP at the opening kickoff (was the no-spread
+    # 0.5668 / 0.5668 / 0.5463 before real past plays switched to it).
+    expected = {"2023_01_BUF_NYJ": 0.4112, "2023_01_DET_KC": 0.6449, "2023_03_PHI_TB": 0.2754}
     for gid, g in EXPORT["games"].items():
         first = next(r for r in ROWS if r["game_id"] == gid and r.get("play_type") and r.get("time"))
         assert g["opening_home_wp"] == round(first["home_wp"], 4) == expected[gid]
         assert abs(g["opening_home_wp"] + g["opening_away_wp"] - 1) < 1e-9
-    # QA H7: BUF (away) opens at 43%, PHI (away) at 45%
-    assert round(EXPORT["games"]["2023_01_BUF_NYJ"]["opening_away_wp"] * 100) == 43
-    assert round(EXPORT["games"]["2023_03_PHI_TB"]["opening_away_wp"] * 100) == 45
+    # QA H7: BUF (away) opens at 59%, PHI (away) at 72%
+    assert round(EXPORT["games"]["2023_01_BUF_NYJ"]["opening_away_wp"] * 100) == 59
+    assert round(EXPORT["games"]["2023_03_PHI_TB"]["opening_away_wp"] * 100) == 72
 
 
 def test_yards_gained_and_return_td_match_pbp():
@@ -192,3 +194,20 @@ def test_every_penalty_in_raw_desc_is_mentioned():
 def test_phi_tb_kickoff_offside_penalty_sentence():
     assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards. "
             "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards.") in _texts("2023_03_PHI_TB")
+
+
+def test_every_real_play_carries_the_chart_wp_and_a_fallback_flag():
+    for gid, g in EXPORT["games"].items():
+        chart = {c["play_id"]: c for c in g["chart"]}
+        plays = json.loads((ROOT / "frontend/lib/plays" / f"{gid}.json").read_text())["plays"]
+        for p in plays:
+            if p["play_id"] in chart:
+                c = chart[p["play_id"]]
+                assert (p["home_wp_pre"], p["home_wp_post"], p["wp_fallback"]) == (
+                    c["home_wp_pre"], c["home_wp_post"], c["wp_fallback"])
+
+
+def test_exports_never_name_the_odds_source():
+    import re
+    for f in [ROOT / "frontend/lib/swingPlays.json", *sorted((ROOT / "frontend/lib/plays").glob("*.json"))]:
+        assert not re.search(r"vegas|spread|odds|betting|moneyline", f.read_text(), re.I), f

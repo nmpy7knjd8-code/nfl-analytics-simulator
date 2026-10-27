@@ -41,8 +41,15 @@ def main(path: str, players: str = PLAYERS_CSV, rosters: str = ROSTERS) -> None:
     import pandas as pd
 
     id_cols = [f"{role}_player_id" for role in NAME_ROLES]
-    df = pd.read_parquet(path, columns=FIXTURE_COLUMNS + id_cols)
+    from nfl_sim.models.past_play_wp import MODEL_INPUT_COLUMNS, NFLVERSE_WP_COLUMNS, past_play_home_wp
+
+    extra = [c for c in NFLVERSE_WP_COLUMNS + MODEL_INPUT_COLUMNS if c not in FIXTURE_COLUMNS]
+    read = [c for c in FIXTURE_COLUMNS if c != "wp_fallback"]
+    df = pd.read_parquet(path, columns=list(dict.fromkeys(read + id_cols + extra)))
     df = df[df.game_id.isin(GAME_IDS) & df.play_id.notna()].copy()
+    # Real past plays: nflverse's published (spread-aware) WP; our model only where it is null.
+    df[["home_wp", "home_wp_post", "wp_fallback"]] = past_play_home_wp(df)
+    df = df.drop(columns=extra)
     names = pd.read_csv(players, usecols=["gsis_id", "display_name"]).dropna().set_index("gsis_id").display_name.to_dict()
     ros = pd.read_parquet(rosters, columns=["week", "team", "jersey_number", "full_name"]).dropna()
     roster = {(int(w), t, int(j)): n for w, t, j, n in ros.itertuples(index=False)}

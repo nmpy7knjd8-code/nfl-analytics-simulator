@@ -174,9 +174,9 @@ test("#76: chart and swing points are rows of the plays file", () => {
 });
 
 test("#88: opening win chance is per game, not the flat 56.68% home prior", () => {
-  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.away, 0.4332);
-  assert.equal(openingWinChance("2023_03_PHI_TB")!.away, 0.4537);
-  assert.equal(openingWinChance("2023_01_DET_KC")!.away, 0.4332);
+  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.away, 0.5888);
+  assert.equal(openingWinChance("2023_03_PHI_TB")!.away, 0.7246);
+  assert.equal(openingWinChance("2023_01_DET_KC")!.away, 0.3551);
   for (const id of Object.keys(WP_FIXTURES)) {
     const o = openingWinChance(id)!;
     assert.ok(Math.abs(o.home + o.away - 1) < 1e-6);
