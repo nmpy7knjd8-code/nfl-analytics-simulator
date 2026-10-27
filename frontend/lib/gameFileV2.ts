@@ -84,8 +84,8 @@ export function gameFileUrl(gameId: string, basePath = ""): string {
 
 /**
  * game.v2 → play-list rows, in game order. Drops non-plays (game start, quarter ends, timeouts,
- * two-minute warnings). The v2 file carries only nflverse's raw desc, so fan text comes from
- * `fanText` (display_text by play_id, from the export) when present; we never write play text.
+ * two-minute warnings). games-v3 files carry display_text/penalty_text, which win; older v2 files
+ * carry only raw desc, so fan text comes from `fanText` (by play_id, from the export); we never write play text.
  */
 export function feedRowsFromGameV2(
   doc: GameFileV2,
@@ -97,13 +97,14 @@ export function feedRowsFromGameV2(
   for (let i = 0; i < c.play_id.length; i++) {
     if (c.play_type[i] == null || NON_PLAY.test(c.text[i] ?? "")) continue;
     const id = String(c.play_id[i]);
-    // Penalty sentences pair with the fan text they were split from (#106): export rows use the
-    // export's penalty_text; games-v3 rows use their own cols; raw v2 desc already includes the flags.
-    const fan = fanText.get(id)?.trim();
+    // Penalty sentences pair with the fan text they were split from (#106). The live games-v3 file
+    // is the source of truth when it carries display_text, so its own penalty_text goes with it;
+    // otherwise export rows use the export's penalty_text; raw v2 desc already includes the flags.
     const own = c.display_text?.[i]?.trim();
-    const text = fan || own || c.text[i]?.trim();
+    const fan = fanText.get(id)?.trim();
+    const text = own || fan || c.text[i]?.trim();
     if (!text) continue;
-    const penalty_text = fan ? penaltyText.get(id) ?? null : own ? c.penalty_text?.[i] ?? null : null;
+    const penalty_text = own ? c.penalty_text?.[i] ?? null : fan ? penaltyText.get(id) ?? null : null;
     rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text, penalty_text });
   }
   return rows;
