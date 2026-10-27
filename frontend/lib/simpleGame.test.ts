@@ -118,3 +118,14 @@ test("QA 0116 SG5: three tied options say 'All three count.'", () => {
   assert.match(bestCallText([{ id: "go", tag: "Best" }, { id: "fg", tag: "Best" }, { id: "punt", tag: "Best" }]), /All three count\.$/);
   assert.match(bestCallText([{ id: "go", tag: "Best" }, { id: "punt", tag: "Best" }]), /Both count\.$/);
 });
+
+test("QA 0217 B: curated items (no numeric id suffix) find their play via source.play_id", () => {
+  for (const [id, pid] of [["flip-lac-den", 3897], ["anchor-bal-nyj", 368]] as const) {
+    const it = byId(id);
+    assert.equal(it.source.play_id, pid);
+    const doc = twoRow(it, { text: "x", display: "Punt.", type: "punt" }, { pos: it.situation.defteam, yl: 80, down: 1 });
+    (doc.cols.play_id as number[])[0] = pid;
+    (doc.cols.play_id as number[])[1] = pid + 20;
+    assert.ok(outcomeFromGame(doc, it, (a) => a), `${id} has no outcome`);
+  }
+});

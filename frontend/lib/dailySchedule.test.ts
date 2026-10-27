@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import schedule from "./dailySchedule.json";
 import retiredIds from "./retiredDailyIds.json";
-import { DAILY_ITEMS, DAILY_SET_SIZE, cycleDays, dailySet, dateKey } from "./daily";
+import { DAILY_ITEMS, DAILY_SET_SIZE, cycleDays, dailySet, dateKey, missingScheduledIds } from "./daily";
 
 const DAYS = (schedule as { days: Record<string, string[]> }).days;
 const LAUNCH = "2026-10-26"; // #53 shipped 23:39 ET Oct 26
@@ -67,4 +67,15 @@ test("no retired id is scheduled on or after the retirement date", () => {
     for (const id of day) assert.ok(!RETIRED.has(id), `${d}: retired ${id} is still scheduled`);
   }
   assert.ok(DAYS["2026-10-26"].includes("2022_06_SF_ATL-3503"), "Oct 26 keeps its played set");
+});
+
+test("a pinned id missing from the pack throws instead of reshuffling (QA 0217 I)", () => {
+  assert.deepEqual(missingScheduledIds(), []);
+  DAYS["2099-01-01"] = ["nope-1", ...DAYS[dateKey()].slice(1)];
+  try {
+    assert.throws(() => dailySet("2099-01-01"), /pins nope-1 on 2099-01-01.*not in dailyPack\.json/);
+    assert.deepEqual(missingScheduledIds(), [{ date: "2099-01-01", id: "nope-1" }]);
+  } finally {
+    delete DAYS["2099-01-01"];
+  }
 });
