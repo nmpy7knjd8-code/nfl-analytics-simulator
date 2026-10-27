@@ -1,6 +1,6 @@
 import { API_ENDPOINTS, type CanonicalPlay, type GameSummary, type WinProbabilitySeries } from "../contracts";
 import { splitAtRegulation, type ChartSeries } from "./winProbability";
-import { gameWinProbability } from "./wpSeries";
+import { fixtureWinProbability } from "./wpFixtures";
 import {
   FIXTURE_BANNER,
   FIXTURE_GAMES,
@@ -109,7 +109,7 @@ export async function fetchWinProbability(gameId: string): Promise<ChartSeries |
       /* fall through to fixtures */
     }
   }
-  return gameWinProbability(gameId);
+  return fixtureWinProbability(gameId);
 }
 
 /** Future hook — sibling agent may add real fourth-down scoring on another branch. */

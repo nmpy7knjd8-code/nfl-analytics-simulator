@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { GAME_FACTS_BY_ID } from "./gameFacts";
 import { FIXTURE_GAMES, fixturePlays } from "./fixtures";
-import { WP_SERIES as WP_FIXTURES } from "./wpSeries";
+import { WP_FIXTURES } from "./wpFixtures";
 
 test("every fixture game matches nflverse facts", () => {
   for (const g of FIXTURE_GAMES.items) {

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CHECKER_ENABLED } from "../lib/features";
 
-const TABS = [
+const ALL_TABS = [
   { href: "/", label: "Home", match: (p: string) => p === "/" },
   {
     href: "/games",
@@ -22,11 +23,13 @@ const TABS = [
   },
 ] as const;
 
+const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down");
+
 export function AppNav() {
   const pathname = usePathname() || "/";
 
   return (
-    <nav className="app-nav app-nav-4" aria-label="Primary">
+    <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {
         const current = tab.match(pathname);
         return (
