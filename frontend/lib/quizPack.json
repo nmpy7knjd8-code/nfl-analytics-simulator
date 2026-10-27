@@ -148,7 +148,7 @@
         "values": {
           "go": 0.5822235022629254,
           "punt": 0.5485096775527336,
-          "fg": 0.508268303215013
+          "fg": 0.5120943571362085
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (58.2% vs 54.9%).",
         "transition_mode": "improved",
@@ -301,13 +301,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.023490918683600537,
+        "margin": 0.02833111239096564,
         "values": {
           "go": 0.6294234476686432,
           "punt": 0.585964338535,
-          "fg": 0.6059325289850427
+          "fg": 0.6010923352776776
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (62.9% vs 60.6%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (62.9% vs 60.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -354,66 +354,13 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00431984060931212,
+        "margin": 0.005479472744309932,
         "values": {
           "go": 0.5879517584097392,
           "punt": 0.49106165654816103,
-          "fg": 0.5836319178004271
+          "fg": 0.5824722856654293
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 59%); punting is lower (49%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_17_ARI_ATL-3130",
-      "label": "ARI @ ATL \u2014 4th & 1",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_17_ARI_ATL",
-        "play_id": 3130,
-        "note": "",
-        "week": 17,
-        "game_date": "2023-01-01"
-      },
-      "situation": {
-        "posteam": "ARI",
-        "defteam": "ATL",
-        "home_team": "ATL",
-        "away_team": "ARI",
-        "posteam_score": 16,
-        "defteam_score": 14,
-        "score_differential": 2,
-        "qtr": 4,
-        "game_seconds_remaining": 814,
-        "half_seconds_remaining": 814,
-        "yardline_100": 44,
-        "down": 4,
-        "distance": 1,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 814
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.0942331345279146,
-        "values": {
-          "go": 0.6808466398347448,
-          "punt": 0.5866135053068302,
-          "fg": 0.5781679247137058
-        },
-        "layman_why": "Going for it added about 9% win chance over the next-best option (68.1% vs 58.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -460,11 +407,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024716472592236083,
+        "margin": 0.024257727989198674,
         "values": {
           "go": 0.8506853486575576,
           "punt": 0.7975902208489261,
-          "fg": 0.8259688760653215
+          "fg": 0.826427620668359
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (85.1% vs 82.6%).",
         "transition_mode": "improved",
@@ -565,11 +512,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.027615634687245594,
+        "margin": 0.027835934761506698,
         "values": {
           "go": 0.6476939873695993,
           "punt": 0.5533287100132285,
-          "fg": 0.6200783526823537
+          "fg": 0.6198580526080926
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (64.8% vs 62.0%).",
         "transition_mode": "improved",
@@ -670,13 +617,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.13530707194980585,
+        "margin": 0.11035190887038515,
         "values": {
           "go": 0.31866029256236517,
           "punt": 0.258621964799732,
-          "fg": 0.453967364512171
+          "fg": 0.4290122014327503
         },
-        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (45.4% vs 31.9%).",
+        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (42.9% vs 31.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -723,11 +670,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0009818895254489965,
+        "margin": 0.00011576196877899,
         "values": {
           "go": 0.0070181873311318185,
           "punt": 0.006473607280961163,
-          "fg": 0.008000076856580815
+          "fg": 0.0071339492999108085
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
         "transition_mode": "improved",
@@ -776,11 +723,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00010242285752101211,
+        "margin": 4.641917990726315e-05,
         "values": {
           "go": 0.0014139016204867925,
           "punt": 0.0008304512186538549,
-          "fg": 0.0013114787629657804
+          "fg": 0.0013674824405795294
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -829,13 +776,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04246692923602002,
+        "margin": 0.0734379016402194,
         "values": {
           "go": 0.3777973611214729,
           "punt": 0.2965728649952886,
-          "fg": 0.33533043188545286
+          "fg": 0.3043594594812535
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (37.8% vs 33.5%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (37.8% vs 30.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -882,13 +829,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03007234435381423,
+        "margin": 0.022701825672306275,
         "values": {
           "go": 0.716240777665904,
           "punt": 0.6390358993702621,
-          "fg": 0.6861684333120898
+          "fg": 0.6935389519935977
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (71.6% vs 68.6%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -935,13 +882,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.11349018547693523,
+        "margin": 0.1110671482577762,
         "values": {
           "go": 0.6497552075563713,
           "punt": 0.41602554507482614,
-          "fg": 0.7632453930333065
+          "fg": 0.7608223558141475
         },
-        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (76.3% vs 65.0%).",
+        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (76.1% vs 65.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1040,13 +987,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03174663701970748,
+        "margin": 0.037064211820870496,
         "values": {
           "go": 0.4145763577971041,
           "punt": 0.3829764794949717,
-          "fg": 0.4463229948168116
+          "fg": 0.4516405696179746
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (44.6% vs 41.5%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (45.2% vs 41.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1093,11 +1040,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0543452761932639,
+        "margin": 0.05384009626147601,
         "values": {
           "go": 0.46377057792964727,
           "punt": 0.4080768188002903,
-          "fg": 0.5181158541229112
+          "fg": 0.5176106741911233
         },
         "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (51.8% vs 46.4%).",
         "transition_mode": "improved",
@@ -1198,13 +1145,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02382834901834202,
+        "margin": 0.024782815156571436,
         "values": {
           "go": 0.3393061406138562,
           "punt": 0.28518003654443114,
-          "fg": 0.36313448963219824
+          "fg": 0.36408895577042766
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (36.3% vs 33.9%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (36.4% vs 33.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1251,11 +1198,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0033198881512233047,
+        "margin": 0.00523624021678315,
         "values": {
           "go": 0.9791104838979416,
           "punt": 0.9711309314507107,
-          "fg": 0.9757905957467183
+          "fg": 0.9738742436811585
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 98%).",
         "transition_mode": "improved",
@@ -1304,11 +1251,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.006381840842347275,
+        "margin": 0.005844133604661739,
         "values": {
           "go": 0.9492390027288115,
           "punt": 0.9374961950677969,
-          "fg": 0.9556208435711587
+          "fg": 0.9550831363334732
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 96%).",
         "transition_mode": "improved",
@@ -1461,13 +1408,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04512384536222641,
+        "margin": 0.04627630837024296,
         "values": {
           "go": 0.2551241684023895,
           "punt": 0.1718510919271147,
-          "fg": 0.21000032304016308
+          "fg": 0.20884786003214653
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (25.5% vs 21.0%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (25.5% vs 20.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1514,13 +1461,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05801966824934665,
+        "margin": 0.05641432546616901,
         "values": {
           "go": 0.1758614698890578,
           "punt": 0.05337816957451355,
-          "fg": 0.11784180163971114
+          "fg": 0.11944714442288878
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (17.6% vs 11.8%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (17.6% vs 11.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1775,13 +1722,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.028303645899214303,
+        "margin": 0.026762522662425736,
         "values": {
           "go": 0.6669719072668506,
           "punt": 0.6468989000889516,
-          "fg": 0.6952755531660649
+          "fg": 0.6937344299292764
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (69.5% vs 66.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (69.4% vs 66.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1828,13 +1775,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03277248025832552,
+        "margin": 0.033663323737920414,
         "values": {
           "go": 0.43647885312053236,
           "punt": 0.3314505424780376,
-          "fg": 0.40370637286220684
+          "fg": 0.40281552938261195
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (43.6% vs 40.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (43.6% vs 40.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1881,13 +1828,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.06534383180197478,
+        "margin": 0.0638262382821998,
         "values": {
           "go": 0.7175144509619181,
           "punt": 0.6808563808809356,
-          "fg": 0.7828582827638929
+          "fg": 0.7813406892441179
         },
-        "layman_why": "Kicking the field goal added about 7% win chance over the next-best option (78.3% vs 71.8%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (78.1% vs 71.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1986,13 +1933,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05459127937626618,
+        "margin": 0.027392008590838346,
         "values": {
           "go": 0.3060943222791843,
           "punt": 0.29906230322721883,
-          "fg": 0.3606856016554505
+          "fg": 0.33348633087002266
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (36.1% vs 30.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (33.3% vs 30.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2091,11 +2038,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02353537666640937,
+        "margin": 0.023652735796148572,
         "values": {
           "go": 0.6963567853128493,
           "punt": 0.5896701075970986,
-          "fg": 0.6728214086464399
+          "fg": 0.6727040495167007
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (69.6% vs 67.3%).",
         "transition_mode": "improved",
@@ -2144,11 +2091,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.007729872196837073,
+        "margin": 0.007922482991234658,
         "values": {
           "go": 0.7369013621411955,
           "punt": 0.6706186058356746,
-          "fg": 0.7291714899443584
+          "fg": 0.7289788791499608
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 74%); punting is lower (67%).",
         "transition_mode": "improved",
@@ -2353,11 +2300,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 1.1517183086118266e-06,
+        "margin": 1.0819919935567412e-06,
         "values": {
           "go": 0.9999964218447741,
           "punt": 0.9999954433118526,
-          "fg": 0.9999975735630827
+          "fg": 0.9999975038367677
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 100%).",
         "transition_mode": "improved",
@@ -2510,13 +2457,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06285054936360779,
+        "margin": 0.06209104905905516,
         "values": {
           "go": 0.7938970481459406,
           "punt": 0.5738617436294012,
-          "fg": 0.7310464987823329
+          "fg": 0.7318059990868855
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (79.4% vs 73.1%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (79.4% vs 73.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2615,13 +2562,66 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03531619314517476,
+        "margin": 0.028357436108751577,
         "values": {
           "go": 0.3148479572098689,
           "punt": 0.22922975266999523,
-          "fg": 0.27953176406469415
+          "fg": 0.28649052110111733
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (31.5% vs 28.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (31.5% vs 28.6%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2023_05_CHI_WAS-1513",
+      "label": "CHI @ WAS \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_05_CHI_WAS",
+        "play_id": 1513,
+        "note": "",
+        "week": 5,
+        "game_date": "2023-10-05"
+      },
+      "situation": {
+        "posteam": "CHI",
+        "defteam": "WAS",
+        "home_team": "WAS",
+        "away_team": "CHI",
+        "posteam_score": 17,
+        "defteam_score": 3,
+        "score_differential": 14,
+        "qtr": 2,
+        "game_seconds_remaining": 2169,
+        "half_seconds_remaining": 369,
+        "yardline_100": 36,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 369
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.024101684649228572,
+        "values": {
+          "go": 0.8742159209219122,
+          "punt": 0.8438114950973041,
+          "fg": 0.8501142362726837
+        },
+        "layman_why": "Going for it added about 2% win chance over the next-best option (87.4% vs 85.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2668,11 +2668,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.029188783094190374,
+        "margin": 0.029582367900175544,
         "values": {
           "go": 0.5824782348732671,
           "punt": 0.48462185672351493,
-          "fg": 0.5532894517790767
+          "fg": 0.5528958669730916
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (58.2% vs 55.3%).",
         "transition_mode": "improved",
@@ -2721,13 +2721,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.045465262649591165,
+        "margin": 0.038298606228184706,
         "values": {
           "go": 0.6216042492313596,
           "punt": 0.62078288273604,
-          "fg": 0.6670695118809508
+          "fg": 0.6599028554595443
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (66.7% vs 62.2%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (66.0% vs 62.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2826,11 +2826,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0065356472246123065,
+        "margin": 0.0057547337400642995,
         "values": {
           "go": 0.923306792070846,
           "punt": 0.9142864443100347,
-          "fg": 0.9167711448462337
+          "fg": 0.9175520583307817
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
@@ -2879,13 +2879,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.031480577199565374,
+        "margin": 0.035770085177829425,
         "values": {
           "go": 0.4067690138345146,
           "punt": 0.3025297776020396,
-          "fg": 0.3752884366349492
+          "fg": 0.37099892865668516
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (40.7% vs 37.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (40.7% vs 37.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3040,7 +3040,7 @@
         "values": {
           "go": 0.2838853669399327,
           "punt": 0.2562032843600087,
-          "fg": 0.23839329332069054
+          "fg": 0.24094869572869643
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (28.4% vs 25.6%).",
         "transition_mode": "improved",
@@ -3141,13 +3141,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.04589976355249509,
+        "margin": 0.026076289796019114,
         "values": {
           "go": 0.32152321538449574,
           "punt": 0.3182047277591288,
-          "fg": 0.36742297893699083
+          "fg": 0.34759950518051486
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (36.7% vs 32.2%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (34.8% vs 32.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3213,59 +3213,6 @@
       }
     },
     {
-      "id": "2023_02_CLE_PIT-2457",
-      "label": "CLE @ PIT \u2014 4th & 14",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_02_CLE_PIT",
-        "play_id": 2457,
-        "note": "",
-        "week": 2,
-        "game_date": "2023-09-18"
-      },
-      "situation": {
-        "posteam": "CLE",
-        "defteam": "PIT",
-        "home_team": "PIT",
-        "away_team": "CLE",
-        "posteam_score": 11,
-        "defteam_score": 16,
-        "score_differential": -5,
-        "qtr": 2,
-        "game_seconds_remaining": 1827,
-        "half_seconds_remaining": 27,
-        "yardline_100": 37,
-        "down": 4,
-        "distance": 14,
-        "posteam_timeouts": 2,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 27
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "fg",
-        "inconclusive": false,
-        "margin": 0.021017929224654563,
-        "values": {
-          "go": 0.23539443902499568,
-          "punt": 0.22754277200140777,
-          "fg": 0.25641236824965025
-        },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (25.6% vs 23.5%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_15_TB_GB-548",
       "label": "TB @ GB \u2014 4th & 2",
       "kind": "historical",
@@ -3299,11 +3246,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05508270904260082,
+        "margin": 0.055058761818478796,
         "values": {
           "go": 0.6031938558051888,
           "punt": 0.47833970361887046,
-          "fg": 0.548111146762588
+          "fg": 0.54813509398671
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (60.3% vs 54.8%).",
         "transition_mode": "improved",
@@ -3404,13 +3351,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04967133403236568,
+        "margin": 0.04938297339160924,
         "values": {
           "go": 0.7979251773927203,
           "punt": 0.6715382139616555,
-          "fg": 0.7482538433603546
+          "fg": 0.748542204001111
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (79.8% vs 74.8%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (79.8% vs 74.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3509,11 +3456,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.004213379080610258,
+        "margin": 0.0032332271376964705,
         "values": {
           "go": 0.6386351083258863,
           "punt": 0.5809063694992015,
-          "fg": 0.6428484874064966
+          "fg": 0.6418683354635828
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (58%).",
         "transition_mode": "improved",
@@ -3614,13 +3561,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04733700670481267,
+        "margin": 0.04876166141731009,
         "values": {
           "go": 0.5958319607949362,
           "punt": 0.4786787256500196,
-          "fg": 0.5484949540901235
+          "fg": 0.5470702993776261
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (59.6% vs 54.8%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (59.6% vs 54.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3671,7 +3618,7 @@
         "values": {
           "go": 0.5598326605069012,
           "punt": 0.5132843344954905,
-          "fg": 0.4982292670557892
+          "fg": 0.5025440997893
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (56.0% vs 51.3%).",
         "transition_mode": "improved",
@@ -3876,13 +3823,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02160472833685234,
+        "margin": 0.02512019155200551,
         "values": {
           "go": 0.9132900749755525,
           "punt": 0.8971926549377897,
-          "fg": 0.9348948033124048
+          "fg": 0.938410266527558
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (93.5% vs 91.3%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (93.8% vs 91.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3929,11 +3876,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03608040872152085,
+        "margin": 0.0361694656114282,
         "values": {
           "go": 0.45010563104653784,
           "punt": 0.3472364171116732,
-          "fg": 0.414025222325017
+          "fg": 0.41393616543510964
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (45.0% vs 41.4%).",
         "transition_mode": "improved",
@@ -3982,13 +3929,66 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04859640819549793,
+        "margin": 0.0484318076145428,
         "values": {
           "go": 0.6921032409595614,
           "punt": 0.5755335074010635,
-          "fg": 0.6435068327640635
+          "fg": 0.6436714333450186
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (69.2% vs 64.4%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2023_05_GB_LV-1882",
+      "label": "GB @ LV \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_05_GB_LV",
+        "play_id": 1882,
+        "note": "",
+        "week": 5,
+        "game_date": "2023-10-09"
+      },
+      "situation": {
+        "posteam": "LV",
+        "defteam": "GB",
+        "home_team": "LV",
+        "away_team": "GB",
+        "posteam_score": 10,
+        "defteam_score": 3,
+        "score_differential": 7,
+        "qtr": 2,
+        "game_seconds_remaining": 1812,
+        "half_seconds_remaining": 12,
+        "yardline_100": 35,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 0,
+        "defteam_timeouts": 0,
+        "quarter_seconds_remaining": 12
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.02183616043028902,
+        "values": {
+          "go": 0.8114577651345471,
+          "punt": 0.7733499508187003,
+          "fg": 0.7896216047042581
+        },
+        "layman_why": "Going for it added about 2% win chance over the next-best option (81.1% vs 79.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4087,13 +4087,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.024628443709079795,
+        "margin": 0.021947120891681937,
         "values": {
           "go": 0.5470956742644675,
           "punt": 0.49746788270859726,
-          "fg": 0.5717241179735473
+          "fg": 0.5690427951561494
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (57.2% vs 54.7%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (56.9% vs 54.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4140,11 +4140,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.025817124405738356,
+        "margin": 0.0259165025988638,
         "values": {
           "go": 0.6871104249339912,
           "punt": 0.588009323772,
-          "fg": 0.6612933005282529
+          "fg": 0.6611939223351274
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (68.7% vs 66.1%).",
         "transition_mode": "improved",
@@ -4245,11 +4245,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.006676559269602644,
+        "margin": 0.0057934040521046,
         "values": {
           "go": 0.6324483821254283,
           "punt": 0.5842708394684506,
-          "fg": 0.639124941395031
+          "fg": 0.6382417861775329
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (58%).",
         "transition_mode": "improved",
@@ -4350,13 +4350,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0349374017416334,
+        "margin": 0.036443891857805444,
         "values": {
           "go": 0.36648272680382693,
           "punt": 0.28228427399005973,
-          "fg": 0.33154532506219353
+          "fg": 0.3300388349460215
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (36.6% vs 33.2%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (36.6% vs 33.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4403,13 +4403,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02159751505601573,
+        "margin": 0.031201378210147332,
         "values": {
           "go": 0.1188642796956041,
           "punt": 0.08181539550301775,
-          "fg": 0.09726676463958837
+          "fg": 0.08766290148545677
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (11.9% vs 9.7%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (11.9% vs 8.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4456,13 +4456,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04800779641960551,
+        "margin": 0.04708343373975393,
         "values": {
           "go": 0.1954541454040771,
           "punt": 0.07001615088933763,
-          "fg": 0.1474463489844716
+          "fg": 0.14837071166432317
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (19.5% vs 14.7%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (19.5% vs 14.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4509,13 +4509,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.026354771630888063,
+        "margin": 0.025237993384894408,
         "values": {
           "go": 0.8913788759207788,
           "punt": 0.8422333901633853,
-          "fg": 0.9177336475516669
+          "fg": 0.9166168693056732
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (91.8% vs 89.1%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (91.7% vs 89.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4562,11 +4562,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.031854631731791275,
+        "margin": 0.03199164180383457,
         "values": {
           "go": 0.0862236507566052,
           "punt": 0.02139545836599091,
-          "fg": 0.05436901902481392
+          "fg": 0.054232008952770624
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (8.6% vs 5.4%).",
         "transition_mode": "improved",
@@ -4667,13 +4667,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024108187032321704,
+        "margin": 0.024628066340994376,
         "values": {
           "go": 0.1510711717721015,
           "punt": 0.09210982406708035,
-          "fg": 0.1269629847397798
+          "fg": 0.12644310543110712
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (15.1% vs 12.7%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (15.1% vs 12.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4720,13 +4720,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05097053227253051,
+        "margin": 0.04300396853177735,
         "values": {
           "go": 0.415912821195835,
           "punt": 0.28901441313603293,
-          "fg": 0.3649422889233045
+          "fg": 0.37290885266405766
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (41.6% vs 36.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (41.6% vs 37.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4792,6 +4792,59 @@
       }
     },
     {
+      "id": "2022_08_MIA_DET-371",
+      "label": "MIA @ DET \u2014 4th & 4",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_MIA_DET",
+        "play_id": 371,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "MIA",
+        "defteam": "DET",
+        "home_team": "DET",
+        "away_team": "MIA",
+        "posteam_score": 0,
+        "defteam_score": 7,
+        "score_differential": -7,
+        "qtr": 1,
+        "game_seconds_remaining": 3233,
+        "half_seconds_remaining": 1433,
+        "yardline_100": 44,
+        "down": 4,
+        "distance": 4,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 533
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.004486586931917114,
+        "values": {
+          "go": 0.38115364992721484,
+          "punt": 0.37666706299529773,
+          "fg": 0.3514136447741489
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 38%); a field goal is lower (35%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2022_06_CIN_NO-3266",
       "label": "CIN @ NO \u2014 4th & 9",
       "kind": "historical",
@@ -4825,13 +4878,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03599226598680194,
+        "margin": 0.03940160001813042,
         "values": {
           "go": 0.6714834113240311,
           "punt": 0.5712887696717124,
-          "fg": 0.707475677310833
+          "fg": 0.7108850113421615
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (70.7% vs 67.1%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (71.1% vs 67.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4878,13 +4931,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0352281583235248,
+        "margin": 0.03513493501187569,
         "values": {
           "go": 0.09864513946911561,
           "punt": 0.037354081692779845,
-          "fg": 0.06341698114559081
+          "fg": 0.06351020445723993
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (9.9% vs 6.3%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (9.9% vs 6.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4983,13 +5036,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02372866129099238,
+        "margin": 0.02354030155598419,
         "values": {
           "go": 0.7161504308237898,
           "punt": 0.5912361722284785,
-          "fg": 0.6924217695327974
+          "fg": 0.6926101292678056
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.2%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5036,11 +5089,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.010063684523226257,
+        "margin": 0.010810325670503329,
         "values": {
           "go": 0.5479951179686489,
           "punt": 0.454533876481513,
-          "fg": 0.5379314334454226
+          "fg": 0.5371847922981455
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 55%); punting is lower (45%).",
         "transition_mode": "improved",
@@ -5052,7 +5105,7 @@
           "Punts use where real punts from this spot usually ended up.",
           "The clock runs about as long as it really did after each kind of play."
         ],
-        "recommendation_changed_legacy_to_improved": true
+        "recommendation_changed_legacy_to_improved": false
       }
     },
     {
@@ -5089,13 +5142,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05117739871858107,
+        "margin": 0.04320497173608284,
         "values": {
           "go": 0.5254426114193886,
           "punt": 0.45289153558924844,
-          "fg": 0.5766200101379697
+          "fg": 0.5686475831554715
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (57.7% vs 52.5%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (56.9% vs 52.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5142,13 +5195,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.060875057366142515,
+        "margin": 0.048119335037914435,
         "values": {
           "go": 0.4859757477317467,
           "punt": 0.48567260019437397,
-          "fg": 0.5468508050978892
+          "fg": 0.5340950827696611
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (54.7% vs 48.6%).",
+        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (53.4% vs 48.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5299,13 +5352,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0779516939022632,
+        "margin": 0.07757411197866793,
         "values": {
           "go": 0.6151163500708676,
           "punt": 0.44113367167437323,
-          "fg": 0.5371646561686044
+          "fg": 0.5375422380921997
         },
-        "layman_why": "Going for it added about 8% win chance over the next-best option (61.5% vs 53.7%).",
+        "layman_why": "Going for it added about 8% win chance over the next-best option (61.5% vs 53.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5352,11 +5405,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.002143274884922053,
+        "margin": 0.0030916955517727995,
         "values": {
           "go": 0.9861905300130702,
           "punt": 0.9832055631126867,
-          "fg": 0.9883338048979923
+          "fg": 0.989282225564843
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 99%).",
         "transition_mode": "improved",
@@ -5424,6 +5477,58 @@
       }
     },
     {
+      "id": "2022_10_HOU_NYG-607",
+      "label": "HOU @ NYG \u2014 4th & 4",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_10_HOU_NYG",
+        "play_id": 607,
+        "note": "",
+        "week": 10,
+        "game_date": "2022-11-13"
+      },
+      "situation": {
+        "posteam": "NYG",
+        "defteam": "HOU",
+        "home_team": "NYG",
+        "away_team": "HOU",
+        "posteam_score": 7,
+        "defteam_score": 0,
+        "score_differential": 7,
+        "qtr": 1,
+        "game_seconds_remaining": 3007,
+        "half_seconds_remaining": 1207,
+        "yardline_100": 70,
+        "down": 4,
+        "distance": 4,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 307
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "punt",
+        "inconclusive": false,
+        "margin": 0.022420408804544434,
+        "values": {
+          "go": 0.7282940624844847,
+          "punt": 0.7507144712890291
+        },
+        "layman_why": "Punting added about 2% win chance over the next-best option (75.1% vs 72.8%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2022_16_HOU_TEN-1252",
       "label": "HOU @ TEN \u2014 4th & 5",
       "kind": "historical",
@@ -5457,11 +5562,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02439808208044636,
+        "margin": 0.02486866383687769,
         "values": {
           "go": 0.6597687560388674,
           "punt": 0.5563810029047975,
-          "fg": 0.6353706739584211
+          "fg": 0.6349000922019897
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (66.0% vs 63.5%).",
         "transition_mode": "improved",
@@ -5562,13 +5667,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04186509907490185,
+        "margin": 0.04165202703260554,
         "values": {
           "go": 0.17716603138427833,
           "punt": 0.13455228285855456,
-          "fg": 0.13530093230937648
+          "fg": 0.1355140043516728
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (17.7% vs 13.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (17.7% vs 13.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5615,13 +5720,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.021698307155279428,
+        "margin": 0.02197174774788091,
         "values": {
           "go": 0.2903099652848016,
           "punt": 0.19544154048845688,
-          "fg": 0.26861165812952215
+          "fg": 0.26833821753692066
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (29.0% vs 26.9%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (29.0% vs 26.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5724,7 +5829,7 @@
         "values": {
           "go": 0.2501201684620082,
           "punt": 0.2202024065086905,
-          "fg": 0.20614755564546244
+          "fg": 0.20772116221433712
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (25.0% vs 22.0%).",
         "transition_mode": "improved",
@@ -5825,13 +5930,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03563162190024266,
+        "margin": 0.037088061294455854,
         "values": {
           "go": 0.4173644836338426,
           "punt": 0.361029564962567,
-          "fg": 0.38173286173359994
+          "fg": 0.38027642233938674
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (41.7% vs 38.2%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (41.7% vs 38.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5878,11 +5983,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03694643408525532,
+        "margin": 0.036863454053773004,
         "values": {
           "go": 0.12268643392279893,
           "punt": 0.059390829104875614,
-          "fg": 0.08573999983754362
+          "fg": 0.08582297986902593
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (12.3% vs 8.6%).",
         "transition_mode": "improved",
@@ -5931,13 +6036,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0332940959895055,
+        "margin": 0.026532851502095278,
         "values": {
           "go": 0.660840127760655,
           "punt": 0.5874964346713742,
-          "fg": 0.6275460317711495
+          "fg": 0.6343072762585598
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (66.1% vs 62.8%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (66.1% vs 63.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5984,11 +6089,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03310814336797113,
+        "margin": 0.03314200104038802,
         "values": {
           "go": 0.10985771790181299,
           "punt": 0.053917113418278984,
-          "fg": 0.07674957453384186
+          "fg": 0.07671571686142498
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (11.0% vs 7.7%).",
         "transition_mode": "improved",
@@ -6245,13 +6350,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.030019924565316825,
+        "margin": 0.02683482272399823,
         "values": {
           "go": 0.22581997256574976,
           "punt": 0.12176417616057622,
-          "fg": 0.2558398971310666
+          "fg": 0.252654795289748
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.6% vs 22.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.3% vs 22.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6298,11 +6403,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.021312901832196918,
+        "margin": 0.02144632493933074,
         "values": {
           "go": 0.0960673629324413,
           "punt": 0.04140091055416223,
-          "fg": 0.07475446110024438
+          "fg": 0.07462103799311055
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (9.6% vs 7.5%).",
         "transition_mode": "improved",
@@ -6351,11 +6456,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03770955543425297,
+        "margin": 0.03760858740888812,
         "values": {
           "go": 0.5025852300613833,
           "punt": 0.39712512033066744,
-          "fg": 0.46487567462713036
+          "fg": 0.4649766426524952
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (50.3% vs 46.5%).",
         "transition_mode": "improved",
@@ -6560,13 +6665,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.06496950348945763,
+        "margin": 0.07942420245850867,
         "values": {
           "go": 0.5538767095944681,
           "punt": 0.4208923222386624,
-          "fg": 0.6188462130839257
+          "fg": 0.6333009120529768
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (61.9% vs 55.4%).",
+        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (63.3% vs 55.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6665,13 +6770,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.043905489365979045,
+        "margin": 0.044674057078944535,
         "values": {
           "go": 0.2909096058763802,
           "punt": 0.1861902946003806,
-          "fg": 0.24700411651040116
+          "fg": 0.24623554879743567
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (29.1% vs 24.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (29.1% vs 24.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6770,13 +6875,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.028563974382985524,
+        "margin": 0.0296893523399257,
         "values": {
           "go": 0.2898739175103478,
           "punt": 0.24592781929189544,
-          "fg": 0.2613099431273623
+          "fg": 0.2601845651704221
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (29.0% vs 26.1%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (29.0% vs 26.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6823,13 +6928,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02597017483869013,
+        "margin": 0.02675021830212443,
         "values": {
           "go": 0.6750036287309793,
           "punt": 0.6382977456356393,
-          "fg": 0.7009738035696694
+          "fg": 0.7017538470331037
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (70.1% vs 67.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (70.2% vs 67.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6876,13 +6981,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04025389766460241,
+        "margin": 0.03636396019087518,
         "values": {
           "go": 0.6594821487369934,
           "punt": 0.6021528757264563,
-          "fg": 0.619228251072391
+          "fg": 0.6231181885461182
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (65.9% vs 61.9%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (65.9% vs 62.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7291,13 +7396,13 @@
       },
       "historical_action": "fg",
       "reveal": {
-        "recommendation": "go",
+        "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.012305683718512817,
+        "margin": 0.006767231696887699,
         "values": {
           "go": 0.39052797226874764,
           "punt": 0.33511735036198903,
-          "fg": 0.3782222885502348
+          "fg": 0.38376074057185994
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 39%); punting is lower (34%).",
         "transition_mode": "improved",
@@ -7450,13 +7555,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02499327955015862,
+        "margin": 0.023169795380372227,
         "values": {
           "go": 0.9269724749863628,
           "punt": 0.8488589898664498,
-          "fg": 0.9519657545365214
+          "fg": 0.950142270366735
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.2% vs 92.7%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.0% vs 92.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7522,6 +7627,59 @@
       }
     },
     {
+      "id": "2023_13_LAC_NE-2372",
+      "label": "LAC @ NE \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_13_LAC_NE",
+        "play_id": 2372,
+        "note": "",
+        "week": 13,
+        "game_date": "2023-12-03"
+      },
+      "situation": {
+        "posteam": "NE",
+        "defteam": "LAC",
+        "home_team": "NE",
+        "away_team": "LAC",
+        "posteam_score": 0,
+        "defteam_score": 6,
+        "score_differential": -6,
+        "qtr": 3,
+        "game_seconds_remaining": 1576,
+        "half_seconds_remaining": 1576,
+        "yardline_100": 38,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 676
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.034581729286636276,
+        "values": {
+          "go": 0.2854117137487845,
+          "punt": 0.23212224187577668,
+          "fg": 0.2508299844621482
+        },
+        "layman_why": "Going for it added about 3% win chance over the next-best option (28.5% vs 25.1%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2022_03_HOU_CHI-2357",
       "label": "HOU @ CHI \u2014 4th & 2",
       "kind": "historical",
@@ -7555,66 +7713,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02443958980403571,
+        "margin": 0.029692110018388562,
         "values": {
           "go": 0.6230827561908903,
           "punt": 0.5094695152561561,
-          "fg": 0.5986431663868546
+          "fg": 0.5933906461725017
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (62.3% vs 59.9%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2023_11_CIN_BAL-1045",
-      "label": "CIN @ BAL \u2014 4th & 11",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_11_CIN_BAL",
-        "play_id": 1045,
-        "note": "",
-        "week": 11,
-        "game_date": "2023-11-16"
-      },
-      "situation": {
-        "posteam": "CIN",
-        "defteam": "BAL",
-        "home_team": "BAL",
-        "away_team": "CIN",
-        "posteam_score": 3,
-        "defteam_score": 7,
-        "score_differential": -4,
-        "qtr": 2,
-        "game_seconds_remaining": 2700,
-        "half_seconds_remaining": 900,
-        "yardline_100": 35,
-        "down": 4,
-        "distance": 11,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "fg",
-        "inconclusive": false,
-        "margin": 0.022955146993726916,
-        "values": {
-          "go": 0.3908530526043873,
-          "punt": 0.3922571470304377,
-          "fg": 0.4152122940241646
-        },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.5% vs 39.2%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (62.3% vs 59.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7661,13 +7766,66 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.005073448392399316,
+        "margin": 0.004475749529657791,
         "values": {
           "go": 0.905640493414869,
           "punt": 0.9033302900861775,
-          "fg": 0.9107139418072683
+          "fg": 0.9101162429445268
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 91%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_03_ATL_SEA-1585",
+      "label": "ATL @ SEA \u2014 4th & 2",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_03_ATL_SEA",
+        "play_id": 1585,
+        "note": "",
+        "week": 3,
+        "game_date": "2022-09-25"
+      },
+      "situation": {
+        "posteam": "SEA",
+        "defteam": "ATL",
+        "home_team": "SEA",
+        "away_team": "ATL",
+        "posteam_score": 10,
+        "defteam_score": 17,
+        "score_differential": -7,
+        "qtr": 2,
+        "game_seconds_remaining": 2079,
+        "half_seconds_remaining": 279,
+        "yardline_100": 41,
+        "down": 4,
+        "distance": 2,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 279
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.03650366918338291,
+        "values": {
+          "go": 0.23206290614072994,
+          "punt": 0.19477892041947759,
+          "fg": 0.19555923695734703
+        },
+        "layman_why": "Going for it added about 4% win chance over the next-best option (23.2% vs 19.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7720,59 +7878,6 @@
           "punt": 0.2424981658746206
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (26.9% vs 24.2%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_03_DET_MIN-2373",
-      "label": "DET @ MIN \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_03_DET_MIN",
-        "play_id": 2373,
-        "note": "",
-        "week": 3,
-        "game_date": "2022-09-25"
-      },
-      "situation": {
-        "posteam": "DET",
-        "defteam": "MIN",
-        "home_team": "MIN",
-        "away_team": "DET",
-        "posteam_score": 14,
-        "defteam_score": 14,
-        "score_differential": 0,
-        "qtr": 3,
-        "game_seconds_remaining": 1541,
-        "half_seconds_remaining": 1541,
-        "yardline_100": 46,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 641
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.0704989784275123,
-        "values": {
-          "go": 0.536765437336789,
-          "punt": 0.46626645890927676,
-          "fg": 0.4359895383131601
-        },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (53.7% vs 46.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7871,13 +7976,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.026869935777282805,
+        "margin": 0.02591224083401189,
         "values": {
           "go": 0.8670565892064177,
           "punt": 0.8300670012799441,
-          "fg": 0.8939265249837005
+          "fg": 0.8929688300404296
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (89.4% vs 86.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (89.3% vs 86.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7976,13 +8081,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.08984286932093577,
+        "margin": 0.08901173879703456,
         "values": {
           "go": 0.30618059931875585,
           "punt": 0.2070012876294608,
-          "fg": 0.3960234686396916
+          "fg": 0.3951923381157904
         },
-        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (39.6% vs 30.6%).",
+        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (39.5% vs 30.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8029,13 +8134,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03943977081938063,
+        "margin": 0.05216607390678246,
         "values": {
           "go": 0.16713969144534774,
           "punt": 0.1062326451917836,
-          "fg": 0.1276999206259671
+          "fg": 0.11497361753856528
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (16.7% vs 12.8%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (16.7% vs 11.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8101,59 +8206,6 @@
       }
     },
     {
-      "id": "2022_17_DAL_TEN-2799",
-      "label": "DAL @ TEN \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_17_DAL_TEN",
-        "play_id": 2799,
-        "note": "",
-        "week": 17,
-        "game_date": "2022-12-29"
-      },
-      "situation": {
-        "posteam": "TEN",
-        "defteam": "DAL",
-        "home_team": "TEN",
-        "away_team": "DAL",
-        "posteam_score": 6,
-        "defteam_score": 17,
-        "score_differential": -11,
-        "qtr": 3,
-        "game_seconds_remaining": 1217,
-        "half_seconds_remaining": 1217,
-        "yardline_100": 26,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 317
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.020805445986522314,
-        "values": {
-          "go": 0.14020048320960124,
-          "punt": 0.08650155997345971,
-          "fg": 0.11939503722307893
-        },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (14.0% vs 11.9%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_09_ARI_CLE-1199",
       "label": "ARI @ CLE \u2014 4th & 1",
       "kind": "historical",
@@ -8187,13 +8239,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.032692913235690235,
+        "margin": 0.04805690543454355,
         "values": {
           "go": 0.6993455511523308,
           "punt": 0.6512886457177872,
-          "fg": 0.6666526379166405
+          "fg": 0.6435181542469415
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (69.9% vs 66.7%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (69.9% vs 65.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8240,13 +8292,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03265958567755145,
+        "margin": 0.03304550045117538,
         "values": {
           "go": 0.4347428810178731,
           "punt": 0.38013525798145015,
-          "fg": 0.46740246669542457
+          "fg": 0.4677883814690485
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (46.7% vs 43.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (46.8% vs 43.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8293,11 +8345,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.040477272803800285,
+        "margin": 0.04051246062405304,
         "values": {
           "go": 0.07001388058734836,
           "punt": 0.009169500727231189,
-          "fg": 0.02953660778354808
+          "fg": 0.029501419963295326
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (7.0% vs 3.0%).",
         "transition_mode": "improved",
@@ -8606,13 +8658,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.09437497046545734,
+        "margin": 0.09391416496762522,
         "values": {
           "go": 0.5206176392961204,
           "punt": 0.32010824948571825,
-          "fg": 0.42624266883066303
+          "fg": 0.42670347432849515
         },
-        "layman_why": "Going for it added about 9% win chance over the next-best option (52.1% vs 42.6%).",
+        "layman_why": "Going for it added about 9% win chance over the next-best option (52.1% vs 42.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8711,13 +8763,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03887835120977923,
+        "margin": 0.03458787328815849,
         "values": {
           "go": 0.5701957346431162,
           "punt": 0.44665986179575456,
-          "fg": 0.6090740858528955
+          "fg": 0.6047836079312747
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (60.9% vs 57.0%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (60.5% vs 57.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8764,11 +8816,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.023595858442988532,
+        "margin": 0.02411811254494839,
         "values": {
           "go": 0.2698154536895721,
           "punt": 0.1659838403454628,
-          "fg": 0.24621959524658357
+          "fg": 0.24569734114462372
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (27.0% vs 24.6%).",
         "transition_mode": "improved",
@@ -8973,11 +9025,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0005803131688071339,
+        "margin": 0.0002881149486008705,
         "values": {
           "go": 0.4066659833468219,
           "punt": 0.34111710188048894,
-          "fg": 0.4060856701780148
+          "fg": 0.40637786839822104
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 41%); punting is lower (34%).",
         "transition_mode": "improved",
@@ -9026,13 +9078,66 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.08045501216900097,
+        "margin": 0.07666829757883564,
         "values": {
           "go": 0.5375631975048564,
           "punt": 0.44274209357594757,
-          "fg": 0.6180182096738573
+          "fg": 0.614231495083692
         },
-        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.8% vs 53.8%).",
+        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.4% vs 53.8%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2023_18_KC_LAC-1805",
+      "label": "KC @ LAC \u2014 4th & 2",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_18_KC_LAC",
+        "play_id": 1805,
+        "note": "",
+        "week": 18,
+        "game_date": "2024-01-07"
+      },
+      "situation": {
+        "posteam": "LAC",
+        "defteam": "KC",
+        "home_team": "LAC",
+        "away_team": "KC",
+        "posteam_score": 0,
+        "defteam_score": 10,
+        "score_differential": -10,
+        "qtr": 2,
+        "game_seconds_remaining": 1968,
+        "half_seconds_remaining": 168,
+        "yardline_100": 31,
+        "down": 4,
+        "distance": 2,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 168
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.024036333757828987,
+        "values": {
+          "go": 0.2730369578444857,
+          "punt": 0.2135072048796484,
+          "fg": 0.24900062408665669
+        },
+        "layman_why": "Going for it added about 2% win chance over the next-best option (27.3% vs 24.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9079,13 +9184,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.027614891919669926,
+        "margin": 0.03376808845436863,
         "values": {
           "go": 0.4687369381412373,
           "punt": 0.4070507578600728,
-          "fg": 0.44112204622156737
+          "fg": 0.43496884968686866
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 44.1%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 43.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9184,119 +9289,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.038179946237850926,
+        "margin": 0.04098106695912973,
         "values": {
           "go": 0.6530738241792771,
           "punt": 0.5547638029185169,
-          "fg": 0.6148938779414261
+          "fg": 0.6120927572201473
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (65.3% vs 61.5%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_10_CLE_MIA-1279",
-      "label": "CLE @ MIA \u2014 4th & 3",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_10_CLE_MIA",
-        "play_id": 1279,
-        "note": "",
-        "week": 10,
-        "game_date": "2022-11-13"
-      },
-      "situation": {
-        "posteam": "CLE",
-        "defteam": "MIA",
-        "home_team": "MIA",
-        "away_team": "CLE",
-        "posteam_score": 7,
-        "defteam_score": 10,
-        "score_differential": -3,
-        "qtr": 2,
-        "game_seconds_remaining": 2139,
-        "half_seconds_remaining": 339,
-        "yardline_100": 42,
-        "down": 4,
-        "distance": 3,
-        "posteam_timeouts": 2,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 339
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.030592069406436828,
-        "values": {
-          "go": 0.32070899123198965,
-          "punt": 0.2901169218255528,
-          "fg": 0.28417572997089213
-        },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (32.1% vs 29.0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2023_04_LA_IND-3746",
-      "label": "LA @ IND \u2014 4th & 4",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_04_LA_IND",
-        "play_id": 3746,
-        "note": "",
-        "week": 4,
-        "game_date": "2023-10-01"
-      },
-      "situation": {
-        "posteam": "IND",
-        "defteam": "LA",
-        "home_team": "IND",
-        "away_team": "LA",
-        "posteam_score": 15,
-        "defteam_score": 23,
-        "score_differential": -8,
-        "qtr": 4,
-        "game_seconds_remaining": 188,
-        "half_seconds_remaining": 188,
-        "yardline_100": 21,
-        "down": 4,
-        "distance": 4,
-        "posteam_timeouts": 2,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 188
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.022239279829033884,
-        "values": {
-          "go": 0.10332904912279162,
-          "punt": 0.031209304447190417,
-          "fg": 0.08108976929375773
-        },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (10.3% vs 8.1%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (65.3% vs 61.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9395,66 +9394,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.022608238920655166,
+        "margin": 0.020885090673987583,
         "values": {
           "go": 0.3561138561016353,
           "punt": 0.29656044422947925,
-          "fg": 0.3787220950222905
+          "fg": 0.3769989467756229
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (37.9% vs 35.6%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2023_12_CHI_MIN-2756",
-      "label": "CHI @ MIN \u2014 4th & 8",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_12_CHI_MIN",
-        "play_id": 2756,
-        "note": "",
-        "week": 12,
-        "game_date": "2023-11-27"
-      },
-      "situation": {
-        "posteam": "CHI",
-        "defteam": "MIN",
-        "home_team": "MIN",
-        "away_team": "CHI",
-        "posteam_score": 6,
-        "defteam_score": 3,
-        "score_differential": 3,
-        "qtr": 4,
-        "game_seconds_remaining": 860,
-        "half_seconds_remaining": 860,
-        "yardline_100": 37,
-        "down": 4,
-        "distance": 8,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 860
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "fg",
-        "inconclusive": false,
-        "margin": 0.027629311841341764,
-        "values": {
-          "go": 0.653809093835557,
-          "punt": 0.6283408283643643,
-          "fg": 0.6814384056768987
-        },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (68.1% vs 65.4%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (37.7% vs 35.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9501,13 +9447,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05595214770402268,
+        "margin": 0.06500278482161914,
         "values": {
           "go": 0.4870941563040937,
           "punt": 0.4593204295476125,
-          "fg": 0.5430463040081164
+          "fg": 0.5520969411257128
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (54.3% vs 48.7%).",
+        "layman_why": "Kicking the field goal added about 7% win chance over the next-best option (55.2% vs 48.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9554,11 +9500,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.022435046107510792,
+        "margin": 0.022719272100189092,
         "values": {
           "go": 0.46749936286193794,
           "punt": 0.4274292465772145,
-          "fg": 0.48993440896944873
+          "fg": 0.49021863496212703
         },
         "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (49.0% vs 46.7%).",
         "transition_mode": "improved",
@@ -9607,13 +9553,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.026592120406940145,
+        "margin": 0.02224815717069628,
         "values": {
           "go": 0.745547893614453,
           "punt": 0.6719058122374658,
-          "fg": 0.7189557732075128
+          "fg": 0.7232997364437567
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (74.6% vs 71.9%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (74.6% vs 72.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9660,13 +9606,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.057258175784168475,
+        "margin": 0.058731032744913536,
         "values": {
           "go": 0.338742211417296,
           "punt": 0.24944417440625388,
-          "fg": 0.2814840356331275
+          "fg": 0.28001117867238245
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (33.9% vs 28.1%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (33.9% vs 28.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9717,7 +9663,7 @@
         "values": {
           "go": 0.4686756659160724,
           "punt": 0.4406534979891671,
-          "fg": 0.429706697707785
+          "fg": 0.4301149821097703
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 44.1%).",
         "transition_mode": "improved",
@@ -9766,11 +9712,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024124645024188873,
+        "margin": 0.024215495009239363,
         "values": {
           "go": 0.7044679494462007,
           "punt": 0.6121953062276622,
-          "fg": 0.6803433044220119
+          "fg": 0.6802524544369614
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (70.4% vs 68.0%).",
         "transition_mode": "improved",
@@ -9871,11 +9817,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.006467051282962544,
+        "margin": 0.007447779263400178,
         "values": {
           "go": 0.1592455281556472,
           "punt": 0.12612734196417585,
-          "fg": 0.16571257943860973
+          "fg": 0.16669330741904737
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 17%); punting is lower (13%).",
         "transition_mode": "improved",
@@ -10028,13 +9974,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03428408033904026,
+        "margin": 0.03282630531610711,
         "values": {
           "go": 0.16128033419949223,
           "punt": 0.07853069464946141,
-          "fg": 0.12699625386045196
+          "fg": 0.1284540288833851
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (16.1% vs 12.7%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (16.1% vs 12.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10081,13 +10027,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.020872571955513952,
+        "margin": 0.02495720445081312,
         "values": {
           "go": 0.42548212138668334,
           "punt": 0.43138246274870096,
-          "fg": 0.4522550347042149
+          "fg": 0.4563396671995141
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (45.2% vs 43.1%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (45.6% vs 43.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10186,11 +10132,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.009137422226540903,
+        "margin": 0.00894645774371719,
         "values": {
           "go": 0.14490275809102326,
           "punt": 0.11252841930079974,
-          "fg": 0.15404018031756417
+          "fg": 0.15384921583474045
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 15%); punting is lower (11%).",
         "transition_mode": "improved",
@@ -10239,13 +10185,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.032220193676397835,
+        "margin": 0.030920919747895903,
         "values": {
           "go": 0.7870028738980048,
           "punt": 0.6865150552119288,
-          "fg": 0.754782680221607
+          "fg": 0.7560819541501089
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (78.7% vs 75.5%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (78.7% vs 75.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10344,13 +10290,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03139568771742765,
+        "margin": 0.029774575073575865,
         "values": {
           "go": 0.19520771749051144,
           "punt": 0.17806875796250218,
-          "fg": 0.2266034052079391
+          "fg": 0.2249822925640873
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (22.7% vs 19.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (22.5% vs 19.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10449,13 +10395,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.027503074782876502,
+        "margin": 0.02897365884412373,
         "values": {
           "go": 0.41138993673289276,
           "punt": 0.36260256672001034,
-          "fg": 0.38388686195001626
+          "fg": 0.38241627788876903
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (41.1% vs 38.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (41.1% vs 38.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10469,46 +10415,46 @@
       }
     },
     {
-      "id": "2022_07_DET_DAL-2331",
-      "label": "DET @ DAL \u2014 4th & 14",
+      "id": "2023_02_NO_CAR-2796",
+      "label": "NO @ CAR \u2014 4th & 5",
       "kind": "historical",
       "source": {
-        "season": 2022,
-        "game_id": "2022_07_DET_DAL",
-        "play_id": 2331,
+        "season": 2023,
+        "game_id": "2023_02_NO_CAR",
+        "play_id": 2796,
         "note": "",
-        "week": 7,
-        "game_date": "2022-10-23"
+        "week": 2,
+        "game_date": "2023-09-18"
       },
       "situation": {
-        "posteam": "DAL",
-        "defteam": "DET",
-        "home_team": "DAL",
-        "away_team": "DET",
-        "posteam_score": 10,
+        "posteam": "CAR",
+        "defteam": "NO",
+        "home_team": "CAR",
+        "away_team": "NO",
+        "posteam_score": 3,
         "defteam_score": 6,
-        "score_differential": 4,
+        "score_differential": -3,
         "qtr": 3,
-        "game_seconds_remaining": 1171,
-        "half_seconds_remaining": 1171,
-        "yardline_100": 45,
+        "game_seconds_remaining": 1455,
+        "half_seconds_remaining": 1455,
+        "yardline_100": 36,
         "down": 4,
-        "distance": 14,
+        "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 271
+        "quarter_seconds_remaining": 555
       },
-      "historical_action": "punt",
+      "historical_action": "fg",
       "reveal": {
-        "recommendation": "punt",
+        "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02254396964864147,
+        "margin": 0.02900689290577846,
         "values": {
-          "go": 0.6291341627174559,
-          "punt": 0.6524030126160976,
-          "fg": 0.6298590429674561
+          "go": 0.3949041739644621,
+          "punt": 0.3328036676636516,
+          "fg": 0.36589728105868363
         },
-        "layman_why": "Punting added about 2% win chance over the next-best option (65.2% vs 63.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (39.5% vs 36.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10659,13 +10605,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03283029937077364,
+        "margin": 0.03570364011831073,
         "values": {
           "go": 0.32145376618897514,
           "punt": 0.2391272687859749,
-          "fg": 0.3542840655597488
+          "fg": 0.3571574063072859
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (35.4% vs 32.1%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (35.7% vs 32.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10712,13 +10658,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.028846728885092765,
+        "margin": 0.03527721578403331,
         "values": {
           "go": 0.8371370067038029,
           "punt": 0.8055636129000253,
-          "fg": 0.8659837355888956
+          "fg": 0.8724142224878362
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (86.6% vs 83.7%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (87.2% vs 83.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10817,11 +10763,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00021134199624183461,
+        "margin": 0.00021004729098600264,
         "values": {
           "go": 0.0006222598965394763,
           "punt": 9.629750557257899e-05,
-          "fg": 0.00041091790029764173
+          "fg": 0.0004122126055534737
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -10870,11 +10816,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06773660078359389,
+        "margin": 0.0674862501899659,
         "values": {
           "go": 0.6204378940131388,
           "punt": 0.47733388230959906,
-          "fg": 0.5527012932295449
+          "fg": 0.5529516438231729
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (62.0% vs 55.3%).",
         "transition_mode": "improved",
@@ -10923,13 +10869,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04446545108900457,
+        "margin": 0.035266219863737014,
         "values": {
           "go": 0.7583011541719862,
           "punt": 0.6603101399415634,
-          "fg": 0.7138357030829816
+          "fg": 0.7230349343082492
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (75.8% vs 71.4%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (75.8% vs 72.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10976,13 +10922,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.036996769324555256,
+        "margin": 0.037485089163432836,
         "values": {
           "go": 0.12355557742310132,
           "punt": 0.03769494251904859,
-          "fg": 0.08655880809854606
+          "fg": 0.08607048825966848
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (12.4% vs 8.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (12.4% vs 8.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11185,11 +11131,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07012365897198347,
+        "margin": 0.06998207548077251,
         "values": {
           "go": 0.6238306073618575,
           "punt": 0.46918543612037455,
-          "fg": 0.553706948389874
+          "fg": 0.553848531881085
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (62.4% vs 55.4%).",
         "transition_mode": "improved",
@@ -11242,7 +11188,7 @@
         "values": {
           "go": 0.5233069991279213,
           "punt": 0.49965059455716976,
-          "fg": 0.47010697460043804
+          "fg": 0.4734440838425604
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (52.3% vs 50.0%).",
         "transition_mode": "improved",
@@ -11343,13 +11289,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.025286146894538897,
+        "margin": 0.03387471010673049,
         "values": {
           "go": 0.5016932133287628,
           "punt": 0.4804807691216785,
-          "fg": 0.5269793602233017
+          "fg": 0.5355679234354933
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (52.7% vs 50.2%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (53.6% vs 50.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11396,11 +11342,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05002305170253085,
+        "margin": 0.05070850369898805,
         "values": {
           "go": 0.6964460231823513,
           "punt": 0.5691155476803375,
-          "fg": 0.6464229714798204
+          "fg": 0.6457375194833632
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (69.6% vs 64.6%).",
         "transition_mode": "improved",
@@ -11449,13 +11395,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.06579275785180433,
+        "margin": 0.03404866392691058,
         "values": {
           "go": 0.2617699374356761,
           "punt": 0.23844688803136074,
-          "fg": 0.32756269528748044
+          "fg": 0.2958186013625867
         },
-        "layman_why": "Kicking the field goal added about 7% win chance over the next-best option (32.8% vs 26.2%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (29.6% vs 26.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11554,13 +11500,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02121592667408312,
+        "margin": 0.02193745258347135,
         "values": {
           "go": 0.9367901500642423,
           "punt": 0.8996771048424883,
-          "fg": 0.9580060767383254
+          "fg": 0.9587276026477136
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.8% vs 93.7%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.9% vs 93.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11711,13 +11657,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.053799472044608276,
+        "margin": 0.05483592030311796,
         "values": {
           "go": 0.5434975766547294,
           "punt": 0.42495774952208987,
-          "fg": 0.48969810461012114
+          "fg": 0.48866165635161146
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (54.3% vs 49.0%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (54.3% vs 48.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11816,11 +11762,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00011051118651385708,
+        "margin": 8.557305922648074e-05,
         "values": {
           "go": 0.0044776189521496396,
           "punt": 0.0028514414403374433,
-          "fg": 0.004588130138663497
+          "fg": 0.00456319201137612
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -12077,13 +12023,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03379825874419773,
+        "margin": 0.033905286771881205,
         "values": {
           "go": 0.5562984360848943,
           "punt": 0.4445007510360216,
-          "fg": 0.5225001773406965
+          "fg": 0.5223931493130131
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (55.6% vs 52.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (55.6% vs 52.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12182,13 +12128,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03242854503871245,
+        "margin": 0.03134309890589021,
         "values": {
           "go": 0.28157276480548005,
           "punt": 0.23034093599239225,
-          "fg": 0.2491442197667676
+          "fg": 0.25022966589958984
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (28.2% vs 24.9%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (28.2% vs 25.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12287,13 +12233,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.12877566601612633,
+        "margin": 0.1283177302341114,
         "values": {
           "go": 0.30085858249012776,
           "punt": 0.08523669720075924,
-          "fg": 0.17208291647400142
+          "fg": 0.17254085225601637
         },
-        "layman_why": "Going for it added about 13% win chance over the next-best option (30.1% vs 17.2%).",
+        "layman_why": "Going for it added about 13% win chance over the next-best option (30.1% vs 17.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12444,13 +12390,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03333645376465488,
+        "margin": 0.04569676966217531,
         "values": {
           "go": 0.2427919442915593,
           "punt": 0.15618954309202837,
-          "fg": 0.2094554905269044
+          "fg": 0.19709517462938397
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (24.3% vs 20.9%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (24.3% vs 19.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12497,11 +12443,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00678718692200142,
+        "margin": 0.00863190733252639,
         "values": {
           "go": 0.49626414568137234,
           "punt": 0.429254712443208,
-          "fg": 0.4894769587593709
+          "fg": 0.48763223834884595
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 50%); punting is lower (43%).",
         "transition_mode": "improved",
@@ -12758,13 +12704,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.046617639264846744,
+        "margin": 0.04097784831315254,
         "values": {
           "go": 0.6958702510512605,
           "punt": 0.6025521957350324,
-          "fg": 0.6492526117864138
+          "fg": 0.654892402738108
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (69.6% vs 64.9%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (69.6% vs 65.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12811,11 +12757,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.027833857562719277,
+        "margin": 0.02781450867387003,
         "values": {
           "go": 0.6754486094922628,
           "punt": 0.5879134943448481,
-          "fg": 0.6476147519295435
+          "fg": 0.6476341008183928
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (67.5% vs 64.8%).",
         "transition_mode": "improved",
@@ -12864,13 +12810,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.041051345459179434,
+        "margin": 0.0418440039202268,
         "values": {
           "go": 0.5867963821585405,
           "punt": 0.4225816395574563,
-          "fg": 0.545745036699361
+          "fg": 0.5449523782383137
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (58.7% vs 54.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (58.7% vs 54.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12969,13 +12915,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02207339561113164,
+        "margin": 0.023184756853478095,
         "values": {
           "go": 0.6527187991394064,
           "punt": 0.5419258176993125,
-          "fg": 0.6306454035282748
+          "fg": 0.6295340422859284
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (65.3% vs 63.1%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (65.3% vs 63.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13022,66 +12968,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03975296920728505,
+        "margin": 0.0414153011742181,
         "values": {
           "go": 0.29755562199465857,
           "punt": 0.17967284015934645,
-          "fg": 0.2578026527873735
+          "fg": 0.25614032082044047
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (29.8% vs 25.8%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_05_CIN_BAL-2009",
-      "label": "CIN @ BAL \u2014 4th & 7",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_05_CIN_BAL",
-        "play_id": 2009,
-        "note": "",
-        "week": 5,
-        "game_date": "2022-10-09"
-      },
-      "situation": {
-        "posteam": "CIN",
-        "defteam": "BAL",
-        "home_team": "BAL",
-        "away_team": "CIN",
-        "posteam_score": 7,
-        "defteam_score": 10,
-        "score_differential": -3,
-        "qtr": 2,
-        "game_seconds_remaining": 1808,
-        "half_seconds_remaining": 8,
-        "yardline_100": 22,
-        "down": 4,
-        "distance": 7,
-        "posteam_timeouts": 0,
-        "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 8
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.022922963997121626,
-        "values": {
-          "go": 0.32640451399140535,
-          "punt": 0.24991731786708737,
-          "fg": 0.30348154999428373
-        },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (32.6% vs 30.3%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (29.8% vs 25.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13128,13 +13021,13 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.009537075964304753,
+        "margin": 0.002588647101348873,
         "values": {
           "go": 0.7216820297215756,
           "punt": 0.7190933826202267,
-          "fg": 0.7312191056858803
+          "fg": 0.7180996630954177
         },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 73%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 72%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13233,13 +13126,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05558243549828523,
+        "margin": 0.06304630085856167,
         "values": {
           "go": 0.6105932369098697,
           "punt": 0.47743130828732516,
-          "fg": 0.6661756724081549
+          "fg": 0.6736395377684313
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (66.6% vs 61.1%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (67.4% vs 61.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13338,11 +13231,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05302282641590739,
+        "margin": 0.05337082843848895,
         "values": {
           "go": 0.7004699440847104,
           "punt": 0.5855627588516175,
-          "fg": 0.647447117668803
+          "fg": 0.6470991156462215
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (70.0% vs 64.7%).",
         "transition_mode": "improved",
@@ -13391,13 +13284,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.031534148386081026,
+        "margin": 0.031642265191384425,
         "values": {
           "go": 0.06811134025727397,
           "punt": 0.011474845864250266,
-          "fg": 0.036577191871192946
+          "fg": 0.03646907506588955
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (6.8% vs 3.7%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (6.8% vs 3.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13496,13 +13389,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.021659180811135548,
+        "margin": 0.02595982750287229,
         "values": {
           "go": 0.2930562582985332,
           "punt": 0.28025951609971256,
-          "fg": 0.31471543910966876
+          "fg": 0.3190160858014055
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (31.5% vs 29.3%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (31.9% vs 29.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13601,11 +13494,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02847073621937182,
+        "margin": 0.028396627056935655,
         "values": {
           "go": 0.05508311474641016,
           "punt": 0.012505169018105944,
-          "fg": 0.02661237852703834
+          "fg": 0.026686487689474504
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (5.5% vs 2.7%).",
         "transition_mode": "improved",
@@ -13654,13 +13547,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05826528029226302,
+        "margin": 0.055794323576283555,
         "values": {
           "go": 0.4337210399238438,
           "punt": 0.42574654589819216,
-          "fg": 0.49198632021610683
+          "fg": 0.48951536350012737
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (49.2% vs 43.4%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (49.0% vs 43.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13707,13 +13600,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03283134735256188,
+        "margin": 0.03142313546001774,
         "values": {
           "go": 0.6376128427890504,
           "punt": 0.5868309754295267,
-          "fg": 0.6047814954364885
+          "fg": 0.6061897073290327
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (63.8% vs 60.5%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (63.8% vs 60.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13812,13 +13705,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.14124596136248302,
+        "margin": 0.14252458197973916,
         "values": {
           "go": 0.6021259441597291,
           "punt": 0.4438110636300189,
-          "fg": 0.7433719055222121
+          "fg": 0.7446505261394682
         },
-        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (74.3% vs 60.2%).",
+        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (74.5% vs 60.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13917,11 +13810,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05603445860531775,
+        "margin": 0.0558854391538684,
         "values": {
           "go": 0.33055163905473817,
           "punt": 0.21832156164104408,
-          "fg": 0.2745171804494204
+          "fg": 0.27466619990086977
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (33.1% vs 27.5%).",
         "transition_mode": "improved",
@@ -13970,13 +13863,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.030127967083675433,
+        "margin": 0.028743139294062692,
         "values": {
           "go": 0.2834208974984239,
           "punt": 0.20608333575120893,
-          "fg": 0.2532929304147485
+          "fg": 0.2546777582043612
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (28.3% vs 25.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (28.3% vs 25.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14079,7 +13972,7 @@
         "values": {
           "go": 0.36298821417582383,
           "punt": 0.33602948937940824,
-          "fg": 0.3084057328545493
+          "fg": 0.3110584329061881
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (36.3% vs 33.6%).",
         "transition_mode": "improved",
@@ -14126,15 +14019,15 @@
       },
       "historical_action": "punt",
       "reveal": {
-        "recommendation": "fg",
+        "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.016321344437734697,
+        "margin": 0.01888602177346843,
         "values": {
           "go": 0.6872552246945495,
           "punt": 0.6457321481975807,
-          "fg": 0.7035765691322842
+          "fg": 0.668369202921081
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 70%); punting is lower (65%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 69%); punting is lower (65%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14233,13 +14126,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.030901441372330307,
+        "margin": 0.03371625347715601,
         "values": {
           "go": 0.6956789144226383,
           "punt": 0.6139966151725749,
-          "fg": 0.7265803557949686
+          "fg": 0.7293951678997943
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (72.7% vs 69.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (72.9% vs 69.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14286,11 +14179,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.000795482163020611,
+        "margin": 0.0061131944416210615,
         "values": {
           "go": 0.9186665209589288,
           "punt": 0.9082646630682416,
-          "fg": 0.9194620031219494
+          "fg": 0.9125533265173077
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
@@ -14339,13 +14232,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.026126958518555066,
+        "margin": 0.022869297753097317,
         "values": {
           "go": 0.8207552832866258,
           "punt": 0.768956078690662,
-          "fg": 0.8468822418051809
+          "fg": 0.8436245810397232
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (84.7% vs 82.1%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (84.4% vs 82.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14392,11 +14285,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0003763063189247927,
+        "margin": 0.0003589837479504416,
         "values": {
           "go": 0.0008750672597219273,
           "punt": 0.00048462340784979907,
-          "fg": 0.00125137357864672
+          "fg": 0.001234051007672369
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -14445,13 +14338,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.024575279661437355,
+        "margin": 0.025865283221735424,
         "values": {
           "go": 0.6009411439066306,
           "punt": 0.5578444130836431,
-          "fg": 0.6255164235680679
+          "fg": 0.626806427128366
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (62.6% vs 60.1%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (62.7% vs 60.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14498,11 +14391,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03382708119305213,
+        "margin": 0.033714567042936405,
         "values": {
           "go": 0.0953527082303833,
           "punt": 0.05924234685957935,
-          "fg": 0.06152562703733117
+          "fg": 0.0616381411874469
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (9.5% vs 6.2%).",
         "transition_mode": "improved",
@@ -14551,13 +14444,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05218989899407095,
+        "margin": 0.05606590958051616,
         "values": {
           "go": 0.33734805443038474,
           "punt": 0.2342728348196595,
-          "fg": 0.2851581554363138
+          "fg": 0.2812821448498686
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (33.7% vs 28.5%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (33.7% vs 28.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14604,13 +14497,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.04197178190531825,
+        "margin": 0.037827403548732264,
         "values": {
           "go": 0.6620503935783378,
           "punt": 0.658670211864574,
-          "fg": 0.7040221754836561
+          "fg": 0.6998777971270701
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (70.4% vs 66.2%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (70.0% vs 66.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14657,13 +14550,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.10855785823358444,
+        "margin": 0.09583750656391643,
         "values": {
           "go": 0.563501516744402,
           "punt": 0.42465933708594344,
-          "fg": 0.6720593749779864
+          "fg": 0.6593390233083184
         },
-        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (67.2% vs 56.4%).",
+        "layman_why": "Kicking the field goal added about 10% win chance over the next-best option (65.9% vs 56.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14762,13 +14655,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.028337270832248795,
+        "margin": 0.03212589267734406,
         "values": {
           "go": 0.17537766083028314,
           "punt": 0.11625129388369948,
-          "fg": 0.14704038999803434
+          "fg": 0.14325176815293908
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (17.5% vs 14.7%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (17.5% vs 14.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14815,13 +14708,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03502002068499799,
+        "margin": 0.04493314301418394,
         "values": {
           "go": 0.4840402930279385,
           "punt": 0.44765972071260063,
-          "fg": 0.5190603137129365
+          "fg": 0.5289734360421224
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (51.9% vs 48.4%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (52.9% vs 48.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14868,13 +14761,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07197743707497578,
+        "margin": 0.07173536703512501,
         "values": {
           "go": 0.2963618648178097,
           "punt": 0.15239130916169008,
-          "fg": 0.2243844277428339
+          "fg": 0.22462649778268468
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (29.6% vs 22.4%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (29.6% vs 22.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14919,13 +14812,13 @@
       },
       "historical_action": "fg",
       "reveal": {
-        "recommendation": "inconclusive",
+        "recommendation": "fg",
         "inconclusive": true,
-        "margin": 0.008572455598105932,
+        "margin": 0.011855035015534532,
         "values": {
           "go": 0.9268997724163541,
           "punt": 0.9056801917322845,
-          "fg": 0.9354722280144601
+          "fg": 0.9387548074318887
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 94%); punting is lower (91%).",
         "transition_mode": "improved",
@@ -15078,13 +14971,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.042246310979248025,
+        "margin": 0.03927688790310779,
         "values": {
           "go": 0.6358131902833888,
           "punt": 0.5390895791652797,
-          "fg": 0.5935668793041408
+          "fg": 0.596536302380281
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (63.6% vs 59.4%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (63.6% vs 59.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15391,13 +15284,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.029464746288307975,
+        "margin": 0.03977250482661632,
         "values": {
           "go": 0.7171701130605544,
           "punt": 0.6773976082339381,
-          "fg": 0.6877053667722465
+          "fg": 0.6705486466975725
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (71.7% vs 68.8%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (71.7% vs 67.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15444,13 +15337,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0287201606358512,
+        "margin": 0.02766340852004623,
         "values": {
           "go": 0.2257893611698203,
           "punt": 0.18285950692352435,
-          "fg": 0.2545095218056715
+          "fg": 0.2534527696898665
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.5% vs 22.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.3% vs 22.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15497,13 +15390,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.024283311535910956,
+        "margin": 0.023302046158213352,
         "values": {
           "go": 0.3923126357776523,
           "punt": 0.3538173220888543,
-          "fg": 0.41659594731356325
+          "fg": 0.41561468193586565
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.7% vs 39.2%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.6% vs 39.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15550,11 +15443,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 1.1751122739946628e-05,
+        "margin": 3.74078886573319e-05,
         "values": {
           "go": 0.002862923741483012,
           "punt": 0.0008324064509290519,
-          "fg": 0.0028746748642229586
+          "fg": 0.00282551585282568
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -15603,13 +15496,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06446018847317186,
+        "margin": 0.05968942622833384,
         "values": {
           "go": 0.5398752237063564,
           "punt": 0.4442184460000126,
-          "fg": 0.47541503523318457
+          "fg": 0.4801857974780226
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (54.0% vs 47.5%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (54.0% vs 48.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15708,13 +15601,66 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0565041521995604,
+        "margin": 0.055877336406649714,
         "values": {
           "go": 0.6206949968979678,
           "punt": 0.31558108917886846,
-          "fg": 0.6771991490975282
+          "fg": 0.6765723333046175
         },
         "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (67.7% vs 62.1%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_05_CIN_BAL-2226",
+      "label": "CIN @ BAL \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_05_CIN_BAL",
+        "play_id": 2226,
+        "note": "",
+        "week": 5,
+        "game_date": "2022-10-09"
+      },
+      "situation": {
+        "posteam": "BAL",
+        "defteam": "CIN",
+        "home_team": "BAL",
+        "away_team": "CIN",
+        "posteam_score": 10,
+        "defteam_score": 10,
+        "score_differential": 0,
+        "qtr": 3,
+        "game_seconds_remaining": 1656,
+        "half_seconds_remaining": 1656,
+        "yardline_100": 41,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 756
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.04723576186367823,
+        "values": {
+          "go": 0.5132352302082589,
+          "punt": 0.4657409512493511,
+          "fg": 0.46599946834458067
+        },
+        "layman_why": "Going for it added about 5% win chance over the next-best option (51.3% vs 46.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15761,11 +15707,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07886276287023214,
+        "margin": 0.07864350410783383,
         "values": {
           "go": 0.3984487594055795,
           "punt": 0.24572065628665024,
-          "fg": 0.31958599653534736
+          "fg": 0.31980525529774567
         },
         "layman_why": "Going for it added about 8% win chance over the next-best option (39.8% vs 32.0%).",
         "transition_mode": "improved",
@@ -15866,13 +15812,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04192556999635305,
+        "margin": 0.03790195347079864,
         "values": {
           "go": 0.20769566735245026,
           "punt": 0.12800525721031322,
-          "fg": 0.1657700973560972
+          "fg": 0.16979371388165163
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (20.8% vs 16.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (20.8% vs 17.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15971,11 +15917,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.030440124291940096,
+        "margin": 0.03032717272887364,
         "values": {
           "go": 0.6628060174478243,
           "punt": 0.5596305332896581,
-          "fg": 0.6323658931558842
+          "fg": 0.6324788447189507
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (66.3% vs 63.2%).",
         "transition_mode": "improved",
@@ -16024,13 +15970,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03200137612588083,
+        "margin": 0.030518545588427926,
         "values": {
           "go": 0.6756827678353413,
           "punt": 0.5836104544007488,
-          "fg": 0.6436813917094605
+          "fg": 0.6451642222469134
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (67.6% vs 64.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (67.6% vs 64.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16077,13 +16023,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.07353418677802359,
+        "margin": 0.07629913503436014,
         "values": {
           "go": 0.5358113953695148,
           "punt": 0.523810665074173,
-          "fg": 0.6093455821475384
+          "fg": 0.612110530403875
         },
-        "layman_why": "Kicking the field goal added about 7% win chance over the next-best option (60.9% vs 53.6%).",
+        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.2% vs 53.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16130,11 +16076,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03318563606385949,
+        "margin": 0.033144690606337845,
         "values": {
           "go": 0.5944689426391023,
           "punt": 0.45758717462698584,
-          "fg": 0.5612833065752428
+          "fg": 0.5613242520327645
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (59.4% vs 56.1%).",
         "transition_mode": "improved",
@@ -16183,13 +16129,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03894774366432058,
+        "margin": 0.03883419970036095,
         "values": {
           "go": 0.4544436386168006,
           "punt": 0.3441963563053959,
-          "fg": 0.41549589495248
+          "fg": 0.41560943891643964
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (45.4% vs 41.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (45.4% vs 41.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16255,6 +16201,59 @@
       }
     },
     {
+      "id": "2023_18_MIN_DET-2356",
+      "label": "MIN @ DET \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_18_MIN_DET",
+        "play_id": 2356,
+        "note": "",
+        "week": 18,
+        "game_date": "2024-01-07"
+      },
+      "situation": {
+        "posteam": "MIN",
+        "defteam": "DET",
+        "home_team": "DET",
+        "away_team": "MIN",
+        "posteam_score": 6,
+        "defteam_score": 13,
+        "score_differential": -7,
+        "qtr": 3,
+        "game_seconds_remaining": 1594,
+        "half_seconds_remaining": 1594,
+        "yardline_100": 31,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 694
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": false,
+        "margin": 0.020392456736999465,
+        "values": {
+          "go": 0.267510831650116,
+          "punt": 0.20566567479456344,
+          "fg": 0.24711837491311656
+        },
+        "layman_why": "Going for it added about 2% win chance over the next-best option (26.8% vs 24.7%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2023_09_BUF_CIN-3601",
       "label": "BUF @ CIN \u2014 4th & 2",
       "kind": "historical",
@@ -16288,11 +16287,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.003071529796614736,
+        "margin": 0.0029499451901762175,
         "values": {
           "go": 0.9690057981841982,
           "punt": 0.9313345825296847,
-          "fg": 0.9659342683875835
+          "fg": 0.966055852994022
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 97%); punting is lower (93%).",
         "transition_mode": "improved",
@@ -16393,13 +16392,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02133099829011885,
+        "margin": 0.02283038588364665,
         "values": {
           "go": 0.12260950561177841,
           "punt": 0.0753443367019879,
-          "fg": 0.10127850732165956
+          "fg": 0.09977911972813176
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (12.3% vs 10.1%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (12.3% vs 10.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16550,13 +16549,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.025682844545716565,
+        "margin": 0.02682536795955026,
         "values": {
           "go": 0.8355293366813392,
           "punt": 0.780269775567469,
-          "fg": 0.8098464921356227
+          "fg": 0.808703968721789
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (83.6% vs 81.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (83.6% vs 80.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16603,13 +16602,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02049919688796792,
+        "margin": 0.021115907633440942,
         "values": {
           "go": 0.10701536647158641,
           "punt": 0.06961227959075234,
-          "fg": 0.08651616958361849
+          "fg": 0.08589945883814547
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (10.7% vs 8.7%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (10.7% vs 8.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16656,11 +16655,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00548542388860529,
+        "margin": 0.00697375551212831,
         "values": {
           "go": 0.6095190141750009,
           "punt": 0.5871471448576063,
-          "fg": 0.6040335902863956
+          "fg": 0.6025452586628726
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 61%); punting is lower (59%).",
         "transition_mode": "improved",
@@ -16813,13 +16812,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0404376325053315,
+        "margin": 0.04167608815447754,
         "values": {
           "go": 0.6835304940278236,
           "punt": 0.581790942192368,
-          "fg": 0.6430928615224921
+          "fg": 0.6418544058733461
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (68.4% vs 64.3%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (68.4% vs 64.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16918,13 +16917,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05319496777013191,
+        "margin": 0.04850410484404177,
         "values": {
           "go": 0.2520417719884697,
           "punt": 0.06552906503954209,
-          "fg": 0.1988468042183378
+          "fg": 0.20353766714442795
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (25.2% vs 19.9%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (25.2% vs 20.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16971,11 +16970,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03650472932340387,
+        "margin": 0.03647955557356214,
         "values": {
           "go": 0.5318509614315691,
           "punt": 0.42357266876870475,
-          "fg": 0.4953462321081652
+          "fg": 0.49537140585800693
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (53.2% vs 49.5%).",
         "transition_mode": "improved",
@@ -17028,7 +17027,7 @@
         "values": {
           "go": 0.5684119007319087,
           "punt": 0.5302451277706535,
-          "fg": 0.5010897126595104
+          "fg": 0.5033106255982591
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (56.8% vs 53.0%).",
         "transition_mode": "improved",
@@ -17077,11 +17076,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02856508728063667,
+        "margin": 0.02844670715198494,
         "values": {
           "go": 0.8464390677170688,
           "punt": 0.7693443563789206,
-          "fg": 0.8178739804364321
+          "fg": 0.8179923605650838
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (84.6% vs 81.8%).",
         "transition_mode": "improved",
@@ -17130,13 +17129,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03411216616571322,
+        "margin": 0.04224550833835117,
         "values": {
           "go": 0.7513603329513405,
           "punt": 0.694031301587338,
-          "fg": 0.7172481667856273
+          "fg": 0.7091148246129894
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (75.1% vs 71.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (75.1% vs 70.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17183,13 +17182,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.12396879117408732,
+        "margin": 0.1419119968874446,
         "values": {
           "go": 0.468167060976437,
           "punt": 0.3950757480882747,
-          "fg": 0.5921358521505243
+          "fg": 0.6100790578638816
         },
-        "layman_why": "Kicking the field goal added about 12% win chance over the next-best option (59.2% vs 46.8%).",
+        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (61.0% vs 46.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17236,13 +17235,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.059486316824553076,
+        "margin": 0.06014619239693386,
         "values": {
           "go": 0.6074471625520578,
           "punt": 0.4728075578065795,
-          "fg": 0.5479608457275047
+          "fg": 0.5473009701551239
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (60.7% vs 54.8%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (60.7% vs 54.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17256,45 +17255,46 @@
       }
     },
     {
-      "id": "2023_12_TB_IND-3503",
-      "label": "TB @ IND \u2014 4th & 1",
+      "id": "2023_01_LV_DEN-2353",
+      "label": "LV @ DEN \u2014 4th & 3",
       "kind": "historical",
       "source": {
         "season": 2023,
-        "game_id": "2023_12_TB_IND",
-        "play_id": 3503,
+        "game_id": "2023_01_LV_DEN",
+        "play_id": 2353,
         "note": "",
-        "week": 12,
-        "game_date": "2023-11-26"
+        "week": 1,
+        "game_date": "2023-09-10"
       },
       "situation": {
-        "posteam": "IND",
-        "defteam": "TB",
-        "home_team": "IND",
-        "away_team": "TB",
-        "posteam_score": 20,
-        "defteam_score": 17,
+        "posteam": "DEN",
+        "defteam": "LV",
+        "home_team": "DEN",
+        "away_team": "LV",
+        "posteam_score": 13,
+        "defteam_score": 10,
         "score_differential": 3,
-        "qtr": 4,
-        "game_seconds_remaining": 551,
-        "half_seconds_remaining": 551,
-        "yardline_100": 49,
+        "qtr": 3,
+        "game_seconds_remaining": 1476,
+        "half_seconds_remaining": 1476,
+        "yardline_100": 37,
         "down": 4,
-        "distance": 1,
-        "posteam_timeouts": 3,
+        "distance": 3,
+        "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 551
+        "quarter_seconds_remaining": 576
       },
-      "historical_action": "go",
+      "historical_action": "fg",
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07418985674006517,
+        "margin": 0.03003909300884544,
         "values": {
-          "go": 0.7207439963066526,
-          "punt": 0.6465541395665875
+          "go": 0.622133039294412,
+          "punt": 0.5687533008112512,
+          "fg": 0.5920939462855666
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (72.1% vs 64.7%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (62.2% vs 59.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17497,11 +17497,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03545311703511028,
+        "margin": 0.035662707146427775,
         "values": {
           "go": 0.327401510023427,
           "punt": 0.23191764096208206,
-          "fg": 0.2919483929883167
+          "fg": 0.2917388028769992
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (32.7% vs 29.2%).",
         "transition_mode": "improved",
@@ -17550,11 +17550,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.020837795801272985,
+        "margin": 0.02059784860729308,
         "values": {
           "go": 0.7157858702828812,
           "punt": 0.5734397786381585,
-          "fg": 0.6949480744816082
+          "fg": 0.6951880216755881
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.5%).",
         "transition_mode": "improved",
@@ -17654,14 +17654,14 @@
       "historical_action": "go",
       "reveal": {
         "recommendation": "go",
-        "inconclusive": true,
-        "margin": 0.010807386590602874,
+        "inconclusive": false,
+        "margin": 0.02720362671569776,
         "values": {
           "go": 0.4316166409572688,
           "punt": 0.39645842206114695,
-          "fg": 0.42080925436666594
+          "fg": 0.40441301424157106
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 43%); punting is lower (40%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (43.2% vs 40.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17764,7 +17764,7 @@
         "values": {
           "go": 0.31603782408064895,
           "punt": 0.26515656777194174,
-          "fg": 0.25340842827385474
+          "fg": 0.2576854516358388
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (31.6% vs 26.5%).",
         "transition_mode": "improved",
@@ -17917,11 +17917,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0332855857853222,
+        "margin": 0.03348453692514197,
         "values": {
           "go": 0.5232590351095989,
           "punt": 0.42814731335591505,
-          "fg": 0.4899734493242767
+          "fg": 0.48977449818445695
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (52.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -17970,11 +17970,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0773040159039946,
+        "margin": 0.0772775553007804,
         "values": {
           "go": 0.38069561500342197,
           "punt": 0.23426641185754346,
-          "fg": 0.30339159909942737
+          "fg": 0.3034180597026416
         },
         "layman_why": "Going for it added about 8% win chance over the next-best option (38.1% vs 30.3%).",
         "transition_mode": "improved",
@@ -18023,13 +18023,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04711164365735554,
+        "margin": 0.04636600642675559,
         "values": {
           "go": 0.658477868936546,
           "punt": 0.551632123646364,
-          "fg": 0.6113662252791905
+          "fg": 0.6121118625097904
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (65.8% vs 61.1%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (65.8% vs 61.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18232,11 +18232,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03022767957095357,
+        "margin": 0.02981825398321092,
         "values": {
           "go": 0.3228684446251821,
           "punt": 0.28877199149554456,
-          "fg": 0.29264076505422854
+          "fg": 0.2930501906419712
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (32.3% vs 29.3%).",
         "transition_mode": "improved",
@@ -18285,11 +18285,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03295756767176172,
+        "margin": 0.03317061217630124,
         "values": {
           "go": 0.5228458436011306,
           "punt": 0.424888479486876,
-          "fg": 0.4898882759293689
+          "fg": 0.4896752314248294
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (52.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -18338,11 +18338,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 2.5900516145130623e-06,
+        "margin": 2.095836747394176e-06,
         "values": {
           "go": 1.1469270957692925e-05,
           "punt": 3.891438913161682e-06,
-          "fg": 1.4059322572205987e-05
+          "fg": 1.35651077050871e-05
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
@@ -18391,13 +18391,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.029542775224204676,
+        "margin": 0.02881835845059666,
         "values": {
           "go": 0.6549785565770441,
           "punt": 0.5768575854664797,
-          "fg": 0.6254357813528394
+          "fg": 0.6261601981264474
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (65.5% vs 62.5%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (65.5% vs 62.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18496,13 +18496,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05734252749434443,
+        "margin": 0.057145638266243415,
         "values": {
           "go": 0.6046572888167531,
           "punt": 0.47099913628190204,
-          "fg": 0.5473147613224086
+          "fg": 0.5475116505505097
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (60.5% vs 54.7%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (60.5% vs 54.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18549,11 +18549,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02219030738569361,
+        "margin": 0.022168015697053067,
         "values": {
           "go": 0.7464381075867166,
           "punt": 0.6604552556670327,
-          "fg": 0.724247800201023
+          "fg": 0.7242700918896635
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (74.6% vs 72.4%).",
         "transition_mode": "improved",
@@ -18602,13 +18602,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04211952179453027,
+        "margin": 0.03569219150391956,
         "values": {
           "go": 0.6692597922435124,
           "punt": 0.5678826226765756,
-          "fg": 0.6271402704489821
+          "fg": 0.6335676007395928
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (66.9% vs 62.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (66.9% vs 63.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18655,13 +18655,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.025369391793345075,
+        "margin": 0.024185158425784087,
         "values": {
           "go": 0.2142872012956107,
           "punt": 0.20317073592321422,
-          "fg": 0.2396565930889558
+          "fg": 0.2384723597213948
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (24.0% vs 21.4%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (23.8% vs 21.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18708,13 +18708,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03813367293447656,
+        "margin": 0.0362385251164713,
         "values": {
           "go": 0.4654673616675178,
           "punt": 0.4450571573520393,
-          "fg": 0.5036010346019943
+          "fg": 0.5017058867839891
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (50.4% vs 46.5%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (50.2% vs 46.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18761,11 +18761,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06297669304667852,
+        "margin": 0.06332228935332573,
         "values": {
           "go": 0.552906081752026,
           "punt": 0.4281889564213033,
-          "fg": 0.4899293887053475
+          "fg": 0.4895837923987003
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (55.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -18814,13 +18814,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03613555069563168,
+        "margin": 0.03546486348030109,
         "values": {
           "go": 0.8864125484196466,
           "punt": 0.7747761136944575,
-          "fg": 0.9225480991152782
+          "fg": 0.9218774118999477
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (92.3% vs 88.6%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (92.2% vs 88.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18867,13 +18867,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0840304840235282,
+        "margin": 0.08668689818850228,
         "values": {
           "go": 0.7180159809089339,
           "punt": 0.6625561357287912,
-          "fg": 0.8020464649324621
+          "fg": 0.8047028790974362
         },
-        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (80.2% vs 71.8%).",
+        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (80.5% vs 71.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18920,11 +18920,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07488291239467443,
+        "margin": 0.07459298021192856,
         "values": {
           "go": 0.56682055631487,
           "punt": 0.4108977965907712,
-          "fg": 0.4919376439201956
+          "fg": 0.4922275761029415
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (56.7% vs 49.2%).",
         "transition_mode": "improved",
@@ -19077,11 +19077,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05726339719755874,
+        "margin": 0.05710325602293809,
         "values": {
           "go": 0.5519790865657006,
           "punt": 0.42715589635057544,
-          "fg": 0.49471568936814186
+          "fg": 0.4948758305427625
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (55.2% vs 49.5%).",
         "transition_mode": "improved",

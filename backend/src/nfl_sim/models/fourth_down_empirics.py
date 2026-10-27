@@ -42,8 +42,9 @@ FG_SNAP_YARDS = 18
 # record distance). Past the longest attempt in the data there is no evidence: p = 0.
 TAIL_START = 60
 TAIL_FIT_FROM = 50
+FG_MIN_KICK = 18  # per-yard table starts here (shortest real kicks are 18-19 yd)
 
-# Kick distance bins for FG (top bin ends at MAX_FG_DISTANCE — no 60–80 catch-all)
+# Legacy FG kick-distance bands (older pickles / toy tests only). Fits are per-yard now.
 FG_BINS: tuple[tuple[int, int], ...] = (
     (18, 29),
     (30, 39),
@@ -99,42 +100,32 @@ def _logit_fit(x: np.ndarray, y: np.ndarray, iters: int = 50) -> tuple[float, fl
     return float(w[0]), float(w[1])
 
 
-def _build_fg_tail(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
-    """1-yd bins from TAIL_START to the longest attempt, priced by a logistic fit."""
+def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
+    """M12: per-yard make probability from ONE logistic fit on kick distance.
+
+    The old 10-yd bins (plus a separate tail fit from 60 yd) made the FG value drop in
+    steps at 30/40/50/60 yd (up to 9 WP pts between opp 41 and 42). Now every yard from
+    FG_MIN_KICK to the longest attempt in the fit data gets p = logistic(a + b*kd); past
+    the longest attempt there is no evidence and p_make returns 0.
+    """
     ok = kd.notna()
     kd, made = kd[ok].astype(float), made[ok].astype(bool)
-    if kd.empty or kd.max() < TAIL_START:
-        return {}
-    fit = kd >= TAIL_FIT_FROM
-    if int(fit.sum()) < 10 or made[fit].nunique() < 2:
-        return {}
-    a, b = _logit_fit(kd[fit].to_numpy(), made[fit].to_numpy().astype(float))
+    if kd.empty or made.nunique() < 2:
+        return {(lo, hi): {"n": int(kd.between(lo, hi).sum()), "p_make": 0.5, "filter": "REG field_goal; no fit"}
+                for lo, hi in FG_BINS}
+    a, b = _logit_fit(kd.to_numpy(), made.to_numpy().astype(float))
     longest = int(kd.max())
-    tail: dict[tuple[int, int], dict[str, Any]] = {}
-    for yd in range(TAIL_START, longest + 1):
+    tbl: dict[tuple[int, int], dict[str, Any]] = {}
+    for yd in range(FG_MIN_KICK, longest + 1):
         at = kd.round().eq(yd)
-        tail[(yd, yd)] = {
+        tbl[(yd, yd)] = {
             "n": int(at.sum()),
             "made": int(made[at].sum()),
             "p_make": float(1.0 / (1.0 + np.exp(-(a + b * yd)))),
-            "filter": f"REG field_goal; logistic tail fit on {int(fit.sum())} attempts >= {TAIL_FIT_FROM} yd "
-                      f"(longest attempt {longest} yd)",
+            "filter": f"REG field_goal; logistic fit on kick_distance over {len(kd)} attempts "
+                      f"(longest {longest} yd)",
         }
-    return tail
-
-
-def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
-    fg_tbl: dict[tuple[int, int], dict[str, Any]] = {}
-    for lo, hi in FG_BINS:
-        m = kd.ge(lo) & kd.le(hi)
-        n = int(m.sum())
-        fg_tbl[(lo, hi)] = {
-            "n": n,
-            "p_make": float(made[m].mean()) if n else 0.5,
-            "filter": "REG play_type=field_goal",
-        }
-    fg_tbl.update(_build_fg_tail(kd, made))
-    return fg_tbl
+    return tbl
 
 
 # Punt outcomes are priced yard by yard (H8): a Gaussian kernel over nearby pre-punt
@@ -473,7 +464,8 @@ class FourthDownEmpirics:
             row = {"n": 0, "p_make": 0.0, "beyond_data": True,
                    "filter": f"kick_distance > longest attempt in the data ({bins[-1][1]} yd)"}
         else:
-            row = dict(_bin_rate(bins, round(kd) if kd >= TAIL_START else kd, fg_tbl))
+            per_yard = bins[0][0] == bins[0][1]
+            row = dict(_bin_rate(bins, round(kd) if per_yard or kd >= TAIL_START else kd, fg_tbl))
         if kd > MAX_FG_DISTANCE:
             # Product rule: priced from the data, but never offered.
             row["out_of_range"] = True
