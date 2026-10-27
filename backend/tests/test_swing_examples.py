@@ -218,7 +218,7 @@ def test_phi_tb_kickoff_offside_penalty_sentence():
 
 def test_offsetting_declined_and_accepted_penalty_wording():
     assert ("David Montgomery is stopped for no gain.", "Offsetting penalties: unnecessary roughness on "
-            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC). The down is replayed.") in _pen("2023_01_DET_KC")
+            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC).") in _pen("2023_01_DET_KC")
     assert ("Zach Wilson pass incomplete.", "Two NYJ flags declined: offensive pass interference (Jeremy Ruckert) "
             "and ineligible downfield pass (Connor McGovern).") in _pen("2023_01_BUF_NYJ")
     assert ("Jared Goff completes a pass to Sam LaPorta for 12 yards.",

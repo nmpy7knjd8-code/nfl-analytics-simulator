@@ -49,8 +49,9 @@ _LEAD_TAGS = re.compile(r"^\s*\((?:[^()]*?(?:Shotgun|No Huddle|Punt formation|Fi
 _JERSEY = re.compile(r"\b\d{1,2}-(?=[A-Z])")
 _PARENS = re.compile(r"\s*\([^()]*\)")
 _BRACKETS = re.compile(r"\s*\[[^\]]*\]")
+_SNAPPER = re.compile(r",?\s*\b(?:Center|Holder)-(?:\d{1,2}-)?[A-Z][\w'\-]*(?:\.\s?[\w'\-]+)*")
 _CAPS = re.compile(r"\b[A-Z]{4,}\b")  # 2-3 letter team codes stay upper-case
-_PENALTY = re.compile(r"PENALTY on (?:([A-Z]{2,3})-)?(?:\d{1,2}-)?([A-Z][\w.'\- ]*?)?,\s*([^,]+),\s*(\d+) yards", re.I)
+_PENALTY = re.compile(r"PENALTY on (?:([A-Z]{2,3})-)?(?:\d{1,2}-)?([A-Z][\w.'\- ]*?)?,\s*([^,]+),\s*(\d+) yards?", re.I)
 
 
 def clean_desc(desc: str) -> str:
@@ -60,8 +61,8 @@ def clean_desc(desc: str) -> str:
         if t == s:
             break
         s = t
+    s = _SNAPPER.sub("", s)  # QA 0019 N5: before jersey numbers, or "A.DePaola" leaves ".DePaola"
     s = _JERSEY.sub("", s)
-    s = re.sub(r",?\s*(Center|Holder)-[^,.]*", "", s)
     s = _BRACKETS.sub("", s)
     s = _PARENS.sub("", s)
     s = _CAPS.sub(lambda m: m.group(0).lower() if m.group(0) not in {"NFL"} else m.group(0), s)
@@ -93,11 +94,29 @@ def _kickoff(r: dict[str, Any]) -> str | None:
         return f"{k} kicks off for a touchback."
     ret, ry, dist = _name(r, "kickoff_returner"), r.get("return_yards"), r.get("kick_distance")
     s = f"{k} kicks off" + (f" {_yds(dist)}" if dist else "")
+    desc = r.get("desc") or ""
+    if re.search(r"MUFFS", desc) and not ry:  # QA 0019 N7: no "returns it 0 yards" on a muff
+        return s + (f", and {ret} muffs the catch." if ret else ", and the catch is muffed.")
+    if ry is not None and _t(r.get("penalty")):  # N7: feed yards on the run-back, not net of the flag
+        raw = _raw_yards(desc, after=1)
+        ry = raw if raw is not None else ry
     if ret and ry is not None and _t(r.get("touchdown")):
         return s + f", and {ret} returns it {_yds(ry)} for a touchdown."
     if ret and ry is not None:
         return s + f", and {ret} returns it {_yds(ry)}."
     return None
+
+
+_FOR_YDS = re.compile(r"\bfor (-?\d+) yards?\b|\bfor no gain\b")
+
+
+def _raw_yards(desc: str, after: int = 0) -> int | None:
+    """Yards in the feed text's first 'for N yards' (skipping `after` sentences); None if absent."""
+    parts = re.split(r"(?<=[a-z0-9)])\.\s+", desc, maxsplit=after) if after else [desc]
+    m = _FOR_YDS.search(parts[-1]) if len(parts) > after else None
+    if not m:
+        return None
+    return int(m.group(1)) if m.group(1) else 0
 
 
 def _kneel_or_spike(r: dict[str, Any]) -> str | None:
@@ -190,7 +209,15 @@ def _templated_main(r: dict[str, Any]) -> str | None:
             return None
         if rec == f:
             return f"{f} fumbles and the defense recovers."
+        if td:  # QA 0019 N4: fumble returned (or recovered) for a touchdown
+            scorer = _name(r, "td")
+            if scorer and scorer != rec:  # recovered, fumbled again, returned (2019_10_SEA_SF 3345)
+                return f"{f} fumbles, and {scorer} returns it for a touchdown."
+            return f"{f} fumbles, and {rec} recovers and scores a touchdown."
         return f"{f} fumbles and {rec} recovers."
+    if _t(r.get("penalty")) and pt in ("pass", "run") and yg is not None and not td:
+        raw = _raw_yards(r.get("desc") or "")  # QA 0019 N7: 2019_10_SEA_SF 2902 gained 10, flag is in penalty_text
+        yg = raw if raw is not None else yg
     if pt == "pass":
         qb, wr = _name(r, "passer"), _name(r, "receiver")
         if not qb:
@@ -235,6 +262,14 @@ def _templated_main(r: dict[str, Any]) -> str | None:
         if not word:
             return None
         return f"{k}'s {int(dist)}-yard field goal {word}."
+    elif pt == "punt" and _t(r.get("punt_blocked")):
+        p, by = _name(r, "punter"), _name(r, "blocked")
+        if not p:
+            return None
+        s = f"{p}'s punt is blocked" + (f" by {by}" if by else "")
+        if td:  # QA 0019 N4: blocked-punt TD (2022_15_IND_MIN 442)
+            return s + ", and the defense scores a touchdown."
+        return s + "."
     elif pt == "punt":
         p, dist = _name(r, "punter"), r.get("kick_distance")
         if not p or dist is None:
@@ -318,7 +353,7 @@ def _whom(team: str, full: str | None) -> str:
     return f"{full} ({team})" if full else team
 
 
-def penalty_sentences(clauses: list[tuple[str, str | None, str, str]]) -> str | None:
+def penalty_sentences(clauses: list[tuple[str, str | None, str, str]], replayed: bool = True) -> str | None:
     """Plain sentences for penalties after a play (UI Critic P2-J / P3-H / P3-I)."""
     if not clauses:
         return None
@@ -328,7 +363,8 @@ def penalty_sentences(clauses: list[tuple[str, str | None, str, str]]) -> str | 
             body = f"{clauses[0][2]} on " + _and([_whom(t, n) for t, n, _, _ in clauses])
         else:
             body = _and([f"{f} on {_whom(t, n)}" for t, n, f, _ in clauses])
-        return f"Offsetting penalties: {body}. The down is replayed."
+        # QA 0019 N3: only a no_play row is replayed; on a run/pass the play stood (DET_KC 2228).
+        return f"Offsetting penalties: {body}." + (" The down is replayed." if replayed else "")
     out: list[str] = []
     declined: dict[str, list] = {}
     for t, n, f, res in clauses:
@@ -354,7 +390,7 @@ def penalty_text(r: dict[str, Any]) -> str | None:
         return None
     if re.search(r"(?i)penalty", _main_text(r)):  # fallback text already carries it
         return None
-    return penalty_sentences(penalty_clauses(r))
+    return penalty_sentences(penalty_clauses(r), replayed=r.get("play_type") == "no_play")
 
 
 def _is_no_play(r: dict[str, Any]) -> bool:
