@@ -16,7 +16,7 @@ function TeamMark({ abbr }: { abbr: string }) {
 
 function TimeoutDots({ count }: { count: number }) {
   return (
-    <span className="quiz-to" aria-label={`${count} timeouts`}>
+    <span className="quiz-to" role="img" aria-label={`${count} timeouts`}>
       {Array.from({ length: 3 }, (_, i) => (
         <span key={i} className={`quiz-to-dot${i < count ? " is-on" : ""}`} />
       ))}

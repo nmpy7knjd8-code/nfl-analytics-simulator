@@ -1531,3 +1531,11 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .not-found-label { font-weight: 600; }
 .not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
 .not-found-links a:hover .not-found-label { color: var(--nf-accent); }
+
+/* Recheck P1-D: an out-of-range field goal stays as a disabled row. */
+.quiz-choice.is-off, .quiz-value.is-off { opacity: 0.45; cursor: not-allowed; }
+/* Recheck P2-D: close call = neutral white outline on the pick, dashed on the other close option (no gold, no red). */
+.quiz-result.is-near_tie { color: #f0f0f4; }
+.quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-picked { outline: 1.5px solid #f0f0f4; }
+.quiz-value.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+.quiz-score-note { margin: -0.25rem 0 0.5rem; font-size: 0.875rem; color: #b4b4bc; }
