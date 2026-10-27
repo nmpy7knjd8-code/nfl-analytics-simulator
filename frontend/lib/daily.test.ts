@@ -138,3 +138,11 @@ test("#93 close-call notes and L8 one-decimal percents", async () => {
   assert.equal(closeNote(scoreCall("punt", it)), "Going for it was a little better (62.1% vs 61.7%), so this pick gets ½.");
   assert.equal(closeNote(scoreCall("fg", it)), null);
 });
+
+test("#96 L7: close-call Why names only options within 2 pts as about the same", async () => {
+  const { whyText } = await import("./dailyView");
+  const base = { ...DAILY_ITEMS[0], situation: { ...DAILY_ITEMS[0].situation, yardline_100: 40 } };
+  const it: DailyItem = { ...base, reveal: { ...base.reveal, values: { go: 0.621, punt: 0.617, fg: 0.3 } } };
+  const t = whyText(it, scoreCall("go", it));
+  assert.match(t, /give about the same win chance \(62\.1% vs 61\.7%\); .* is lower \(30\.0%\)\./);
+});

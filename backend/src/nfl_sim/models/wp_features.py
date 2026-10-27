@@ -28,6 +28,9 @@ WP_NUMERIC_FEATURES: tuple[str, ...] = (
     "receive_2h_ko",
 )
 
+# H6: the primary WP model adds a score×time interaction (lead / sqrt(hours left)).
+WP_MODEL_FEATURES: tuple[str, ...] = WP_NUMERIC_FEATURES + ("score_time_ratio",)
+
 # Minimal score+time baseline subset
 WP_SCORE_TIME_FEATURES: tuple[str, ...] = (
     "score_differential",
@@ -76,6 +79,9 @@ def build_wp_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
             "defteam_timeouts": dot,
             "is_home_possession": is_home,
             "receive_2h_ko": r2h.astype(float),
+            # H6: a lead matters more as the clock runs down; a linear model needs
+            # the interaction spelled out (used by WP_V2_FEATURES only).
+            "score_time_ratio": sd / np.sqrt(gsec.clip(lower=0) / 3600.0 + 0.05),
         },
         index=pbp.index,
     )

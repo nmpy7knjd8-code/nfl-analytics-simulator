@@ -19,7 +19,7 @@ export function slim(pack) {
       // 4 decimals (0.01 win-chance points) is far finer than anything shown or scored.
       reveal: {
         recommendation: it.reveal.recommendation,
-        values: Object.fromEntries(Object.entries(it.reveal.values).map(([k, v]) => [k, Math.round(v * 1e4) / 1e4])),
+        values: Object.fromEntries(Object.entries(it.reveal.values).map(([k, v]) => [k, Number(v.toPrecision(6))])),
       },
     })),
   };

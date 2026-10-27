@@ -8,7 +8,7 @@ export function formatClock(seconds: number): string {
 }
 import type { DailyItem } from "./daily";
 import { teamNickname } from "./teams";
-import { rankedValues, type ScoredCall } from "./daily";
+import { CLOSE_CALL_GAP, formatPercents, optionStates, rankedValues, type ScoredCall } from "./daily";
 
 export const CHOICE_NAME: Record<QuizChoice, string> = { go: "Go", fg: "Kick", punt: "Punt" };
 
@@ -47,16 +47,25 @@ export function pts(x: number): string {
   return `${(Math.abs(x) * 100).toFixed(1)} pts`;
 }
 
-/** One-sentence Why for the reveal, built only from the item's numbers. */
+/** One-sentence Why for the reveal, built only from the item's numbers (offered options only). */
 export function whyText(item: DailyItem, scored: ScoredCall): string {
   const team = teamNickname(item.situation.posteam);
-  const ranked = rankedValues(item);
+  const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
+  const ranked = rankedValues(item).filter(([c]) => offered.has(c));
   const [best, bv] = ranked[0];
   if (ranked.length < 2) return `${CHOICE_NAME[best]} is the only option the model rates here.`;
   const [second, sv] = ranked[1];
-  if (scored.closeCall)
-    return `Close call: ${CHOICE_NAME[best]} and ${CHOICE_NAME[second]} are within ${pts(bv - sv)} of each other for the ${team}, so either is reasonable.`;
-  return `${CHOICE_NAME[best]} gives the ${team} the best chance to win: ${Math.round(bv * 100)}% vs ${Math.round(sv * 100)}% for ${CHOICE_NAME[second]}.`;
+  if (scored.closeCall) {
+    // #96 / QA L7: only options within 2 points of the best are "about the same"; the rest are named as lower.
+    const same = ranked.filter(([, v]) => bv - v < CLOSE_CALL_GAP);
+    const worse = ranked.filter(([, v]) => bv - v >= CLOSE_CALL_GAP);
+    const f = formatPercents(ranked.map(([, v]) => v));
+    let t = `Close call for the ${team}: ${same.map(([c]) => CHOICE_NAME[c]).join(" and ")} give about the same win chance (${same.map((_, i) => f[i]).join(" vs ")})`;
+    if (worse.length) t += "; " + worse.map(([c], i) => `${CHOICE_NAME[c]} is lower (${f[same.length + i]})`).join(", ");
+    return t + ".";
+  }
+  const [a, b] = formatPercents([bv, sv]);
+  return `${CHOICE_NAME[best]} gives the ${team} the best chance to win: ${a} vs ${b} for ${CHOICE_NAME[second]}.`;
 }
 
 /** Points of win chance the pick cost vs the best option (0 if it was the best). */
