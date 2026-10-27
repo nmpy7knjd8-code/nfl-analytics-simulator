@@ -43,6 +43,8 @@ export interface SwingPlay {
   return_td: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
+  /** Penalty sentence(s) after the play; null on "No play" rows (the flag is display_text) and flag-free plays. */
+  penalty_text: string | null;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
   raw_desc: string;
   home_wp_pre?: number;
@@ -91,6 +93,8 @@ function fanFields(r: SwingPlay) {
     yardline_100: r.yardline_100,
     home_score_before: r.home_score_before,
     away_score_before: r.away_score_before,
+    yards_gained: r.yards_gained,
+    return_td: r.return_td,
   };
 }
 

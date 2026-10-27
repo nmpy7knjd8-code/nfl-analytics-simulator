@@ -184,16 +184,38 @@ def test_kickoff_kneel_penalty_text_reads_plainly():
     assert "Zach Wilson completes a pass to Garrett Wilson for a loss of 2 yards." in bn
 
 
+def _both(p):
+    return " ".join(x for x in (p["display_text"], p.get("penalty_text")) if x)
+
+
 def test_every_penalty_in_raw_desc_is_mentioned():
+    from nfl_sim.play_text import penalty_clauses
     for p in _all_exported_plays():
-        n_raw = len(re.findall(r"penalty on", p["raw_desc"], re.I))
-        if n_raw:
-            assert len(re.findall(r"Penalty on", p["display_text"])) == n_raw, (p["raw_desc"], p["display_text"])
+        if re.search(r"penalty on", p["raw_desc"], re.I):
+            clauses = penalty_clauses({"desc": p["raw_desc"]})
+            assert clauses, p["raw_desc"]
+            for _t, _n, foul, _res in clauses:
+                assert foul in _both(p), (p["raw_desc"], _both(p))
+        else:
+            assert p.get("penalty_text") is None
+
+
+def test_penalty_text_is_separate_except_on_no_play_rows():
+    for p in _all_exported_plays():
+        if p["display_text"].endswith("No play.") or " No play. " in p["display_text"]:
+            assert p["penalty_text"] is None
+        if p["penalty_text"]:
+            assert not FEED_SHORTHAND.search(p["penalty_text"]), p["penalty_text"]
+            assert "Penalty on" not in p["display_text"] and "offsetting" not in p["display_text"]
+
+
+def _pen(gid):
+    return {(p["display_text"], p["penalty_text"]) for p in PLAY_LISTS[gid]["plays"]}
 
 
 def test_phi_tb_kickoff_offside_penalty_sentence():
-    assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards. "
-            "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards.") in _texts("2023_03_PHI_TB")
+    assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards.",
+            "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards against TB.") in _pen("2023_03_PHI_TB")
 
 
 def test_every_real_play_carries_the_chart_wp_and_a_fallback_flag():
@@ -222,3 +244,20 @@ def test_qa_m14_at_kickoff_is_nflverse_vegas_home_wp():
         first = next(r for r in ROWS if r["game_id"] == gid and r.get("play_type") and r.get("time"))
         assert first["wp_fallback"] is False  # nflverse value, not our model
         assert not any(k for k in g if "spread" in k or "odds" in k or "line" in k.split("_"))
+
+
+def test_offsetting_declined_and_accepted_penalty_wording():
+    assert ("David Montgomery is stopped for no gain.", "Offsetting penalties: unnecessary roughness on "
+            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC). The down is replayed.") in _pen("2023_01_DET_KC")
+    assert ("Zach Wilson pass incomplete.", "Two NYJ flags declined: offensive pass interference (Jeremy Ruckert) "
+            "and ineligible downfield pass (Connor McGovern).") in _pen("2023_01_BUF_NYJ")
+    assert ("Jared Goff completes a pass to Sam LaPorta for 12 yards.",
+            "Flag on L'Jarius Sneed (KC) for defensive holding, declined.") in _pen("2023_01_DET_KC")
+    assert ("Matt Milano intercepts Zach Wilson and returns it 13 yards.",
+            "Penalty on Matt Milano (BUF): taunting, 15 yards against BUF.") in _pen("2023_01_BUF_NYJ")
+
+
+def test_mixed_offsetting_fouls_named_separately():
+    from nfl_sim.play_text import penalty_sentences
+    assert penalty_sentences([("DET", "A B", "holding", "offsetting"), ("KC", None, "face mask", "offsetting")]) == (
+        "Offsetting penalties: holding on A B (DET) and face mask on KC. The down is replayed.")

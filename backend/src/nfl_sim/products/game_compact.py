@@ -12,7 +12,7 @@ from __future__ import annotations
 
 FG_SNAP_YARDS = 18
 COLS = ("play_id", "qtr", "sec", "posteam", "down", "ydstogo", "yardline_100", "text", "play_type",
-        "home_wp", "home_score", "away_score")
+        "home_wp", "home_score", "away_score", "display_text", "penalty_text")
 
 
 def _sec(clock: str | None) -> int | None:
@@ -40,7 +40,7 @@ def compact(doc: dict) -> dict:
     for i, p in enumerate(plays):
         row = {**p, "sec": _sec(p["clock"]), "home_wp": _r(p["home_wp"])}
         for c in COLS:
-            cols[c].append(row[c])
+            cols[c].append(row.get(c) or row["text"] if c == "display_text" else row.get(c) if c == "penalty_text" else row[c])
         fd = p.get("fourth_down")
         if fd:
             engine_version = fd.get("engine_version", engine_version)
@@ -65,7 +65,10 @@ def expand(doc: dict) -> dict:
     swings = set(doc["swing_play_ids"])
     plays = []
     for i in range(n):
-        p = {k: c[k][i] for k in COLS if k != "sec"}
+        p = {k: c[k][i] for k in COLS if k not in ("sec", "display_text", "penalty_text")}
+        p["penalty_text"] = c["penalty_text"][i] if "penalty_text" in c else None
+        # display_text: fan-facing sentence (play_text.display_text); pre-games-v3 files lack it
+        p["display_text"] = c["display_text"][i] if "display_text" in c else c["text"][i]
         p["clock"] = _clock(c["sec"][i])
         nxt = c["home_wp"][i + 1] if i + 1 < n else doc["final_home_wp"]
         p["home_wp_after"] = nxt

@@ -20,6 +20,8 @@ from nfl_sim.models.past_play_wp import MODEL_INPUT_COLUMNS, NFLVERSE_WP_COLUMNS
 from nfl_sim.models.wp_series import build_wp_series
 from nfl_sim.products import fourth_downs
 from nfl_sim.products.game_compact import compact
+from nfl_sim.play_names import ID_COLS, TEXT_COLUMNS, attach_names, load_players, load_roster
+from nfl_sim.play_text import display_text, penalty_text
 from nfl_sim.products.meta import provenance, write_json
 
 SEASONS = fourth_downs.SEASONS
@@ -30,8 +32,21 @@ FACT_COLUMNS = ("game_id", "season", "game_type", "week", "gameday", "home_team"
 PLAY_COLS = ["game_id", "play_id", "qtr", "quarter_seconds_remaining", "game_seconds_remaining", "posteam",
              "down", "ydstogo", "yardline_100", "desc", "play_type", "home_wp", "total_home_score",
              "total_away_score"]
-PLAY_READ_COLS = list(dict.fromkeys([c for c in PLAY_COLS if c != "home_wp"] + NFLVERSE_WP_COLUMNS
-                                    + MODEL_INPUT_COLUMNS))
+PBP_COLS = list(dict.fromkeys([c for c in PLAY_COLS if c != "home_wp"] + TEXT_COLUMNS + ID_COLS
+                               + NFLVERSE_WP_COLUMNS + MODEL_INPUT_COLUMNS))
+
+
+def play_texts(recs: list[dict], players: dict, roster: dict) -> list[tuple[str, str | None]]:
+    """(display_text, penalty_text) for raw pbp rows (same play_text logic as frontend/lib/plays)."""
+    out = []
+    for r in recs:
+        r = attach_names({k: (None if isinstance(v, float) and v != v else v) for k, v in r.items()}, players, roster)
+        out.append((display_text(r), penalty_text(r)))
+    return out
+
+
+def play_display_texts(recs: list[dict], players: dict, roster: dict) -> list[str]:
+    return [d for d, _ in play_texts(recs, players, roster)]
 
 
 def load_schedules(seasons=SEASONS) -> pd.DataFrame:
@@ -69,7 +84,8 @@ def _str(v):
     return v if isinstance(v, str) else None
 
 
-def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict) -> dict:
+def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict,
+             players: dict | None = None, roster: dict | None = None) -> dict:
     # nflverse row order is play order; play_id is NOT monotone (e.g. late timeouts).
     if "vegas_wp" in plays.columns:  # raw nflverse rows (tests may pass home_wp directly)
         wp = past_play_home_wp(plays)
@@ -87,6 +103,7 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
         swing_threshold=SWING_THRESHOLD,
     )
     pts = {p.play_index: p for p in series.points}
+    texts = play_texts(recs, players or {}, roster or {})
     rows = []
     for i, r in enumerate(recs):
         p = pts.get(i)
@@ -97,6 +114,7 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
             "home_wp": None if p is None else round(p.home_wp_pre, 4),
             "home_wp_after": None if p is None else round(p.home_wp_post, 4),
             "swing": bool(p and p.is_swing),
+            "display_text": texts[i][0], "penalty_text": texts[i][1],
             "home_score": _int(r["total_home_score"]), "away_score": _int(r["total_away_score"]),
             "fourth_down": fourth.get(float(r["play_id"])),
         })
@@ -120,6 +138,7 @@ def fourth_lookup(fd: pd.DataFrame, game_id: str) -> dict[float, dict]:
 def build(index_only: bool = False, seasons=SEASONS) -> dict[int, int]:
     sched = load_schedules()
     fd = None if index_only else fourth_downs.load()
+    players = None if index_only else load_players()
     counts = {}
     for season in seasons:
         prov = provenance([season], extra={"schedules": "nflverse schedules via nflreadpy (facts only, no odds)"})
@@ -130,11 +149,13 @@ def build(index_only: bool = False, seasons=SEASONS) -> dict[int, int]:
         if index_only:
             continue
         by_id = {g["id"]: g for g in idx}
-        pbp = fourth_downs.load_pbp(season, PLAY_READ_COLS)
+        pbp = fourth_downs.load_pbp(season, PBP_COLS)
+        roster = load_roster(season)
         fds = fd[fd["season"] == season]
         for gid, plays in pbp.groupby("game_id"):
             if gid in by_id:
-                write_json(f"games/{gid}.json", compact(game_doc(by_id[gid], plays, fourth_lookup(fds, gid), prov)))
+                write_json(f"games/{gid}.json", compact(game_doc(by_id[gid], plays, fourth_lookup(fds, gid), prov,
+                                                                            players, roster)))
     return counts
 
 
