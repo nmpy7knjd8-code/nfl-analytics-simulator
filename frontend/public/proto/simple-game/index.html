@@ -1,0 +1,103 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fourth & Daily · simple prototype (do not merge)</title>
+<style>
+:root{--b:#1E5BFF;--g:#5f6368}
+*{box-sizing:border-box}body{margin:0;font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;color:#000;background:#fff;-webkit-font-smoothing:antialiased}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 16px 20px}
+.top{display:flex;justify-content:space-between;align-items:center;height:52px}
+.brand{font-weight:800;font-size:17px;letter-spacing:-.2px}.brand span{color:var(--b)}
+.menu{width:48px;height:48px;border:0;background:none;font-size:24px;margin-right:-12px}
+.count{font-size:14px;color:var(--g);font-weight:600}
+/* score bug */
+.bug{height:56px;background:#000;color:#fff;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;flex:none}
+.r1{height:32px;display:flex;align-items:stretch}
+.tm{flex:1;display:flex;align-items:center;gap:6px;padding:0 8px;position:relative;min-width:0}
+.tm.h{flex-direction:row-reverse}
+.edge{position:absolute;top:0;bottom:0;width:4px}.tm.a .edge{left:0}.tm.h .edge{right:0}
+.code{font-size:15px;font-weight:600;letter-spacing:.3px}
+.sc{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;min-width:24px;text-align:center}
+.pos{font-size:13px;width:13px}.tm.has{box-shadow:inset 0 -2px 0 var(--b)}
+.to{display:flex;gap:3px}.to i{width:7px;height:7px;border-radius:50%;background:#fff}.to i.u{background:none;box-shadow:inset 0 0 0 1.5px #8a8a8a}
+.clk{flex:none;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;border-left:1px solid #333;border-right:1px solid #333}
+.r2{height:24px;background:var(--b);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+/* buttons */
+.btns{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.btn{min-height:56px;border:2px solid #000;background:#fff;border-radius:12px;font-family:inherit;font-weight:700;font-size:19px;line-height:1.2;display:flex;justify-content:space-between;align-items:center;padding:0 18px;color:#000;width:100%}
+.btn small{font-weight:600;font-size:15px;color:var(--g)}
+.btn.primary,.next{background:var(--b);border-color:var(--b);color:#fff}
+.next{min-height:56px;border-radius:12px;font-family:inherit;font-weight:700;font-size:19px;border:0;width:100%;margin-top:auto}
+.toofar{font-size:15px;color:var(--g);text-align:center;padding:4px 0}
+.sent{font-size:22px;line-height:1.3;font-weight:700;letter-spacing:-.2px;margin:18px 0 16px}
+.tag{display:inline-block;font-size:13px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.3px}
+.tag.best{background:var(--b);color:#fff}.tag.close{background:#eee;color:#000}.tag.you{border:1.5px solid #000}
+.lbl{font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--g)}
+.big{font-size:34px;font-weight:800;letter-spacing:-.6px;line-height:1.1}
+@media (prefers-reduced-motion:no-preference){.anim{animation:in .2s ease-out}}@keyframes in{from{opacity:0;transform:translateY(6px)}}
+/* A: card */
+.A .card{border:2px solid #000;border-radius:16px;padding:16px;margin:14px 0}
+.A .card .sent{margin:12px 0 0;font-size:21px}
+.A .back .line{padding:12px 0;border-top:1px solid #e6e6e6}.A .back .line:first-child{border:0;padding-top:0}
+.A .back .v{font-size:19px;font-weight:700;margin-top:2px}
+/* B: field */
+.B .fieldwrap{flex:1;display:flex;justify-content:center;margin:12px 0;min-height:250px}
+.B .sent{font-size:19px;margin:14px 0 0}
+/* C: chat */
+.C .chat{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.bub{max-width:88%;padding:12px 14px;border-radius:18px;font-size:18px;line-height:1.35}
+.bub.them{background:#f1f1f1;border-bottom-left-radius:6px;align-self:flex-start}
+.bub.me{background:var(--b);color:#fff;border-bottom-right-radius:6px;align-self:flex-end;font-weight:700}
+.bub.coach{background:#000;color:#fff;border-bottom-left-radius:6px}
+.who{font-size:13px;font-weight:800;color:var(--g);margin:2px 4px -6px}
+.chips{display:flex;gap:8px;margin-top:auto}.chips .btn{flex:1;justify-content:center;flex-direction:column;border-radius:999px;min-height:64px;padding:0 6px;font-size:18px}
+.chips .btn small{font-size:13px}
+.end .sq{font-size:34px;letter-spacing:4px;margin:10px 0}
+.share{background:#f4f4f4;border-radius:10px;padding:12px;font:15px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap}
+</style></head><body><div id="root"></div>
+<script src="plays.js"></script>
+<script>
+const Q=new URLSearchParams(location.search),V=Q.get('v')||'A',S=Q.get('s')||'question',P=+(Q.get('p')||1),PK=Q.get('pick');
+const BEST={go:'Going for it',fg:'The field goal',punt:'Punting'};const pl=PLAYS[P-1],NAME={go:'Go for it',fg:'Field goal',punt:'Punt'};
+const def=pl.pos===pl.away?pl.home:pl.away;
+const fg=pl.yl100+18,tooFar=fg>64;
+const goal=pl.yl100<=10||pl.dist>=pl.yl100;
+const spot=pl.yl100===50?'50':pl.yl100>50?'OWN '+(100-pl.yl100):def+' '+pl.yl100;
+const flag=`⚑ 4th & ${goal?'Goal':pl.dist} · ${spot}`;
+const dots=n=>(n==null||pl.ato==null||pl.hto==null)?'':'<span class="to">'+[0,1,2].map(i=>`<i class="${i<n?'':'u'}"></i>`).join('')+'</span>';
+function mute(h){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,m=(r+g+b)/3;return`rgb(${(r*.6+m*.4)|0},${(g*.6+m*.4)|0},${(b*.6+m*.4)|0})`}
+function team(c,s,to,side){const has=pl.pos===c;return`<div class="tm ${side} ${has?'has':''}" aria-label="${c} ${s}${has?', has the ball':''}, ${to} timeouts"><span class="edge" style="background:${mute(COLORS[c])}"></span><span class="code">${c}</span><span class="pos">${has?'▶':''}</span>${dots(to)}<span class="sc" style="margin-${side=='a'?'left':'right'}:auto">${s}</span></div>`}
+const bug=()=>`<div class="bug" role="img" aria-label="Score"><div class="r1">${team(pl.away,pl.as,pl.ato,'a')}<div class="clk">Q${pl.q}<span>${pl.clock}</span></div>${team(pl.home,pl.hs,pl.hto,'h')}</div><div class="r2">${flag}</div></div>`;
+function strip(){ // horizontal, offense going right
+ const W=358,ez=24,f=W-2*ez,x=v=>ez+f*(100-v)/100,bx=x(pl.yl100),lx=x(Math.max(pl.yl100-pl.dist,0));
+ let l='';for(let y=10;y<100;y+=10)l+=`<line x1="${ez+f*y/100}" x2="${ez+f*y/100}" y1="6" y2="46" stroke="#000" stroke-width="${y==50?2:1}" opacity=".35"/>`;
+ return`<svg viewBox="0 0 ${W} 64" width="100%" role="img" aria-label="Ball at ${spot}, ${pl.dist} yards to go"><rect x="0.5" y="6" width="${W-1}" height="40" rx="4" fill="#fff" stroke="#000"/><rect x="${W-ez}" y="6" width="${ez}" height="40" fill="#1E5BFF" opacity=".2"/>${l}<rect x="${bx}" y="14" width="${Math.max(lx-bx,3)}" height="24" fill="#1E5BFF" opacity=".18"/><line x1="${lx}" x2="${lx}" y1="6" y2="46" stroke="#1E5BFF" stroke-width="3"/><circle cx="${bx}" cy="26" r="7" fill="#000"/><text x="${W-ez/2}" y="31" font-size="13" font-weight="800" text-anchor="middle" fill="#000">${def}</text><text x="${lx}" y="62" font-size="13" text-anchor="${lx>W-60?'end':'middle'}" fill="#1E5BFF" font-weight="700">${goal?'goal':'first down'}</text><text x="${W-ez-4}" y="0" font-size="13" text-anchor="end">→</text></svg>`}
+function vfield(after){ // top-down vertical, offense going up
+ const H=300,W=200,ez=24,f=H-2*ez,y=v=>ez+f*v/100;const by=y(after!=null?after:pl.yl100),ly=y(Math.max(pl.yl100-pl.dist,0));let l='';
+ for(let v=10;v<100;v+=10){l+=`<line x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#000" opacity=".3" stroke-width="${v==50?2:1}"/>`;l+=`<text x="10" y="${y(v)+5}" font-size="13" fill="#5f6368" font-weight="600">${v<50?v:100-v}</text>`}
+ return`<svg viewBox="-2 -2 ${W+4} ${H+4}" height="100%" style="max-height:330px" role="img" aria-label="Ball at ${spot}"><rect width="${W}" height="${H}" rx="6" fill="#fff" stroke="#000" stroke-width="2"/><rect width="${W}" height="${ez}" fill="#1E5BFF" opacity=".2"/><text x="${W/2}" y="17" text-anchor="middle" font-size="13" font-weight="800">${def} END ZONE</text><rect y="${H-ez}" width="${W}" height="${ez}" fill="#eee"/>${l}<line x1="0" x2="${W}" y1="${ly}" y2="${ly}" stroke="#1E5BFF" stroke-width="4"/><text x="${W-8}" y="${ly-6}" text-anchor="end" font-size="13" font-weight="700" fill="#1E5BFF">${goal?'goal':'first down'}</text>${after!=null?`<circle cx="${W/2}" cy="${y(pl.yl100)}" r="9" fill="none" stroke="#000" stroke-dasharray="3 3"/>`:''}<circle class="anim" cx="${W/2}" cy="${by}" r="11" fill="#000"/><text x="${W/2}" y="${H-7}" text-anchor="middle" font-size="13" font-weight="700" fill="#5f6368">▲ ${pl.pos} going this way</text></svg>`}
+function opts(){const o=[['go','Go for it','']];if(!tooFar)o.push(['fg','Field goal',fg+' yd']);if(pl.yl100>35||tooFar)o.push(['punt','Punt','']);return o}
+function btns(cls='btns'){return`<div class="${cls}">`+opts().map(([k,n,d])=>`<button class="btn">${n}${d?`<small>${d}</small>`:''}</button>`).join('')+'</div>'+(tooFar?'<div class="toofar">Too far to kick (65+ yards)</div>':'')}
+function tagFor(k){return k===pl.best?'<span class="tag best">BEST</span>':k===pl.close?'<span class="tag close">Close call · ½ point</span>':''}
+const pick=PK||PICKS[P-1],right=pick===pl.best,half=pick===pl.close;
+const verdict=right?'You got it.':half?'Close call. Half a point.':'Not this time.';
+const bestLine=pl.close?`${BEST[pl.best]} was the best call, but ${BEST[pl.close].replace(/^The f/,'the f').replace(/^G/,'g').replace(/^P/,'p')} was nearly as good.`:`${BEST[pl.best]} was the best call.`;
+const head=`<div class="top"><div class="brand">Fourth <span>&</span> Daily</div><div style="display:flex;align-items:center;gap:6px"><span class="count">${S=='end'?'#'+DAY:'Play '+P+' of 5'}</span><button class="menu" aria-label="Menu: Games, Stats">☰</button></div></div>`;
+const score=PICKS.reduce((a,k,i)=>a+(k===PLAYS[i].best?1:k===PLAYS[i].close?.5:0),0);
+const sq=PICKS.map((k,i)=>k===PLAYS[i].best?'🟦':'⬜').join('');
+let h='';
+if(V=='A'){
+ if(S=='question')h=bug()+`<div class="card"><div style="margin-top:4px">${strip()}</div><div class="sent">${pl.sent}</div></div><div class="lbl" style="margin-bottom:8px">What's the call?</div>`+btns();
+ else if(S=='reveal')h=bug()+`<div class="card back anim"><div class="line"><div class="lbl">You picked</div><div class="v">${NAME[pick]} ${tagFor(pick)}</div></div><div class="line"><div class="lbl">The ${pl.team} coach</div><div class="v">${pl.what}</div></div><div class="line"><div class="lbl">Best call</div><div class="v">${bestLine}</div></div></div><div class="big" style="margin:4px 0 16px">${verdict}</div><button class="next">${P<5?'Next play':'See your score'}</button>`;
+ else h=`<div class="end"><div class="lbl" style="margin-top:28px">Fourth & Daily #${DAY}</div><div class="big" style="font-size:64px;margin-top:8px">${score}/5</div><div class="sq">${sq}</div><div style="font-size:20px;font-weight:700;margin-bottom:24px">Streak: 6 days</div><div class="share">Fourth & Daily #${DAY} ${score}/5 ${sq}</div></div><button class="next">Share</button>`;
+}
+if(V=='B'){
+ if(S=='question')h=bug()+`<div class="sent">${pl.sent}</div><div class="fieldwrap">${vfield()}</div>`+btns();
+ else if(S=='reveal'){const after=pl.coach=='go'?(pl.what.includes('got the first')?pl.yl100-1:pl.yl100):pl.yl100;h=bug()+`<div class="big anim" style="margin:16px 0 6px">${right?'✅':half?'½':'❌'} ${verdict}</div><div style="font-size:19px;font-weight:600">${pl.what.split('.')[0]}. ${bestLine}</div><div class="fieldwrap">${vfield(after)}</div><button class="next">${P<5?'Next play':'See your score'}</button>`}
+ else{const ck=PICKS.map((k,i)=>k===PLAYS[i].best?'✅':'❌').join('');h=`<div class="end" style="text-align:center"><div class="big" style="font-size:72px;margin-top:40px">${score}/5</div><div class="sq">${ck}</div><div style="font-size:24px;font-weight:800;margin-bottom:28px">🔥 6-day streak</div><div class="share">#${DAY} ${ck} 🔥6</div></div><button class="next">Share</button>`}
+}
+if(V=='C'){
+ if(S=='question')h=bug()+`<div class="chat"><div class="who">${pl.team} sideline</div><div class="bub them">${pl.sent}</div><div class="bub them" style="padding:10px 14px 4px">${strip()}</div><div class="bub them">Coach, what's the call?</div></div>`+btns('chips');
+ else if(S=='reveal')h=bug()+`<div class="chat"><div class="bub me">${NAME[pick]}</div><div class="who">${pl.team} coach</div><div class="bub coach anim">${pl.what}</div><div class="who">Fourth & Daily</div><div class="bub them"><b>${verdict}</b> ${bestLine} ${tagFor(pick)}</div></div><button class="next">${P<5?'Next play':'See your score'}</button>`;
+ else h=`<div class="chat" style="margin-top:28px"><div class="who">Fourth & Daily #${DAY}</div><div class="bub them" style="font-size:22px"><b>You made ${score} of 5 calls.</b> 6 days in a row.</div><div class="bub them">${PICKS.map((k,i)=>`${k===PLAYS[i].best?'🟦':'⬜'} ${PLAYS[i].pos} · ${NAME[PLAYS[i].best]}`).join('<br>')}</div><div class="share">I made ${score} of 5 calls ${sq}</div></div><button class="next">Share</button>`;
+}
+document.getElementById('root').innerHTML=`<div class="app ${V}">${head}${h}</div>`;
+</script></body></html>
