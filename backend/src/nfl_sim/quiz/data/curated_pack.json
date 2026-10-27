@@ -362,7 +362,7 @@
           "go": 0.233566533679482,
           "punt": 0.23574643936298725
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 24%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 24%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -426,7 +426,7 @@
           "punt": 0.5129349342742076,
           "fg": 0.6206726702192281
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 62%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 62%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -554,7 +554,7 @@
           "punt": 0.9255919609391552,
           "fg": 0.942511680487796
         },
-        "layman_why": "Too close to call \u2014 a field goal and punting and going for it give about the same win chance (around 94%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 94%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -936,7 +936,7 @@
           "punt": 0.005179827440917467,
           "fg": 0.006612940701586411
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 1%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1000,7 +1000,7 @@
           "punt": 0.002883687852405309,
           "fg": 0.0040448318689671565
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 0%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1382,7 +1382,7 @@
           "punt": 0.9528602141088561,
           "fg": 0.9592784649533965
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 96%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 96%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1446,7 +1446,7 @@
           "punt": 0.9508232000197175,
           "fg": 0.96651158922437
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 97%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 97%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1509,7 +1509,7 @@
           "go": 0.09047507385054765,
           "punt": 0.07341887065549116
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 9%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2081,7 +2081,7 @@
           "go": 0.22885280719157092,
           "punt": 0.235480676882175
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 24%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 24%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2208,7 +2208,7 @@
           "punt": 0.7036964857120807,
           "fg": 0.7866980410819685
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 79%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 79%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2334,7 +2334,7 @@
           "go": 0.3481846010741534,
           "punt": 0.36044593010199266
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 36%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 36%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2398,7 +2398,7 @@
           "punt": 0.9903752630975846,
           "fg": 0.9926262306784166
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 99%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 99%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2524,7 +2524,7 @@
           "go": 0.032108637179574136,
           "punt": 0.037674585671247124
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 4%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3033,7 +3033,7 @@
           "punt": 0.7410683015854157,
           "fg": 0.7371281121024205
         },
-        "layman_why": "Too close to call \u2014 going for it and punting and a field goal give about the same win chance (around 76%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 76%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3096,7 +3096,7 @@
           "go": 0.08171506484815533,
           "punt": 0.08295824255549297
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 8%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4554,7 +4554,7 @@
           "go": 0.021538512505270647,
           "punt": 0.020638964932220477
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 2%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5380,7 +5380,7 @@
           "go": 0.5532441870463911,
           "punt": 0.5618975136254603
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 56%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 56%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5825,7 +5825,7 @@
           "punt": 0.4333174031956995,
           "fg": 0.5428043378562436
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 54%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 54%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6270,7 +6270,7 @@
           "punt": 0.9665557142489422,
           "fg": 0.9748283720873212
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 97%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 97%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7793,7 +7793,7 @@
           "punt": 0.8633367867920595,
           "fg": 0.8945596703889854
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 89%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 89%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7921,7 +7921,7 @@
           "punt": 0.5074739310496028,
           "fg": 0.5611019288903468
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 56%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 56%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8366,7 +8366,7 @@
           "go": 0.2682127102959659,
           "punt": 0.2776273620079382
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 28%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 28%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8683,7 +8683,7 @@
           "punt": 0.25624864790049007,
           "fg": 0.32256950751742847
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 32%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 32%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8935,7 +8935,7 @@
           "go": 0.01345049743792935,
           "punt": 0.011305594862697305
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 1%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9443,7 +9443,7 @@
           "punt": 0.9425681500937497,
           "fg": 0.9510147042662744
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 95%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 95%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9889,7 +9889,7 @@
           "punt": 0.6759056666195902,
           "fg": 0.7120363011938224
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 73%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 73%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10332,7 +10332,7 @@
           "go": 0.8860723454691373,
           "punt": 0.8897351976827119
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 89%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 89%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10904,7 +10904,7 @@
           "punt": 0.2593734409176547,
           "fg": 0.3462830580808725
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 35%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 35%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11668,7 +11668,7 @@
           "go": 0.17521614574550626,
           "punt": 0.17725723823665757
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 18%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 18%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11795,7 +11795,7 @@
           "punt": 0.07653112043783605,
           "fg": 0.11179544210544831
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 11%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 11%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12112,7 +12112,7 @@
           "go": 0.34601960770942236,
           "punt": 0.3292389131475486
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 35%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 35%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12367,7 +12367,7 @@
           "go": 0.1612873312730028,
           "punt": 0.15216185179392447
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 16%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 16%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12812,7 +12812,7 @@
           "punt": 0.026755900605839822,
           "fg": 0.04005221220602254
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 4%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13257,7 +13257,7 @@
           "go": 0.3462644422654769,
           "punt": 0.3584042308605961
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 36%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 36%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13956,7 +13956,7 @@
           "go": 0.07616520228571874,
           "punt": 0.08279085785661822
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 8%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14147,7 +14147,7 @@
           "punt": 0.004313940938531241,
           "fg": 0.0065290644884725
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 1%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14210,7 +14210,7 @@
           "go": 0.1659628394822508,
           "punt": 0.16317688794720092
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 17%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 17%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14589,7 +14589,7 @@
           "go": 0.4201347011893126,
           "punt": 0.42336634241488286
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 42%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 42%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15351,7 +15351,7 @@
           "go": 0.9703138083876791,
           "punt": 0.9705446043353978
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 97%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 97%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15798,7 +15798,7 @@
           "punt": 0.7705946725573278,
           "fg": 0.7989033011212054
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 80%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 80%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16940,7 +16940,7 @@
           "punt": 0.626680930588335,
           "fg": 0.6668202820116484
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 67%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 67%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17130,7 +17130,7 @@
           "go": 0.9816622190992874,
           "punt": 0.9827167381876858
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 98%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 98%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17258,7 +17258,7 @@
           "punt": 0.9050901734058597,
           "fg": 0.9174783703678573
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 92%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17322,7 +17322,7 @@
           "punt": 0.03583367421483258,
           "fg": 0.04575898409247875
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 5%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17896,7 +17896,7 @@
           "punt": 0.8447645462478368,
           "fg": 0.8791233940720893
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 88%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 88%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18973,7 +18973,7 @@
           "punt": 0.051158571030072875,
           "fg": 0.07551863062650364
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 8%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19802,7 +19802,7 @@
           "punt": 0.8503781806534578,
           "fg": 0.8983156555749816
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 91%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 91%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19929,7 +19929,7 @@
           "go": 0.6042922968643758,
           "punt": 0.6189417591498114
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 62%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 62%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19993,7 +19993,7 @@
           "punt": 0.5700959358416624,
           "fg": 0.6190125786219236
         },
-        "layman_why": "Too close to call \u2014 a field goal and going for it and punting give about the same win chance (around 62%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 62%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20120,7 +20120,7 @@
           "go": 0.6103488544417175,
           "punt": 0.6187246913628269
         },
-        "layman_why": "Too close to call \u2014 punting and going for it give about the same win chance (around 62%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 62%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -22217,7 +22217,7 @@
           "punt": 0.008176457368256979,
           "fg": 0.011349220467657463
         },
-        "layman_why": "Too close to call \u2014 going for it and a field goal and punting give about the same win chance (around 1%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -22982,7 +22982,7 @@
           "go": 0.9308529166164271,
           "punt": 0.9292812026704781
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 93%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 93%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -23109,7 +23109,7 @@
           "go": 0.048525561426976435,
           "punt": 0.03564540082093556
         },
-        "layman_why": "Too close to call \u2014 going for it and punting give about the same win chance (around 5%).",
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
