@@ -175,3 +175,17 @@ test("0015 P1-A: Why groups equal shown values (CAR-NO Q3 5:11)", async () => {
   assert.equal(groupedNames(["Go", "Kick"], ["24%", "23%"]), "Go and Kick (24% vs 23%)");
   assert.equal(groupedNames(["Go", "Kick", "Punt"], ["24%", "23%", "22%"]), "Go, Kick and Punt (24% vs 23% vs 22%)");
 });
+
+test("0015 follow-up: CAR-NO Q3 5:11, Kick and Go tie at 91.9% so both are Best; Punt is About as good", async () => {
+  const { barTags } = await import("./dailyView");
+  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  const t = barTags(item, scoreCall("punt", item));
+  assert.deepEqual(t.fg, { tag: "Best", best: true });
+  assert.deepEqual(t.go, { tag: "Best", best: true });
+  assert.deepEqual(t.punt, { tag: "Your pick", best: false });
+  // A tied pick keeps its one tag but gets the blue bar; the other tied row is still Best.
+  const g = barTags(item, scoreCall("go", item));
+  assert.deepEqual(g.go, { tag: "Your pick", best: true });
+  assert.deepEqual(g.fg, { tag: "Best", best: true });
+  assert.equal(g.punt?.tag, "About as good");
+});

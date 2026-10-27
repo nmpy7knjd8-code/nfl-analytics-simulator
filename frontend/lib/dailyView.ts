@@ -96,3 +96,24 @@ export function cost(item: DailyItem, scored: ScoredCall): number {
   const best = rankedValues(item)[0][1];
   return best - (item.reveal.values[scored.pick] ?? 0);
 }
+
+/**
+ * 0015 follow-up: every row tied with the top value at the shown % is Best (blue bar). A tied pick
+ * keeps its single "Your pick" tag but still gets the blue bar. Close options that aren't tied stay
+ * "About as good".
+ */
+export function barTags(item: DailyItem, scored: ScoredCall): Partial<Record<QuizChoice, { tag: "Your pick" | "Best" | "About as good" | null; best: boolean }>> {
+  const ranked = rankedValues(item);
+  const f = formatPercents(ranked.map(([, v]) => v));
+  const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
+  const at = (c: QuizChoice) => f[ranked.findIndex(([x]) => x === c)];
+  const bestV = scored.values[scored.best] ?? 0;
+  const out: ReturnType<typeof barTags> = {};
+  for (const [id, v] of ranked) {
+    const best = offered.has(id) && at(id) === at(scored.best);
+    const close = offered.has(id) && scored.closeCall && bestV - v < CLOSE_CALL_GAP;
+    const tag = id === scored.pick ? "Your pick" : best ? "Best" : close ? "About as good" : null;
+    out[id] = { tag, best };
+  }
+  return out;
+}
