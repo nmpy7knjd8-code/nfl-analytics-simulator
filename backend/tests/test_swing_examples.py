@@ -82,7 +82,8 @@ def test_every_play_fields_match_pbp_and_display_text_is_clean():
         assert p["down"] == (None if r["down"] is None else int(r["down"]))
         assert p["distance"] == (None if r["ydstogo"] is None else int(r["ydstogo"]))
         t = p["display_text"]
-        assert t and len(t.split()) <= MAX_WORDS, t
+        main = re.sub(r"\s*Penalty on [^:]+: [^.]+\.", "", t) if not t.startswith("Penalty") else t.split(". No play.")[0]
+        assert t and len(main.split()) <= MAX_WORDS, t
         assert not BAD_TEXT.search(t), t
         assert p["event"] in ("turnover_on_downs", "interception", "fumble_lost", "touchdown", "field_goal", "punt", "other")
 
@@ -179,3 +180,15 @@ def test_kickoff_kneel_penalty_text_reads_plainly():
     assert "Penalty on Spencer Brown (BUF): false start, 5 yards. No play." in bn
     assert "Josh Allen spikes the ball to stop the clock." in bn
     assert "Zach Wilson completes a pass to Garrett Wilson for a loss of 2 yards." in bn
+
+
+def test_every_penalty_in_raw_desc_is_mentioned():
+    for p in _all_exported_plays():
+        n_raw = len(re.findall(r"penalty on", p["raw_desc"], re.I))
+        if n_raw:
+            assert len(re.findall(r"Penalty on", p["display_text"])) == n_raw, (p["raw_desc"], p["display_text"])
+
+
+def test_phi_tb_kickoff_offside_penalty_sentence():
+    assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards. "
+            "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards.") in _texts("2023_03_PHI_TB")
