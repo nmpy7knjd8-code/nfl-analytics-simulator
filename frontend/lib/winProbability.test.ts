@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { clockLabel, findSwingPlays, isSwing, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame } from "./fixtures";
-import { WP_FIXTURES } from "./wpFixtures";
+import { SWING_EXPORT, WP_FIXTURES } from "./wpFixtures";
 
 test("fixtures follow the contract: home, pre-snap, post = next pre, final = result", () => {
   for (const { series, origin, overtimePlays } of Object.values(WP_FIXTURES)) {
@@ -48,16 +48,17 @@ test("backend is_swing flags win; threshold is only the fallback", () => {
   assert.equal(isSwing({ delta_home_wp: 0.08 }), true);
   assert.equal(isSwing({ delta_home_wp: -0.079 }), false);
   const s = structuredClone(WP_FIXTURES["2023_01_DET_KC"].series);
-  for (const p of s.points) p.is_swing = p.play_id === "4";
+  const only = s.points[3].play_id;
+  for (const p of s.points) p.is_swing = p.play_id === only;
   const sw = findSwingPlays(s);
-  assert.deepEqual(sw.map((x) => x.point.play_id), ["4"]);
+  assert.deepEqual(sw.map((x) => x.point.play_id), [only]);
 });
 
 test("swing plays are biggest first, at most 3, with a Why", () => {
   const sw = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series);
   assert.equal(sw.length, 3);
   for (let i = 1; i < sw.length; i++) assert.ok(Math.abs(sw[i - 1].delta) >= Math.abs(sw[i].delta));
-  const pick6 = sw.find((s) => /Interception/.test(s.point.description ?? ""));
+  const pick6 = sw.find((s) => /INTERCEPTED/.test(s.point.description ?? ""));
   assert.ok(pick6 && pick6.favored_team_id === "DET");
   assert.match(pick6.why, /turnover/);
 });
@@ -85,8 +86,9 @@ test("BUF@NYJ: Week 1, 2023-09-11, NYJ (home) wins 22–16 in OT", () => {
 test("clock labels from game_seconds_elapsed, including OT", () => {
   assert.equal(clockLabel({ quarter: 3, is_overtime: false, game_seconds_elapsed: 2075 }), "Q3 10:25");
   assert.equal(clockLabel({ quarter: 5, is_overtime: true, game_seconds_elapsed: 3748 }), "OT 7:32");
+  // QA M9: Gipson's walk-off punt-return TD was at 9:21 of OT (nflverse), not 7:32.
   const ot = WP_FIXTURES["2023_01_BUF_NYJ"].overtimePlays[0];
-  assert.equal(clockLabel(ot), "OT 7:32");
+  assert.equal(clockLabel(ot), "OT 9:21");
 });
 
 test("splitAtRegulation drops OT points and swing ids but keeps has_overtime", () => {
@@ -94,5 +96,19 @@ test("splitAtRegulation drops OT points and swing ids but keeps has_overtime", (
     assert.ok(series.points.every((p) => p.quarter <= 4 && !p.is_overtime), series.game_id);
     assert.ok(series.swing_play_ids.every((id) => series.points.some((p) => p.play_id === id)));
     if (overtimePlays.length) assert.equal(series.has_overtime, true);
+  }
+});
+
+test("H5: every displayed swing / chart play is a real export row (verified vs pbp in backend CI)", () => {
+  for (const [id, { series, overtimePlays }] of Object.entries(WP_FIXTURES)) {
+    const g = SWING_EXPORT.games[id];
+    const rows = new Map([...g.chart, ...g.overtime_plays].map((r) => [r.play_id, r]));
+    for (const p of [...series.points, ...overtimePlays]) {
+      const r = rows.get(p.play_id);
+      assert.ok(r, `${id} play ${p.play_id} not in swingPlays.json`);
+      assert.equal(p.description, r.description);
+      assert.equal(p.quarter, r.qtr);
+    }
+    for (const s of g.swings) assert.ok(rows.has(s.play_id), `${id} swing ${s.play_id}`);
   }
 });
