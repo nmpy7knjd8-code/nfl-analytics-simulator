@@ -1,8 +1,8 @@
 name: Pages
 
 # Builds the Pages site from source: a fresh frontend static export (build:pages)
-# at the site root, plus static files from docs/ and redirects from old /demo/ paths
-# (scripts/pages/assemble.py).
+# at the site root, plus static files from docs/ and redirects from old /demo/,
+# /quiz/ and /decide/ paths (scripts/pages/assemble.py).
 # The build job runs on every PR and push. The deploy job only runs on main
 # once the repo variable PAGES_VIA_ACTIONS is "true" (set it after switching
 # Settings > Pages > Source to "GitHub Actions"), so it can't fail or race
@@ -53,7 +53,8 @@ jobs:
         run: python3 scripts/pages/assemble.py
       - name: Verify site
         run: |
-          for f in index.html daily/index.html fourth-down/index.html games/index.html 404.html favicon.svg \
+          for f in index.html daily/index.html daily/stats/index.html practice/index.html about/index.html \
+                   fourth-down/index.html games/index.html 404.html favicon.svg icon.svg \
                    demo/index.html demo/quiz/index.html demo/decide/index.html demo/games/index.html \
                    quiz/index.html decide/index.html; do
             test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
