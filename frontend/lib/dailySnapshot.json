@@ -111,6 +111,115 @@
      "fg"
     ]
    }
+  },
+  "2026-10-28": {
+   "2023_14_CAR_NO-2311": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.824249,
+     "punt": 0.850651
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_05_HOU_ATL-3797": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.718016,
+     "punt": 0.662556,
+     "fg": 0.804703
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_02_LAC_KC-504": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.675683,
+     "punt": 0.58361,
+     "fg": 0.645164
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_06_NE_LV-503": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.522846,
+     "punt": 0.424888,
+     "fg": 0.489675
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_04_CHI_NYG-2900": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.227126,
+     "punt": 0.195941
+    },
+    "best": [
+     "go"
+    ]
+   }
+  },
+  "2026-10-29": {
+   "2023_06_CAR_MIA-214": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.5312,
+     "punt": 0.558755
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_15_BAL_JAX-214": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.39473,
+     "punt": 0.422867
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_16_LV_KC-2119": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.151071,
+     "punt": 0.0921098,
+     "fg": 0.126443
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_02_CHI_TB-1243": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.405153,
+     "punt": 0.429477
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_07_IND_TEN-2275": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.107015,
+     "punt": 0.0696123,
+     "fg": 0.0858995
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }

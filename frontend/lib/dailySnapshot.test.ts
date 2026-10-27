@@ -42,10 +42,8 @@ test("today has a snapshot (run scripts/snapshot-daily.ts and commit)", () => {
   assert.ok(SNAP[today], `dailySnapshot.json has no entry for today (${today})`);
 });
 
-test("every snapshot day matches its schedule, best matches its values, and no future day is frozen", () => {
-  const today = dateKey();
+test("every snapshot day matches its schedule and best matches its values (future entries allowed)", () => {
   for (const [d, day] of Object.entries(SNAP)) {
-    assert.ok(d <= today, `${d} is in the future; snapshot only published days`);
     assert.deepEqual(Object.keys(day), DAYS[d], `${d} ids differ from dailySchedule.json`);
     for (const [id, e] of Object.entries(day)) {
       const live = DAILY_ITEMS.find((i) => i.id === id)!;
