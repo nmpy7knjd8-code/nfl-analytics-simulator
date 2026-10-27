@@ -16,3 +16,13 @@ test("no mangled CSS numbers like 0.62.25rem", () => {
     assert.deepEqual(bad, [], `${f} has mangled values`);
   }
 });
+
+test("QA 0217 K/J/menu: About kick copy matches the game; every logo has a plate; menu links", async () => {
+  const { readFileSync } = await import("node:fs");
+  const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
+  assert.match(read("../app/about/page.tsx"), /Too far to kick \(65\+ yards\)/);
+  assert.match(read("../components/SimpleGame.tsx"), /Too far to kick \(65\+ yards\)/);
+  assert.match(read("../components/TeamLogo.tsx"), /className="team-logo team-logo-plate"/);
+  const sg = read("../components/SimpleGame.tsx");
+  for (const href of ["/practice/", "/endless/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
+});

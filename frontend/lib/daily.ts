@@ -14,7 +14,10 @@ import dailySnapshot from "./dailySnapshot.json";
 export type DailyItem = {
   id: string;
   kind: string;
-  source: Pick<QuizItem["source"], "season" | "week" | "game_date" | "game_id">;
+  source: Pick<QuizItem["source"], "season" | "week" | "game_date" | "game_id"> & {
+    /** nflverse play_id (curated ids like flip-lac-den carry no numeric suffix). */
+    play_id?: number;
+  };
   situation: Pick<
     QuizItem["situation"],
     "posteam" | "defteam" | "home_team" | "away_team" | "posteam_score" | "defteam_score" | "qtr" |
@@ -134,6 +137,20 @@ export function cycleDays(items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZ
 export const DAILY_SCHEDULE: Record<string, string[]> = (dailySchedule as { days: Record<string, string[]> }).days;
 const BY_ID = new Map(DAILY_ITEMS.map((i) => [i.id, i]));
 
+/** Pinned ids the pack no longer has. Must be empty: a missing id fails the build (QA 0217 I). */
+export function missingScheduledIds(): { date: string; id: string }[] {
+  return Object.entries(DAILY_SCHEDULE).flatMap(([date, ids]) => ids.filter((id) => !BY_ID.has(id)).map((id) => ({ date, id })));
+}
+
+function resolvePinned(key: string, id: string): DailyItem {
+  const item = BY_ID.get(id);
+  if (!item) {
+    throw new Error(`dailySchedule.json pins ${id} on ${key}, but it is not in dailyPack.json. ` +
+      "Restore the item in the pack (never edit a published day) instead of reshuffling.");
+  }
+  return item;
+}
+
 /** Shuffle-based set (used past the schedule's end, or for a custom item list). */
 export function shuffledDailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
   const days = cycleDays(items, size);
@@ -151,10 +168,7 @@ export function shuffledDailySet(key: string, items: DailyItem[] = DAILY_ITEMS, 
  */
 export function dailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
   const pinned = items === DAILY_ITEMS ? DAILY_SCHEDULE[key] : undefined;
-  if (pinned) {
-    const set = pinned.map((id) => BY_ID.get(id)).filter((i): i is DailyItem => i != null);
-    if (set.length === pinned.length) return frozen(key, set.slice(0, size));
-  }
+  if (pinned) return frozen(key, pinned.map((id) => resolvePinned(key, id)).slice(0, size));
   return items === DAILY_ITEMS ? frozen(key, shuffledDailySet(key, items, size)) : shuffledDailySet(key, items, size);
 }
 
