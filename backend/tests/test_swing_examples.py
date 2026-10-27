@@ -182,13 +182,86 @@ def test_kickoff_kneel_penalty_text_reads_plainly():
     assert "Zach Wilson completes a pass to Garrett Wilson for a loss of 2 yards." in bn
 
 
+def _both(p):
+    return " ".join(x for x in (p["display_text"], p.get("penalty_text")) if x)
+
+
 def test_every_penalty_in_raw_desc_is_mentioned():
+    from nfl_sim.play_text import penalty_clauses
     for p in _all_exported_plays():
-        n_raw = len(re.findall(r"penalty on", p["raw_desc"], re.I))
-        if n_raw:
-            assert len(re.findall(r"Penalty on", p["display_text"])) == n_raw, (p["raw_desc"], p["display_text"])
+        if re.search(r"penalty on", p["raw_desc"], re.I):
+            clauses = penalty_clauses({"desc": p["raw_desc"]})
+            assert clauses, p["raw_desc"]
+            for _t, _n, foul, _res in clauses:
+                assert foul in _both(p), (p["raw_desc"], _both(p))
+        else:
+            assert p.get("penalty_text") is None
+
+
+def test_penalty_text_is_separate_except_on_no_play_rows():
+    for p in _all_exported_plays():
+        if p["display_text"].endswith("No play.") or " No play. " in p["display_text"]:
+            assert p["penalty_text"] is None
+        if p["penalty_text"]:
+            assert not FEED_SHORTHAND.search(p["penalty_text"]), p["penalty_text"]
+            assert "Penalty on" not in p["display_text"] and "offsetting" not in p["display_text"]
+
+
+def _pen(gid):
+    return {(p["display_text"], p["penalty_text"]) for p in PLAY_LISTS[gid]["plays"]}
 
 
 def test_phi_tb_kickoff_offside_penalty_sentence():
-    assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards. "
-            "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards.") in _texts("2023_03_PHI_TB")
+    assert ("Jake Camarda kicks off 78 yards, and Britain Covey returns it 30 yards.",
+            "Penalty on Derrek Pitts (TB): offside on kickoff, 5 yards against TB.") in _pen("2023_03_PHI_TB")
+
+
+def test_offsetting_declined_and_accepted_penalty_wording():
+    assert ("David Montgomery is stopped for no gain.", "Offsetting penalties: unnecessary roughness on "
+            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC). The down is replayed.") in _pen("2023_01_DET_KC")
+    assert ("Zach Wilson pass incomplete.", "Two NYJ flags declined: offensive pass interference (Jeremy Ruckert) "
+            "and ineligible downfield pass (Connor McGovern).") in _pen("2023_01_BUF_NYJ")
+    assert ("Jared Goff completes a pass to Sam LaPorta for 12 yards.",
+            "Flag on L'Jarius Sneed (KC) for defensive holding, declined.") in _pen("2023_01_DET_KC")
+    assert ("Matt Milano intercepts Zach Wilson and returns it 13 yards.",
+            "Penalty on Matt Milano (BUF): taunting, 15 yards against BUF.") in _pen("2023_01_BUF_NYJ")
+
+
+def test_mixed_offsetting_fouls_named_separately():
+    from nfl_sim.play_text import penalty_sentences
+    assert penalty_sentences([("DET", "A B", "holding", "offsetting"), ("KC", None, "face mask", "offsetting")]) == (
+        "Offsetting penalties: holding on A B (DET) and face mask on KC. The down is replayed.")
+
+
+def _by_id(gid, pid):
+    return next(p for p in PLAY_LISTS[gid]["plays"] if p["play_id"] == pid)
+
+
+def test_qa_2315_sentences():
+    assert _by_id("2023_03_PHI_TB", "2938")["display_text"] == "Rachaad White is tackled in the end zone for a safety."
+    assert _by_id("2023_03_PHI_TB", "3507")["display_text"] == (
+        "Two-point try: Baker Mayfield passes to Chris Godwin Jr., and it's good.")
+    assert _by_id("2023_01_BUF_NYJ", "2151")["display_text"] == (
+        "Breece Hall is stopped for a loss of 4 yards. He fumbles out of bounds; NYJ keeps the ball.")
+    assert _by_id("2023_01_DET_KC", "1273")["display_text"] == (
+        "Jared Goff is stopped for no gain. Frank Ragnow fumbles, and Jared Goff recovers.")
+    assert _by_id("2023_03_PHI_TB", "1987")["display_text"] == (
+        "Baker Mayfield is sacked for a loss of 11 yards. He fumbles, and Robert Hainsey recovers.")
+
+
+def test_two_point_failure_reads_as_failed_try():
+    from nfl_sim.play_text import display_text
+    r = {"play_type": "pass", "two_point_conv_result": "failure", "desc": "TWO-POINT CONVERSION ATTEMPT. x",
+         "names": {"passer": "Jalen Hurts", "receiver": "A.J. Brown"}}
+    assert display_text(r) == "Two-point try: Jalen Hurts passes to A.J. Brown, and it fails."
+
+
+def test_kick_return_td_separate_from_turnover_return_td():
+    ot = _by_id("2023_01_BUF_NYJ", "4010")
+    assert ot["kick_return_td"] is True and ot["return_td"] is False
+    assert ot in EXPORT["games"]["2023_01_BUF_NYJ"]["overtime_plays"]
+    assert _by_id("2023_01_DET_KC", "2364")["return_td"] is True and _by_id("2023_01_DET_KC", "2364")["kick_return_td"] is False
+    for p in _all_exported_plays():
+        assert not (p["return_td"] and p["kick_return_td"])
+        if p["kick_return_td"]:
+            assert p["play_type"] in ("punt", "kickoff")

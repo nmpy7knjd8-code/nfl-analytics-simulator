@@ -10,7 +10,7 @@ import {
   closeNote, formatPercents, CLOSE_CALL_GAP,
 } from "../lib/daily";
 import { revealRow } from "../lib/revealRow";
-import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
+import { barTags, CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
 const RESULT_NAME: Record<CallResult, string> = { right: "Right call", close: "Close call · ½", wrong: "Not the best call" };
@@ -60,17 +60,12 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
       nearTie: ranked.filter(([c, v]) => offered.has(c) && bestV - v < CLOSE_CALL_GAP).map(([c]) => c),
       off: !offered.has(id),
     });
-  // M13: only the top value is ever tagged Best.
-  const tagFor = (id: QuizChoice) => {
-    const t = row(id).tag;
-    if (t === "Your pick") return t;
-    if (id === scored.best) return "Best";
-    return t === "Best" ? "About as good" : t;
-  };
+  const tags = barTags(item, scored);
+  const tagFor = (id: QuizChoice) => tags[id]?.tag ?? null;
   return (
     <ul className="fd-bars" aria-label={`${item.situation.posteam} chance to win by choice`}>
       {ranked.map(([id, v]) => (
-        <li key={id} className={`fd-bar res-${scored.result}${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}${row(id).rec ? " is-rec" : ""}${row(id).close ? " is-close" : ""}`}>
+        <li key={id} className={`fd-bar res-${scored.result}${tags[id]?.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}${row(id).rec ? " is-rec" : ""}${row(id).close ? " is-close" : ""}`}>
           <span className="fd-bar-label">
             <span className="fd-bar-name">{CHOICE_NAME[id]}</span>
             {tagFor(id) ? <span className="quiz-tag fd-tag">{tagFor(id)}</span> : null}
