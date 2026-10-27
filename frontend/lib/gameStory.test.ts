@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { elapsed, grade, leadChanges, narrator, numberedSwings, playIdFromItemId, quarters, STORY_GAME_IDS, storyHref, winner, wpLabel, type GameFile } from "./gameStory";
+import { elapsed, grade, leadChanges, narrator, numberedSwings, playIdFromItemId, quarters, regulationOnly, STORY_GAME_IDS, storyHref, winner, wpLabel, type GameFile } from "./gameStory";
 import { DAILY_ITEMS } from "./daily";
 
 const load = (id: string) => JSON.parse(readFileSync(new URL(`../public/data/games/${id}.json`, import.meta.url), "utf8")) as GameFile;
@@ -79,4 +79,10 @@ test("See this game at this play: only for games with a story page, and the play
   }
   assert.equal(storyHref("2022_01_LV_LAC", 10), null);
   assert.equal(storyHref("2023_01_DET_KC", 1986), "/games/2023_01_DET_KC/#play-1986");
+});
+
+test("#73: no overtime win chance in the story chart, swings or narration", () => {
+  const f = regulationOnly(load("2023_01_BUF_NYJ"));
+  assert.ok(f.plays.length > 0 && f.plays.every((p) => p.qtr <= 4));
+  assert.ok(numberedSwings(f).every((s) => s.play.qtr <= 4));
 });

@@ -1,5 +1,5 @@
 import { API_ENDPOINTS, type CanonicalPlay, type GameSummary, type WinProbabilitySeries } from "../contracts";
-import type { ChartSeries } from "./winProbability";
+import { splitAtRegulation, type ChartSeries } from "./winProbability";
 import { fixtureWinProbability } from "./wpFixtures";
 import {
   FIXTURE_BANNER,
@@ -100,7 +100,11 @@ export async function fetchWinProbability(gameId: string): Promise<ChartSeries |
   if (!DEMO_ONLY) {
     try {
       const series = await getJson<WinProbabilitySeries>(API_ENDPOINTS.winProbability(gameId));
-      return { series, origin: "live", note: "Win chance from nflverse play-by-play (home team)." };
+      return {
+        ...splitAtRegulation(series),
+        origin: "live",
+        note: "Win chance from nflverse play-by-play (home team).",
+      };
     } catch {
       /* fall through to fixtures */
     }
