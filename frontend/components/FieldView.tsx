@@ -36,7 +36,7 @@ export function FieldView({ item, outcome }: { item: DailyItem; outcome?: Outcom
   const yardLines = [];
   for (let v = 0; v <= 100; v += 5) yardLines.push(<line key={v} x1={0} x2={W} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={v % 100 ? 0.28 : 0.6} />);
   const hashes = [];
-  for (let v = 1; v < 100; v++) if (v % 5) for (const x of [0.4, 22.9, 29.8, W - 1.4]) hashes.push(<line key={`${v}-${x}`} x1={x} x2={x + 1} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={0.22} />);
+  for (let v = 1; v < 100; v++) if (v % 5) for (const x of [0.4, W / 2 - 3.45 - 0.5, W / 2 + 3.45 - 0.5, W - 1.4]) /* QA 0116 SG5: inbound hashes centred on W/2 */ hashes.push(<line key={`${v}-${x}`} x1={x} x2={x + 1} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={0.22} />);
   const nums = [];
   for (let v = 10; v < 100; v += 10) {
     const n = v <= 50 ? v : 100 - v;
