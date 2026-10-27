@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -111,7 +111,11 @@ def _flip_possession_state(
         posteam_timeouts=sit.defteam_timeouts,
         defteam_timeouts=sit.posteam_timeouts,
         is_home_possession=not sit.is_home_possession,
-        receive_2h_ko=0,
+        # H6: in the first half exactly one team receives the 2H kickoff, so the
+        # new possession team's flag is the complement (was hard-coded 0, which
+        # told the model *neither* team gets the ball back and cost the opponent
+        # ~9 pts of win chance in Q1).
+        receive_2h_ko=(1 - int(sit.receive_2h_ko)) if sit.qtr <= 2 else 0,
         season=sit.season,
     )
 
@@ -130,7 +134,9 @@ def state_go_convert(sit: FourthDownSituation, *, clock_delta: int = CLOCK_DELTA
     new_yl = max(1, sit.yardline_100 - sit.distance)
     return _row_from_state(
         yardline_100=new_yl,
-        distance=10,
+        # H6: inside the 10 a first down is 1st-and-goal (was 1st & 10 at the 1,
+        # a state that never occurs and that the WP model under-credits).
+        distance=min(10, new_yl),
         down=1,
         score_differential=sit.score_differential,
         game_seconds_remaining=g,
@@ -235,8 +241,13 @@ class FourthDownAnalyzer:
         return FourthDownAnalyzer(model, emp)
 
     def _wp(self, row: dict[str, Any]) -> float:
-        df = pd.DataFrame([row])
-        return float(self.model.predict_wp(df)[0])
+        key = tuple(sorted(row.items()))
+        cache = self.__dict__.setdefault("_wp_cache", {})
+        if key not in cache:
+            if len(cache) > 200_000:
+                cache.clear()
+            cache[key] = float(self.model.predict_wp(pd.DataFrame([row]))[0])
+        return cache[key]
 
     def analyze(
         self,
@@ -285,6 +296,13 @@ class FourthDownAnalyzer:
         wp_fail = for_original(s_fail, self._wp(s_fail))
         wp_make = for_original(s_make, self._wp(s_make))
         wp_miss = for_original(s_miss, self._wp(s_miss))
+
+        if sit.distance < sit.yardline_100:
+            # H6 dominance bound: a first down short of the goal line can't be worth
+            # more than scoring the TD from here (+7, kickoff). The WP model alone
+            # sometimes reads 1st-and-goal at the 1 slightly above the post-TD state.
+            s_td = state_go_convert(replace(sit, distance=sit.yardline_100), clock_delta=clk["go_convert"])
+            wp_conv = min(wp_conv, for_original(s_td, self._wp(s_td)))
 
         v_go = p_conv * wp_conv + (1.0 - p_conv) * wp_fail
         v_fg = p_make * wp_make + (1.0 - p_make) * wp_miss

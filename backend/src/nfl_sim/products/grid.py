@@ -30,7 +30,8 @@ def grid_input(t: int, s: int, d: int, yl: int) -> EngineInput | None:
     if DIST[d] > yl:
         return None
     return EngineInput(yardline_100=yl, distance=DIST[d], score_differential=SCORE[s], qtr=qtr,
-                       quarter_seconds_remaining=qs, season=GRID_SEASON)
+                       quarter_seconds_remaining=qs, season=GRID_SEASON,
+                       receive_2h_ko=None)
 
 
 def _init():
@@ -73,7 +74,8 @@ def build(procs: int = 8) -> dict:
             "distance": list(DIST),
             "yardline_100": [1, 99],
         },
-        "fixed": {"posteam_timeouts": 3, "defteam_timeouts": 3, "is_home_possession": True, "season": GRID_SEASON},
+        "fixed": {"posteam_timeouts": 3, "defteam_timeouts": 3, "is_home_possession": True, "season": GRID_SEASON,
+                  "receive_2h_ko": "averaged over both (unknown coin toss)"},
         "scale": 10000,
         "close_call_pts": CLOSE_CALL_PTS,
         "options": ["go", "fg", "punt"],

@@ -13,13 +13,13 @@ Option rules (brief C4):
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from typing import Any, Literal
 
 from nfl_sim.models.fourth_down import FourthDownAnalyzer, FourthDownSituation
 from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE
 
-ENGINE_VERSION = "fourth_down_engine.v1"
+ENGINE_VERSION = "fourth_down_engine.v2"  # v2: H6 post-play state fixes
 TRANSITION_MODE = "improved"
 EMPIRICS_MODE = "pooled"
 PUNT_MIN_YARDLINE_100 = 35  # punt offered from the opponent 35 and farther back (inclusive)
@@ -42,7 +42,9 @@ class EngineInput:
     posteam_timeouts: int = 3
     defteam_timeouts: int = 3
     is_home_possession: bool = True
-    receive_2h_ko: int = 0
+    # None = unknown coin toss: first-half values are averaged over both teams
+    # receiving the 2H kickoff (grid/checker use this; real plays pass 0/1).
+    receive_2h_ko: int | None = 0
     season: int = 2023
 
     def __post_init__(self) -> None:
@@ -88,7 +90,7 @@ class EngineInput:
             posteam_timeouts=self.posteam_timeouts,
             defteam_timeouts=self.defteam_timeouts,
             is_home_possession=self.is_home_possession,
-            receive_2h_ko=self.receive_2h_ko,
+            receive_2h_ko=int(self.receive_2h_ko or 0),
             season=self.season,
         )
 
@@ -133,12 +135,21 @@ class FourthDownEngine:
     def __init__(self, analyzer: FourthDownAnalyzer):
         self.analyzer = analyzer
 
-    def evaluate(self, x: EngineInput) -> EngineOutput:
+    def _raw_wp(self, x: EngineInput) -> dict[str, float]:
         res = self.analyzer.analyze(
             x.to_situation(), empirics_mode=EMPIRICS_MODE, transition_mode=TRANSITION_MODE
         )
-        opts = tuple(o for o in x.available_options() if o in res.actions)
-        wp = {o: round(float(res.actions[o].value_wp), DECIMALS) for o in opts}
+        return {o: float(a.value_wp) for o, a in res.actions.items()}
+
+    def evaluate(self, x: EngineInput) -> EngineOutput:
+        if x.receive_2h_ko is None and x.qtr <= 2:
+            a = self._raw_wp(replace(x, receive_2h_ko=0))
+            b = self._raw_wp(replace(x, receive_2h_ko=1))
+            raw = {o: 0.5 * (a[o] + b[o]) for o in a if o in b}
+        else:
+            raw = self._raw_wp(x)
+        opts = tuple(o for o in x.available_options() if o in raw)
+        wp = {o: round(raw[o], DECIMALS) for o in opts}
         home = {o: (v if x.is_home_possession else round(1.0 - v, DECIMALS)) for o, v in wp.items()}
         ranked = sorted(opts, key=lambda o: (-wp[o], opts.index(o)))
         gap = round((wp[ranked[0]] - wp[ranked[1]]) * 100, 2) if len(ranked) > 1 else 100.0
