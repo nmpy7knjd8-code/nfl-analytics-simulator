@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+// Frozen copy of 2022_03_NO_CAR-2560 with the tie it had when these tests were written;
+// model rebuilds may move its live values, but the tie-scoring rules need a real tie.
+import tieItemJson from "./tieItem.fixture.json";
 import { DAILY_ITEMS, scoreCall, dailySet } from "./daily";
 import { flagText, kickTooFar, optionTags, plainShare, spotText, tappable, bestCallText, outcomeFromGame } from "./simpleGame";
 import type { GameFileV2 } from "./gameFileV2";
@@ -42,7 +45,7 @@ test("tags: only offered options (N9); every tie is Best; ½ only for near, non-
     }
   }
   // CAR 4th & 4 at NO 38: Go and Kick both show 91.9%, so both are Best and Go scores full credit.
-  const car = byId("2022_03_NO_CAR-2560");
+  const car = (tieItemJson as unknown as (typeof DAILY_ITEMS)[number]);
   assert.equal(scoreCall("go", car).result, "right");
   assert.deepEqual(optionTags(car, scoreCall("go", car)).filter((t) => t.tag === "Best").map((t) => t.id).sort(), ["fg", "go"]);
   // NE at BAL 16: FG 40.6% vs Go 40.7% is close but not tied → ½.
