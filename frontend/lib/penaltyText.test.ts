@@ -22,7 +22,9 @@ test("recheck-0015 P1-A: DET_KC Q3 12:50 play row renders its penalty sentence",
   const play = gamePlays("2023_01_DET_KC")!.find((p) => p.play_id === raw.play_id)!;
   const html = row(play.description!, playPenaltyText("2023_01_DET_KC", play.play_id));
   assert.match(html, /stopped for no gain/);
-  assert.match(html, /<span class="play-penalty">[^<]*The down is replayed\.<\/span>/);
+  // QA 0019 N3: the run stood (next play is 3rd & 10), so no "The down is replayed."
+  assert.match(html, /<span class="play-penalty">Offsetting penalties: [^<]*\(KC\)\.<\/span>/);
+  assert.doesNotMatch(html, /replayed/);
 });
 
 /** The game page's static play list (same fallback rows page.tsx builds), server-rendered. */
@@ -34,12 +36,12 @@ function feedHtml(gameId: string): string {
   return renderToStaticMarkup(h(PlayFeed, { gameId, fallback, swingRanks: [] }));
 }
 
-test("game page play list (PlayFeed) renders DET_KC Q3 12:50 with 'The down is replayed.'", () => {
+test("game page play list (PlayFeed) renders DET_KC Q3 12:50 offsetting penalties (play stood)", () => {
   const raw = GAME_PLAY_LISTS["2023_01_DET_KC"].plays.find((p) => p.qtr === 3 && /12:50/.test(String(p.clock)))!;
   const html = feedHtml("2023_01_DET_KC");
   const li = html.slice(html.indexOf(`id="play-${raw.play_id}"`)).split("</li>")[0];
   assert.match(li, /stopped for no gain/);
-  assert.match(li, /<span class="play-penalty">[^<]*The down is replayed\.<\/span>/);
+  assert.match(li, /<span class="play-penalty">Offsetting penalties: [^<]*\(KC\)\.<\/span>/);
 });
 
 test("game-file feed rows pair penalty_text with the fan text it came from", () => {
