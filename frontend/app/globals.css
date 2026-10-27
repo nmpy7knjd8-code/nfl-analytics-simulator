@@ -384,6 +384,9 @@ button {
 .main,
 .decide-page {
   width: 100%;
+  /* Same column as the .fd-top header (QA 0019 N15). */
+  max-width: 40rem;
+  margin-inline: auto;
   padding: calc(1.25rem + var(--safe-top)) var(--page-pad-x) 1.75rem;
 }
 
@@ -550,11 +553,11 @@ button {
 }
 
 .game-row-main {
+  /* QA 0019 N19: date always sits under the matchup, so no row wraps differently at 390px. */
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.55rem 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
   min-width: 0;
 }
 
@@ -574,7 +577,9 @@ button {
 }
 
 .game-row-score {
-  font-family: var(--font-mono);
+  /* QA 0019 N19: scores in the sans face with even-width digits, like the rest of the page. */
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.1rem;
   font-weight: 600;
   flex-shrink: 0;
@@ -599,7 +604,8 @@ button {
 }
 
 .scoreboard-final {
-  font-family: var(--font-mono);
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -1714,7 +1720,15 @@ body { font-variant-numeric: tabular-nums; }
 @media (max-width: 640px) { .wp-axis-team { display: none; } }
 .ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
 
+/* QA 0019 N18: the checker-paused CTA on /fourth-down/ is the primary action, blue like other primaries. */
+.decide-page .empty-state .btn-primary { background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
+.decide-page .empty-state .btn-primary:hover { background: #2a6fe0; }
+
 /* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
 .fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
 .fd-bar-num { white-space: nowrap; min-width: 5.75rem; text-align: right; font-variant-numeric: tabular-nums; }
 .fd-bar-track { flex: 1 1 auto; min-width: 0; }
+
+/* QA 0116 U4: self-hosted logos on the games list and game header. */
+.team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
+.team-logo-plate{background:rgba(255,255,255,.85);border-radius:50%;padding:2px}
