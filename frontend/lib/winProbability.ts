@@ -126,10 +126,17 @@ export function situationLine(p: EventPoint, home: string, away: string): string
 }
 
 /** P3-K: where the gain started or ended decides the wording. */
+/** "an" before numbers read with a leading vowel sound: 8, 11, 18, 80–89 (and 8xx). */
+export function yardArticle(n: number): "a" | "an" {
+  const s = String(Math.abs(Math.trunc(n)));
+  return s.startsWith("8") || s === "11" || s === "18" ? "an" : "a";
+}
+
 function bigGain(yards: number, yardline100: number | null | undefined): string {
-  if (yardline100 != null && yardline100 >= 80) return `a ${yards}-yard gain moved the ball from deep in its own end`;
-  if (yardline100 != null && yardline100 - yards <= 20) return `a ${yards}-yard gain moved the ball into scoring range`;
-  return `a ${yards}-yard gain flipped field position`;
+  const g = `${yardArticle(yards)} ${yards}-yard gain`;
+  if (yardline100 != null && yardline100 >= 80) return `${g} moved the ball from deep in its own end`;
+  if (yardline100 != null && yardline100 - yards <= 20) return `${g} moved the ball into scoring range`;
+  return `${g} flipped field position`;
 }
 
 export function whyText(delta: number, p: EventPoint, favored: string): string {

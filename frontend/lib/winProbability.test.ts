@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
+import { yardArticle, clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
 import { GAME_PLAY_LISTS } from "./gamePlays";
 import { openingWinChance } from "./wpFixtures";
@@ -226,7 +226,7 @@ test("L6: BUF_NYJ Q2 13:02 Breece Hall 83 yds says the gain moved the ball from 
   const s = findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series).find((x) => clockLabel(x.point) === "Q2 13:02")!;
   assert.ok(s, "Hall run is a swing play");
   assert.equal((s.point as EventPoint).yards_gained, 83);
-  assert.match(s.why, /because a 83-yard gain moved the ball from deep in its own end/);
+  assert.match(s.why, /because an 83-yard gain moved the ball from deep in its own end/);
 });
 
 test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", () => {
@@ -265,4 +265,10 @@ test("#110 kick_return_td: punt and kickoff return TDs get their own wording; mi
   assert.match(k("B.Martin punts 46 yards. X.Gipson returns it 65 yards for a TOUCHDOWN", true), /a punt returned for a touchdown gave the return team a score/);
   assert.match(k("J.Bates kicks 65 yards. returns it 100 yards for a TOUCHDOWN", true), /a kickoff returned for a touchdown/);
   assert.match(k("punts ... TOUCHDOWN"), /a touchdown changed the score/);
+});
+
+test("article before yardage: 'an' for 8, 11, 18, 80–89; 'a' otherwise", () => {
+  for (const n of [8, 11, 18, 80, 83, 89]) assert.equal(yardArticle(n), "an", String(n));
+  for (const n of [1, 7, 10, 20, 21, 28, 38, 65, 79, 90, 99, 100, 111]) assert.equal(yardArticle(n), "a", String(n));
+  assert.match(whyText(0.2, { ...base(), event: "pass", yardline_100: 60, yards_gained: 81 } as EventPoint, "DET"), /an 81-yard gain/);
 });
