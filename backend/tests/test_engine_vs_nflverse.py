@@ -98,12 +98,10 @@ def test_go_never_beats_a_guaranteed_touchdown(model, grid_doc):
 def test_go_changes_less_than_3_pts_per_yard(grid_doc):
     """Go-for-it win chance moves < 3 pts per yard of field position.
 
-    One real discontinuity is allowed and documented: the goal-line edge. On 4th & d
-    at the d, converting *is* a touchdown; one yard further back, converting only
-    earns a 1st-and-goal that still has to be finished. Late in a close game that
-    gap is genuinely large (Q4 1:00, down 4: TD 53% vs 1st & goal ~33%), so that
-    pair is only required to be ordered (closer is never worse), not smooth. The FG
-    64-yard cap never affects 'go'.
+    The goal-line edge (4th & d at the d, where converting *is* the touchdown, vs one
+    yard back) is only required to be ordered here; its size is capped separately in
+    test_go_one_yard_change_near_goal_line_is_capped. The FG 64-yard cap never
+    affects 'go'.
     """
     bad, edge_bad = [], []
     for t in range(len(g.TIMES)):
@@ -134,3 +132,69 @@ def test_engine_qa_examples_near_nflverse():
     assert eng.evaluate(x(1, 1)).wp["go"] <= 0.682 + 0.002  # can't beat a real Q1 TD (68.2%)
     assert abs(eng.evaluate(x(2, 1)).wp["fg"] - 0.570) * 100 <= 3 + 0.5 * 100 * (1 - emp.p_make(20)[0])
     assert abs(eng.evaluate(x(80, 10)).wp["punt"] - 0.458) * 100 <= TOL_PTS
+
+
+# --- goal-line / late-game (follow-up to H6) -------------------------------------------
+# Cap on how much 'go' may move for a one-yard change at yards 1–10, every quarter,
+# INCLUDING the goal-line edge. What real data supports: moving from 4th & d at the d to
+# one yard back turns a converted TD into a converted 1st & goal at the 1, which nflverse
+# 2019–21 drives finish as a TD 88.5% of the time (scoring_zone_rates.json). So the edge
+# is at most p(convert 4th & 1) ≈ 0.65 × P(no TD from 1st & goal at the 1) ≈ 0.115 × the
+# full win swing (≤ 100 pts) ≈ 7.5 pts, and a yard of field position elsewhere inside the
+# 10 is worth ~1–3 pts of TD rate. 8 pts is the cap; the current grid tops out ~4 pts.
+GOAL_LINE_CAP_PTS = 8.0
+LATE_TOL_PTS = 5.0  # late-Q4 1st & goal buckets (n ≥ 20) vs nflverse
+LATE = json.loads((FX / "wp_reference" / "late_goal_to_go.json").read_text())["rows"]
+
+
+def test_go_one_yard_change_near_goal_line_is_capped(grid_doc):
+    worst, bad = (0.0, None), []
+    for t in range(len(g.TIMES)):
+        for s in range(len(g.SCORE)):
+            for d in range(len(g.DIST)):
+                for yl in range(1, 10):
+                    a = grid_doc["cells"][g.cell_index(t, s, d, yl)]
+                    b = grid_doc["cells"][g.cell_index(t, s, d, yl + 1)]
+                    if not (a and b):
+                        continue
+                    jump = abs(a[0] - b[0]) / 100
+                    worst = max(worst, (jump, (g.TIMES[t], g.SCORE[s], g.DIST[d], yl)))
+                    if jump > GOAL_LINE_CAP_PTS:
+                        bad.append((g.TIMES[t], g.SCORE[s], g.DIST[d], yl, jump))
+    assert not bad, f"{len(bad)} one-yard go changes > {GOAL_LINE_CAP_PTS} pts inside the 10, e.g. {bad[:5]}"
+
+
+@pytest.fixture(scope="module")
+def analyzer() -> FourthDownAnalyzer:
+    emp = pickle.loads((FX / "grid_engine" / "empirics.pkl").read_bytes())
+    return FourthDownAnalyzer(WPModel.load(FX / "grid_engine" / "wp_model.joblib"), emp)
+
+
+def _first_and_goal(an, *, yl, sd, gsec, to_off=3, to_def=3, home=True):
+    sit = FourthDownSituation(yardline_100=yl, distance=yl, score_differential=sd, game_seconds_remaining=gsec,
+                              half_seconds_remaining=gsec, qtr=4, posteam_timeouts=to_off,
+                              defteam_timeouts=to_def, is_home_possession=home, season=2023)
+    return an.scoring_zone_value(sit, yl)
+
+
+LATE_BUCKETS = [(lo, hi, slo, shi) for lo, hi in ((0, 120), (121, 300)) for slo, shi in ((-8, -4), (-3, -1))] + [
+    (0, 300, -3, -1), (0, 300, 1, 8)]  # small buckets pooled over the last 5:00
+
+
+@pytest.mark.parametrize("bucket", LATE_BUCKETS, ids=lambda b: f"t{b[0]}-{b[1]}_sd{b[2]}..{b[3]}")
+def test_late_q4_first_and_goal_matches_nflverse(analyzer, bucket):
+    """Late-Q4 1st & goal (the state a goal-line conversion leads to) lands near nflverse."""
+    lo, hi, slo, shi = bucket
+    rows = [r for r in LATE if lo <= r["gsec"] <= hi and slo <= r["sd"] <= shi]
+    if len(rows) < 20:
+        pytest.skip(f"only {len(rows)} nflverse plays in this bucket")
+    got = sum(_first_and_goal(analyzer, yl=r["yl"], sd=r["sd"], gsec=r["gsec"], to_off=r["to_off"],
+                              to_def=r["to_def"], home=r["home"]) for r in rows) / len(rows)
+    want = sum(r["wp"] for r in rows) / len(rows)
+    assert abs(got - want) * 100 <= LATE_TOL_PTS, f"engine {got:.3f} vs nflverse {want:.3f} (n={len(rows)})"
+
+
+def test_qa_down_7_first_and_goal_at_the_1_with_55_seconds(analyzer):
+    """QA example: down 7, 1st & goal at the 1, 0:55 — was 10% (plain WP model), nflverse ≈ 42%."""
+    v = sum(_first_and_goal(analyzer, yl=1, sd=-7, gsec=55, home=h) for h in (True, False)) / 2
+    assert abs(v - 0.42) * 100 <= LATE_TOL_PTS, v
