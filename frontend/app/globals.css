@@ -1169,16 +1169,15 @@ button {
 }
 
 .quiz-team-mark {
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.56rem;
+  font-size: 0.62rem;
   letter-spacing: -0.02em;
   font-weight: 700;
-  letter-spacing: 0.02em;
   background: #1a1a1d;
   color: #f0f0f2;
   border: 1px solid #4a4a50;
@@ -1428,7 +1427,7 @@ button {
 }
 
 .quiz-value.is-picked:not(.is-rec) {
-  outline: 1.5px solid rgba(196, 92, 92, 0.7);
+  outline: 1.5px solid X;
 }
 
 .quiz-value-pct {
@@ -1555,6 +1554,12 @@ body { font-variant-numeric: tabular-nums; }
 .fd-bar.is-best .fd-bar-fill { background: var(--color-blue-fill); }
 .fd-bar.is-pick .fd-bar-label { font-weight: 800; text-decoration: underline; }
 .fd-tag { display: inline-block; margin-left: 0.5rem; font-size: 0.72rem; font-weight: 600; color: #c8c8d0; text-decoration: none; }
+/* #98 / 2236: a Correct pick is solid white; on a Close call the better option is solid and the pick dashed. No red. */
+.fd-bar { border-radius: 8px; padding: 2px 4px; }
+.fd-bar.is-rec { outline: 1.5px solid #f0f0f4; }
+.fd-bar.res-close.is-close { outline: 1.5px solid #f0f0f4; }
+.fd-bar.res-right.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+.fd-bar.is-pick:not(.is-rec) { outline: 1px dashed rgba(240, 240, 244, 0.7); }
 .fd-bar-num { text-align: right; }
 .fd-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .fd-btn { min-height: 48px; padding: 0 1.25rem; border-radius: 10px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid #52525b; background: transparent; color: #fff; }

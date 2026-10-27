@@ -9,6 +9,7 @@ import {
   dailySet, type CallResult, type ScoredCall, type StreakState,
   closeNote, formatPercents, CLOSE_CALL_GAP,
 } from "../lib/daily";
+import { revealRow } from "../lib/revealRow";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
@@ -47,23 +48,25 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
   const ranked = rankedValues(item);
   const pcts = formatPercents(ranked.map(([, v]) => v));
   const bestV = scored.values[scored.best] ?? 0;
-  // Recheck 2236 P2-H: words, not outline styles, say which row is which. No red on a Correct pick.
-  const tags = (id: QuizChoice, v: number): string[] => {
-    const t: string[] = [];
-    if (id === scored.pick) t.push("Your pick");
-    if (id === scored.best) t.push("Best");
-    else if (scored.closeCall && id !== scored.pick && bestV - v < CLOSE_CALL_GAP) t.push("About as good");
-    return t;
-  };
+  const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
+  const RESULT = { right: "correct", close: "near_tie", wrong: "incorrect" } as const;
+  // #98 / 2236 P1-E, P2-H: shared row state; a Correct pick is never the miss style.
+  const row = (id: QuizChoice) =>
+    revealRow(id, {
+      inconclusive: scored.closeCall,
+      result: RESULT[scored.result],
+      recommendation: scored.best,
+      selected: scored.pick,
+      nearTie: ranked.filter(([c, v]) => offered.has(c) && bestV - v < CLOSE_CALL_GAP).map(([c]) => c),
+      off: !offered.has(id),
+    });
   return (
     <ul className="fd-bars" aria-label={`${item.situation.posteam} chance to win by choice`}>
       {ranked.map(([id, v]) => (
-        <li key={id} className={`fd-bar${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}`}>
+        <li key={id} className={`fd-bar res-${scored.result}${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}${row(id).rec ? " is-rec" : ""}${row(id).close ? " is-close" : ""}`}>
           <span className="fd-bar-label">
             {CHOICE_NAME[id]}
-            {tags(id, v).map((t) => (
-              <span key={t} className="fd-tag">{t}</span>
-            ))}
+            {row(id).tag ? <span className="quiz-tag fd-tag">{row(id).tag}</span> : null}
           </span>
           <span className="fd-bar-track">
             <span className="fd-bar-fill" style={{ width: `${Math.round(v * 100)}%` }} />
