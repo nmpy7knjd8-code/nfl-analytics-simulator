@@ -1804,7 +1804,13 @@ body.is-playing .app-stage { padding-bottom: calc(var(--safe-bottom) + 16px); }
 .not-found-links a { width: 100%; min-height: 52px; align-items: center; }
 
 /* Recheck P1-D: out-of-range FG row. P2-D: neutral close-call outlines (no gold, no red). */
-.fd-choice.is-off, .fd-bar.is-off { opacity: 0.45; cursor: not-allowed; }
+/* Recheck 2054 P3-C: no opacity; dim only fill and border so the reason stays readable. P3-B: sans, not the % mono. */
+.fd-choice.is-off, .fd-bar.is-off { opacity: 1; cursor: not-allowed; }
+.fd-choice.is-off { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); color: #8c8c96; }
+.fd-choice.is-off small, .fd-bar.is-off .fd-bar-label, .fd-bar-off { color: #8c8c96; font-family: var(--font-body); }
+/* Recheck 2054 P2-F: "Close call · ½ point", neutral, the ½ in a chip. */
+.fd-half { font-weight: 500; color: #c8c8d0; }
+.fd-half-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 1.6em; padding: 0 0.35em; border: 1px solid #c8c8d0; border-radius: 999px; font-size: 0.8em; line-height: 1.4; }
 .fd-bar.is-close-pick { outline: 1.5px solid #f0f0f4; outline-offset: 3px; border-radius: 6px; }
 .fd-bar.is-close-other { outline: 1px dashed rgba(240, 240, 244, 0.7); outline-offset: 3px; border-radius: 6px; }
 a.fd-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: #ffffff; }

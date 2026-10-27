@@ -77,7 +77,7 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
         <li className="fd-bar is-off">
           <span className="fd-bar-label">{CHOICE_NAME.fg}</span>
           <span className="fd-bar-track" />
-          <span className="fd-bar-num">Out of range</span>
+          <span className="fd-bar-num fd-bar-off">Too far ({fieldGoalYards(item)} yd)</span>
         </li>
       ) : null}
     </ul>
@@ -350,7 +350,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const opts = optionStates(item);
   // Recheck P1-D: an out-of-range FG stays as a disabled row (never pickable, never credited).
   const fgFar = fieldGoalYards(item) > MAX_FG_YARDS;
-  const choices = opts.filter((o) => o.shown || (o.id === "fg" && fgFar)).map((o) => (o.id === "fg" && fgFar ? { ...o, disabled: true } : o));
+  const choices = opts.filter((o) => o.shown || (o.id === "fg" && fgFar)).map((o) => (o.id === "fg" && fgFar ? { ...o, disabled: true, note: `${fieldGoalYards(item)}-yd kick, too far` } : o));
   const enabled = choices.filter((o) => !o.disabled);
   const focusId = pending ?? enabled[0]?.id;
 
@@ -431,7 +431,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
         </div>
       ) : (
         <div className="fd-reveal" aria-live="polite">
-          <p className={`fd-result is-${scored.result}`}>{RESULT_NAME[scored.result]}</p>
+          <p className={`fd-result is-${scored.result}`}>{RESULT_NAME[scored.result]}{scored.result === "close" ? <span className="fd-half"> · <span className="fd-half-chip">½</span> point</span> : null}</p>
           <p className="fd-line">
             You: {CHOICE_NAME[scored.pick]} · Coach: {item.historical_action ? CHOICE_NAME[item.historical_action as QuizChoice] ?? item.historical_action : "—"} · Model:{" "}
             {CHOICE_NAME[scored.best]}
