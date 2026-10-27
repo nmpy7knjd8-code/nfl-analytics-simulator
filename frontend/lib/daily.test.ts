@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+// Frozen copy of 2022_03_NO_CAR-2560 with the tie it had when these tests were written;
+// model rebuilds may move its live values, but the tie-scoring rules need a real tie.
+import tieItemJson from "./tieItem.fixture.json";
 import { QUIZ_PACK } from "./quiz";
 // @ts-expect-error plain .mjs build script
 import { slim } from "../scripts/build-daily-pack.mjs";
@@ -155,7 +158,7 @@ test("M13: daily close-call text never shows identical 'X% vs X%'", async () => 
 });
 
 test("0015 P1-B: CAR-NO Q3 5:11, Kick and Go both show 91.9%, so both are Right", () => {
-  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  const item = (tieItemJson as unknown as (typeof DAILY_ITEMS)[number]);
   for (const pick of ["fg", "go"] as const) {
     const s = scoreCall(pick, item);
     assert.equal(s.result, "right", pick);
@@ -166,7 +169,7 @@ test("0015 P1-B: CAR-NO Q3 5:11, Kick and Go both show 91.9%, so both are Right"
 
 test("0015 P1-A: Why groups equal shown values (CAR-NO Q3 5:11)", async () => {
   const { whyText, groupedNames } = await import("./dailyView");
-  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  const item = (tieItemJson as unknown as (typeof DAILY_ITEMS)[number]);
   assert.equal(
     whyText(item, scoreCall("go", item)),
     "Close call for the Panthers: Kick and Go (both 91.9%) and Punt (90.8%) give about the same win chance.",
@@ -178,7 +181,7 @@ test("0015 P1-A: Why groups equal shown values (CAR-NO Q3 5:11)", async () => {
 
 test("0015 follow-up: CAR-NO Q3 5:11, Kick and Go tie at 91.9% so both are Best; Punt is About as good", async () => {
   const { barTags } = await import("./dailyView");
-  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  const item = (tieItemJson as unknown as (typeof DAILY_ITEMS)[number]);
   const t = barTags(item, scoreCall("punt", item));
   assert.deepEqual(t.fg, { tag: "Best", best: true });
   assert.deepEqual(t.go, { tag: "Best", best: true });
