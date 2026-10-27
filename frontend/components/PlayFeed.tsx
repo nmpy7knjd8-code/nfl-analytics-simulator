@@ -102,9 +102,16 @@ export function PlayFeed({
                         {r}
                       </span>
                     ) : null}
-                    {p.text}
-                    <PenaltyText text={p.penalty} />
+                    <span className="play-text">
+                      {p.text}
+                      <PenaltyText text={p.penalty} />
+                    </span>
                   </p>
+                  {r ? (
+                    <a className="back-to-swing" href={`#swing-${r}`}>
+                      Back to swing plays
+                    </a>
+                  ) : null}
                 </li>
               );
             })}
