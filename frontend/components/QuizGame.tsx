@@ -17,9 +17,8 @@ import {
   type SessionStats,
 } from "../lib/quiz";
 import { CLOSE_LABEL } from "../lib/labels";
-import { ALL_CHOICES, closeCallWhy, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
+import { ALL_CHOICES, closeCallNote, nearTieOptions, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
 
-const DOING_WORD: Record<QuizChoice, string> = { go: "going for it", fg: "field goal", punt: "punting" };
 
 function resultLabel(result: QuizResult): string {
   if (result === "correct") return "Correct";
@@ -42,6 +41,7 @@ export function QuizGame() {
     if (!selected || phase !== "reveal") return null;
     return scoreQuizChoice(selected, item.reveal, item.situation);
   }, [selected, phase, item]);
+  const nearTie = useMemo(() => nearTieOptions(item).map((r) => r.c), [item]);
 
   function pick(choice: QuizChoice) {
     if (phase === "reveal") return;
@@ -152,17 +152,18 @@ export function QuizGame() {
               <p className={`quiz-result is-${scored.result}`}>
                 {resultLabel(scored.result)}
                 {scored.result === "near_tie" ? (
-                  <span className="quiz-half"> · <span className="quiz-half-chip">½</span> point</span>
+                  <span className="quiz-half"><span className="quiz-half-chip">½</span> point</span>
                 ) : null}
               </p>
               <ul className="quiz-values">
                 {ALL_CHOICES.map((id) => {
                   const v = scored.values[id];
                   const off = !availableChoices(item).includes(id);
-                  const close = scored.result === "near_tie" && !off && selected !== id && closeCallWhy(item).toLowerCase().includes(DOING_WORD[id]);
+                  // 2146 P2-G: dashed outline on the other near-tie option(s), on a Correct or Close call reveal.
+                  const close = scored.inconclusive && scored.result !== "incorrect" && !off && selected !== id && nearTie.includes(id);
                   // P2-F: on a close call the solid outline marks only your pick, never "recommended".
                   const rec =
-                    !scored.inconclusive && scored.result !== "near_tie" && scored.recommendation === id;
+                    !scored.inconclusive && scored.recommendation === id;
                   const isPicked = selected === id;
                   return (
                     <li
@@ -175,7 +176,7 @@ export function QuizGame() {
                   );
                 })}
               </ul>
-              <p className="quiz-why">{scored.result === "near_tie" ? closeCallWhy(item) : scored.layman_why}</p>
+              <p className="quiz-why">{(scored.inconclusive && selected && scored.result !== "incorrect" ? closeCallNote(item, selected, scored.result) : null) ?? scored.layman_why}</p>
               {item.historical_action ? (
                 <p className="quiz-hist">
                   What the team did:{" "}
