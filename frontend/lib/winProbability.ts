@@ -22,10 +22,50 @@ export type { WinProbabilityPoint, WinProbabilitySeries };
 
 /** Where a series came from. The contract has no "example" source, so we carry it alongside. */
 export type ChartSeries = {
+  /** Regulation only (house rule: no overtime win chance anywhere). has_overtime still says whether OT was played. */
   series: WinProbabilitySeries;
   origin: "live" | "example";
   note: string;
+  /** Overtime plays, kept for the play list, with no win-chance values. */
+  overtimePlays: OvertimePlay[];
 };
+
+export type OvertimePlay = Pick<
+  WinProbabilityPoint,
+  "play_id" | "play_index" | "quarter" | "is_overtime" | "game_seconds_elapsed" | "possession_team_id" | "description"
+>;
+
+/**
+ * House rule (creative-builds.md): win chance stops at the end of regulation.
+ * Drops OT points (and their swing ids) from the series and returns the OT plays without
+ * any win-chance fields, so callers can still list them.
+ */
+export function splitAtRegulation(series: WinProbabilitySeries): {
+  series: WinProbabilitySeries;
+  overtimePlays: OvertimePlay[];
+} {
+  const isOt = (p: WinProbabilityPoint) => p.is_overtime || p.quarter > 4;
+  const regulation = series.points.filter((p) => !isOt(p));
+  const overtimePlays = series.points.filter(isOt).map((p) => ({
+    play_id: p.play_id,
+    play_index: p.play_index,
+    quarter: p.quarter,
+    is_overtime: true,
+    game_seconds_elapsed: p.game_seconds_elapsed,
+    possession_team_id: p.possession_team_id,
+    description: p.description,
+  }));
+  const kept = new Set(regulation.map((p) => p.play_id));
+  return {
+    series: {
+      ...series,
+      has_overtime: series.has_overtime || overtimePlays.length > 0,
+      points: regulation,
+      swing_play_ids: series.swing_play_ids.filter((id) => kept.has(id)),
+    },
+    overtimePlays,
+  };
+}
 
 export interface SwingPlay {
   point: WinProbabilityPoint;

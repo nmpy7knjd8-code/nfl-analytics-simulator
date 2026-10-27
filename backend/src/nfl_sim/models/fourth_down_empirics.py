@@ -34,6 +34,8 @@ CONVERT_BINS: tuple[tuple[int, int], ...] = (
 # still prices them from the data, but p_make flags them out_of_range and the
 # analyzer drops the FG option.
 MAX_FG_DISTANCE = 64
+# nflverse kick_distance = yardline_100 + 18 (end zone 10 + ~7-8 yd snap/hold). Single source.
+FG_SNAP_YARDS = 18
 
 # Make-probability tail: from TAIL_START yd up to the longest attempt in the fit data,
 # p_make comes from a logistic fit on every attempt >= TAIL_FIT_FROM yd (no hardcoded

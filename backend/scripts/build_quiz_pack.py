@@ -20,10 +20,25 @@ sys.path.insert(0, str(REPO / "backend" / "src"))
 
 from nfl_sim.api.situation_lab import _load_analyzer, _payload_from_compare  # noqa: E402
 from nfl_sim.models.decision_lab import compare_transition_modes, load_fourth_down_frame  # noqa: E402
-from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE  # noqa: E402
-from nfl_sim.quiz.pack import HISTORICAL_REFS, QUIZ_PACK_PATH, pack_item_from_situation_lab_payload  # noqa: E402
+from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS, MAX_FG_DISTANCE  # noqa: E402
+from nfl_sim.quiz.pack import HISTORICAL_REFS, QUIZ_PACK_PATH, fanify_reveal, pack_item_from_situation_lab_payload  # noqa: E402
 
 FRONTEND_PACK = REPO / "frontend" / "lib" / "quizPack.json"
+# Hidden model details stay in the backend pack only; never ship them in the client bundle.
+BACKEND_ONLY_REVEAL_FIELDS = ("model_notes", "edge_wp")
+
+
+def frontend_pack(pack: dict) -> dict:
+    out = json.loads(json.dumps(pack))
+    for it in out["items"]:
+        for k in BACKEND_ONLY_REVEAL_FIELDS:
+            it["reveal"].pop(k, None)
+    return out
+
+
+def write_packs(pack: dict) -> None:
+    QUIZ_PACK_PATH.write_text(json.dumps(pack, indent=2) + "\n")
+    FRONTEND_PACK.write_text(json.dumps(frontend_pack(pack), indent=2) + "\n")
 ACTION = {"pass": "go", "run": "go", "punt": "punt", "field_goal": "fg"}
 # Target mix of what teams actually did, so the pack isn't 70% punts.
 MIX = {"punt": 0.4, "go": 0.3, "fg": 0.3}
@@ -56,7 +71,6 @@ def candidates(seasons):
     return out
 
 
-FG_SNAP_YARDS = 18  # nflverse kick_distance = yardline_100 + 18 (same as the shared engine, #50)
 # Brief + shared engine (#50): a gap under 2 points of win chance is a "close call".
 CLOSE_CALL_WP = 0.02
 MAX_CLOSE_CALL_SHARE = 0.15  # "too close to call" is a fine answer, but not a third of the pack
@@ -75,8 +89,7 @@ def bake(analyzer, row, r, item_id: str | None = None) -> dict:
     rv = item["reveal"]
     if rv.get("margin") is not None:
         rv["inconclusive"] = rv["margin"] < CLOSE_CALL_WP
-    if "assumptions" in rv:
-        rv["assumptions"] = [a.replace("yardline_100 + 17", "yardline_100 + 18") for a in rv["assumptions"]]
+    fanify_reveal(rv)  # fan-language display text; model details -> model_notes / edge_wp
     sit = item["situation"]
     # Real scoreboard + real quarter clock straight from the play (no placeholders).
     sit.update(
@@ -100,7 +113,16 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=365)
     ap.add_argument("--seasons", default="2022,2023")
+    ap.add_argument("--rewrite-text", action="store_true",
+                    help="re-apply fan-language text to the existing pack (no lake/WP needed)")
     a = ap.parse_args()
+    if a.rewrite_text:
+        pack = json.loads(QUIZ_PACK_PATH.read_text())
+        for it in pack["items"]:
+            fanify_reveal(it["reveal"])
+        write_packs(pack)
+        print(f"rewrote text for {len(pack['items'])} items")
+        return 0
     seasons = [int(s) for s in a.seasons.split(",")]
     analyzer = _load_analyzer()
     if analyzer is None:
@@ -143,9 +165,7 @@ def main() -> int:
         "source": f"nflverse play-by-play REG {a.seasons}; built by backend/scripts/build_quiz_pack.py",
         "items": items,
     }
-    text = json.dumps(pack, indent=2) + "\n"
-    QUIZ_PACK_PATH.write_text(text)
-    FRONTEND_PACK.write_text(text)
+    write_packs(pack)
     print(f"{len(items)} items in {time.time() - t0:.1f}s")
     return 0
 
