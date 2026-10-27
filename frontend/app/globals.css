@@ -384,6 +384,9 @@ button {
 .main,
 .decide-page {
   width: 100%;
+  /* Same column as the .fd-top header (QA 0019 N15). */
+  max-width: 40rem;
+  margin-inline: auto;
   padding: calc(1.25rem + var(--safe-top)) var(--page-pad-x) 1.75rem;
 }
 
@@ -1713,6 +1716,10 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
 @media (max-width: 640px) { .wp-axis-team { display: none; } }
 .ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
+
+/* QA 0019 N18: the checker-paused CTA on /fourth-down/ is the primary action, blue like other primaries. */
+.decide-page .empty-state .btn-primary { background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
+.decide-page .empty-state .btn-primary:hover { background: #2a6fe0; }
 
 /* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
 .fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
