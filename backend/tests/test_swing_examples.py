@@ -218,7 +218,7 @@ def test_phi_tb_kickoff_offside_penalty_sentence():
 
 def test_offsetting_declined_and_accepted_penalty_wording():
     assert ("David Montgomery is stopped for no gain.", "Offsetting penalties: unnecessary roughness on "
-            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC). The down is replayed.") in _pen("2023_01_DET_KC")
+            "Halapoulivaati Vaitai (DET) and Matt Dickerson (KC).") in _pen("2023_01_DET_KC")
     assert ("Zach Wilson pass incomplete.", "Two NYJ flags declined: offensive pass interference (Jeremy Ruckert) "
             "and ineligible downfield pass (Connor McGovern).") in _pen("2023_01_BUF_NYJ")
     assert ("Jared Goff completes a pass to Sam LaPorta for 12 yards.",
@@ -244,7 +244,7 @@ def test_qa_2315_sentences():
     assert _by_id("2023_01_BUF_NYJ", "2151")["display_text"] == (
         "Breece Hall is stopped for a loss of 4 yards. He fumbles out of bounds; NYJ keeps the ball.")
     assert _by_id("2023_01_DET_KC", "1273")["display_text"] == (
-        "Jared Goff is stopped for no gain. Frank Ragnow fumbles, and Jared Goff recovers.")
+        "Botched snap: Frank Ragnow fumbles, and Jared Goff recovers. Jared Goff is stopped for no gain.")
     assert _by_id("2023_03_PHI_TB", "1987")["display_text"] == (
         "Baker Mayfield is sacked for a loss of 11 yards. He fumbles, and Robert Hainsey recovers.")
 

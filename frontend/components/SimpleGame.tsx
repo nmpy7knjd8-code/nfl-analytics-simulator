@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall, visibleStreak,
@@ -20,9 +21,9 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const nick = (a: string) => teamNickname(a);
 
 type Load = { state: "loading" } | { state: "error" } | { state: "ready"; outcomes: (Outcome | null)[] };
-type Pick = { pick: QuizChoice; scored: ScoredCall };
+export type Pick = { pick: QuizChoice; scored: ScoredCall };
 
-function Header({ right }: { right: string }) {
+export function Header({ right }: { right: string }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="sg-top">
@@ -43,7 +44,7 @@ function Header({ right }: { right: string }) {
   );
 }
 
-const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
+export const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
 
 export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) {
   const [key, setKey] = useState<string | null>(null);
@@ -161,6 +162,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         ) : (
           <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setPicks([]); }}>Practice again</button>
         )}
+        <Link href="/endless/" className="sg-keep">Keep playing</Link>
         <Trademark />
       </div>
     );
@@ -169,42 +171,54 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const it = items[idx];
   const p = picks[idx];
   const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
-  if (!p) {
-    return (
-      <div className="sg-app">
-        <Header right={counter} />
-        <ScoreBug item={it} />
-        <p className="sg-sent">{situationSentence(it, nick)}</p>
-        <FieldView item={it} />
-        <div className="sg-btns">
-          {tappable(it).map((o) => (
-            <button key={o.id} type="button" className="sg-btn" onClick={() => choose(o.id)}>
-              {CHOICE_LABEL[o.id]}{o.detail ? <small>{o.detail}</small> : null}
-            </button>
-          ))}
-          {kickTooFar(it) ? <p className="sg-note">Too far to kick (65+ yards)</p> : null}
-        </div>
-        <Trademark />
+  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} onPick={choose} />;
+  return (
+    <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={<Header right={counter} />}
+      nextLabel={idx + 1 < n ? "Next play" : "See your score"} onNext={() => setIdx(idx + 1)} />
+  );
+}
+
+export function QuestionScreen({ item: it, header, onPick, extra }: { item: DailyItem; header: React.ReactNode; onPick: (c: QuizChoice) => void; extra?: React.ReactNode }) {
+  return (
+    <div className="sg-app">
+      {header}
+      {extra}
+      <ScoreBug item={it} />
+      <p className="sg-sent">{situationSentence(it, nick)}</p>
+      <FieldView item={it} />
+      <div className="sg-btns">
+        {tappable(it).map((o) => (
+          <button key={o.id} type="button" className="sg-btn" onClick={() => onPick(o.id)}>
+            {CHOICE_LABEL[o.id]}{o.detail ? <small>{o.detail}</small> : null}
+          </button>
+        ))}
+        {kickTooFar(it) ? <p className="sg-note">Too far to kick (65+ yards)</p> : null}
       </div>
-    );
-  }
+      <Trademark />
+    </div>
+  );
+}
+
+export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabel, onNext, extra }: {
+  item: DailyItem; pick: Pick; outcome: Outcome | null | undefined; header: React.ReactNode; nextLabel: string; onNext: () => void; extra?: React.ReactNode;
+}) {
   const tags = optionTags(it, p.scored);
   const mine = tags.find((t) => t.id === p.pick)?.tag;
-  const out = outcomes[idx];
   const cls = { right: "sg-ok", close: "sg-half", wrong: "sg-no" }[p.scored.result];
   return (
     <div className={`sg-app sg-rv ${cls}`}>
-      <Header right={counter} />
+      {header}
+      {extra}
       <ScoreBug item={it} />
       <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{RESULT_GLYPH[p.scored.result]}</span>{RESULT_TITLE[p.scored.result]}</h1>
       <div className="sg-res">
         <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
-        <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
       </div>
       <FieldView item={it} outcome={out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null }} />
       <div className="sg-btns">
-        <button type="button" className="sg-next" onClick={() => setIdx(idx + 1)}>{idx + 1 < n ? "Next play" : "See your score"}</button>
+        <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>
       <Trademark />
     </div>

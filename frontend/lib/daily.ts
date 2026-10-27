@@ -7,6 +7,8 @@
  */
 import type { QuizChoice, QuizItem } from "./quiz";
 import slimPack from "./dailyPack.json";
+import dailySchedule from "./dailySchedule.json";
+import dailySnapshot from "./dailySnapshot.json";
 
 /** Daily item: the fields of a QuizItem the Daily screens use (see scripts/build-daily-pack.mjs). */
 export type DailyItem = {
@@ -109,7 +111,7 @@ export function dayNumber(key: string): number {
   return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(2026, 0, 1)) / 86_400_000);
 }
 
-function shuffled(items: DailyItem[], seed: string): DailyItem[] {
+export function shuffled(items: DailyItem[], seed: string): DailyItem[] {
   const rand = rng(hash(seed));
   const pool = [...items].sort((a, b) => a.id.localeCompare(b.id));
   for (let i = pool.length - 1; i > 0; i--) {
@@ -125,17 +127,65 @@ export function cycleDays(items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZ
 }
 
 /**
- * Today's 5 for an ET date key. Deterministic everywhere (same key → same set).
- * The pack is shuffled once per cycle and dealt out 5 per day, so nothing repeats
- * inside a cycle. Brief wants no repeat within 365 days: that needs ≥1,825 plays.
+ * Committed, append-only schedule (lib/dailySchedule.json): ET date key → 5 ids. Pinned so a pack
+ * rebuild that swaps ids can't reshuffle today or history (P1, UI Critic 0125 after #119). Extend it
+ * with `npx tsx scripts/extend-daily-schedule.ts`; never edit or remove existing dates.
  */
-export function dailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
+export const DAILY_SCHEDULE: Record<string, string[]> = (dailySchedule as { days: Record<string, string[]> }).days;
+const BY_ID = new Map(DAILY_ITEMS.map((i) => [i.id, i]));
+
+/** Shuffle-based set (used past the schedule's end, or for a custom item list). */
+export function shuffledDailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
   const days = cycleDays(items, size);
   if (days < 1) return items.slice(0, size);
   const n = dayNumber(key);
   const cycle = Math.floor(n / days);
   const slot = ((n % days) + days) % days;
   return shuffled(items, `daily-cycle:${cycle}`).slice(slot * size, slot * size + size);
+}
+
+/**
+ * Today's 5 for an ET date key. Deterministic everywhere (same key → same set).
+ * Reads the committed schedule; only dates past its end (or a custom item list) fall back to the
+ * seeded per-cycle shuffle.
+ */
+export function dailySet(key: string, items: DailyItem[] = DAILY_ITEMS, size = DAILY_SET_SIZE): DailyItem[] {
+  const pinned = items === DAILY_ITEMS ? DAILY_SCHEDULE[key] : undefined;
+  if (pinned) {
+    const set = pinned.map((id) => BY_ID.get(id)).filter((i): i is DailyItem => i != null);
+    if (set.length === pinned.length) return frozen(key, set.slice(0, size));
+  }
+  return items === DAILY_ITEMS ? frozen(key, shuffledDailySet(key, items, size)) : shuffledDailySet(key, items, size);
+}
+
+/** One published item's reveal, frozen for its day: the values scoring, tags and the Why read, plus best call(s). */
+export type SnapshotEntry = { recommendation: string; values: Partial<Record<QuizChoice, number>>; best: QuizChoice[] };
+
+/**
+ * Append-only per-day snapshot (lib/dailySnapshot.json): ET date key → item id → reveal as published.
+ * A model/pack rebuild (e.g. #122) must never regrade a day people already played; new values reach
+ * only days not yet published. Append with `npx tsx scripts/snapshot-daily.ts`; never edit a date.
+ * Practice and endless keep reading the live pack.
+ */
+export const DAILY_SNAPSHOT: Record<string, Record<string, SnapshotEntry>> =
+  (dailySnapshot as unknown as { days: Record<string, Record<string, SnapshotEntry>> }).days;
+
+function frozen(key: string, set: DailyItem[]): DailyItem[] {
+  const snap = DAILY_SNAPSHOT[key];
+  if (!snap) return set;
+  return set.map((i) => {
+    const s = snap[i.id];
+    return s ? { ...i, reveal: { recommendation: s.recommendation, values: { ...s.values } } } : i;
+  });
+}
+
+/** Offered option(s) whose shown % ties the top (what the reveal tags Best and scores Right). */
+export function bestCalls(item: DailyItem): QuizChoice[] {
+  const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
+  const ranked = rankedValues(item).filter(([c]) => offered.has(c));
+  if (!ranked.length) return [];
+  const f = formatPercents(ranked.map(([, v]) => v));
+  return ranked.filter((_, i) => f[i] === f[0]).map(([c]) => c);
 }
 
 /** Random practice round (not tied to the date). */
