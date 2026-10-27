@@ -1569,12 +1569,19 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; }
 .play-feed { list-style: none; padding: 0; }
 .play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); padding-left: 0.75rem; }
+
+/* Team identity (approved exception to one accent): thin stripe, faint tint, small chips. Base theme stays neutral. */
+.matchup-head { border-top: 4px solid var(--color-divider); padding: 0.75rem; border-radius: 0; }
+.team-chip { display: inline-block; padding: 0.05em 0.4em; border-radius: 6px; line-height: 1.2; }
+.team-chip.is-team { font-weight: 700; }
 .play-feed-soon { font-size: 14px; line-height: 1.5; color: var(--color-ink-secondary); padding: 16px 0; border-top: 1px solid var(--color-divider); margin: 0; }
 /* Recheck 2145: intro leads, source line and disclaimer stay quiet. */
 .games-intro { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
 .wp-source { font-size: 13px; line-height: 1.45; color: var(--color-ink-muted); margin: 4px 0 20px; }
 .wp-chart .wp-source, figure + .wp-source { font-size: 12px; margin-top: 6px; }
 .disclaimer { font-size: 12px; color: var(--color-ink-muted); }
+.team-mark { border-bottom: 3px solid transparent; }
+.team-chip { font-size: 0.85em; }
 /* QA 2220: axis text stays readable when the 640-wide chart scales down to a phone (~0.55x). */
 @media (max-width: 640px) {
   .wp-axis { font-size: 20px; }

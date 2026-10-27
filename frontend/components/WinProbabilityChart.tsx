@@ -6,6 +6,7 @@ import {
   type SwingPlay,
   type WinProbabilitySeries,
 } from "../lib/winProbability";
+import type { MatchupColors } from "../lib/teamColors";
 
 /** Fan text from the export (#86): display_text, else raw nflverse desc. */
 function fanText(p: EventPoint): string {
@@ -20,10 +21,12 @@ export function WinProbabilityChart({
   series,
   swings,
   note,
+  colors,
 }: {
   series: WinProbabilitySeries;
   swings: SwingPlay[];
   note: string;
+  colors?: MatchupColors;
 }) {
   // Plot each play's pre-snap value, then the final post-snap result. Regulation only:
   // the line stops at 0:00 of Q4 and overtime gets a plain marker instead (house rule).
@@ -81,7 +84,24 @@ export function WinProbabilityChart({
             </text>
           </g>
         ) : null}
-        <path d={path} className="wp-line" />
+        {colors?.home && colors.away ? (
+          <>
+            {/* Team colors: home color above 50%, away color below; dashed when the two can't be told apart. */}
+            <defs>
+              <clipPath id={`wp-top-${series.game_id}`}><rect x="0" y="0" width={W} height={y(0.5)} /></clipPath>
+              <clipPath id={`wp-bot-${series.game_id}`}><rect x="0" y={y(0.5)} width={W} height={H} /></clipPath>
+            </defs>
+            <path d={path} className="wp-line" style={{ stroke: colors.home }} clipPath={`url(#wp-top-${series.game_id})`} />
+            <path
+              d={path}
+              className="wp-line"
+              style={{ stroke: colors.away, strokeDasharray: colors.awayDashed ? "6 4" : undefined }}
+              clipPath={`url(#wp-bot-${series.game_id})`}
+            />
+          </>
+        ) : (
+          <path d={path} className="wp-line" />
+        )}
         {placed.map((d) => (
           <g key={d.rank} className="wp-swing-dot">
             {d.dy ? <line x1={d.cx} x2={d.cx} y1={d.cy} y2={d.cy + d.dy} className="wp-leader" /> : null}
@@ -96,7 +116,7 @@ export function WinProbabilityChart({
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Numbered blue dots are the biggest swing plays.
+        {series.away_team_id}; the line takes the color of the team that is ahead). Numbered blue dots are the biggest swing plays.
         {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""}
       </figcaption>
       <p className="wp-source">{note}</p>
@@ -104,7 +124,15 @@ export function WinProbabilityChart({
   );
 }
 
-export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series: WinProbabilitySeries }) {
+export function SwingPlayList({
+  swings,
+  series,
+  colors,
+}: {
+  swings: SwingPlay[];
+  series: WinProbabilitySeries;
+  colors?: MatchupColors;
+}) {
   if (!swings.length) return null;
   return (
     <ol className="swing-list">
@@ -114,7 +142,14 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
         const raw = p.raw_desc ?? p.description ?? "";
         const text = fanText(p);
         return (
-        <li key={s.point.play_id} className="swing-item">
+        <li
+          key={s.point.play_id}
+          className="swing-item"
+          style={(() => {
+            const c = s.favored_team_id === series.home_team_id ? colors?.home : colors?.away;
+            return c ? { borderLeftColor: c } : undefined;
+          })()}
+        >
           <div className="play-meta">
             <span className="swing-badge" aria-hidden="true">{i + 1}</span>
             {clockLabel(s.point)} · {s.favored_team_id} gains {Math.round(Math.abs(s.delta) * 100)} pts
