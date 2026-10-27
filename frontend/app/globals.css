@@ -1731,4 +1731,4 @@ body { font-variant-numeric: tabular-nums; }
 
 /* QA 0116 U4: self-hosted logos on the games list and game header. */
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
-.team-logo-plate{background:rgba(255,255,255,.85);border-radius:50%;padding:2px}
+.team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
