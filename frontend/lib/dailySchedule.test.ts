@@ -1,10 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import schedule from "./dailySchedule.json";
+import retiredIds from "./retiredDailyIds.json";
 import { DAILY_ITEMS, DAILY_SET_SIZE, cycleDays, dailySet, dateKey } from "./daily";
 
 const DAYS = (schedule as { days: Record<string, string[]> }).days;
 const LAUNCH = "2026-10-26"; // #53 shipped 23:39 ET Oct 26
+const RETIRED = new Set(retiredIds as string[]);
+const RETIRE_FROM = "2026-10-30"; // first date editable when the 12 decided-game items were retired
 const ids = new Set(DAILY_ITEMS.map((i) => i.id));
 const addDays = (key: string, n: number) => new Date(Date.parse(`${key}T12:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
 
@@ -43,7 +46,7 @@ test("every scheduled id is in the pack; 5 distinct per day; no gaps since launc
 
 test("future schedule doesn't repeat a play within a cycle", () => {
   const dates = Object.keys(DAYS).sort().filter((d) => d > "2026-10-27");
-  const w = cycleDays();
+  const w = cycleDays(DAILY_ITEMS.filter((i) => !RETIRED.has(i.id)));
   const last = new Map<string, number>();
   dates.forEach((d, i) => {
     for (const id of DAYS[d]) {
@@ -52,4 +55,13 @@ test("future schedule doesn't repeat a play within a cycle", () => {
       last.set(id, i);
     }
   });
+});
+
+test("no retired id is scheduled on or after the retirement date", () => {
+  assert.ok(RETIRED.size >= 12);
+  for (const [d, day] of Object.entries(DAYS)) {
+    if (d < RETIRE_FROM) continue;
+    for (const id of day) assert.ok(!RETIRED.has(id), `${d}: retired ${id} is still scheduled`);
+  }
+  assert.ok(DAYS["2026-10-26"].includes("2022_06_SF_ATL-3503"), "Oct 26 keeps its played set");
 });
