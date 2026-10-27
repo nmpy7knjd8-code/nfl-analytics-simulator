@@ -45,22 +45,49 @@ export const CLASH = 120;
 /** State colors team identity must not imitate (accent/recommended, good, bad). */
 export const STATE_COLORS = ["#2563EB", "#16A34A", "#DC2626"];
 
-/** The team's own colors in fallback order: primary, secondary, tertiary. */
-function candidates(abbr: string): string[] {
-  const s = teamColorSet(abbr);
-  return s ? [s.primary, s.secondary, s.tertiary].filter((c): c is string => !!c) : [];
+/** Low-saturation (black/grey/white) colors don't identify a team. */
+export function isNeutral(hex: string): boolean {
+  const [r, g, b] = rgb(hex);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  return mx - mn < 40;
 }
 
 /**
- * Home keeps its primary; the away team switches to its secondary (then tertiary) when it clashes
- * with home. Always one of the team's own colors, never a neutral, for identity.
+ * The team's own colors in fallback order: primary, secondary, then tertiary (#92). Tertiary can duplicate
+ * another color (NYJ, TEN, CHI) or be neutral (9 teams; see _tertiary_notes), so duplicates are dropped
+ * and a neutral tertiary is skipped.
  */
-export function matchupColors(home: string, away: string): { home: string | null; away: string | null } {
+export function candidates(abbr: string): string[] {
+  const s = teamColorSet(abbr);
+  if (!s) return [];
+  const out: string[] = [];
+  for (const [i, c] of [s.primary, s.secondary, s.tertiary].entries()) {
+    if (!c) continue;
+    const u = c.toUpperCase();
+    if (out.includes(u)) continue;
+    if (i === 2 && isNeutral(u)) continue;
+    out.push(u);
+  }
+  return out;
+}
+
+export interface MatchupColors {
+  home: string | null;
+  away: string | null;
+  /** True when every away color clashes with home: away keeps its primary as a thin accent, drawn dashed. */
+  awayDashed: boolean;
+}
+
+/**
+ * Home keeps its primary; the away team switches to its secondary, then tertiary, when it clashes with home.
+ * Always one of the team's own colors. If all clash, the away line is dashed (abbreviations always shown).
+ */
+export function matchupColors(home: string, away: string): MatchupColors {
   const h = candidates(home)[0] ?? null;
   const ac = candidates(away);
-  if (!h || !ac.length) return { home: h, away: ac[0] ?? null };
-  const a = ac.find((c) => colorDistance(c, h) >= CLASH) ?? ac.reduce((best, c) => (colorDistance(c, h) > colorDistance(best, h) ? c : best));
-  return { home: h, away: a };
+  if (!h || !ac.length) return { home: h, away: ac[0] ?? null, awayDashed: false };
+  const a = ac.find((c) => colorDistance(c, h) >= CLASH);
+  return a ? { home: h, away: a, awayDashed: false } : { home: h, away: ac[0], awayDashed: true };
 }
 
 /** Text color on a team-color fill: white or near-black, whichever passes AA (4.5:1); one always does. */

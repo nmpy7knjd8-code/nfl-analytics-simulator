@@ -6,6 +6,7 @@ import {
   type SwingPlay,
   type WinProbabilitySeries,
 } from "../lib/winProbability";
+import type { MatchupColors } from "../lib/teamColors";
 
 /** Fan text from the export (#86): display_text, else raw nflverse desc. */
 function fanText(p: EventPoint): string {
@@ -25,7 +26,7 @@ export function WinProbabilityChart({
   series: WinProbabilitySeries;
   swings: SwingPlay[];
   note: string;
-  colors?: { home: string | null; away: string | null };
+  colors?: MatchupColors;
 }) {
   // Plot each play's pre-snap value, then the final post-snap result. Regulation only:
   // the line stops at 0:00 of Q4 and overtime gets a plain marker instead (house rule).
@@ -84,19 +85,23 @@ export function WinProbabilityChart({
           </g>
         ) : null}
         {colors?.home && colors.away ? (
-          <defs>
-            {/* Team colors: the line takes the home color above 50% and the away color below. */}
-            <linearGradient id={`wp-team-${series.game_id}`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1={PAD.t} y2={H - PAD.b}>
-              <stop offset="0.5" stopColor={colors.home} />
-              <stop offset="0.5" stopColor={colors.away} />
-            </linearGradient>
-          </defs>
-        ) : null}
-        <path
-          d={path}
-          className="wp-line"
-          style={colors?.home && colors.away ? { stroke: `url(#wp-team-${series.game_id})` } : undefined}
-        />
+          <>
+            {/* Team colors: home color above 50%, away color below; dashed when the two can't be told apart. */}
+            <defs>
+              <clipPath id={`wp-top-${series.game_id}`}><rect x="0" y="0" width={W} height={y(0.5)} /></clipPath>
+              <clipPath id={`wp-bot-${series.game_id}`}><rect x="0" y={y(0.5)} width={W} height={H} /></clipPath>
+            </defs>
+            <path d={path} className="wp-line" style={{ stroke: colors.home }} clipPath={`url(#wp-top-${series.game_id})`} />
+            <path
+              d={path}
+              className="wp-line"
+              style={{ stroke: colors.away, strokeDasharray: colors.awayDashed ? "6 4" : undefined }}
+              clipPath={`url(#wp-bot-${series.game_id})`}
+            />
+          </>
+        ) : (
+          <path d={path} className="wp-line" />
+        )}
         {placed.map((d) => (
           <g key={d.rank} className="wp-swing-dot">
             {d.dy ? <line x1={d.cx} x2={d.cx} y1={d.cy} y2={d.cy + d.dy} className="wp-leader" /> : null}
@@ -125,7 +130,7 @@ export function SwingPlayList({
 }: {
   swings: SwingPlay[];
   series: WinProbabilitySeries;
-  colors?: { home: string | null; away: string | null };
+  colors?: MatchupColors;
 }) {
   if (!swings.length) return null;
   return (

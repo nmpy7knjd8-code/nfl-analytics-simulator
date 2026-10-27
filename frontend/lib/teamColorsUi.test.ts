@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import teamColors from "./teamColors.json";
 import swingPlays from "./swingPlays.json";
-import { CLASH, STATE_COLORS, colorDistance, contrast, matchupColors, teamColorSet, textOn } from "./teamColors";
+import { CLASH, STATE_COLORS, candidates, isNeutral, colorDistance, contrast, matchupColors, teamColorSet, textOn } from "./teamColors";
 
 const ALL = Object.keys((teamColors as { teams: Record<string, unknown> }).teams);
 
@@ -23,6 +23,9 @@ test("matchup colors are each team's own and stay distinct when possible, for al
       assert.equal(m.home, teamColorSet(h)!.primary);
       assert.ok([own.primary, own.secondary, own.tertiary].includes(m.away!), `${a} away uses its own color`);
       if (colorDistance(own.primary, m.home!) >= CLASH) assert.equal(m.away, own.primary, `${h}-${a} keeps primary`);
+      // Distinct either by color or by line style.
+      assert.ok(m.awayDashed || colorDistance(m.home!, m.away!) >= CLASH, `${a}@${h}`);
+      if (m.awayDashed) assert.equal(m.away, own.primary, "all clash: primary stays as the accent");
     }
 });
 
@@ -53,5 +56,15 @@ test("team lines never reuse the swing-dot accent", () => {
     if (h === a) continue;
     const m = matchupColors(h, a);
     for (const c of [m.home!, m.away!]) assert.notEqual(c.toUpperCase(), STATE_COLORS[0]);
+  }
+});
+
+test("#92 tertiary: duplicates dropped, neutral tertiary never used for identity", () => {
+  assert.deepEqual(candidates("NYJ"), ["#003F2D", "#000000"]);
+  assert.deepEqual(candidates("TEN"), ["#4495D2", "#D50A0A"]);
+  assert.deepEqual(candidates("CHI"), ["#0B162A", "#E64100"]);
+  for (const t of ALL) {
+    const s = teamColorSet(t)!;
+    if (s.tertiary && isNeutral(s.tertiary)) assert.ok(!candidates(t).slice(2).includes(s.tertiary.toUpperCase()), t);
   }
 });
