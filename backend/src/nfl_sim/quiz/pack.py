@@ -202,8 +202,11 @@ def fan_why(reveal: dict[str, Any]) -> str:
         return "Not enough data to judge this call."
     ranked = sorted(values.items(), key=lambda kv: kv[1], reverse=True)
     if reveal.get("inconclusive") or rec not in values or len(ranked) < 2:
-        opts = " and ".join(_FAN_SHORT[k] for k, _ in ranked)
-        return f"Too close to call — {opts} give about the same win chance (around {_pct(ranked[0][1])})."
+        names = [_FAN_SHORT[k] for k in ("fg", "go", "punt") if k in values]
+        opts = names[0] if len(names) == 1 else (
+            f"{names[0]} and {names[1]}" if len(names) == 2 else ", ".join(names[:-1]) + f", and {names[-1]}"
+        )
+        return f"Close call: {opts} give about the same win chance (around {_pct(ranked[0][1])})."
     best = values[rec]
     runner = max(v for k, v in values.items() if k != rec)
     gain = max(best - runner, 0.0)

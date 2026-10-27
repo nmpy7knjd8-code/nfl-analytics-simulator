@@ -182,17 +182,23 @@ export function rankedValues(item: DailyItem): [QuizChoice, number][] {
     .sort((a, b) => b[1] - a[1]);
 }
 
-/** Right = 1, Close call = ½ (never shown as wrong), Wrong = 0. */
+/**
+ * #93 scoring: the highest win chance is always Right (1). On a close call (top two within 2 pts) an
+ * option within 2 pts of the top earns ½ (Close call). Anything else, or an option that isn't offered
+ * (kick past 64 yd, hidden punt, no value), is 0.
+ */
 export function scoreCall(pick: QuizChoice, item: DailyItem): ScoredCall {
-  const ranked = rankedValues(item);
+  const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
+  const ranked = rankedValues(item).filter(([c]) => offered.has(c));
   const [best, bestV] = ranked[0];
   const gap = ranked.length > 1 ? bestV - ranked[1][1] : 1;
   const closeCall = gap < CLOSE_CALL_GAP;
-  const mine = item.reveal.values[pick];
+  const mine = offered.has(pick) ? item.reveal.values[pick] : undefined;
   let result: CallResult;
   if (mine == null) result = "wrong";
+  else if (pick === best) result = "right";
   else if (closeCall && bestV - mine < CLOSE_CALL_GAP) result = "close";
-  else result = pick === best ? "right" : "wrong";
+  else result = "wrong";
   return {
     result,
     credit: result === "right" ? 1 : result === "close" ? 0.5 : 0,
@@ -340,4 +346,29 @@ export function getOrCreateHandle(storage: StorageLike | undefined, rand: () => 
     /* not persisted */
   }
   return handle;
+}
+
+/** Whole percents, or one decimal for all when two would round the same (QA 2220 L8). */
+export function formatPercents(values: number[]): string[] {
+  const r = values.map((v) => Math.round(v * 100));
+  const clash = r.some((x, i) => r.indexOf(x) !== i);
+  return values.map((v) => (clash ? `${(v * 100).toFixed(1)}%` : `${Math.round(v * 100)}%`));
+}
+
+const DOING: Record<QuizChoice, string> = { go: "going for it", fg: "kicking", punt: "punting" };
+const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
+
+/** #93 reveal note for a close call, from the real values; null when it wasn't close. */
+export function closeNote(s: ScoredCall): string | null {
+  if (!s.closeCall || s.result === "wrong") return null;
+  const bestV = s.values[s.best]!;
+  if (s.result === "right") {
+    const near = (Object.entries(s.values) as [QuizChoice, number][])
+      .filter(([c, v]) => c !== s.best && typeof v === "number" && bestV - v < CLOSE_CALL_GAP);
+    if (!near.length) return null;
+    const f = formatPercents([bestV, ...near.map(([, v]) => v)]).slice(1);
+    return `${cap(near.map(([c]) => DOING[c]).join(" and "))} ${near.length > 1 ? "were" : "was"} about as good (${f.join(", ")}).`;
+  }
+  const [a, b] = formatPercents([bestV, s.values[s.pick]!]);
+  return `${cap(DOING[s.best])} was a little better (${a} vs ${b}), so this pick gets ½.`;
 }

@@ -7,6 +7,7 @@ import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
   dailySet, type CallResult, type ScoredCall, type StreakState,
+  closeNote,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 
@@ -277,6 +278,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
       ) : (
         <div className="fd-reveal" aria-live="polite">
           <p className={`fd-result is-${scored.result}`}>{RESULT_NAME[scored.result]}</p>
+          {closeNote(scored) ? <p className="fd-close-note">{closeNote(scored)}</p> : null}
           <p className="fd-line">
             You: {CHOICE_NAME[scored.pick]} · Coach: {item.historical_action ? CHOICE_NAME[item.historical_action as QuizChoice] ?? item.historical_action : "—"} · Model:{" "}
             {CHOICE_NAME[scored.best]}

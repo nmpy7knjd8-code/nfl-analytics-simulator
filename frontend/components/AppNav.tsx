@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CHECKER_ENABLED } from "../lib/features";
 
-const TABS = [
+const ALL_TABS = [
   { href: "/", label: "Today", match: (p: string) => p === "/" || p.startsWith("/daily") && !p.startsWith("/daily/stats") },
   { href: "/practice/", label: "Practice", match: (p: string) => p.startsWith("/practice") },
   { href: "/games/", label: "Games", match: (p: string) => p.startsWith("/games") },
   { href: "/fourth-down/", label: "4th down", match: (p: string) => p.startsWith("/fourth-down") },
 ] as const;
+
+// H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
+const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
 export function TopBar() {
   return (
@@ -27,7 +31,7 @@ export function TopBar() {
 export function AppNav() {
   const pathname = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return (
-    <nav className="app-nav app-nav-4" aria-label="Primary">
+    <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {
         const current = tab.match(pathname);
         return (

@@ -56,6 +56,9 @@ jobs:
             echo "ok $f"
           done
           grep -q '/nfl-analytics-simulator/_next/' _site/index.html
+          # Game pages show real nflverse plays: never call them example data.
+          if grep -lE 'Example data|Example chart|Example game page' _site/games/index.html _site/games/*/index.html; then echo 'example label on a real game page'; exit 1; fi
+          grep -q 'Real plays and win chance from nflverse (not our model).' _site/games/index.html
           grep -q 'url=/nfl-analytics-simulator/daily/' _site/quiz/index.html
           grep -q 'url=/nfl-analytics-simulator/"' _site/demo/index.html
           for f in og/home.png og/daily.png og/fourth-down.png og/games.png; do test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }; done

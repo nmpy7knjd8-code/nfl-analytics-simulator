@@ -16,7 +16,7 @@ export default function AboutPage() {
       </p>
       <ul>
         <li><strong>Right call:</strong> you picked the option with the best win chance. Worth 1.</li>
-        <li><strong>Close call:</strong> the top options are within 2 points of win chance, so it&apos;s a coin flip. Worth ½, never counted wrong.</li>
+        <li><strong>Close call:</strong> when the top two options are within 2 points of win chance, the best one still earns the full point and the other one earns ½.</li>
         <li><strong>Kick</strong> is greyed out past a 64-yard try. <strong>Punt</strong> isn&apos;t offered inside the opponent&apos;s 35.</li>
         <li>Your streak and stats stay in this browser. No sign-in, nothing sent anywhere.</li>
       </ul>

@@ -84,15 +84,22 @@ test("option rules: Kick disabled past 64 yd, Punt hidden inside the opponent 35
   }
 });
 
-test("Close call (< 2 pts) is worth ½ and never wrong", () => {
-  const base = DAILY_ITEMS[0];
+test("#93: top pick is Right even in a close call; the near option is ½; others 0", () => {
+  const base = { ...DAILY_ITEMS[0], situation: { ...DAILY_ITEMS[0].situation, yardline_100: 40 } };
   const it: DailyItem = { ...base, reveal: { ...base.reveal, values: { go: 0.5, punt: 0.49, fg: 0.3 } } };
-  assert.equal(scoreCall("go", it).result, "close");
+  assert.equal(scoreCall("go", it).result, "right");
+  assert.equal(scoreCall("go", it).credit, 1);
+  assert.equal(scoreCall("punt", it).result, "close");
   assert.equal(scoreCall("punt", it).credit, 0.5);
   assert.equal(scoreCall("fg", it).result, "wrong");
   const clear: DailyItem = { ...base, reveal: { ...base.reveal, values: { go: 0.6, punt: 0.4 } } };
   assert.equal(scoreCall("go", clear).result, "right");
   assert.equal(scoreCall("punt", clear).result, "wrong");
+  // A kick past 64 yd never scores, even when its value is the top.
+  const far: DailyItem = { ...base, situation: { ...base.situation, yardline_100: 60 }, reveal: { ...base.reveal, values: { go: 0.4, punt: 0.39, fg: 0.41 } } };
+  assert.equal(scoreCall("fg", far).credit, 0);
+  assert.equal(scoreCall("go", far).result, "right");
+  assert.equal(scoreCall("punt", far).result, "close");
 });
 
 test("pack is real plays only, with NFL teams and quarter clocks", () => {
@@ -119,4 +126,15 @@ test("rounded daily values keep every model pick and close-call verdict", () => 
       assert.equal(a.result, b.result, it.id);
     }
   }
+});
+
+test("#93 close-call notes and L8 one-decimal percents", async () => {
+  const { closeNote, formatPercents } = await import("./daily");
+  assert.deepEqual(formatPercents([0.621, 0.617]), ["62.1%", "61.7%"]);
+  assert.deepEqual(formatPercents([0.63, 0.5]), ["63%", "50%"]);
+  const base = { ...DAILY_ITEMS[0], situation: { ...DAILY_ITEMS[0].situation, yardline_100: 40 } };
+  const it: DailyItem = { ...base, reveal: { ...base.reveal, values: { go: 0.621, punt: 0.617, fg: 0.3 } } };
+  assert.equal(closeNote(scoreCall("go", it)), "Punting was about as good (61.7%).");
+  assert.equal(closeNote(scoreCall("punt", it)), "Going for it was a little better (62.1% vs 61.7%), so this pick gets ½.");
+  assert.equal(closeNote(scoreCall("fg", it)), null);
 });

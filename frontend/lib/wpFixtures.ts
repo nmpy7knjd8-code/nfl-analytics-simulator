@@ -1,9 +1,11 @@
 /**
- * EXAMPLE win-probability fixtures, shaped as the contract's WinProbabilitySeries.
- * Hand-made to illustrate the UI. NOT model output and NOT real nflverse values.
- * The contract's `source`/`truth_label` constants describe real nflverse data, so the
- * honest "example" label travels in ChartSeries.origin instead.
+ * Win-probability series for the fixture game pages, built from REAL nflverse 2023 pbp rows
+ * exported by backend/scripts/build_swing_examples.py into ./swingPlays.json (QA H5/M9).
+ * Every play's quarter, clock, description and play_id is a real nflverse row; WP values are
+ * nflverse's home_wp / home_wp_post (not our model). Contract shape: frontend/contracts/README.md.
  */
+import swingPlays from "./swingPlays.json";
+import { GAME_SOURCE_LINE } from "./fixtures";
 import {
   DEFAULT_SWING_WP_THRESHOLD,
   REGULATION_SECONDS,
@@ -14,87 +16,128 @@ import {
   type WinProbabilitySeries,
 } from "./winProbability";
 
-// [play_index, quarter, clock seconds left (quarter clock; OT clock in OT), possession,
-//  description, home WP AFTER the play]. First row also needs a starting pre-snap value.
-type Row = [number, number, number, string | null, string, number];
+export interface SwingPlay {
+  game_id: string;
+  play_id: string;
+  qtr: number;
+  clock: string;
+  clock_seconds: number;
+  description: string;
+  play_type: string;
+  possession_team_id: string | null;
+  home_score_after: number;
+  away_score_after: number;
+  home_score_before: number;
+  away_score_before: number;
+  down: number | null;
+  /** ydstogo */
+  distance: number | null;
+  yardline_100: number | null;
+  event: SwingEvent;
+  /** down == 4 and nflverse fourth_down_failed == 1 (go-for-it that failed). */
+  fourth_down_failed: boolean;
+  /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
+  display_text: string;
+  /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
+  raw_desc: string;
+  home_wp_pre?: number;
+  home_wp_post?: number;
+  delta_home_wp?: number;
+  swing_eligible?: boolean;
+}
+export type SwingEvent =
+  | "turnover_on_downs" | "interception" | "fumble_lost" | "touchdown" | "field_goal" | "punt" | "other";
+/** frontend/lib/plays/<game_id>.json: every real play (incl. penalties), no timeouts/quarter markers. */
+export interface GamePlayList {
+  game_id: string;
+  plays: SwingPlay[];
+}
+export interface SwingGame {
+  game_id: string;
+  home_team_id: string;
+  away_team_id: string;
+  home_score: number;
+  away_score: number;
+  first_home_wp: number;
+  /** nflverse pre-snap home_wp of the first real play (opening kickoff); away = 1 - home. */
+  opening_home_wp: number;
+  opening_away_wp: number;
+  swings: SwingPlay[];
+  overtime_plays: SwingPlay[];
+  chart: SwingPlay[];
+}
+export const SWING_EXPORT = swingPlays as unknown as { games: Record<string, SwingGame> };
 
-function build(
-  game_id: string,
-  home: string,
-  away: string,
-  scores: { home: number; away: number },
-  startHomeWp: number,
-  rows: Row[],
-): ChartSeries {
-  const points: WinProbabilityPoint[] = rows.map(([i, q, left, pos, desc, post], k) => {
-    const pre = k === 0 ? startHomeWp : rows[k - 1][5];
-    const elapsed = q > 4 ? REGULATION_SECONDS + (600 - left) : q * 900 - left;
+function elapsedOf(q: number, left: number): number {
+  return q > 4 ? REGULATION_SECONDS + (600 - left) : q * 900 - left;
+}
+
+function build(g: SwingGame): ChartSeries {
+  const points: (WinProbabilityPoint & { event?: string })[] = [];
+  let pre = g.first_home_wp;
+  for (const r of g.chart) {
+    const post = r.home_wp_post!;
     const delta = post - pre;
-    return {
-      play_id: String(i),
-      play_index: i,
-      quarter: q,
-      is_overtime: q > 4,
-      game_seconds_elapsed: elapsed,
-      possession_team_id: pos,
-      description: desc,
+    points.push({
+      play_id: r.play_id,
+      play_index: points.length + 1,
+      quarter: r.qtr,
+      is_overtime: false,
+      game_seconds_elapsed: elapsedOf(r.qtr, r.clock_seconds),
+      possession_team_id: r.possession_team_id,
+      description: r.description,
+      event: r.event,
       home_wp_pre: pre,
       home_wp_post: post,
       delta_home_wp: delta,
-      // Fixtures have no backend flag, so apply the fallback threshold.
-      is_swing: isSwing({ delta_home_wp: delta }),
-    };
-  });
-  const result = scores.home > scores.away ? "home_win" : scores.home < scores.away ? "away_win" : "tie";
+      // Shared swing filter: only regulation runs/passes/FGs/punts (no kneels or non-plays) can swing.
+      is_swing: !!r.swing_eligible && isSwing({ delta_home_wp: delta }),
+    });
+    pre = post;
+  }
+  for (const r of g.overtime_plays) {
+    // Overtime: no win chance (house rule); splitAtRegulation moves these to the OT play list.
+    points.push({
+      play_id: r.play_id,
+      play_index: points.length + 1,
+      quarter: r.qtr,
+      is_overtime: true,
+      game_seconds_elapsed: elapsedOf(r.qtr, r.clock_seconds),
+      possession_team_id: r.possession_team_id,
+      description: r.description,
+      home_wp_pre: pre,
+      home_wp_post: pre,
+      delta_home_wp: 0,
+      is_swing: false,
+    });
+  }
+  const result = g.home_score > g.away_score ? "home_win" : g.home_score < g.away_score ? "away_win" : "tie";
   const series: WinProbabilitySeries = {
-    game_id,
-    home_team_id: home,
-    away_team_id: away,
-    home_score: scores.home,
-    away_score: scores.away,
+    game_id: g.game_id,
+    home_team_id: g.home_team_id,
+    away_team_id: g.away_team_id,
+    home_score: g.home_score,
+    away_score: g.away_score,
     result,
     perspective: "home",
     timing: "pre_snap",
     swing_threshold: DEFAULT_SWING_WP_THRESHOLD,
     source: "nflverse_reference_home_wp",
     truth_label: "historical",
-    has_overtime: points.some((p) => p.is_overtime),
+    has_overtime: g.overtime_plays.length > 0,
     points,
     swing_play_ids: points.filter((p) => p.is_swing).map((p) => p.play_id),
   };
-  return { ...splitAtRegulation(series), origin: "example", note: "Example win chance — hand-made for the demo, not model output." };
+  return {
+    ...splitAtRegulation(series),
+    origin: "example",
+    note: GAME_SOURCE_LINE,
+  };
 }
 
-export const WP_FIXTURES: Record<string, ChartSeries> = {
-  // Detroit (away) won 21–20 at Kansas City.
-  "2023_01_DET_KC": build("2023_01_DET_KC", "KC", "DET", { home: 20, away: 21 }, 0.6, [
-    [1, 1, 900, "KC", "Opening kickoff.", 0.6],
-    [2, 1, 500, "KC", "Chiefs field goal.", 0.66],
-    [3, 2, 600, "DET", "Lions touchdown run.", 0.55],
-    [4, 2, 120, "DET", "Fourth-and-1 — Detroit goes for it and converts.", 0.5],
-    [5, 3, 600, "KC", "Mahomes touchdown pass.", 0.69],
-    [6, 3, 200, "KC", "Interception returned for a touchdown by Detroit.", 0.42],
-    [7, 4, 600, "KC", "Chiefs touchdown pass to retake the lead.", 0.6],
-    [8, 4, 250, "DET", "Montgomery touchdown run puts Detroit ahead.", 0.22],
-    [9, 4, 45, "KC", "Mahomes pass incomplete on fourth down. Detroit takes over.", 0.03],
-    [10, 4, 30, "DET", "Lions kneel to run out the clock.", 0],
-  ]),
-  "2023_01_BUF_NYJ": build("2023_01_BUF_NYJ", "NYJ", "BUF", { home: 22, away: 16 }, 0.35, [
-    [1, 1, 900, "BUF", "Opening kickoff.", 0.35],
-    [2, 1, 200, "BUF", "Bills touchdown.", 0.28],
-    [3, 2, 300, "NYJ", "Jets field goal.", 0.38],
-    [4, 3, 500, "NYJ", "Fumble recovered by the Jets.", 0.47],
-    [5, 4, 400, "NYJ", "Jets field goal ties the game.", 0.55],
-    [6, 5, 452, "NYJ", "Xavier Gipson punt return touchdown in overtime. Jets win 22–16.", 1],
-  ]),
-  "2023_03_PHI_TB": build("2023_03_PHI_TB", "TB", "PHI", { home: 11, away: 25 }, 0.4, [
-    [1, 1, 900, "PHI", "Opening kickoff.", 0.4],
-    [2, 2, 400, "PHI", "Eagles field goal.", 0.3],
-    [3, 3, 600, "PHI", "Eagles touchdown pass.", 0.18],
-    [4, 4, 700, "PHI", "Eagles field goal.", 0.06],
-    [5, 4, 120, "TB", "Buccaneers turnover on downs.", 0],
-  ]),
-};
+export const WP_FIXTURES: Record<string, ChartSeries> = Object.fromEntries(
+  Object.values(SWING_EXPORT.games).map((g) => [g.game_id, build(g)]),
+);
 
 export function fixtureWinProbability(gameId: string): ChartSeries | null {
   return WP_FIXTURES[gameId] ?? null;

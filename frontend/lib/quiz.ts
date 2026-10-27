@@ -82,7 +82,7 @@ export const QUIZ_ITEMS: QuizItem[] = QUIZ_PACK.items;
 
 export const CHOICE_LABELS: Record<QuizChoice, string> = {
   go: "Go",
-  fg: "Field Goal",
+  fg: "Field goal",
   punt: "Punt",
 };
 
