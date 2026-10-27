@@ -87,8 +87,34 @@ export function isSwing(
   return typeof p.is_swing === "boolean" ? p.is_swing : Math.abs(p.delta_home_wp) >= threshold;
 }
 
-/** nflverse event tag carried on fixture points (lib/swingPlays.json, #86). */
-export type EventPoint = WinProbabilityPoint & { event?: string };
+/** Fan fields carried on fixture points from lib/swingPlays.json (#86/#88). All optional: API points lack them. */
+export type EventPoint = WinProbabilityPoint & {
+  event?: string;
+  fourth_down_failed?: boolean;
+  display_text?: string;
+  raw_desc?: string;
+  down?: number | null;
+  distance?: number | null;
+  yardline_100?: number | null;
+  home_score_before?: number;
+  away_score_before?: number;
+};
+
+/** "4th & 7 · KC 35 · DET 14–13 KC" (UI Critic 2110 P1-B). Null when the situation fields are absent. */
+export function situationLine(p: EventPoint, home: string, away: string): string | null {
+  const parts: string[] = [];
+  const ord = ["", "1st", "2nd", "3rd", "4th"];
+  if (p.down && p.distance != null) parts.push(`${ord[p.down]} & ${p.distance}`);
+  const pos = p.possession_team_id;
+  if (p.yardline_100 != null && pos) {
+    const opp = pos === home ? away : home;
+    const y = p.yardline_100;
+    parts.push(y === 50 ? "midfield" : y > 50 ? `${pos} ${100 - y}` : `${opp} ${y}`);
+  }
+  if (p.home_score_before != null && p.away_score_before != null)
+    parts.push(`${away} ${p.away_score_before}–${p.home_score_before} ${home}`);
+  return parts.length ? parts.join(" · ") : null;
+}
 
 function whyText(delta: number, p: EventPoint, favored: string): string {
   const pts = Math.round(Math.abs(delta) * 100);
@@ -96,7 +122,7 @@ function whyText(delta: number, p: EventPoint, favored: string): string {
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
   // QA M10 / UI P1-B: the event tag from nflverse (#86) decides the cause before any text match.
-  if (p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
+  if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
   else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover hands the ball and field position to the other side";
   else if (p.event === "touchdown") cause = "a touchdown changes the score in one snap";
   else if (p.event === "field_goal") cause = "points went on the board";
