@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 export function slim(pack) {
   const S = ["posteam", "defteam", "home_team", "away_team", "posteam_score", "defteam_score", "qtr",
-    "quarter_seconds_remaining", "yardline_100", "down", "distance"];
+    "quarter_seconds_remaining", "yardline_100", "down", "distance", "posteam_timeouts", "defteam_timeouts"];
   return {
     schema_version: "fourth_and_daily_pack.v1",
     derived_from: pack.schema_version,
@@ -14,7 +14,7 @@ export function slim(pack) {
       id: it.id,
       kind: it.kind,
       source: { season: it.source.season, week: it.source.week, game_date: it.source.game_date, game_id: it.source.game_id },
-      situation: Object.fromEntries(S.map((k) => [k, it.situation[k]])),
+      situation: Object.fromEntries(S.map((k) => [k, it.situation[k] ?? null])),
       historical_action: it.historical_action,
       // 4 decimals (0.01 win-chance points) is far finer than anything shown or scored.
       reveal: {

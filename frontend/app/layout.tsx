@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { AppNav, TopBar } from "../components/AppNav";
 import "./globals.css";
+import "./simple-game.css";
 import { shareMetadata } from "../lib/share";
 
 // Self-hosted (app/fonts, OFL) so builds never fetch from Google Fonts.
