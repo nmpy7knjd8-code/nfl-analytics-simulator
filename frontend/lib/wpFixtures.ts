@@ -43,6 +43,11 @@ export interface SwingPlay {
   return_td: boolean;
   /** Punt or kickoff returned for a TD (nflverse return_touchdown). Never true together with return_td. */
   kick_return_td: boolean;
+  /** nflverse defteam (null on rows without one, e.g. some kickoffs/markers). */
+  defense_team_id: string | null;
+  /** nflverse timeouts left before the snap, 0–3; null when nflverse has none. */
+  posteam_timeouts_remaining: number | null;
+  defteam_timeouts_remaining: number | null;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
   /** Penalty sentence(s) after the play; null on "No play" rows (the flag is display_text) and flag-free plays. */

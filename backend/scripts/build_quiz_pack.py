@@ -36,7 +36,21 @@ def frontend_pack(pack: dict) -> dict:
     return out
 
 
+def add_scoreboard(pack: dict) -> dict:
+    """Additive scoreboard fields on each item's situation (simple game score bug): home/away score
+    before the snap (from posteam/defteam score) and the quarter clock as "m:ss"."""
+    for it in pack["items"]:
+        s = it["situation"]
+        home_has_ball = s["posteam"] == s["home_team"]
+        s["home_score_before"] = s["posteam_score"] if home_has_ball else s["defteam_score"]
+        s["away_score_before"] = s["defteam_score"] if home_has_ball else s["posteam_score"]
+        q = s.get("quarter_seconds_remaining")
+        s["clock"] = None if q is None else f"{int(q) // 60}:{int(q) % 60:02d}"
+    return pack
+
+
 def write_packs(pack: dict) -> None:
+    add_scoreboard(pack)
     QUIZ_PACK_PATH.write_text(json.dumps(pack, indent=2) + "\n")
     FRONTEND_PACK.write_text(json.dumps(frontend_pack(pack), indent=2) + "\n")
 ACTION = {"pass": "go", "run": "go", "punt": "punt", "field_goal": "fg"}
@@ -113,9 +127,13 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=365)
     ap.add_argument("--seasons", default="2022,2023")
+    ap.add_argument("--scoreboard-only", action="store_true", help="add scoreboard fields to the existing pack, nothing else")
     ap.add_argument("--rewrite-text", action="store_true",
                     help="re-apply fan-language text to the existing pack (no lake/WP needed)")
     a = ap.parse_args()
+    if getattr(a, "scoreboard_only", False):
+        write_packs(json.loads(QUIZ_PACK_PATH.read_text()))
+        return 0
     if a.rewrite_text:
         pack = json.loads(QUIZ_PACK_PATH.read_text())
         for it in pack["items"]:

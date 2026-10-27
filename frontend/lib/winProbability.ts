@@ -94,6 +94,9 @@ export type EventPoint = WinProbabilityPoint & {
   display_text?: string;
   /** flags after the play (null on "No play" rows and flag-free plays); render after display_text */
   penalty_text?: string | null;
+  defense_team_id?: string | null;
+  posteam_timeouts_remaining?: number | null;
+  defteam_timeouts_remaining?: number | null;
   raw_desc?: string;
   down?: number | null;
   distance?: number | null;
