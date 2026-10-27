@@ -20,6 +20,7 @@ import csv, io, json, os, re, sys, urllib.request
 
 SCHEDULE_URL = "https://github.com/nflverse/nfldata/raw/master/data/games.csv"
 MAX_FG = 64
+FG_SNAP_YARDS = 18  # mirrors nfl_sim.models.fourth_down_empirics.FG_SNAP_YARDS (standalone script)
 DEV_TEXT = ["POST ", "play_id", "yardline_100", "isotonic", "apiHook", "not on main",
             "sibling API", "localhost:", "TODO", "Path A", "uncalibrated"]
 fails: list[str] = []
@@ -148,8 +149,8 @@ def main() -> int:
             team(t, f"4th-down scenario {sc['id']}")
         m = re.fullmatch(r"(\d+):(\d\d)", s.get("clock", ""))
         clock_ok(int(m[1]) * 60 + int(m[2]) if m else -1, f"4th-down scenario {sc['id']}")
-        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + 18 > MAX_FG:
-            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + 18}-yd FG")
+        if any(o["id"] == "fg" for o in sc["options"]) and s["yardline_100"] + FG_SNAP_YARDS > MAX_FG:
+            fail(f"FG: 4th-down scenario {sc['id']} offers a {s['yardline_100'] + FG_SNAP_YARDS}-yd FG")
 
     for it in data["quiz"]["items"]:
         s, label = it["situation"], f"quiz item {it['id']}"
@@ -160,8 +161,8 @@ def main() -> int:
         qs = s.get("quarter_seconds_remaining")
         clock_ok(qs if qs is not None else qsec_from_game(q, s.get("game_seconds_remaining")), label)
         fg = (it.get("reveal") or {}).get("values", {}).get("fg")
-        if fg is not None and s["yardline_100"] + 18 > MAX_FG:
-            fail(f"FG: {label} values a {s['yardline_100'] + 18}-yd FG (FG win chance {fg:.3f})")
+        if fg is not None and s["yardline_100"] + FG_SNAP_YARDS > MAX_FG:
+            fail(f"FG: {label} values a {s['yardline_100'] + FG_SNAP_YARDS}-yd FG (FG win chance {fg:.3f})")
         gid = (it.get("source") or {}).get("game_id")
         if gid and gid not in sched:
             fail(f"schedule: {label} cites game {gid}, which does not exist in nflverse")

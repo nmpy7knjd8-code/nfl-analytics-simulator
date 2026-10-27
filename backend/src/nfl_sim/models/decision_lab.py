@@ -20,7 +20,7 @@ from nfl_sim.models.fourth_down import (
     FourthDownSituation,
     sensitivity_example,
 )
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, TransitionMode
 
 # Provenance + state columns surfaced to the lab (when present in PBP).
 PROVENANCE_COLUMNS: tuple[str, ...] = (
@@ -226,7 +226,7 @@ def freeze_play(row: pd.Series | dict[str, Any]) -> HistoricalFourthDown:
         "posteam_timeouts": sit.posteam_timeouts,
         "defteam_timeouts": sit.defteam_timeouts,
         "is_home_possession": sit.is_home_possession,
-        "kick_distance_if_fg": sit.yardline_100 + 17,
+        "kick_distance_if_fg": sit.yardline_100 + FG_SNAP_YARDS,
     }
     for col in STATE_COLUMNS:
         if col in data:

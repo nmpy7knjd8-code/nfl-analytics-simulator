@@ -20,7 +20,7 @@ sys.path.insert(0, str(REPO / "backend" / "src"))
 
 from nfl_sim.api.situation_lab import _load_analyzer, _payload_from_compare  # noqa: E402
 from nfl_sim.models.decision_lab import compare_transition_modes, load_fourth_down_frame  # noqa: E402
-from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE  # noqa: E402
+from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS, MAX_FG_DISTANCE  # noqa: E402
 from nfl_sim.quiz.pack import HISTORICAL_REFS, QUIZ_PACK_PATH, fanify_reveal, pack_item_from_situation_lab_payload  # noqa: E402
 
 FRONTEND_PACK = REPO / "frontend" / "lib" / "quizPack.json"
@@ -71,7 +71,6 @@ def candidates(seasons):
     return out
 
 
-FG_SNAP_YARDS = 18  # nflverse kick_distance = yardline_100 + 18 (same as the shared engine, #50)
 # Brief + shared engine (#50): a gap under 2 points of win chance is a "close call".
 CLOSE_CALL_WP = 0.02
 MAX_CLOSE_CALL_SHARE = 0.15  # "too close to call" is a fine answer, but not a third of the pack
