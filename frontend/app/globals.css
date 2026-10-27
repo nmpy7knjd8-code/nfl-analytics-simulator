@@ -1531,3 +1531,20 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .not-found-label { font-weight: 600; }
 .not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
 .not-found-links a:hover .not-found-label { color: var(--nf-accent); }
+
+/* Recheck P1-D: an out-of-range field goal stays as a disabled row. */
+/* Recheck 2054 P3-C: no opacity; dim only fill and border, keep the reason readable (quiz card is dark on every theme). */
+.quiz-choice.is-off, .quiz-value.is-off { opacity: 1; cursor: not-allowed; background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); color: #8c8c96; }
+.quiz-value-off { font-family: var(--font-body); }
+/* #8c8c96 is 3.8:1 on the lighter reveal rows (#333336), so they use #a1a1aa (4.9:1). */
+.quiz-value.is-off, .quiz-value.is-off .quiz-value-off { color: #a1a1aa; }
+/* Recheck P2-D: close call = neutral white outline on the pick, dashed on the other close option (no gold, no red). */
+.quiz-result.is-near_tie { color: #f0f0f4; }
+.quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-picked { outline: 1.5px solid #f0f0f4; }
+.quiz-value.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+/* Recheck 2054 P2-F: "Close call · ½ point", neutral, the ½ in a chip. */
+.quiz-half { font-weight: 500; color: #c8c8d0; }
+.quiz-half-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 1.6em; padding: 0 0.35em; border: 1px solid #c8c8d0; border-radius: 999px; font-size: 0.8em; line-height: 1.4; }
+/* H6: paused 4th-down checker page. */
+.decide-page .empty-state { display: grid; gap: 0.75rem; padding: 1.5rem 1rem; border: 1px solid var(--color-divider, #2a2a30); border-radius: 12px; }
+.decide-page .empty-state .btn { min-height: 48px; }

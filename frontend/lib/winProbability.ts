@@ -87,12 +87,22 @@ export function isSwing(
   return typeof p.is_swing === "boolean" ? p.is_swing : Math.abs(p.delta_home_wp) >= threshold;
 }
 
-function whyText(delta: number, p: WinProbabilityPoint, favored: string): string {
+/** nflverse event tag carried on fixture points (lib/swingPlays.json, #86). */
+export type EventPoint = WinProbabilityPoint & { event?: string };
+
+function whyText(delta: number, p: EventPoint, favored: string): string {
   const pts = Math.round(Math.abs(delta) * 100);
   const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
-  if (/intercept|fumble/.test(d)) cause = "a turnover hands the ball and field position to the other side";
+  // QA M10 / UI P1-B: the event tag from nflverse (#86) decides the cause before any text match.
+  if (p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
+  else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover hands the ball and field position to the other side";
+  else if (p.event === "touchdown") cause = "a touchdown changes the score in one snap";
+  else if (p.event === "field_goal") cause = "points went on the board";
+  else if (p.event === "punt") cause = "a punt flips field position";
+  else if (p.event === "other") cause = /sack/.test(d) ? "a sack loses yards and can kill a drive" : "it moved the ball and the clock";
+  else if (/intercept|fumble/.test(d)) cause = "a turnover hands the ball and field position to the other side";
   else if (/touchdown/.test(d)) cause = "a touchdown changes the score in one snap";
   else if (/field goal|fg/.test(d)) cause = "points went on the board";
   else if (/fourth-and|fourth down|4th/.test(d)) cause = "a fourth-down call decides who keeps the ball";
