@@ -211,3 +211,14 @@ def test_exports_never_name_the_odds_source():
     import re
     for f in [ROOT / "frontend/lib/swingPlays.json", *sorted((ROOT / "frontend/lib/plays").glob("*.json"))]:
         assert not re.search(r"vegas|spread|odds|betting|moneyline", f.read_text(), re.I), f
+
+
+def test_qa_m14_at_kickoff_is_nflverse_vegas_home_wp():
+    # QA M14: 'At kickoff' = nflverse vegas_home_wp on the first real play (NYJ 41.1%, KC 64.5%, TB 27.5%).
+    want = {"2023_01_BUF_NYJ": 41.1, "2023_01_DET_KC": 64.5, "2023_03_PHI_TB": 27.5}
+    for gid, pct in want.items():
+        g = EXPORT["games"][gid]
+        assert round(g["opening_home_wp"] * 100, 1) == pct
+        first = next(r for r in ROWS if r["game_id"] == gid and r.get("play_type") and r.get("time"))
+        assert first["wp_fallback"] is False  # nflverse value, not our model
+        assert not any(k for k in g if "spread" in k or "odds" in k or "line" in k.split("_"))

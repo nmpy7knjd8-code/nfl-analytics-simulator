@@ -195,3 +195,11 @@ test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & 
     }
   assert.ok(n > 0);
 });
+
+test("QA M14: 'At kickoff' home win chance is nflverse vegas_home_wp", () => {
+  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.home, 0.4112); // NYJ 41.1%
+  assert.equal(openingWinChance("2023_01_DET_KC")!.home, 0.6449); // KC 64.5%
+  assert.equal(openingWinChance("2023_03_PHI_TB")!.home, 0.2754); // TB 27.5%
+  const g = JSON.stringify(SWING_EXPORT);
+  assert.ok(!/spread|odds|vegas_|betting/i.test(g.replace(/"wp_source":"[^"]*"/g, "")));
+});
