@@ -7,10 +7,14 @@ For a real game we shift the league conversion and FG make chances by
 Each shift is (observed - expected) / (attempts + k): the beta-binomial posterior mean
 of the team's residual, shrunk toward 0 (= league average) with k pseudo-attempts.
 
-No future data: a game's shifts use only that season's plays from games dated strictly
-before it (week 1 = league average). The league curves (expected rates) and the priors k
-are fit once on full seasons 2019–2023 (the WP model's fit seasons) and are league-wide,
-never team-specific. Internal model inputs only; nothing here is shown to fans.
+No future data within a season: a game's team shifts use only that season's plays from games
+dated strictly before it (week 1 = league average).
+
+In-sample (QA 0116 P3): the league curves (expected rates) and the priors k are fit once on
+full seasons 2019–2023, the same seasons as the WP model fit. So for 2019–2023 games those
+league-wide inputs are IN-SAMPLE (they saw the season being annotated, including later weeks);
+only 2024–2025 games are out-of-sample for them. They are league-wide, never team-specific.
+Internal model inputs only; nothing here is shown to fans.
 """
 from __future__ import annotations
 
@@ -21,6 +25,14 @@ import numpy as np
 import pandas as pd
 
 PRIOR_SEASONS: tuple[int, ...] = (2019, 2020, 2021, 2022, 2023)
+OUT_OF_SAMPLE_SEASONS: tuple[int, ...] = (2024, 2025)
+FIT_SAMPLE = {
+    "fit_seasons": list(PRIOR_SEASONS),
+    "in_sample_seasons": list(PRIOR_SEASONS),
+    "out_of_sample_seasons": list(OUT_OF_SAMPLE_SEASONS),
+    "note": "League curves and priors k are fit on full 2019-2023 seasons, so they are in-sample for "
+            "2019-2023 games. Team shifts use only that season's earlier games.",
+}
 MAX_CONVERT_YDSTOGO = 10  # 3rd/4th-and-1..10 runs and passes
 MIN_FG, MAX_FG = 18, 70
 PBP_COLUMNS = ["game_id", "season", "season_type", "game_date", "posteam", "defteam", "down", "ydstogo",

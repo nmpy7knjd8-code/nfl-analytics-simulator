@@ -161,3 +161,12 @@ def test_plain_language_fourth_down_fields():
     assert goal["best_call"].endswith("The coach made the right call.")
     for v in (*t.values(), *goal.values()):
         assert not re.search(r"spread|odds|line|betting|vegas|favou?rite", str(v), re.I)
+
+
+def test_fit_sample_is_labelled_in_sample():  # QA 0116 P3
+    import json
+    from nfl_sim.models.team_strength import FIT_SAMPLE, PRIOR_SEASONS
+    assert FIT_SAMPLE["in_sample_seasons"] == list(PRIOR_SEASONS)
+    assert not set(FIT_SAMPLE["out_of_sample_seasons"]) & set(PRIOR_SEASONS)
+    rep = json.loads((Path(__file__).parents[2] / "reports/fourth_down/team_strength_priors.json").read_text())
+    assert rep["fit"] == FIT_SAMPLE

@@ -5,6 +5,27 @@
     "n_team_seasons": 160,
     "tau": 0.0159
   },
+  "fit": {
+    "fit_seasons": [
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "in_sample_seasons": [
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "note": "League curves and priors k are fit on full 2019-2023 seasons, so they are in-sample for 2019-2023 games. Team shifts use only that season's earlier games.",
+    "out_of_sample_seasons": [
+      2024,
+      2025
+    ]
+  },
   "kicker_fg_make": {
     "k": 58.5,
     "league_rate": 0.8465,
