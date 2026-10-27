@@ -43,6 +43,12 @@ export function gameText(item: DailyItem): string {
   return parts.join(" · ");
 }
 
+/** QA M13: "24% vs 23%", or "both 0.1%" / "all 0.1%" when the shown numbers match. */
+function sameNums(f: string[]): string {
+  if (f.every((x) => x === f[0])) return `${f.length === 2 ? "both" : "all"} ${f[0]}`;
+  return f.join(" vs ");
+}
+
 export function pts(x: number): string {
   return `${(Math.abs(x) * 100).toFixed(1)} pts`;
 }
@@ -60,7 +66,7 @@ export function whyText(item: DailyItem, scored: ScoredCall): string {
     const same = ranked.filter(([, v]) => bv - v < CLOSE_CALL_GAP);
     const worse = ranked.filter(([, v]) => bv - v >= CLOSE_CALL_GAP);
     const f = formatPercents(ranked.map(([, v]) => v));
-    let t = `Close call for the ${team}: ${same.map(([c]) => CHOICE_NAME[c]).join(" and ")} give about the same win chance (${same.map((_, i) => f[i]).join(" vs ")})`;
+    let t = `Close call for the ${team}: ${same.map(([c]) => CHOICE_NAME[c]).join(" and ")} give about the same win chance (${sameNums(same.map((_, i) => f[i]))})`;
     if (worse.length) t += "; " + worse.map(([c], i) => `${CHOICE_NAME[c]} is lower (${f[same.length + i]})`).join(", ");
     return t + ".";
   }

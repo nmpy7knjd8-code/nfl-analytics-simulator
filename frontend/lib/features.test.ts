@@ -7,7 +7,7 @@ import { CHECKER_ENABLED, CHECKER_PAUSED } from "./features";
 test("H6: 4th-down checker is off on the live site", () => {
   assert.equal(CHECKER_ENABLED, false);
   assert.doesNotMatch(CHECKER_PAUSED.title + CHECKER_PAUSED.body, /\d+\s*%|\d+\s*pts?/);
-  assert.equal(CHECKER_PAUSED.cta.href, "/daily/");
+  assert.equal(CHECKER_PAUSED.cta.href, "/");
 });
 
 test("nav and 404 links honour the flag", () => {
