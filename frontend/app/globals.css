@@ -1554,6 +1554,7 @@ body { font-variant-numeric: tabular-nums; }
 .fd-bar-fill { display: block; height: 100%; background: #71717a; }
 .fd-bar.is-best .fd-bar-fill { background: var(--color-blue-fill); }
 .fd-bar.is-pick .fd-bar-label { font-weight: 800; text-decoration: underline; }
+.fd-tag { display: inline-block; margin-left: 0.5rem; font-size: 0.72rem; font-weight: 600; color: #c8c8d0; text-decoration: none; }
 .fd-bar-num { text-align: right; }
 .fd-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .fd-btn { min-height: 48px; padding: 0 1.25rem; border-radius: 10px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid #52525b; background: transparent; color: #fff; }

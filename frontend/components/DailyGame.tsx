@@ -7,7 +7,7 @@ import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
   dailySet, type CallResult, type ScoredCall, type StreakState,
-  closeNote,
+  closeNote, formatPercents, CLOSE_CALL_GAP,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 
@@ -45,16 +45,31 @@ function Field({ item }: { item: DailyItem }) {
 
 function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
   const ranked = rankedValues(item);
+  const pcts = formatPercents(ranked.map(([, v]) => v));
+  const bestV = scored.values[scored.best] ?? 0;
+  // Recheck 2236 P2-H: words, not outline styles, say which row is which. No red on a Correct pick.
+  const tags = (id: QuizChoice, v: number): string[] => {
+    const t: string[] = [];
+    if (id === scored.pick) t.push("Your pick");
+    if (id === scored.best) t.push("Best");
+    else if (scored.closeCall && id !== scored.pick && bestV - v < CLOSE_CALL_GAP) t.push("About as good");
+    return t;
+  };
   return (
     <ul className="fd-bars" aria-label={`${item.situation.posteam} chance to win by choice`}>
       {ranked.map(([id, v]) => (
         <li key={id} className={`fd-bar${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}`}>
-          <span className="fd-bar-label">{CHOICE_NAME[id]}</span>
+          <span className="fd-bar-label">
+            {CHOICE_NAME[id]}
+            {tags(id, v).map((t) => (
+              <span key={t} className="fd-tag">{t}</span>
+            ))}
+          </span>
           <span className="fd-bar-track">
             <span className="fd-bar-fill" style={{ width: `${Math.round(v * 100)}%` }} />
           </span>
           <span className="fd-bar-num">
-            {item.situation.posteam} {Math.round(v * 100)}%
+            {item.situation.posteam} {pcts[ranked.findIndex(([c]) => c === id)]}
           </span>
         </li>
       ))}
