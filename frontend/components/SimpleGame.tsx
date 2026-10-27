@@ -197,7 +197,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{RESULT_GLYPH[p.scored.result]}</span>{RESULT_TITLE[p.scored.result]}</h1>
       <div className="sg-res">
         <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
-        <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
       </div>
       <FieldView item={it} outcome={out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null }} />
