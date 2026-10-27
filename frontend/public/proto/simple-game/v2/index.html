@@ -72,7 +72,7 @@ function field(reveal){
  let lo=Math.min(los,endY),hi=Math.max(los,endY),c=(lo+hi)/2-3,h=38;let y0=Math.max(-1,Math.min(c-h/2,121-h));
  let g='';
  for(let s=0;s<120;s+=5)g+=`<rect x="0" y="${s}" width="${W}" height="5" fill="${(s/5)%2?'#3f8a3a':'#367d32'}"/>`;
- for(const z of [0,110])g+=`<rect y="${z}" width="${W}" height="10" fill="${pl.hp}"/><text x="${W/2}" y="${z+7.6}" text-anchor="middle" font-size="7.4" font-weight="900" fill="#fff" stroke="${pl.hs2}" stroke-width=".55" paint-order="stroke" letter-spacing=".6" font-family="Impact,'Arial Black',sans-serif" ${z?'':`transform="rotate(180 ${W/2} 5)"`}>${pl.nick}</text>`;
+ for(const z of [0,110])g+=`<rect y="${z}" width="${W}" height="10" fill="${pl.hp}"/><text x="${W/2}" y="${z+7.6}" text-anchor="middle" font-size="7.4" font-weight="900" fill="#fff" stroke="${pl.hs2}" stroke-width=".55" paint-order="stroke" letter-spacing=".6" font-family="Impact,'Arial Black',sans-serif">${pl.nick}</text>`;
  let paint='';
  paint+=`<rect x=".3" y="0" width="${W-.6}" height="120" fill="none" stroke="#fff" stroke-width=".5"/>`;
  for(let v=0;v<=100;v+=5)paint+=`<line x1="0" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="#fff" stroke-width="${v%100?.28:.6}"/>`;
