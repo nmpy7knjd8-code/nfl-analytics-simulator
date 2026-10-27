@@ -33,7 +33,7 @@ export type ChartSeries = {
 export type OvertimePlay = Pick<
   WinProbabilityPoint,
   "play_id" | "play_index" | "quarter" | "is_overtime" | "game_seconds_elapsed" | "possession_team_id" | "description"
->;
+> & { display_text?: string; raw_desc?: string };
 
 /**
  * House rule (creative-builds.md): win chance stops at the end of regulation.
@@ -54,6 +54,9 @@ export function splitAtRegulation(series: WinProbabilitySeries): {
     game_seconds_elapsed: p.game_seconds_elapsed,
     possession_team_id: p.possession_team_id,
     description: p.description,
+    // UI Critic 2240 P2-A: the OT card shows the export's fan text like every other card.
+    display_text: (p as { display_text?: string }).display_text,
+    raw_desc: (p as { raw_desc?: string }).raw_desc,
   }));
   const kept = new Set(regulation.map((p) => p.play_id));
   return {
@@ -155,6 +158,16 @@ export function clockLabel(p: Pick<WinProbabilityPoint, "quarter" | "is_overtime
   }
   const left = p.quarter * QUARTER_SECONDS - p.game_seconds_elapsed;
   return `Q${p.quarter} ${fmt(Math.max(0, Math.min(QUARTER_SECONDS, left)))}`;
+}
+
+/** The same swings in game order (cards and dot numbers read left to right; UI Critic open item). */
+export function inGameOrder(swings: SwingPlay[]): SwingPlay[] {
+  return [...swings].sort((a, b) => a.point.game_seconds_elapsed - b.point.game_seconds_elapsed || a.point.play_index - b.point.play_index);
+}
+
+/** "DET win chance +24" (UI Critic 2240 P3-A: not "gains 24 pts", which reads like game points). */
+export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id">): string {
+  return `${s.favored_team_id} win chance +${Math.round(Math.abs(s.delta) * 100)}`;
 }
 
 /** Swing plays, largest first, capped at `limit`. */
