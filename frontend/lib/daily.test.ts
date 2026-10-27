@@ -146,3 +146,10 @@ test("#96 L7: close-call Why names only options within 2 pts as about the same",
   const t = whyText(it, scoreCall("go", it));
   assert.match(t, /give about the same win chance \(62\.1% vs 61\.7%\); .* is lower \(30\.0%\)\./);
 });
+
+test("M13: daily close-call text never shows identical 'X% vs X%'", async () => {
+  const { closeNote } = await import("./daily");
+  const n = closeNote({ result: "close", credit: 0.5, pick: "fg", best: "go", gap: 0.0001, closeCall: true, values: { go: 0.0012, fg: 0.0011, punt: 0.00105 } } as never)!;
+  assert.doesNotMatch(n, /(\d+(?:\.\d)?%) vs \1/);
+  assert.match(n, /both 0\.1%/);
+});

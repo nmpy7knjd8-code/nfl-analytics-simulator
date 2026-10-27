@@ -370,5 +370,7 @@ export function closeNote(s: ScoredCall): string | null {
     return `${cap(near.map(([c]) => DOING[c]).join(" and "))} ${near.length > 1 ? "were" : "was"} about as good (${f.join(", ")}).`;
   }
   const [a, b] = formatPercents([bestV, s.values[s.pick]!]);
+  // QA M13: never "0.1% vs 0.1%".
+  if (a === b) return `${cap(DOING[s.best])} was about as good (both ${a}), so this pick gets ½.`;
   return `${cap(DOING[s.best])} was a little better (${a} vs ${b}), so this pick gets ½.`;
 }
