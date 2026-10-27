@@ -85,7 +85,9 @@ export function FieldView({ item, outcome }: { item: DailyItem; outcome?: Outcom
           </>
         ) : (
           <>
-            <text x={BX + 2.5} y={fd - 1} fontSize={2.6} fontWeight={800} fill="#FFD400" stroke="#000" strokeWidth={0.45} paintOrder="stroke">{isGoalToGo(item) ? "GOAL" : "1ST DOWN"}</text>
+            {isGoalToGo(item) ? null : (
+              <text x={BX + 2.5} y={fd - 1} fontSize={2.6} fontWeight={800} fill="#FFD400" stroke="#000" strokeWidth={0.45} paintOrder="stroke">1ST DOWN</text>
+            )}
             <g transform={`translate(17 ${los - 1})`}><path d="M0 -3.2 L2.2 0 L.8 0 L.8 2.6 L-.8 2.6 L-.8 0 L-2.2 0Z" fill="#fff" stroke="#000" strokeWidth={0.15} /></g>
             <text x={17} y={los + 4.6} textAnchor="middle" fontSize={2.8} fontWeight={800} fill="#fff" stroke="#000" strokeWidth={0.5} paintOrder="stroke">{s.posteam}</text>
             <Ball x={BX} y={los} />
