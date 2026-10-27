@@ -19,7 +19,7 @@ from typing import Any, Literal
 from nfl_sim.models.fourth_down import FourthDownAnalyzer, FourthDownSituation
 from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE
 
-ENGINE_VERSION = "fourth_down_engine.v2"  # v2: H6 post-play state fixes
+ENGINE_VERSION = "fourth_down_engine.v3"  # v2: H6 post-play state fixes; v3: scoring-zone drive outcomes late
 TRANSITION_MODE = "improved"
 EMPIRICS_MODE = "pooled"
 PUNT_MIN_YARDLINE_100 = 35  # punt offered from the opponent 35 and farther back (inclusive)
