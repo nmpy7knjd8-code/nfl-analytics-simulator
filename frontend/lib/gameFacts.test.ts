@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { GAME_FACTS_BY_ID } from "./gameFacts";
 import { FIXTURE_GAMES, fixturePlays } from "./fixtures";
+import { GAME_PLAY_LISTS } from "./gamePlays";
 import { WP_FIXTURES } from "./wpFixtures";
 
 test("every fixture game matches nflverse facts", () => {
@@ -27,10 +28,11 @@ test("win-chance fixtures use real game ids and end on the real winner (home vie
   }
 });
 
-test("final play text states the real score", () => {
+test("the plays file ends on the real final score", () => {
   for (const g of FIXTURE_GAMES.items) {
-    const last = fixturePlays(g.game_id)!.items.at(-1)!;
-    assert.match(last.description ?? "", new RegExp(`${g.away_score}`));
-    assert.match(last.description ?? "", new RegExp(`${g.home_score}`));
+    assert.ok(fixturePlays(g.game_id)!.items.length > 0);
+    const last = GAME_PLAY_LISTS[g.game_id].plays.at(-1)!;
+    assert.equal(last.away_score_after, g.away_score);
+    assert.equal(last.home_score_after, g.home_score);
   }
 });

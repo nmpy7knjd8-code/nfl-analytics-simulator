@@ -125,6 +125,9 @@ export function availableChoices(item: { reveal: QuizReveal; situation: Pick<Qui
   });
 }
 
+/** A close call: the top two offered options are within 2 points of win chance. */
+export const CLOSE_MARGIN = 0.02;
+
 export function scoreQuizChoice(
   choice: QuizChoice,
   reveal: QuizReveal,
@@ -156,9 +159,18 @@ export function scoreQuizChoice(
     };
   }
   if (inconclusive) {
+    // Recheck 2146 P2-G: the higher win chance always earns the full point; a pick within
+    // CLOSE_MARGIN of it earns ½ ("Close call"); anything further off earns 0.
+    const top = Math.max(
+      ...(["go", "fg", "punt"] as QuizChoice[])
+        .filter((c) => (situation ? availableChoices({ reveal, situation }).includes(c) : typeof reveal.values[c] === "number"))
+        .map((c) => reveal.values[c] as number),
+    );
+    const v = reveal.values[choice] as number;
+    const result: QuizResult = v >= top ? "correct" : top - v <= CLOSE_MARGIN + 1e-9 ? "near_tie" : "incorrect";
     return {
-      result: "near_tie",
-      credit: 0.5,
+      result,
+      credit: result === "correct" ? 1 : result === "near_tie" ? 0.5 : 0,
       recommendation: reveal.recommendation,
       inconclusive: true,
       values: reveal.values,

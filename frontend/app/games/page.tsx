@@ -24,10 +24,10 @@ export default async function GamesPage() {
           <span className="muted">2023</span>
         </div>
         <h1>Games</h1>
-        <p>Pick a matchup — walk the story play by play.</p>
+        <p className="games-intro">Pick a matchup and see the plays that swung it.</p>
       </header>
 
-      <p className="muted game-source">{GAME_SOURCE_LINE}</p>
+      <p className="wp-source game-source">{GAME_SOURCE_LINE}</p>
 
       <p className="list-count">
         {games.total} games
