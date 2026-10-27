@@ -17,7 +17,7 @@ import {
   type SessionStats,
 } from "../lib/quiz";
 import { CLOSE_LABEL } from "../lib/labels";
-import { ALL_CHOICES, closeCallNote, nearTieOptions, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
+import { ALL_CHOICES, closeCallNote, nearTieOptions, fgButton, formatPercents, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
 
 
 function resultLabel(result: QuizResult): string {
@@ -41,6 +41,11 @@ export function QuizGame() {
     if (!selected || phase !== "reveal") return null;
     return scoreQuizChoice(selected, item.reveal, item.situation);
   }, [selected, phase, item]);
+  const rowPct = useMemo(() => {
+    const ids = availableChoices(item);
+    const f = formatPercents(ids.map((c) => item.reveal.values[c] as number));
+    return Object.fromEntries(ids.map((c, i) => [c, f[i]])) as Partial<Record<QuizChoice, string>>;
+  }, [item]);
   const nearTie = useMemo(() => nearTieOptions(item).map((r) => r.c), [item]);
 
   function pick(choice: QuizChoice) {
@@ -135,7 +140,7 @@ export function QuizGame() {
                       className={`quiz-choice${active ? " is-selected" : ""}${off ? " is-off" : ""}`}
                       onClick={off ? undefined : () => pick(id)}
                     >
-                      {off ? fgTooFarButton(item.situation) : CHOICE_LABELS[id]}
+                      {off ? fgTooFarButton(item.situation) : id === "fg" ? fgButton(item.situation) : CHOICE_LABELS[id]}
                     </button>
                   );
                 })}
@@ -171,7 +176,7 @@ export function QuizGame() {
                       className={`quiz-value${rec ? " is-rec" : ""}${isPicked ? " is-picked" : ""}${off ? " is-off" : ""}${close ? " is-close" : ""}`}
                     >
                       <span>{CHOICE_LABELS[id]}</span>
-                      {off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${pct(v)}`}</span>}
+                      {off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${rowPct[id] ?? pct(v)}`}</span>}
                     </li>
                   );
                 })}

@@ -4,6 +4,10 @@ import { CLOSE_MARGIN, availableChoices, fieldGoalYards, type QuizChoice, type Q
 export function fgTooFarButton(s: Pick<QuizSituation, "yardline_100">): string {
   return `Field goal · ${fieldGoalYards(s)}-yd kick, too far`;
 }
+/** QA 2220 L9: in-range field goal names its distance too. */
+export function fgButton(s: Pick<QuizSituation, "yardline_100">): string {
+  return `Field goal · ${fieldGoalYards(s)}-yd kick`;
+}
 export function fgTooFarReveal(s: Pick<QuizSituation, "yardline_100">): string {
   return `Too far (${fieldGoalYards(s)} yd)`;
 }
@@ -11,7 +15,16 @@ export function fgTooFarReveal(s: Pick<QuizSituation, "yardline_100">): string {
 export const ALL_CHOICES: QuizChoice[] = ["go", "fg", "punt"];
 
 const DOING: Record<QuizChoice, string> = { go: "going for it", fg: "kicking a field goal", punt: "punting" };
-const whole = (v: number) => `${Math.round(v * 100)}%`;
+/**
+ * QA 2220 L8: shared percent formatter. Whole percents, unless two of the values being compared round to
+ * the same whole number; then every value gets one decimal ("62.1% vs 61.7%").
+ */
+export function formatPercents(values: number[]): string[] {
+  const r = values.map((v) => Math.round(v * 100));
+  const clash = r.some((x, i) => r.indexOf(x) !== i);
+  return values.map((v) => (clash ? `${(v * 100).toFixed(1)}%` : `${Math.round(v * 100)}%`));
+}
+const pair = (vs: number[]) => formatPercents(vs);
 
 function list(parts: string[]): string {
   return parts.length <= 2 ? parts.join(" and ") : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
@@ -32,7 +45,8 @@ function closeNumbers(item: CloseItem): string | null {
   if (ranked.length < 2) return null;
   const gap = ranked[0].v - ranked[1].v;
   const close = ranked.filter((r, i) => i < 2 || ranked[0].v - r.v <= Math.max(gap, 0.01));
-  return close.length === 2 ? `${whole(close[0].v)} vs ${whole(close[1].v)}` : list(close.map((r) => whole(r.v)));
+  const f = pair(close.map((r) => r.v));
+  return close.length === 2 ? `${f[0]} vs ${f[1]}` : list(f);
 }
 
 const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
@@ -54,10 +68,13 @@ export function closeCallNote(item: CloseItem, picked: QuizChoice, result: "corr
   if (near.length < 2) return null;
   if (result === "correct") {
     const others = near.filter((r) => r.c !== picked);
-    return `${cap(list(others.map((r) => DOING[r.c])))} ${others.length > 1 ? "were" : "was"} about as good (${list(others.map((r) => whole(r.v)))}).`;
+    const f = pair(near.map((r) => r.v));
+    const fo = others.map((r) => f[near.indexOf(r)]);
+    return `${cap(list(others.map((r) => DOING[r.c])))} ${others.length > 1 ? "were" : "was"} about as good (${list(fo)}).`;
   }
   const mine = item.reveal.values[picked] as number;
-  return `${cap(DOING[near[0].c])} was a little better (${whole(near[0].v)} vs ${whole(mine)}), so this pick gets ½.`;
+  const [a, b] = pair([near[0].v, mine]);
+  return `${cap(DOING[near[0].c])} was a little better (${a} vs ${b}), so this pick gets ½.`;
 }
 
 export function closeCallWhy(item: CloseItem): string {
@@ -68,6 +85,7 @@ export function closeCallWhy(item: CloseItem): string {
   const gap = ranked[0].v - ranked[1].v;
   const close = ranked.filter((r, i) => i < 2 || ranked[0].v - r.v <= Math.max(gap, 0.01));
   const names = list(close.map((r) => DOING[r.c]));
-  const nums = close.length === 2 ? `${whole(close[0].v)} vs ${whole(close[1].v)}` : list(close.map((r) => whole(r.v)));
+  const f = pair(close.map((r) => r.v));
+  const nums = close.length === 2 ? `${f[0]} vs ${f[1]}` : list(f);
   return `${names[0].toUpperCase()}${names.slice(1)} give about the same win chance (${nums}).`;
 }
