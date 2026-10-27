@@ -1,45 +1,46 @@
 :root {
   /* Mainly black & white; blue is a sparse accent only */
-  --color-bg: #f2f2f3;
-  --color-bg-elevated: #ffffff;
-  --color-bg-sunken: #e8e8ea;
-  --color-bg-atmosphere-top: #e6e6e8;
-  --color-bg-atmosphere-bottom: #f2f2f3;
-  --color-ink: #0a0a0b;
-  --color-ink-secondary: #3a3a3f;
-  --color-ink-muted: #6b6b73;
-  --color-ink-inverse: #ffffff;
-  --color-border: #d0d0d4;
-  --color-border-strong: #8a8a92;
-  --color-divider: #e2e2e6;
-  --color-focus-ring: #2563eb;
-  --color-accent: #0a0a0b;
-  --color-accent-hover: #222226;
-  --color-accent-soft: #ececee;
-  --color-accent-ink: #0a0a0b;
-  --color-blue: #2563eb;
-  --color-danger: #0a0a0b;
-  --color-danger-soft: #ececee;
-  --color-warning: #3a3a3f;
-  --color-warning-soft: #f0f0f2;
-  --color-truth-historical: #0a0a0b;
-  --color-truth-historical-soft: #ececee;
-  --color-truth-predicted: #0a0a0b;
-  --color-truth-predicted-soft: #ececee;
-  --color-truth-simulated: #3a3a3f;
-  --color-truth-simulated-soft: #f0f0f2;
-  --color-interactive-surface: #ffffff;
-  --color-interactive-hover: #f5f5f6;
-  --font-display: var(--font-syne), sans-serif;
-  --font-body: var(--font-source-sans), sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), monospace;
+  --color-bg: #0a0a0a;
+  --color-bg-elevated: #151517;
+  --color-bg-sunken: #1c1c1f;
+  --color-bg-atmosphere-top: #0a0a0a;
+  --color-bg-atmosphere-bottom: #0a0a0a;
+  --color-ink: #ffffff;
+  --color-ink-secondary: #d4d4d8;
+  --color-ink-muted: #a1a1aa;
+  --color-ink-inverse: #0a0a0a;
+  --color-border: #3f3f46;
+  --color-border-strong: #71717a;
+  --color-divider: #27272a;
+  --color-focus-ring: #4c8dff;
+  --color-accent: #ffffff;
+  --color-accent-hover: #e4e4e7;
+  --color-accent-soft: #1f1f23;
+  --color-accent-ink: #ffffff;
+  --color-blue: #4c8dff;
+  --color-blue-fill: #1b5fd1;
+  --color-danger: #e4e4e7;
+  --color-danger-soft: #1f1f23;
+  --color-warning: #e4e4e7;
+  --color-warning-soft: #1f1f23;
+  --color-truth-historical: #e4e4e7;
+  --color-truth-historical-soft: #1f1f23;
+  --color-truth-predicted: #e4e4e7;
+  --color-truth-predicted-soft: #1f1f23;
+  --color-truth-simulated: #e4e4e7;
+  --color-truth-simulated-soft: #1f1f23;
+  --color-interactive-surface: #151517;
+  --color-interactive-hover: #1f1f23;
+  --font-display: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --text-display: clamp(2.5rem, 5vw + 1rem, 3.75rem);
   --text-h1: 1.75rem;
   --text-h2: 1.35rem;
   --text-h3: 1.15rem;
-  --text-body: 1.0625rem;
+  --text-body: 1rem;
   --text-body-sm: 0.9375rem;
-  --text-caption: 0.75rem;
+  --text-caption: 0.8125rem;
   --app-max: 56rem;
   --nav-height: 3.75rem;
   --radius-sm: 2px;
@@ -149,7 +150,7 @@ button {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.25rem;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(10, 10, 12, 0.94);
   border-top: 1px solid var(--color-divider);
   backdrop-filter: blur(12px);
   z-index: 40;
@@ -654,6 +655,14 @@ button {
   font-size: 1.02rem;
   line-height: 1.4;
 }
+/* #106 penalty sentence after the play: own line, same size, secondary ink (11:1 on --color-bg) */
+.play-penalty {
+  display: block;
+  margin-top: 2px;
+  font-size: inherit;
+  line-height: 1.4;
+  color: var(--color-ink-secondary);
+}
 
 .win-chance {
   margin-top: 0.25rem;
@@ -973,12 +982,6 @@ button {
   border-top: 1px solid var(--color-divider);
   color: var(--color-ink) !important;
   font-weight: 500;
-}
-
-@media (min-width: 720px) {
-  body {
-    background: linear-gradient(180deg, #ebebec 0%, var(--color-bg) 50%);
-  }
 }
 
 /* —— Fourth-down quiz (night CGI + bubble card) —— */
@@ -1413,6 +1416,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 3.25rem; /* QA P3-J: rows line up with or without a tag */
   padding: 0.55rem 0.8rem;
   border-radius: 999px;
   background: #1f1f23;
@@ -1501,6 +1505,89 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-item { border-left: 3px solid var(--color-blue); padding: 0.5rem 0.75rem; background: var(--color-bg-elevated); }
 .swing-why { font-size: var(--text-body-sm); color: var(--color-ink-secondary); margin: 0.25rem 0 0; }
 
+
+/* ================= Fourth & Daily design system (C3) ==========
+   Black / white / greys, one blue for "the right call". No page-enter motion;
+   150 ms only on reveals. Tabular numerals, body 16 px, labels >= 13 px. */
+body { font-variant-numeric: tabular-nums; }
+.fd-top { display: flex; justify-content: space-between; align-items: center; padding: calc(0.75rem + var(--safe-top)) var(--page-pad-x) 0.25rem; max-width: 40rem; margin: 0 auto; width: 100%; }
+.fd-brand { font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
+.fd-top-links { display: flex; gap: 0.25rem; }
+.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.6rem; min-height: 44px; font-size: 0.9375rem; }
+.fd-top-links a:hover { color: var(--color-ink); }
+.fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
+.fd-head h1 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+.fd-date { margin: 0; color: var(--color-ink-secondary); font-size: 0.875rem; }
+.fd-sub, .fd-muted { color: var(--color-ink-secondary); margin: 0.25rem 0 0; }
+.fd-card, .fd-panel { background: #121214; border: 1px solid #2a2a2e; border-radius: 12px; padding: 1rem; display: grid; gap: 0.75rem; }
+.fd-panel h2 { font-size: 1.125rem; margin: 0; }
+.fd-panel p { margin: 0; }
+.fd-panel a, .fd-prose a { color: var(--color-blue); }
+.fd-card-top { display: flex; justify-content: space-between; }
+.fd-count { font-size: 0.875rem; color: var(--color-ink-secondary); font-weight: 600; }
+.fd-scoreboard { margin: 0; font-weight: 800; font-size: 1.125rem; letter-spacing: -0.01em; font-stretch: condensed; }
+.fd-game { margin: 0; color: var(--color-ink-secondary); font-size: 0.875rem; }
+.fd-field { width: 100%; height: auto; display: block; }
+.fd-field-turf { fill: #1c1c1f; }
+.fd-field-ez { fill: #2a2a2e; }
+.fd-field-line { stroke: #3f3f46; stroke-width: 1; }
+.fd-field-first { stroke: var(--color-blue); stroke-width: 2; }
+.fd-field-ball { fill: #ffffff; }
+.fd-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: 0.5rem; }
+.fd-choice { min-height: 56px; border-radius: 10px; border: 1px solid #52525b; background: #ffffff; color: #0a0a0a; font: inherit; font-weight: 800; font-size: 1.125rem; display: grid; place-items: center; gap: 0.1rem; cursor: pointer; padding: 0.5rem; }
+.fd-choice small { font-weight: 500; font-size: 0.8125rem; color: #3f3f46; }
+.fd-choice:hover:not(:disabled) { background: #e4e4e7; }
+.fd-choice:disabled { background: #1c1c1f; color: #a1a1aa; border-color: #3f3f46; cursor: not-allowed; }
+.fd-choice:disabled small { color: #a1a1aa; }
+.fd-choice:focus-visible, .fd-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
+.fd-reveal { display: grid; gap: 0.75rem; animation: fd-reveal 150ms ease-out; }
+@keyframes fd-reveal { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .fd-reveal { animation: none; } }
+.fd-result { margin: 0; font-weight: 800; font-size: 1.25rem; }
+.fd-result.is-right { color: var(--color-blue); }
+.fd-close-note { margin: 0.25rem 0 0; font-size: 0.95rem; color: var(--color-ink-muted, #4a5160); }
+.fd-result.is-close { color: #ffffff; }
+.fd-result.is-wrong { color: #d4d4d8; }
+.fd-line { margin: 0; font-weight: 600; }
+.fd-why { margin: 0; color: var(--color-ink-secondary); }
+.fd-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.fd-bar { display: grid; grid-template-columns: 3.5rem 1fr 4.75rem; align-items: center; gap: 0.5rem; font-size: 0.9375rem; }
+.fd-bar-track { height: 12px; background: #27272a; border-radius: 6px; overflow: hidden; }
+.fd-bar-fill { display: block; height: 100%; background: #71717a; }
+.fd-bar.is-best .fd-bar-fill { background: var(--color-blue-fill); }
+.fd-bar.is-pick .fd-bar-name { font-weight: 800; text-decoration: underline; }
+.fd-tag { display: block; font-size: 0.75rem; font-weight: 600; color: #d4d4d8; margin: 0; text-decoration: none; }
+.quiz-value-name, .fd-bar-label { display: flex; flex-direction: column; gap: 2px; }
+.quiz-tag { font-size: 0.75rem; color: #d4d4d8; margin: 0; }
+/* #98 / 2236: a Correct pick is solid white; on a Close call the better option is solid and the pick dashed. No red. */
+.fd-bar { border-radius: 8px; padding: 2px 4px; min-height: 3.25rem; align-items: center; grid-template-columns: 6.5rem 1fr 4.75rem; }
+.quiz-value { min-height: 3.25rem; align-items: center; }
+.fd-bar.is-rec { outline: 1.5px solid #f0f0f4; }
+.fd-bar.res-close.is-close { outline: 1.5px solid #f0f0f4; }
+.fd-bar.res-right.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+.fd-bar.is-pick:not(.is-rec) { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+.fd-bar-num { text-align: right; }
+.fd-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.fd-btn { min-height: 48px; padding: 0 1.25rem; border-radius: 10px; font: inherit; font-weight: 700; cursor: pointer; border: 1px solid #52525b; background: transparent; color: #fff; }
+.fd-btn-primary { background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
+.fd-end-score { font-size: 3rem; font-weight: 800; margin: 0; letter-spacing: -0.03em; }
+.fd-end-squares { display: flex; gap: 0.35rem; margin: 0; }
+.fd-sq { width: 28px; height: 28px; border-radius: 6px; background: #3f3f46; }
+.fd-sq.is-right { background: var(--color-blue-fill); }
+.fd-sq.is-close { background: linear-gradient(135deg, var(--color-blue-fill) 50%, #3f3f46 50%); }
+.fd-end p { margin: 0; }
+.fd-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: 0.5rem; margin: 0; }
+.fd-stats div { background: #1c1c1f; border-radius: 8px; padding: 0.6rem; }
+.fd-stats dt { font-size: 0.8125rem; color: var(--color-ink-secondary); }
+.fd-stats dd { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.fd-dist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; }
+.fd-dist li { display: grid; grid-template-columns: 1.5rem 1fr; align-items: center; gap: 0.5rem; }
+.fd-dist-bar { background: #3f3f46; color: #fff; font-size: 0.8125rem; padding: 0.1rem 0.4rem; border-radius: 4px; text-align: right; min-width: 1.5rem; }
+.fd-copied { white-space: pre-wrap; }
+.fd-prose { line-height: 1.6; }
+.fd-prose h1 { font-size: 1.75rem; margin: 0; }
+.fd-prose h2 { font-size: 1.2rem; margin: 0.5rem 0 0; }
+.fd-prose p, .fd-prose ul { margin: 0; }
 /* Branded 404 (QA2 L4): black, white type, one blue accent. */
 .not-found {
   --nf-accent: #1f6feb;
@@ -1566,9 +1653,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-sit { font-size: 13px; color: var(--color-ink-secondary); font-variant-numeric: tabular-nums; }
 .swing-headline { font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .swing-raw { font-size: 13px; line-height: 1.45; color: var(--color-ink-secondary); }
-.swing-raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+
 .play-feed { list-style: none; padding: 0; }
-.play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); padding-left: 0.75rem; }
+.play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); }
 .play-feed-soon { font-size: 14px; line-height: 1.5; color: var(--color-ink-secondary); padding: 16px 0; border-top: 1px solid var(--color-divider); margin: 0; }
 /* Recheck 2145: intro leads, source line and disclaimer stay quiet. */
 .games-intro { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
@@ -1581,3 +1668,53 @@ body:has(.quiz-page) .app-nav-item.is-current {
   .wp-ot-label { font-size: 18px; }
   .wp-swing-num { font-size: 12px; }
 }
+
+/* UI Critic 2240: Game Story play list + swing cards. */
+.play-card { padding-left: 12px; scroll-margin-top: 56px; }
+.play-meta { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.play-desc .swing-badge { margin-right: 8px; vertical-align: 0.1em; }
+@media (min-width: 640px) {
+  .play-card { display: grid; grid-template-columns: 11.5rem 1fr; column-gap: 16px; align-items: baseline; }
+}
+.play-quarter-head {
+  position: sticky; top: 0; z-index: 2; margin: 0; padding: 8px 0 8px 12px;
+  font-size: 13px; font-weight: 700; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--color-bg); border-bottom: 1px solid var(--color-divider);
+}
+.play-quarter .play-feed { margin-top: 0; border-top: 0; }
+.swing-headline { margin-bottom: 4px; }
+.swing-link { color: inherit; text-decoration: underline; text-decoration-color: var(--color-divider); text-underline-offset: 3px; }
+.swing-link:hover, .swing-link:focus-visible { text-decoration-color: var(--color-blue); }
+.swing-raw { margin: 0; }
+.swing-raw summary {
+  min-height: 44px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--color-blue); list-style: none;
+}
+.swing-raw summary::-webkit-details-marker { display: none; }
+.swing-raw summary::after {
+  content: ""; width: 6px; height: 6px; margin-top: -3px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform 0.15s ease;
+}
+.swing-raw[open] summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.wp-opening { font-size: 15px; line-height: 1.5; }
+.wp-dots-narrow { display: none; }
+@media (max-width: 640px) {
+  .wp-dots-wide { display: none; }
+  .wp-dots-narrow { display: inline; }
+  .wp-swing-num { font-size: 16px; }
+}
+
+/* Live play file states (PlayFeed). */
+.play-feed-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--color-ink-secondary); margin: 0 0 8px; }
+.play-feed-retry { min-height: 48px; }
+.error-band .play-feed-retry { margin-left: 12px; }
+.play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
+/* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
+@media (max-width: 640px) { .wp-axis-team { display: none; } }
+.ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
+
+/* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
+.fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+.fd-bar-num { white-space: nowrap; min-width: 5.75rem; text-align: right; font-variant-numeric: tabular-nums; }
+.fd-bar-track { flex: 1 1 auto; min-width: 0; }

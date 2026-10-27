@@ -41,8 +41,12 @@ export interface SwingPlay {
   yards_gained: number | null;
   /** Interception or fumble returned for a TD by the defense. */
   return_td: boolean;
+  /** Punt or kickoff returned for a TD (nflverse return_touchdown). Never true together with return_td. */
+  kick_return_td: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
+  /** Penalty sentence(s) after the play; null on "No play" rows (the flag is display_text) and flag-free plays. */
+  penalty_text: string | null;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
   raw_desc: string;
   home_wp_pre?: number;
@@ -83,12 +87,15 @@ function fanFields(r: SwingPlay) {
     event: r.event,
     fourth_down_failed: r.fourth_down_failed,
     display_text: r.display_text,
+    penalty_text: r.penalty_text ?? null,
     raw_desc: r.raw_desc,
     down: r.down,
     distance: r.distance,
     yardline_100: r.yardline_100,
     home_score_before: r.home_score_before,
     away_score_before: r.away_score_before,
+    yards_gained: r.yards_gained,
+    return_td: r.return_td,
   };
 }
 

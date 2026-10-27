@@ -1,6 +1,6 @@
 # NFL Analytics Simulator
 
-**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ · **Daily quiz:** [/daily/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/daily/) · **Games:** [/games/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/games/) · **Check a 4th down:** [/fourth-down/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/fourth-down/)
+**Live site:** https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/ · **Fourth & Daily:** [/daily/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/daily/) · **Games:** [/games/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/games/) · **Check a 4th down:** [/fourth-down/](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/fourth-down/)
 
 NFL-only analytics built on nflverse play-by-play: reconstruct real games, estimate expected points (EP/EPA) and win chance (WP), and explain fourth-down calls in plain English. There are no betting or odds features.
 

@@ -12,6 +12,12 @@ export const GAME_PLAY_LISTS: Record<string, GamePlayList> = Object.fromEntries(
   ([BUF_NYJ, DET_KC, PHI_TB] as unknown as GamePlayList[]).map((g) => [g.game_id, g]),
 );
 
+/** Penalty sentence(s) for a plays-file row (#106), or null. */
+export function playPenaltyText(gameId: string, playId: number | string): string | null {
+  const row = GAME_PLAY_LISTS[gameId]?.plays.find((p) => String(p.play_id) === String(playId));
+  return row?.penalty_text?.trim() || null;
+}
+
 /** display_text, else raw_desc; null when both fields are absent (then the page says "coming soon"). */
 export function playText(p: Pick<SwingPlay, "display_text" | "raw_desc">): string | null {
   return p.display_text?.trim() || p.raw_desc?.trim() || null;
