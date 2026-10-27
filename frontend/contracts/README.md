@@ -66,3 +66,8 @@ roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 
 
 Swing filter: regulation (qtr 1–4) `run` / `pass` / `field_goal` / `punt` only; kneels, spikes, no-plays, kickoffs,
 timeouts and other non-play rows never swing. WP is nflverse's `home_wp` / `home_wp_post`, not our model.
+
+Team colors: `frontend/lib/teamColors.json` = `{ _source, teams: { [team_abbr]: { primary, secondary } } }`, the 32
+current nflverse abbreviations the repo uses (Rams = `LA`; `LAR`/`OAK`/`SD`/`STL` alias rows dropped), uppercase
+`#RRGGBB` from nflverse `teams_colors_logos` `team_color` / `team_color2`. Colors only, no logos. Regenerate with
+`python backend/scripts/build_team_colors.py`; checked by `frontend/lib/teamColors.test.ts`.
