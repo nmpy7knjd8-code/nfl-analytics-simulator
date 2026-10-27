@@ -1,13 +1,13 @@
 {
   "C": 0.25,
   "data_hash": {
-    "combined_sha256": "5df24dd0ec2ff7f8ae214549b4cc7a0e758a8e989be50c8f9e8993d100a6507b",
+    "combined_sha256": "69a1294d9649b26099fde409d94f93ea183ee40ff45ba2634760bff5146a4738",
     "season_sha256": {
-      "2019": "d14de5d1beebf2235040dec8f50f5cba0e4921bcf2b1a82e69c182abef16d56b",
-      "2020": "324cef331f3c6b91726450ef2c55f1ec8a619f23a8c4c329191ec15cdfc43b76",
-      "2021": "e4dd2e160522ed3534f58e788c03365ad436268605950e864663c6a5161718c8",
-      "2022": "e7c1b53b14afd073c209e0a90f8593058fb77c38583c4bc9593885fa67d133c7",
-      "2023": "b8417df9501f7f966eaccfffe463425fc06153f7bd58e075f5fa8f900e67460d"
+      "2019": "a333ea2eb682727e38a0cf4cd3227ea87cde8968aa514787a9a8d3b5c1d61a89",
+      "2020": "a478532555ad09a1bfd146e8f2ff7487e809246a731f4560cb2b848fe917b76f",
+      "2021": "a5fc2665520582073b65dcc44058db6dc36f2b532bf8ca558e98eead87271d3a",
+      "2022": "96a5c375da47e7bb19be8d81d4bcc1074570651480bbdf7fb5f7dd7cfb4a395b",
+      "2023": "e258815943b9dbe7d561444681da87df8958a51444c1ba4b9336419540d51508"
     }
   },
   "ep_model_loaded": null,
@@ -21,7 +21,8 @@
     "num__posteam_timeouts",
     "num__defteam_timeouts",
     "num__is_home_possession",
-    "num__receive_2h_ko"
+    "num__receive_2h_ko",
+    "num__score_time_ratio"
   ],
   "features": [
     "score_differential",
@@ -38,7 +39,7 @@
   "packages": {
     "joblib": "1.6.0",
     "numpy": "2.5.4",
-    "pandas": "3.0.6",
+    "pandas": "3.1.0",
     "scikit-learn": "1.9.1"
   },
   "path": "A_no_ep_feature",
@@ -51,8 +52,8 @@
     2021
   ],
   "val_log_loss_by_C": {
-    "0.25": 0.5749267926938539,
-    "1.0": 0.5749656065405567,
-    "4.0": 0.5749753317880381
+    "0.25": 0.5698440853868576,
+    "1.0": 0.5700162926222299,
+    "4.0": 0.5700612047943501
   }
 }

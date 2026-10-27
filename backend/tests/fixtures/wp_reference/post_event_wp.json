@@ -1,0 +1,108 @@
+{
+ "source": "nflverse play_by_play wp",
+ "seasons": [
+  2022,
+  2023
+ ],
+ "rows": [
+  {
+   "event": "Touchdown",
+   "qtr": 1,
+   "receiving_score_differential": -7,
+   "n": 229,
+   "game_seconds_remaining": 3185,
+   "half_seconds_remaining": 1385,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.437,
+   "scoring_team_wp_nflverse": 0.6809
+  },
+  {
+   "event": "Touchdown",
+   "qtr": 2,
+   "receiving_score_differential": -7,
+   "n": 60,
+   "game_seconds_remaining": 2429,
+   "half_seconds_remaining": 629,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.283,
+   "scoring_team_wp_nflverse": 0.7063
+  },
+  {
+   "event": "Touchdown",
+   "qtr": 3,
+   "receiving_score_differential": -7,
+   "n": 31,
+   "game_seconds_remaining": 1328,
+   "half_seconds_remaining": 1328,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.484,
+   "scoring_team_wp_nflverse": 0.7483
+  },
+  {
+   "event": "Field goal",
+   "qtr": 1,
+   "receiving_score_differential": -3,
+   "n": 194,
+   "game_seconds_remaining": 3198,
+   "half_seconds_remaining": 1398,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.531,
+   "scoring_team_wp_nflverse": 0.5639
+  },
+  {
+   "event": "Field goal",
+   "qtr": 2,
+   "receiving_score_differential": -3,
+   "n": 41,
+   "game_seconds_remaining": 2392,
+   "half_seconds_remaining": 592,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.585,
+   "scoring_team_wp_nflverse": 0.5716
+  },
+  {
+   "event": "Field goal",
+   "qtr": 3,
+   "receiving_score_differential": -3,
+   "n": 42,
+   "game_seconds_remaining": 1365,
+   "half_seconds_remaining": 1365,
+   "receiving_yardline_100": 75,
+   "receiving_is_home_share": 0.643,
+   "scoring_team_wp_nflverse": 0.5918
+  },
+  {
+   "event": "Punt",
+   "qtr": 1,
+   "receiving_score_differential": 0,
+   "n": 621,
+   "game_seconds_remaining": 3346,
+   "half_seconds_remaining": 1546,
+   "receiving_yardline_100": 79,
+   "receiving_is_home_share": 0.52,
+   "scoring_team_wp_nflverse": 0.4655
+  },
+  {
+   "event": "Punt",
+   "qtr": 2,
+   "receiving_score_differential": 0,
+   "n": 134,
+   "game_seconds_remaining": 2495,
+   "half_seconds_remaining": 695,
+   "receiving_yardline_100": 78,
+   "receiving_is_home_share": 0.463,
+   "scoring_team_wp_nflverse": 0.4846
+  },
+  {
+   "event": "Punt",
+   "qtr": 3,
+   "receiving_score_differential": 0,
+   "n": 110,
+   "game_seconds_remaining": 1360,
+   "half_seconds_remaining": 1360,
+   "receiving_yardline_100": 80,
+   "receiving_is_home_share": 0.509,
+   "scoring_team_wp_nflverse": 0.4838
+  }
+ ]
+}

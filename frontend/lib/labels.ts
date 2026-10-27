@@ -1,2 +1,2 @@
-/** One shared label for a call too close to separate (QA2 M8); worth half credit in the quiz. */
-export const CLOSE_LABEL = "Close call — half credit";
+/** One shared label for a call too close to separate (QA2 M8, recheck P2-E). The quiz scoring line says it is worth ½. */
+export const CLOSE_LABEL = "Close call";
