@@ -81,3 +81,6 @@ html:has(.sg-app),body:has(.sg-app){background:#000}
 .sg-rv .sg-field svg{position:absolute;inset:0;height:100%;max-height:none}
 /* The card is narrower than the 358px bug at ≤400px: drop bug logos so scores never collide. */
 @media (max-width:400px){.sg-tm img{display:none}}
+/* Result pill: HTML overlay inside the field so it can never be clipped (P1, 10-27). */
+.sg-field{position:relative}
+.sg-pill{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);max-width:calc(100% - 16px);box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--sg-b,#1E5BFF);color:#fff;font-weight:700;font-size:14px;line-height:20px;padding:2px 12px;border-radius:999px;pointer-events:none}
