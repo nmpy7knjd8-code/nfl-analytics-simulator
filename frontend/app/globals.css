@@ -1563,4 +1563,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .swing-raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; }
 .play-feed { list-style: none; padding: 0; }
 .play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); padding-left: 0.75rem; }
-.play-feed-soon { font-size: 14px; }
+.play-feed-soon { font-size: 14px; line-height: 1.5; color: var(--color-ink-secondary); padding: 16px 0; border-top: 1px solid var(--color-divider); margin: 0; }
+/* Recheck 2145: intro leads, source line and disclaimer stay quiet. */
+.games-intro { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
+.wp-source { font-size: 13px; line-height: 1.45; color: var(--color-ink-muted); margin: 4px 0 20px; }
+.wp-chart .wp-source, figure + .wp-source { font-size: 12px; margin-top: 6px; }
+.disclaimer { font-size: 12px; color: var(--color-ink-muted); }

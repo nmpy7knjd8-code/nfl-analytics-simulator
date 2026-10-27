@@ -14,7 +14,7 @@ function fanText(p: EventPoint): string {
 
 const W = 640;
 const H = 220;
-const PAD = { l: 40, r: 12, t: 12, b: 26 };
+const PAD = { l: 64, r: 12, t: 12, b: 26 };
 
 export function WinProbabilityChart({
   series,
@@ -96,9 +96,10 @@ export function WinProbabilityChart({
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Each point is the chance at the snap. Numbered blue dots are the biggest swing plays.
-        {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""} {note}
+        {series.away_team_id}). Numbered blue dots are the biggest swing plays.
+        {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""}
       </figcaption>
+      <p className="wp-source">{note}</p>
     </figure>
   );
 }
@@ -116,8 +117,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
         <li key={s.point.play_id} className="swing-item">
           <div className="play-meta">
             <span className="swing-badge" aria-hidden="true">{i + 1}</span>
-            {clockLabel(s.point)} · {s.favored_team_id} +
-            {Math.round(Math.abs(s.delta) * 100)}%
+            {clockLabel(s.point)} · {s.favored_team_id} gains {Math.round(Math.abs(s.delta) * 100)} pts
           </div>
           {sit ? <div className="swing-sit">{sit}</div> : null}
           <p className="play-desc swing-headline">{text}</p>
