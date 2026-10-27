@@ -13,7 +13,8 @@ export function slim(pack) {
     items: pack.items.map((it) => ({
       id: it.id,
       kind: it.kind,
-      source: { season: it.source.season, week: it.source.week, game_date: it.source.game_date, game_id: it.source.game_id },
+      source: { season: it.source.season, week: it.source.week, game_date: it.source.game_date, game_id: it.source.game_id,
+        ...(Number.isFinite(it.source.play_id) ? { play_id: it.source.play_id } : {}) },
       situation: Object.fromEntries(S.map((k) => [k, it.situation[k] ?? null])),
       historical_action: it.historical_action,
       // 4 decimals (0.01 win-chance points) is far finer than anything shown or scored.
