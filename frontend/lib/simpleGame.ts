@@ -8,7 +8,7 @@ import { formatPercents, optionStates, rankedValues, CLOSE_CALL_GAP, type DailyI
 import type { GameFileV2 } from "./gameFileV2";
 
 export const CHOICE_LABEL: Record<QuizChoice, string> = { go: "Go for it", fg: "Field goal", punt: "Punt" };
-const BEST_PHRASE: Record<QuizChoice, string> = { go: "going for it", fg: "the field goal", punt: "punting" };
+const BEST_PHRASE: Record<QuizChoice, string> = { go: "going for it", fg: "kicking the field goal", punt: "punting" };
 const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
 
 /** Options a fan can tap: Kick is gone (not just disabled) past 64 yd, Punt hidden inside the 35. */
@@ -58,12 +58,17 @@ export function optionTags(item: DailyItem, scored: ScoredCall): OptionTag[] {
   });
 }
 
+/** "a", "a and b", "a, b and c". */
+export function joinNames(names: string[]): string {
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] ?? "";
+}
+
 /** Plain best-call sentence, no numbers. */
 export function bestCallText(tags: OptionTag[]): string {
   const best = tags.filter((t) => t.tag === "Best").map((t) => BEST_PHRASE[t.id]);
   const close = tags.filter((t) => t.tag === "Close call · ½ point").map((t) => BEST_PHRASE[t.id]);
   if (best.length > 1) return `${cap(best.slice(0, -1).join(", "))} and ${best[best.length - 1]} were equally good. ${best.length > 2 ? "All three" : "Both"} count.`;
-  if (close.length) return `${cap(best[0])} was the best call, and ${close.join(" and ")} was close behind.`;
+  if (close.length) return `${cap(best[0])} was the best call, and ${joinNames(close)} ${close.length > 1 ? "were" : "was"} close behind.`;
   return `${cap(best[0])} was the best call.`;
 }
 
