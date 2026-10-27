@@ -1618,3 +1618,6 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .play-feed-retry { min-height: 48px; }
 .error-band .play-feed-retry { margin-left: 12px; }
 .play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
+/* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
+@media (max-width: 640px) { .wp-axis-team { display: none; } }
+.ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
