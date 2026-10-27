@@ -7,7 +7,8 @@ on the site (daily quiz, 4th-down page, Game Story / games).
   1. Words: no "EPA", "WPA" or "xpass" on fan screens.
   2. No betting: no odds formats, lines or stakes language.
   3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
-  4. No team logos in the built site.
+  4. No team logos in the built site, except the self-hosted team logos/wordmarks listed in
+     teams/manifest.json (teams/<ABBR>/logo.png, wordmark.png) and <img> tags pointing at /teams/.
   5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios;
      kick distance = yardline_100 + 18, as in the engine since #64).
 Prints every failure, exits 1 if any.
@@ -61,6 +62,31 @@ def scan(text: str, where: str) -> None:
             fails.append(f"{what}: {where} shows {m.group(0)!r} in \"…{fail_ctx}…\"")
 
 
+# Logo ban exception (approved by Garrett, 2026-10-27, PR #125): the self-hosted team logos and
+# wordmarks under teams/<ABBR>/ that are listed in teams/manifest.json may ship, and <img> tags may
+# point at /teams/. Every other logo file or logo <img> in the built site still fails.
+TEAM_FILE = re.compile(r"^teams/[A-Z]{2,3}/(logo|wordmark)\.png$")
+LOGO_IMG = re.compile(r"<img[^>]+(logo|teamlogo)[^>]*>", re.I)
+TEAMS_IMG_SRC = re.compile(r"""\ssrc=["'](?:[^"']*/)?teams/[A-Z]{2,3}/(logo|wordmark)\.png["']""")
+
+
+def manifest_files(site: str) -> set[str]:
+    p = os.path.join(site, "teams", "manifest.json")
+    if not os.path.exists(p):
+        return set()
+    teams = json.load(open(p)).get("teams", {})
+    return {e[k]["path"].lstrip("/") for e in teams.values() for k in ("logo", "wordmark") if k in e}
+
+
+def logo_file_allowed(rel: str, allowed: set[str]) -> bool:
+    rel = rel.replace(os.sep, "/")
+    return bool(TEAM_FILE.match(rel)) and rel in allowed
+
+
+def bad_logo_imgs(page: str) -> list[str]:
+    return [m.group(0) for m in LOGO_IMG.finditer(page) if not TEAMS_IMG_SRC.search(m.group(0))]
+
+
 def main() -> int:
     data = json.load(open(sys.argv[1]))
     site = sys.argv[2]
@@ -79,15 +105,16 @@ def main() -> int:
             scan(p["description"], f"play {p['game_id']}#{p.get('play_index')}")
 
     # Built pages (visible text only; redirect stubs skipped).
+    allowed = manifest_files(site)
     for root, _, files in os.walk(site):
         for f in files:
             path, rel = os.path.join(root, f), os.path.relpath(os.path.join(root, f), site)
-            if re.search(r"logo", f, re.I):
+            if re.search(r"logo", f, re.I) and not logo_file_allowed(rel, allowed):
                 fails.append(f"logo: built site ships {rel}")
             if not f.endswith(".html"):
                 continue
             page = open(path, encoding="utf-8", errors="replace").read()
-            if re.search(r"<img[^>]+(logo|teamlogo)", page, re.I):
+            if bad_logo_imgs(page):
                 fails.append(f"logo: /{rel} renders a logo image")
             if 'http-equiv="refresh"' not in page:
                 scan(visible_text(page), f"page /{rel}")

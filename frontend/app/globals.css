@@ -655,6 +655,14 @@ button {
   font-size: 1.02rem;
   line-height: 1.4;
 }
+/* #106 penalty sentence after the play: own line, same size, secondary ink (11:1 on --color-bg) */
+.play-penalty {
+  display: block;
+  margin-top: 2px;
+  font-size: inherit;
+  line-height: 1.4;
+  color: var(--color-ink-secondary);
+}
 
 .win-chance {
   margin-top: 0.25rem;
