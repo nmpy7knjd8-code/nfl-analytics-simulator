@@ -76,6 +76,15 @@ CLOSE_CALL_WP = 0.02
 MAX_CLOSE_CALL_SHARE = 0.15  # "too close to call" is a fine answer, but not a third of the pack
 
 
+# A game already decided (every option under 2% or over 98% win chance) makes a poor
+# question and produces 0.1% "ties" (QA 2026-10-26 23:15, M13). Skip those plays.
+DECIDED_WP = 0.02
+
+
+def is_decided(values: dict) -> bool:
+    return all(v < DECIDED_WP or v > 1.0 - DECIDED_WP for v in values.values())
+
+
 def label(r) -> str:
     return f"{r.away_team} @ {r.home_team} — 4th & {int(r.ydstogo)}"
 
@@ -148,6 +157,8 @@ def main() -> int:
             if got >= quota:
                 break
             item = bake(analyzer, sub.loc[r.Index], r)
+            if is_decided(item["reveal"]["values"]):
+                continue
             if item["reveal"]["inconclusive"]:
                 if close >= close_quota:
                     continue

@@ -86,3 +86,10 @@ def test_close_call_is_under_two_points_of_win_chance():
 def test_assumptions_use_nflverse_kick_distance():
     for item in ITEMS:
         assert not any("+ 17" in a for a in item["reveal"].get("assumptions", [])), item["id"]
+
+
+def test_no_item_from_a_game_already_decided():
+    """Every option under 2% or over 98% = decided game; those items must not come back."""
+    decided = [i["id"] for i in ITEMS
+               if all(v < 0.02 or v > 0.98 for v in i["reveal"]["values"].values())]
+    assert not decided, decided

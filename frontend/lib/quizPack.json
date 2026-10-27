@@ -637,112 +637,6 @@
       }
     },
     {
-      "id": "2023_16_JAX_TB-2462",
-      "label": "JAX @ TB \u2014 4th & 13",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_16_JAX_TB",
-        "play_id": 2462,
-        "note": "",
-        "week": 16,
-        "game_date": "2023-12-24"
-      },
-      "situation": {
-        "posteam": "JAX",
-        "defteam": "TB",
-        "home_team": "TB",
-        "away_team": "JAX",
-        "posteam_score": 0,
-        "defteam_score": 27,
-        "score_differential": -27,
-        "qtr": 3,
-        "game_seconds_remaining": 1466,
-        "half_seconds_remaining": 1466,
-        "yardline_100": 40,
-        "down": 4,
-        "distance": 13,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 566
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.00011576196877899,
-        "values": {
-          "go": 0.0070181873311318185,
-          "punt": 0.006473607280961163,
-          "fg": 0.0071339492999108085
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_01_KC_ARI-3161",
-      "label": "KC @ ARI \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_01_KC_ARI",
-        "play_id": 3161,
-        "note": "",
-        "week": 1,
-        "game_date": "2022-09-11"
-      },
-      "situation": {
-        "posteam": "ARI",
-        "defteam": "KC",
-        "home_team": "ARI",
-        "away_team": "KC",
-        "posteam_score": 7,
-        "defteam_score": 37,
-        "score_differential": -30,
-        "qtr": 4,
-        "game_seconds_remaining": 860,
-        "half_seconds_remaining": 860,
-        "yardline_100": 24,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 860
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 4.641917990726315e-05,
-        "values": {
-          "go": 0.0014139016204867925,
-          "punt": 0.0008304512186538549,
-          "fg": 0.0013674824405795294
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_17_DET_DAL-2314",
       "label": "DET @ DAL \u2014 4th & 2",
       "kind": "historical",
@@ -2267,59 +2161,6 @@
       }
     },
     {
-      "id": "2022_02_IND_JAX-3445",
-      "label": "IND @ JAX \u2014 4th & 5",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_02_IND_JAX",
-        "play_id": 3445,
-        "note": "",
-        "week": 2,
-        "game_date": "2022-09-18"
-      },
-      "situation": {
-        "posteam": "JAX",
-        "defteam": "IND",
-        "home_team": "JAX",
-        "away_team": "IND",
-        "posteam_score": 24,
-        "defteam_score": 0,
-        "score_differential": 24,
-        "qtr": 4,
-        "game_seconds_remaining": 29,
-        "half_seconds_remaining": 29,
-        "yardline_100": 29,
-        "down": 4,
-        "distance": 5,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 29
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 1.0819919935567412e-06,
-        "values": {
-          "go": 0.9999964218447741,
-          "punt": 0.9999954433118526,
-          "fg": 0.9999975038367677
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 100%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2022_16_JAX_NYJ-1580",
       "label": "JAX @ NYJ \u2014 4th & 12",
       "kind": "historical",
@@ -2359,58 +2200,6 @@
           "punt": 0.18605743042997638
         },
         "layman_why": "Punting added about 2% win chance over the next-best option (18.6% vs 16.4%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
-      "id": "2022_16_BUF_CHI-3564",
-      "label": "BUF @ CHI \u2014 4th & 14",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_BUF_CHI",
-        "play_id": 3564,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "CHI",
-        "defteam": "BUF",
-        "home_team": "CHI",
-        "away_team": "BUF",
-        "posteam_score": 13,
-        "defteam_score": 28,
-        "score_differential": -15,
-        "qtr": 4,
-        "game_seconds_remaining": 138,
-        "half_seconds_remaining": 138,
-        "yardline_100": 79,
-        "down": 4,
-        "distance": 14,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 138
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 6.466367260895569e-05,
-        "values": {
-          "go": 0.0010020826525231842,
-          "punt": 0.0009374189799142285
-        },
-        "layman_why": "Close call: going for it and punting give about the same win chance (around 0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4265,6 +4054,58 @@
       }
     },
     {
+      "id": "2023_04_DET_GB-1699",
+      "label": "DET @ GB \u2014 4th & 5",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_04_DET_GB",
+        "play_id": 1699,
+        "note": "",
+        "week": 4,
+        "game_date": "2023-09-28"
+      },
+      "situation": {
+        "posteam": "GB",
+        "defteam": "DET",
+        "home_team": "GB",
+        "away_team": "DET",
+        "posteam_score": 3,
+        "defteam_score": 24,
+        "score_differential": -21,
+        "qtr": 2,
+        "game_seconds_remaining": 2141,
+        "half_seconds_remaining": 341,
+        "yardline_100": 76,
+        "down": 4,
+        "distance": 5,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 341
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0008911043274317174,
+        "values": {
+          "go": 0.04395186688776009,
+          "punt": 0.04306076256032837
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 4%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2023_10_IND_NE-3792",
       "label": "IND @ NE \u2014 4th & 1",
       "kind": "historical",
@@ -4463,6 +4304,59 @@
           "fg": 0.14837071166432317
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (19.5% vs 14.8%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2023_12_GB_DET-3316",
+      "label": "GB @ DET \u2014 4th & 7",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_12_GB_DET",
+        "play_id": 3316,
+        "note": "",
+        "week": 12,
+        "game_date": "2023-11-23"
+      },
+      "situation": {
+        "posteam": "DET",
+        "defteam": "GB",
+        "home_team": "DET",
+        "away_team": "GB",
+        "posteam_score": 14,
+        "defteam_score": 29,
+        "score_differential": -15,
+        "qtr": 4,
+        "game_seconds_remaining": 817,
+        "half_seconds_remaining": 817,
+        "yardline_100": 31,
+        "down": 4,
+        "distance": 7,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 817
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0007290818746462507,
+        "values": {
+          "go": 0.03453574407530646,
+          "punt": 0.023859629678329608,
+          "fg": 0.03526482594995271
+        },
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5372,59 +5266,6 @@
       }
     },
     {
-      "id": "2022_16_DET_CAR-2870",
-      "label": "DET @ CAR \u2014 4th & 7",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_DET_CAR",
-        "play_id": 2870,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "CAR",
-        "defteam": "DET",
-        "home_team": "CAR",
-        "away_team": "DET",
-        "posteam_score": 31,
-        "defteam_score": 13,
-        "score_differential": 18,
-        "qtr": 4,
-        "game_seconds_remaining": 797,
-        "half_seconds_remaining": 797,
-        "yardline_100": 22,
-        "down": 4,
-        "distance": 7,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 797
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0030916955517727995,
-        "values": {
-          "go": 0.9861905300130702,
-          "punt": 0.9832055631126867,
-          "fg": 0.989282225564843
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 99%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2022_12_TB_CLE-1572",
       "label": "TB @ CLE \u2014 4th & 1",
       "kind": "historical",
@@ -6003,6 +5844,58 @@
       }
     },
     {
+      "id": "2023_10_NYJ_LV-130",
+      "label": "NYJ @ LV \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_10_NYJ_LV",
+        "play_id": 130,
+        "note": "",
+        "week": 10,
+        "game_date": "2023-11-12"
+      },
+      "situation": {
+        "posteam": "LV",
+        "defteam": "NYJ",
+        "home_team": "LV",
+        "away_team": "NYJ",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 1,
+        "game_seconds_remaining": 3513,
+        "half_seconds_remaining": 1713,
+        "yardline_100": 66,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 813
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 7.711728425952025e-05,
+        "values": {
+          "go": 0.40921093304799017,
+          "punt": 0.4092880503322497
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 41%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2023_08_MIN_GB-502",
       "label": "MIN @ GB \u2014 4th & 1",
       "kind": "historical",
@@ -6200,6 +6093,59 @@
           "punt": 0.7855202326933117
         },
         "layman_why": "Close call: going for it and punting give about the same win chance (around 80%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_18_NYG_PHI-959",
+      "label": "NYG @ PHI \u2014 4th & 8",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_18_NYG_PHI",
+        "play_id": 959,
+        "note": "",
+        "week": 18,
+        "game_date": "2023-01-08"
+      },
+      "situation": {
+        "posteam": "NYG",
+        "defteam": "PHI",
+        "home_team": "PHI",
+        "away_team": "NYG",
+        "posteam_score": 0,
+        "defteam_score": 10,
+        "score_differential": -10,
+        "qtr": 1,
+        "game_seconds_remaining": 2706,
+        "half_seconds_remaining": 906,
+        "yardline_100": 29,
+        "down": 4,
+        "distance": 8,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 6
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0006224214150482577,
+        "values": {
+          "go": 0.18529442427745357,
+          "punt": 0.16093305940006034,
+          "fg": 0.18591684569250183
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 19%); punting is lower (16%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6619,6 +6565,59 @@
           "punt": 0.5175749087417203
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (54.6% vs 51.8%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_16_JAX_NYJ-2432",
+      "label": "JAX @ NYJ \u2014 4th & 10",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_16_JAX_NYJ",
+        "play_id": 2432,
+        "note": "",
+        "week": 16,
+        "game_date": "2022-12-22"
+      },
+      "situation": {
+        "posteam": "JAX",
+        "defteam": "NYJ",
+        "home_team": "NYJ",
+        "away_team": "JAX",
+        "posteam_score": 13,
+        "defteam_score": 3,
+        "score_differential": 10,
+        "qtr": 3,
+        "game_seconds_remaining": 1329,
+        "half_seconds_remaining": 1329,
+        "yardline_100": 23,
+        "down": 4,
+        "distance": 10,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 429
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "fg",
+        "inconclusive": true,
+        "margin": 0.016113046183492186,
+        "values": {
+          "go": 0.8741776305372023,
+          "punt": 0.8513067146633129,
+          "fg": 0.8902906767206945
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 89%); punting is lower (85%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10730,59 +10729,6 @@
       }
     },
     {
-      "id": "2022_16_DET_CAR-3955",
-      "label": "DET @ CAR \u2014 4th & 10",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_DET_CAR",
-        "play_id": 3955,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "DET",
-        "defteam": "CAR",
-        "home_team": "CAR",
-        "away_team": "DET",
-        "posteam_score": 20,
-        "defteam_score": 37,
-        "score_differential": -17,
-        "qtr": 4,
-        "game_seconds_remaining": 40,
-        "half_seconds_remaining": 40,
-        "yardline_100": 16,
-        "down": 4,
-        "distance": 10,
-        "posteam_timeouts": 0,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 40
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.00021004729098600264,
-        "values": {
-          "go": 0.0006222598965394763,
-          "punt": 9.629750557257899e-05,
-          "fg": 0.0004122126055534737
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_09_MIN_ATL-703",
       "label": "MIN @ ATL \u2014 4th & 1",
       "kind": "historical",
@@ -11729,59 +11675,6 @@
       }
     },
     {
-      "id": "2022_17_IND_NYG-2637",
-      "label": "IND @ NYG \u2014 4th & 6",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_17_IND_NYG",
-        "play_id": 2637,
-        "note": "",
-        "week": 17,
-        "game_date": "2023-01-01"
-      },
-      "situation": {
-        "posteam": "IND",
-        "defteam": "NYG",
-        "home_team": "NYG",
-        "away_team": "IND",
-        "posteam_score": 3,
-        "defteam_score": 31,
-        "score_differential": -28,
-        "qtr": 3,
-        "game_seconds_remaining": 1148,
-        "half_seconds_remaining": 1148,
-        "yardline_100": 18,
-        "down": 4,
-        "distance": 6,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 248
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 8.557305922648074e-05,
-        "values": {
-          "go": 0.0044776189521496396,
-          "punt": 0.0028514414403374433,
-          "fg": 0.00456319201137612
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_06_WAS_ATL-3849",
       "label": "WAS @ ATL \u2014 4th & 8",
       "kind": "historical",
@@ -12619,58 +12512,6 @@
       }
     },
     {
-      "id": "2022_05_ATL_TB-2899",
-      "label": "ATL @ TB \u2014 4th & 4",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_05_ATL_TB",
-        "play_id": 2899,
-        "note": "",
-        "week": 5,
-        "game_date": "2022-10-09"
-      },
-      "situation": {
-        "posteam": "TB",
-        "defteam": "ATL",
-        "home_team": "TB",
-        "away_team": "ATL",
-        "posteam_score": 21,
-        "defteam_score": 0,
-        "score_differential": 21,
-        "qtr": 3,
-        "game_seconds_remaining": 1020,
-        "half_seconds_remaining": 1020,
-        "yardline_100": 81,
-        "down": 4,
-        "distance": 4,
-        "posteam_timeouts": 2,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
-      },
-      "historical_action": "punt",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0006119741174041016,
-        "values": {
-          "go": 0.9804353875201747,
-          "punt": 0.9810473616375788
-        },
-        "layman_why": "Close call: going for it and punting give about the same win chance (around 98%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2023_02_CHI_TB-2490",
       "label": "CHI @ TB \u2014 4th & 1",
       "kind": "historical",
@@ -12817,6 +12658,59 @@
           "fg": 0.5449523782383137
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (58.7% vs 54.5%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_08_GB_BUF-360",
+      "label": "GB @ BUF \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_GB_BUF",
+        "play_id": 360,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "GB",
+        "defteam": "BUF",
+        "home_team": "BUF",
+        "away_team": "GB",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 1,
+        "game_seconds_remaining": 3231,
+        "half_seconds_remaining": 1431,
+        "yardline_100": 38,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 531
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.010779502325954038,
+        "values": {
+          "go": 0.6037281134471977,
+          "punt": 0.5929486111212436,
+          "fg": 0.5905753034321753
+        },
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 60%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13291,6 +13185,58 @@
           "fg": 0.03646907506588955
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (6.8% vs 3.6%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_10_CLE_MIA-376",
+      "label": "CLE @ MIA \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_10_CLE_MIA",
+        "play_id": 376,
+        "note": "",
+        "week": 10,
+        "game_date": "2022-11-13"
+      },
+      "situation": {
+        "posteam": "MIA",
+        "defteam": "CLE",
+        "home_team": "MIA",
+        "away_team": "CLE",
+        "posteam_score": 0,
+        "defteam_score": 7,
+        "score_differential": -7,
+        "qtr": 1,
+        "game_seconds_remaining": 3242,
+        "half_seconds_remaining": 1442,
+        "yardline_100": 64,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 542
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.006016118828329864,
+        "values": {
+          "go": 0.3582492632275668,
+          "punt": 0.3522331443992369
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 36%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14252,59 +14198,6 @@
       }
     },
     {
-      "id": "2022_16_JAX_NYJ-3834",
-      "label": "JAX @ NYJ \u2014 4th & 6",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_JAX_NYJ",
-        "play_id": 3834,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-22"
-      },
-      "situation": {
-        "posteam": "NYJ",
-        "defteam": "JAX",
-        "home_team": "NYJ",
-        "away_team": "JAX",
-        "posteam_score": 3,
-        "defteam_score": 19,
-        "score_differential": -16,
-        "qtr": 4,
-        "game_seconds_remaining": 100,
-        "half_seconds_remaining": 100,
-        "yardline_100": 34,
-        "down": 4,
-        "distance": 6,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 100
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0003589837479504416,
-        "values": {
-          "go": 0.0008750672597219273,
-          "punt": 0.00048462340784979907,
-          "fg": 0.001234051007672369
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2022_11_CLE_BUF-845",
       "label": "CLE @ BUF \u2014 4th & 14",
       "kind": "historical",
@@ -14715,6 +14608,58 @@
           "fg": 0.5289734360421224
         },
         "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (52.9% vs 48.4%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_08_WAS_IND-2964",
+      "label": "WAS @ IND \u2014 4th & 6",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_WAS_IND",
+        "play_id": 2964,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "WAS",
+        "defteam": "IND",
+        "home_team": "IND",
+        "away_team": "WAS",
+        "posteam_score": 7,
+        "defteam_score": 16,
+        "score_differential": -9,
+        "qtr": 4,
+        "game_seconds_remaining": 452,
+        "half_seconds_remaining": 452,
+        "yardline_100": 48,
+        "down": 4,
+        "distance": 6,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 452
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.013794567904711369,
+        "values": {
+          "go": 0.06719778354836486,
+          "punt": 0.053403215643653495
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15410,59 +15355,6 @@
       }
     },
     {
-      "id": "2023_05_NYG_MIA-3934",
-      "label": "NYG @ MIA \u2014 4th & 3",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_05_NYG_MIA",
-        "play_id": 3934,
-        "note": "",
-        "week": 5,
-        "game_date": "2023-10-08"
-      },
-      "situation": {
-        "posteam": "NYG",
-        "defteam": "MIA",
-        "home_team": "MIA",
-        "away_team": "NYG",
-        "posteam_score": 16,
-        "defteam_score": 31,
-        "score_differential": -15,
-        "qtr": 4,
-        "game_seconds_remaining": 92,
-        "half_seconds_remaining": 92,
-        "yardline_100": 19,
-        "down": 4,
-        "distance": 3,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 92
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 3.74078886573319e-05,
-        "values": {
-          "go": 0.002862923741483012,
-          "punt": 0.0008324064509290519,
-          "fg": 0.00282551585282568
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2022_11_CHI_ATL-3434",
       "label": "CHI @ ATL \u2014 4th & 2",
       "kind": "historical",
@@ -15674,6 +15566,59 @@
       }
     },
     {
+      "id": "2023_13_LAC_NE-3329",
+      "label": "LAC @ NE \u2014 4th & 5",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_13_LAC_NE",
+        "play_id": 3329,
+        "note": "",
+        "week": 13,
+        "game_date": "2023-12-03"
+      },
+      "situation": {
+        "posteam": "NE",
+        "defteam": "LAC",
+        "home_team": "NE",
+        "away_team": "LAC",
+        "posteam_score": 0,
+        "defteam_score": 6,
+        "score_differential": -6,
+        "qtr": 4,
+        "game_seconds_remaining": 423,
+        "half_seconds_remaining": 423,
+        "yardline_100": 30,
+        "down": 4,
+        "distance": 5,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 423
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.009399652655870477,
+        "values": {
+          "go": 0.1806579369587111,
+          "punt": 0.10402801535373915,
+          "fg": 0.17125828430284062
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 18%); punting is lower (10%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": true
+      }
+    },
+    {
       "id": "2022_17_SF_LV-1345",
       "label": "SF @ LV \u2014 4th & 1",
       "kind": "historical",
@@ -15871,6 +15816,59 @@
           "punt": 0.5414182064689006
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (60.3% vs 54.1%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
+      "id": "2022_17_CHI_DET-1798",
+      "label": "CHI @ DET \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_17_CHI_DET",
+        "play_id": 1798,
+        "note": "",
+        "week": 17,
+        "game_date": "2023-01-01"
+      },
+      "situation": {
+        "posteam": "DET",
+        "defteam": "CHI",
+        "home_team": "DET",
+        "away_team": "CHI",
+        "posteam_score": 21,
+        "defteam_score": 10,
+        "score_differential": 11,
+        "qtr": 2,
+        "game_seconds_remaining": 1820,
+        "half_seconds_remaining": 20,
+        "yardline_100": 4,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 0,
+        "quarter_seconds_remaining": 20
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.016014880528726017,
+        "values": {
+          "go": 0.9378003002391775,
+          "punt": 0.8906347202791525,
+          "fg": 0.9217854197104515
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 94%); punting is lower (89%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17412,6 +17410,58 @@
       }
     },
     {
+      "id": "2023_06_IND_JAX-623",
+      "label": "IND @ JAX \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_06_IND_JAX",
+        "play_id": 623,
+        "note": "",
+        "week": 6,
+        "game_date": "2023-10-15"
+      },
+      "situation": {
+        "posteam": "JAX",
+        "defteam": "IND",
+        "home_team": "JAX",
+        "away_team": "IND",
+        "posteam_score": 0,
+        "defteam_score": 3,
+        "score_differential": -3,
+        "qtr": 1,
+        "game_seconds_remaining": 2901,
+        "half_seconds_remaining": 1101,
+        "yardline_100": 55,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 201
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.018918248640281132,
+        "values": {
+          "go": 0.4940838332995123,
+          "punt": 0.47516558465923114
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 49%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false
+      }
+    },
+    {
       "id": "2022_02_LAC_KC-1452",
       "label": "LAC @ KC \u2014 4th & 1",
       "kind": "historical",
@@ -18305,59 +18355,6 @@
       }
     },
     {
-      "id": "2022_08_LV_NO-3619",
-      "label": "LV @ NO \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_08_LV_NO",
-        "play_id": 3619,
-        "note": "",
-        "week": 8,
-        "game_date": "2022-10-30"
-      },
-      "situation": {
-        "posteam": "LV",
-        "defteam": "NO",
-        "home_team": "NO",
-        "away_team": "LV",
-        "posteam_score": 0,
-        "defteam_score": 24,
-        "score_differential": -24,
-        "qtr": 4,
-        "game_seconds_remaining": 48,
-        "half_seconds_remaining": 48,
-        "yardline_100": 30,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 48
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 2.095836747394176e-06,
-        "values": {
-          "go": 1.1469270957692925e-05,
-          "punt": 3.891438913161682e-06,
-          "fg": 1.35651077050871e-05
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false
-      }
-    },
-    {
       "id": "2022_12_NE_MIN-1367",
       "label": "NE @ MIN \u2014 4th & 1",
       "kind": "historical",
@@ -18992,45 +18989,46 @@
       }
     },
     {
-      "id": "2022_06_SF_ATL-3503",
-      "label": "SF @ ATL \u2014 4th & 3",
+      "id": "2022_14_KC_DEN-3570",
+      "label": "KC @ DEN \u2014 4th & 7",
       "kind": "historical",
       "source": {
         "season": 2022,
-        "game_id": "2022_06_SF_ATL",
-        "play_id": 3503,
+        "game_id": "2022_14_KC_DEN",
+        "play_id": 3570,
         "note": "",
-        "week": 6,
-        "game_date": "2022-10-16"
+        "week": 14,
+        "game_date": "2022-12-11"
       },
       "situation": {
-        "posteam": "ATL",
-        "defteam": "SF",
-        "home_team": "ATL",
-        "away_team": "SF",
-        "posteam_score": 28,
-        "defteam_score": 14,
-        "score_differential": 14,
+        "posteam": "DEN",
+        "defteam": "KC",
+        "home_team": "DEN",
+        "away_team": "KC",
+        "posteam_score": 21,
+        "defteam_score": 34,
+        "score_differential": -13,
         "qtr": 4,
-        "game_seconds_remaining": 72,
-        "half_seconds_remaining": 72,
-        "yardline_100": 61,
+        "game_seconds_remaining": 654,
+        "half_seconds_remaining": 654,
+        "yardline_100": 7,
         "down": 4,
-        "distance": 3,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 72
+        "distance": 7,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 654
       },
-      "historical_action": "punt",
+      "historical_action": "go",
       "reveal": {
-        "recommendation": "inconclusive",
+        "recommendation": "go",
         "inconclusive": true,
-        "margin": 9.230859975750683e-05,
+        "margin": 0.015794184950677484,
         "values": {
-          "go": 0.9982265018009067,
-          "punt": 0.9981341932011492
+          "go": 0.06741580104653701,
+          "punt": 0.02760175475873472,
+          "fg": 0.051621616095859524
         },
-        "layman_why": "Close call: going for it and punting give about the same win chance (around 100%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 7%); punting is lower (3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
