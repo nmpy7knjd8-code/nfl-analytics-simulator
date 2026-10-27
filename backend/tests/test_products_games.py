@@ -83,7 +83,7 @@ def test_game_file_wp_home_side_ends_at_result(path):
 
 def test_game_files_total_size_budget():
     total = sum(p.stat().st_size for p in _game_files())
-    assert total < 60_000_000, f"{total / 1e6:.1f} MB"
+    assert total < 75_000_000, f"{total / 1e6:.1f} MB"  # games-v3 adds display_text (~68 MB)
 
 
 def test_compact_round_trip_restores_v1():
@@ -93,13 +93,13 @@ def test_compact_round_trip_restores_v1():
           "final_home_wp": 1.0, "swing_play_ids": [2],
           "plays": [
               {"play_id": 1, "qtr": 4, "clock": "0:30", "posteam": "LV", "down": 4, "ydstogo": 2, "yardline_100": 30,
-               "text": "(0:30) run", "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
+               "text": "(0:30) run", "display_text": "Run.", "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
                "home_score": 3, "away_score": 7,
                "fourth_down": {"recommendation": "go", "close_call": False, "gap_pts": 3.21, "wp": {"go": 0.41, "fg": 0.38},
                                "home_wp": {"go": 0.41, "fg": 0.38}, "options": ["go", "fg"], "actual": "go",
                                "kick_distance": 48, "engine_version": "e1"}},
               {"play_id": 2, "qtr": 4, "clock": "0:05", "posteam": "LV", "down": 1, "ydstogo": 10, "yardline_100": 5,
-               "text": "(0:05) pass TD", "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
+               "text": "(0:05) pass TD", "display_text": "Touchdown pass.", "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
                "home_score": 10, "away_score": 7, "fourth_down": None}]}
     back = expand(compact(v1))
     v1["plays"][0]["home_wp"] = 0.412
@@ -119,3 +119,39 @@ def test_home_view_flip_from_synthetic_rows():
     doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
     assert doc["final_home_wp"] == 0.0 and doc["plays"][0]["home_wp"] == 0.05
     assert doc["plays"][0]["clock"] == "0:30"
+
+
+def _has_display_text():
+    files = _game_files()
+    return bool(files) and "display_text" in json.loads(files[0].read_text())["cols"]
+
+
+@pytest.mark.skipif(not _has_display_text(), reason="game files predate games-v3 (no display_text column)")
+def test_game_files_display_text_nonempty_and_matches_lib_plays():
+    from pathlib import Path
+    lib = Path(__file__).resolve().parents[2] / "frontend/lib/plays"
+    for path in _game_files():
+        c = json.loads(path.read_text())["cols"]
+        assert len(c["display_text"]) == len(c["play_id"])
+        assert all(isinstance(t, str) and t.strip() for t in c["display_text"]), path.stem
+        shared = lib / f"{path.stem}.json"
+        if shared.exists():
+            got = dict(zip(map(str, c["play_id"]), c["display_text"]))
+            for p in json.loads(shared.read_text())["plays"]:
+                assert got[p["play_id"]] == p["display_text"], (path.stem, p["play_id"])
+
+
+def test_game_flow_rows_get_display_text():
+    got = games.play_display_texts([{"game_id": "2023_01_X_Y", "desc": d} for d in (
+        "GAME", "END QUARTER 1", "END GAME", "Two-Minute Warning", "Timeout #1 by BUF at 01:23.")], {}, {})
+    assert got == ["Start of game.", "End of quarter 1.", "End of game.", "Two-minute warning.", "Timeout by BUF."]
+
+
+def test_compact_round_trips_display_text():
+    doc = {"plays": [{"play_id": 1, "qtr": 1, "clock": "15:00", "posteam": "BUF", "down": None, "ydstogo": None,
+                      "yardline_100": None, "text": "GAME", "display_text": "Start of game.", "play_type": None,
+                      "home_wp": 0.5, "home_wp_after": 0.5, "swing": False, "home_score": 0, "away_score": 0,
+                      "fourth_down": None}],
+           "provenance": {"source": "nflverse"}, "game": {}, "wp_perspective": "home", "swing_threshold": 0.08,
+           "final_home_wp": 0.5, "swing_play_ids": []}
+    assert expand(compact(doc))["plays"][0]["display_text"] == "Start of game."

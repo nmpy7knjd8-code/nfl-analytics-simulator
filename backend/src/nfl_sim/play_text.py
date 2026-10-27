@@ -259,8 +259,30 @@ def penalty_notes(r: dict[str, Any], skip_first: bool = False) -> list[str]:
     return out
 
 
+_END_Q = re.compile(r"^END QUARTER (\d)", re.I)
+_TIMEOUT = re.compile(r"^Timeout #\d by ([A-Z]{2,3})", re.I)
+
+
+def marker_text(desc: str) -> str | None:
+    """Game-flow rows that aren't plays (game files keep them; play lists drop them)."""
+    d = desc.strip()
+    if d.upper() == "GAME":
+        return "Start of game."
+    if d.upper().startswith("END GAME"):
+        return "End of game."
+    if m := _END_Q.match(d):
+        return "End of overtime." if int(m.group(1)) >= 5 else f"End of quarter {m.group(1)}."
+    if "Two-Minute Warning" in d:
+        return "Two-minute warning."
+    if m := _TIMEOUT.match(d):
+        return f"Timeout by {m.group(1).upper()}."
+    return None
+
+
 def display_text(r: dict[str, Any]) -> str:
     """Main sentence (<= MAX_WORDS) plus one short sentence per penalty in the feed text."""
+    if (mk := marker_text(r.get("desc") or "")) is not None:
+        return mk
     if r.get("play_type") == "no_play":
         pen = penalty_text(r.get("desc") or "", r)
         if pen:

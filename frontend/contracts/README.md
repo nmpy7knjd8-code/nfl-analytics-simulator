@@ -61,6 +61,12 @@ Full play lists: `frontend/lib/plays/<game_id>.json` = `{ game_id, plays: SwingP
 every real play in order incl. penalties/no-plays, kickoffs, PATs and OT; no timeouts, two-minute warnings or
 quarter/game markers. Kept out of swingPlays.json for size (~85-92 KB each); fetch/import per page.
 
+Game files (`/data/games/<game_id>.json`, game.v2, shipped in the `games-v3` release asset and later): `cols.display_text`
+is one fan-facing sentence per row, same `play_text.display_text` as `lib/plays` (identical for the shared games),
+including penalty sentences; game-flow rows read "Start of game.", "End of quarter N.", "Two-minute warning.",
+"Timeout by TEAM.". `expandGameV2` exposes it as `play.display_text` (falls back to raw `text` on games-v2 files);
+`text` stays verbatim nflverse.
+
 `display_text` rules (`backend/src/nfl_sim/play_text.py`): no clock, formation tags, jersey numbers, tackler
 parentheses or pressure brackets; sentence case; full names from nflverse player ids (players.csv) for the main
 roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 words; only facts in the row.
