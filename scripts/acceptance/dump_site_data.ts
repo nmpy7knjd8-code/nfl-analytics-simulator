@@ -1,6 +1,6 @@
 // Dumps every game fact, play clock and kick the site shows, as JSON, for check.py.
 import { FIXTURE_GAMES, FOURTH_DOWN_SCENARIOS, fixturePlays } from "../../frontend/lib/fixtures";
-import { WP_FIXTURES } from "../../frontend/lib/wpFixtures";
+import { WP_SERIES as WP_FIXTURES } from "../../frontend/lib/wpSeries";
 import quizPack from "../../frontend/lib/quizPack.json";
 
 const games = FIXTURE_GAMES.items;
