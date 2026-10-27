@@ -43,10 +43,27 @@ export function gameText(item: DailyItem): string {
   return parts.join(" · ");
 }
 
-/** QA M13: "24% vs 23%", or "both 0.1%" / "all 0.1%" when the shown numbers match. */
-function sameNums(f: string[]): string {
-  if (f.every((x) => x === f[0])) return `${f.length === 2 ? "both" : "all"} ${f[0]}`;
-  return f.join(" vs ");
+/** "A, B and C" serial list. */
+export function listNames(n: string[]): string {
+  return n.length < 2 ? (n[0] ?? "") : `${n.slice(0, -1).join(", ")} and ${n[n.length - 1]}`;
+}
+
+/**
+ * QA M13 / 0015 P1-A: group options showing the same number.
+ * "Kick and Go (both 91.9%) and Punt (90.8%)", "Go and Kick (24% vs 23%)" when nothing matches.
+ */
+export function groupedNames(names: string[], f: string[]): string {
+  const groups: { names: string[]; pct: string }[] = [];
+  names.forEach((n, i) => {
+    const g = groups.find((x) => x.pct === f[i]);
+    if (g) g.names.push(n);
+    else groups.push({ names: [n], pct: f[i] });
+  });
+  if (groups.length === names.length) return `${listNames(names)} (${f.join(" vs ")})`;
+  if (groups.length === 1) return `${listNames(names)} (${names.length === 2 ? "both" : "all"} ${f[0]})`;
+  return groups
+    .map((g) => `${listNames(g.names)} (${g.names.length === 1 ? "" : g.names.length === 2 ? "both " : "all "}${g.pct})`)
+    .join(" and ");
 }
 
 export function pts(x: number): string {
@@ -66,7 +83,7 @@ export function whyText(item: DailyItem, scored: ScoredCall): string {
     const same = ranked.filter(([, v]) => bv - v < CLOSE_CALL_GAP);
     const worse = ranked.filter(([, v]) => bv - v >= CLOSE_CALL_GAP);
     const f = formatPercents(ranked.map(([, v]) => v));
-    let t = `Close call for the ${team}: ${same.map(([c]) => CHOICE_NAME[c]).join(" and ")} give about the same win chance (${sameNums(same.map((_, i) => f[i]))})`;
+    let t = `Close call for the ${team}: ${groupedNames(same.map(([c]) => CHOICE_NAME[c]), f.slice(0, same.length))} give about the same win chance`;
     if (worse.length) t += "; " + worse.map(([c], i) => `${CHOICE_NAME[c]} is lower (${f[same.length + i]})`).join(", ");
     return t + ".";
   }
