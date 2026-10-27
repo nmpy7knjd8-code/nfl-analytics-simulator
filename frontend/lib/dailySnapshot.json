@@ -1,12 +1,12 @@
 {
- "note": "Append-only. Never edit or remove a date. Reveal values + best call(s) per published ET day. 2026-10-26 and 2026-10-27 restored from the pre-#122 pack (main ab2bc80, before c69f8c4). Later days: scripts/snapshot-daily.ts.",
+ "note": "Append-only. Never edit or remove a date. Reveal values + best call(s) per published ET day. 2026-10-26 and 2026-10-27 restored from the pre-#119 pack (lib/dailyPack.json at 7c8dc3a, before 84b674f), the values fans saw on Oct 26 and Oct 27 until ~01:24 ET (QA 0217 D). Later days: scripts/snapshot-daily.ts.",
  "days": {
   "2026-10-26": {
    "2022_13_DEN_BAL-2272": {
     "recommendation": "go",
     "values": {
      "go": 0.588102,
-     "punt": 0.561169
+     "punt": 0.567079
     },
     "best": [
      "go"
@@ -16,7 +16,7 @@
     "recommendation": "go",
     "values": {
      "go": 0.283885,
-     "punt": 0.256203,
+     "punt": 0.251221,
      "fg": 0.238393
     },
     "best": [
@@ -27,7 +27,7 @@
     "recommendation": "punt",
     "values": {
      "go": 0.509156,
-     "punt": 0.534686
+     "punt": 0.553182
     },
     "best": [
      "punt"
@@ -37,7 +37,7 @@
     "recommendation": "inconclusive",
     "values": {
      "go": 0.998227,
-     "punt": 0.998134
+     "punt": 0.997994
     },
     "best": [
      "go",
@@ -48,7 +48,7 @@
     "recommendation": "fg",
     "values": {
      "go": 0.225789,
-     "punt": 0.18286,
+     "punt": 0.186544,
      "fg": 0.25451
     },
     "best": [
@@ -61,7 +61,7 @@
     "recommendation": "go",
     "values": {
      "go": 0.0279705,
-     "punt": 0.0167704
+     "punt": 0.0166536
     },
     "best": [
      "go"
@@ -71,7 +71,7 @@
     "recommendation": "inconclusive",
     "values": {
      "go": 0.406666,
-     "punt": 0.341117,
+     "punt": 0.346591,
      "fg": 0.406086
     },
     "best": [
@@ -82,7 +82,7 @@
     "recommendation": "go",
     "values": {
      "go": 0.179335,
-     "punt": 0.147245
+     "punt": 0.150314
     },
     "best": [
      "go"
@@ -92,7 +92,7 @@
     "recommendation": "inconclusive",
     "values": {
      "go": 0.918667,
-     "punt": 0.908265,
+     "punt": 0.907607,
      "fg": 0.919462
     },
     "best": [
@@ -104,7 +104,7 @@
     "recommendation": "fg",
     "values": {
      "go": 0.537563,
-     "punt": 0.442742,
+     "punt": 0.448106,
      "fg": 0.618018
     },
     "best": [
