@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { closeCallWhy, FG_OUT_OF_RANGE } from "./closeCall";
+import { closeCallWhy, fgTooFarButton, fgTooFarReveal } from "./closeCall";
 import { CLOSE_LABEL } from "./labels";
 import { scoreQuizChoice } from "./quiz";
 
@@ -16,7 +16,8 @@ test("P2-E: one label, plain close-call sentence", () => {
 });
 
 test("P1-D: out-of-range FG is labelled and never credited", () => {
-  assert.equal(FG_OUT_OF_RANGE, "Too far to kick (65+ yards)");
+  assert.equal(fgTooFarButton({ yardline_100: 63 }), "Field goal · 81-yd kick, too far");
+  assert.equal(fgTooFarReveal({ yardline_100: 63 }), "Too far (81 yd)");
   const r = scoreQuizChoice("fg", reveal({ go: 0.4, fg: 0.41, punt: 0.39 }), { yardline_100: 60 } as never);
   assert.equal(r.credit, 0);
 });
