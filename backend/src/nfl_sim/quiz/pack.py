@@ -191,6 +191,10 @@ FAN_ASSUMPTIONS = [
 BANNED_DISPLAY_TERMS = ("WP", "edge ≈", "isotonic", "yardline_100")
 
 
+# Close-call margin (under 2 points of win chance), same as the quiz's close-call rule (#64).
+CLOSE_MARGIN_WP = 0.02
+
+
 def _pct(x: float) -> str:
     return f"{x * 100:.0f}%"
 
@@ -202,11 +206,19 @@ def fan_why(reveal: dict[str, Any]) -> str:
         return "Not enough data to judge this call."
     ranked = sorted(values.items(), key=lambda kv: kv[1], reverse=True)
     if reveal.get("inconclusive") or rec not in values or len(ranked) < 2:
-        names = [_FAN_SHORT[k] for k in ("fg", "go", "punt") if k in values]
+        top = ranked[0][1]
+        # QA L7: only options within the close margin of the best are "about the same".
+        same = [k for k, v in ranked if top - v < CLOSE_MARGIN_WP]
+        worse = [(k, v) for k, v in ranked if top - v >= CLOSE_MARGIN_WP]
+        names = [_FAN_SHORT[k] for k in ("fg", "go", "punt") if k in same]
         opts = names[0] if len(names) == 1 else (
             f"{names[0]} and {names[1]}" if len(names) == 2 else ", ".join(names[:-1]) + f", and {names[-1]}"
         )
-        return f"Close call: {opts} give about the same win chance (around {_pct(ranked[0][1])})."
+        verb = "gives" if len(names) == 1 else "give about the same"
+        text = f"Close call: {opts} {verb} win chance (around {_pct(top)})"
+        if worse:
+            text += "; " + ", ".join(f"{_FAN_SHORT[k]} is lower ({_pct(v)})" for k, v in worse)
+        return text + "."
     best = values[rec]
     runner = max(v for k, v in values.items() if k != rec)
     gain = max(best - runner, 0.0)
