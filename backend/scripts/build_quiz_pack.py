@@ -89,9 +89,29 @@ def is_decided(values: dict) -> bool:
     return all(v < DECIDED_WP or v > 1.0 - DECIDED_WP for v in values.values())
 
 
+# Ids pinned in the daily schedule must never leave the pack (played days can't change and
+# future days are owned by Product UI). Decided ones are kept and flagged instead.
+DAILY_SCHEDULE = REPO / "frontend" / "lib" / "dailySchedule.json"
+
+
+def scheduled_ids() -> set[str]:
+    if not DAILY_SCHEDULE.exists():
+        return set()
+    return {i for ids in json.loads(DAILY_SCHEDULE.read_text())["days"].values() for i in ids}
+
+
+SCHEDULED = scheduled_ids()
+FLAGGED: list[str] = []
+
+
 def keep_item(item: dict) -> bool:
-    """Whether a baked item may stay in the pack: decided games are dropped."""
-    return not is_decided(item["reveal"]["values"])
+    """Whether a baked item may stay in the pack: decided games are dropped unless scheduled."""
+    if not is_decided(item["reveal"]["values"]):
+        return True
+    if item["id"] in SCHEDULED:
+        FLAGGED.append(item["id"])
+        return True
+    return False
 
 
 def stable_select(existing_ids, rebake, fresh, n: int):
@@ -249,6 +269,8 @@ def main() -> int:
         "items": items,
     }
     write_packs(pack)
+    if FLAGGED:
+        print(f"FLAGGED {len(set(FLAGGED))} decided ids kept because dailySchedule.json pins them: {sorted(set(FLAGGED))}")
     print(f"{len(items)} items in {time.time() - t0:.1f}s")
     return 0
 
