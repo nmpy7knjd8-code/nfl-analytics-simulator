@@ -5,7 +5,7 @@ import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
 
 export const metadata = shareMetadata({
-  title: "Games — NFL Analytics Simulator",
+  title: "Games · Fourth & Daily",
   description: "Replay NFL games play by play with the win-chance swing of every play.",
   path: "/games/",
   card: "games",
