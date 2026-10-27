@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CHECKER_ENABLED } from "../lib/features";
 
 // Branded 404 (QA2 L4). The Pages build (scripts/pages/assemble.py) injects a small
 // script into the exported 404.html that forwards old /demo/, /quiz/ and /decide/ links.
@@ -9,12 +10,14 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-const LINKS = [
+const ALL_LINKS = [
   { href: "/", label: "Home", note: "Start here" },
   { href: "/daily", label: "Today's quiz", note: "Go, kick, or punt?" },
   { href: "/fourth-down", label: "4th down", note: "Real fourth downs, side by side" },
   { href: "/games", label: "Games", note: "Replay real games play by play" },
 ] as const;
+
+const LINKS = ALL_LINKS.filter((l) => CHECKER_ENABLED || l.href !== "/fourth-down");
 
 export default function NotFound() {
   return (
