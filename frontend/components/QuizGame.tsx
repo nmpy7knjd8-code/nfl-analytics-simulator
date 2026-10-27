@@ -166,7 +166,7 @@ export function QuizGame() {
                   const v = scored.values[id];
                   const off = !availableChoices(item).includes(id);
                   // 2236 P1-E/P2-H: row state and text tag (see lib/revealRow.ts).
-                  const { rec, picked: isPicked, close, tag } = revealRow(id, { inconclusive: scored.inconclusive, result: scored.result, recommendation: scored.recommendation, selected, nearTie, off });
+                  const { rec, picked: isPicked, close, tag } = revealRow(id, { inconclusive: scored.inconclusive, result: scored.result, recommendation: scored.recommendation, selected, nearTie, off, shown: rowPct });
                   return (
                     <li
                       key={id}

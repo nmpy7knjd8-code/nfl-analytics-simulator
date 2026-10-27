@@ -1413,6 +1413,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 3.25rem; /* QA P3-J: rows line up with or without a tag */
   padding: 0.55rem 0.8rem;
   border-radius: 999px;
   background: #1f1f23;
