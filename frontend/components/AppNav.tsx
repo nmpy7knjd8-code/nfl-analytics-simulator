@@ -5,29 +5,31 @@ import { usePathname } from "next/navigation";
 import { CHECKER_ENABLED } from "../lib/features";
 
 const ALL_TABS = [
-  { href: "/", label: "Home", match: (p: string) => p === "/" },
-  {
-    href: "/games",
-    label: "Games",
-    match: (p: string) => p.startsWith("/games"),
-  },
-  {
-    href: "/fourth-down",
-    label: "4th down",
-    match: (p: string) => p.startsWith("/fourth-down") || p.startsWith("/decide"),
-  },
-  {
-    href: "/daily",
-    label: "Quiz",
-    match: (p: string) => p.startsWith("/daily") || p.startsWith("/quiz"),
-  },
+  { href: "/", label: "Today", match: (p: string) => p === "/" || p.startsWith("/daily") && !p.startsWith("/daily/stats") },
+  { href: "/practice/", label: "Practice", match: (p: string) => p.startsWith("/practice") },
+  { href: "/games/", label: "Games", match: (p: string) => p.startsWith("/games") },
+  { href: "/fourth-down/", label: "4th down", match: (p: string) => p.startsWith("/fourth-down") },
 ] as const;
 
-const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down");
+// H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
+const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
+
+export function TopBar() {
+  return (
+    <header className="fd-top">
+      <Link href="/" className="fd-brand">
+        Fourth &amp; Daily
+      </Link>
+      <nav aria-label="More" className="fd-top-links">
+        <Link href="/daily/stats/">Stats</Link>
+        <Link href="/about/">About</Link>
+      </nav>
+    </header>
+  );
+}
 
 export function AppNav() {
-  const pathname = usePathname() || "/";
-
+  const pathname = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return (
     <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {

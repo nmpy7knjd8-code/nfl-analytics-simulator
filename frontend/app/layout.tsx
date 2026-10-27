@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { AppNav } from "../components/AppNav";
+import { AppNav, TopBar } from "../components/AppNav";
 import "./globals.css";
 import { shareMetadata } from "../lib/share";
 
@@ -30,9 +30,8 @@ const ibmPlexMono = localFont({
 });
 
 export const metadata: Metadata = shareMetadata({
-  title: "NFL Analytics Simulator",
-  description:
-    "See real NFL games play by play, and explore tough calls like fourth-and-short — in plain English.",
+  title: "Fourth & Daily — five real 4th downs a day",
+  description: "Every day, five real NFL 4th downs. Go, kick or punt? See what the coach did and what the numbers say.",
   path: "/",
   card: "home",
   alt: "Fourth & Daily — real NFL fourth downs, would you go for it? Data: nflverse",
@@ -42,7 +41,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0a0a0b",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -53,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <a className="sr-only" href="#main">
             Skip to content
           </a>
+          <TopBar />
           <div className="app-stage">{children}</div>
           <AppNav />
         </div>
