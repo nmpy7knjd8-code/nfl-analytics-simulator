@@ -71,6 +71,6 @@ describe("H4: only offered options, never a kick past 64 yd", () => {
   });
 
   it("M8: one close-call label", () => {
-    assert.equal(CLOSE_LABEL, "Close call — half credit");
+    assert.equal(CLOSE_LABEL, "Close call");
   });
 });

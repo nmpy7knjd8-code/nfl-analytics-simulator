@@ -17,6 +17,9 @@ import {
   type SessionStats,
 } from "../lib/quiz";
 import { CLOSE_LABEL } from "../lib/labels";
+import { ALL_CHOICES, FG_OUT_OF_RANGE, closeCallWhy } from "../lib/closeCall";
+
+const DOING_WORD: Record<QuizChoice, string> = { go: "going for it", fg: "field goal", punt: "punting" };
 
 function resultLabel(result: QuizResult): string {
   if (result === "correct") return "Correct";
@@ -116,20 +119,23 @@ export function QuizGame() {
               <div
                 className="quiz-choices"
                 role="radiogroup"
-                aria-label="Choose go, field goal, or punt"
+                aria-label={`Choose ${availableChoices(item).map((c) => CHOICE_LABELS[c].toLowerCase()).join(" or ")}`}
               >
-                {availableChoices(item).map((id) => {
+                {ALL_CHOICES.map((id) => {
                   const active = selected === id;
+                  const off = !availableChoices(item).includes(id);
                   return (
                     <button
                       key={id}
                       type="button"
                       role="radio"
                       aria-checked={active}
-                      className={`quiz-choice${active ? " is-selected" : ""}`}
-                      onClick={() => pick(id)}
+                      aria-disabled={off || undefined}
+                      tabIndex={off ? -1 : undefined}
+                      className={`quiz-choice${active ? " is-selected" : ""}${off ? " is-off" : ""}`}
+                      onClick={off ? undefined : () => pick(id)}
                     >
-                      {CHOICE_LABELS[id]}
+                      {off ? `${CHOICE_LABELS[id]} · ${FG_OUT_OF_RANGE}` : CHOICE_LABELS[id]}
                     </button>
                   );
                 })}
@@ -147,23 +153,26 @@ export function QuizGame() {
                 {resultLabel(scored.result)}
               </p>
               <ul className="quiz-values">
-                {availableChoices(item).map((id) => {
+                {ALL_CHOICES.map((id) => {
                   const v = scored.values[id];
+                  const off = !availableChoices(item).includes(id);
+                  const close = scored.result === "near_tie" && !off && selected !== id && closeCallWhy(item).toLowerCase().includes(DOING_WORD[id]);
                   const rec =
                     !scored.inconclusive && scored.recommendation === id;
-                  const picked = selected === id;
+                  const isPicked = selected === id;
                   return (
                     <li
                       key={id}
-                      className={`quiz-value${rec ? " is-rec" : ""}${picked ? " is-picked" : ""}`}
+                      className={`quiz-value${rec ? " is-rec" : ""}${isPicked ? " is-picked" : ""}${off ? " is-off" : ""}${close ? " is-close" : ""}`}
                     >
                       <span>{CHOICE_LABELS[id]}</span>
-                      <span className="quiz-value-pct">{item.situation.posteam} {pct(v)}</span>
+                      <span className="quiz-value-pct">{off ? "Out of range" : `${item.situation.posteam} ${pct(v)}`}</span>
                     </li>
                   );
                 })}
               </ul>
-              <p className="quiz-why">{scored.layman_why}</p>
+              {scored.result === "near_tie" ? <p className="quiz-score-note">A close call is worth ½.</p> : null}
+              <p className="quiz-why">{scored.result === "near_tie" ? closeCallWhy(item) : scored.layman_why}</p>
               {item.historical_action ? (
                 <p className="quiz-hist">
                   What the team did:{" "}
