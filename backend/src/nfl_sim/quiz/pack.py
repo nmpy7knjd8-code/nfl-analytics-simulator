@@ -174,3 +174,52 @@ def materialize_historical_item(ref: dict[str, Any]) -> dict[str, Any]:
         payload=payload,
         note=str(ref.get("note") or ""),
     )
+
+
+# --- Fan-facing text (QA2 H3) -------------------------------------------------------
+# Displayed fields (layman_why, assumptions) must be plain fan language. Model details
+# (edge in WP units, engine assumptions) move to non-displayed fields edge_wp / model_notes.
+_FAN_LABELS = {"go": "Going for it", "fg": "Kicking the field goal", "punt": "Punting"}
+_FAN_SHORT = {"go": "going for it", "fg": "a field goal", "punt": "punting"}
+FAN_ASSUMPTIONS = [
+    "Win chances come from a model trained on real NFL games (2019–2021 regular seasons).",
+    "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+    "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+    "Punts use where real punts from this spot usually ended up.",
+    "The clock runs about as long as it really did after each kind of play.",
+]
+BANNED_DISPLAY_TERMS = ("WP", "edge ≈", "isotonic", "yardline_100")
+
+
+def _pct(x: float) -> str:
+    return f"{x * 100:.0f}%"
+
+
+def fan_why(reveal: dict[str, Any]) -> str:
+    values = {k: float(v) for k, v in (reveal.get("values") or {}).items()}
+    rec = reveal.get("recommendation")
+    if not values:
+        return "Not enough data to judge this call."
+    ranked = sorted(values.items(), key=lambda kv: kv[1], reverse=True)
+    if reveal.get("inconclusive") or rec not in values or len(ranked) < 2:
+        opts = " and ".join(_FAN_SHORT[k] for k, _ in ranked)
+        return f"Too close to call — {opts} give about the same win chance (around {_pct(ranked[0][1])})."
+    best = values[rec]
+    runner = max(v for k, v in values.items() if k != rec)
+    gain = max(best - runner, 0.0)
+    gain_txt = "less than 1%" if gain < 0.005 else f"about {_pct(gain)}"
+    return (
+        f"{_FAN_LABELS[rec]} added {gain_txt} win chance over the next-best option "
+        f"({best * 100:.1f}% vs {runner * 100:.1f}%)."
+    )
+
+
+def fanify_reveal(reveal: dict[str, Any]) -> dict[str, Any]:
+    """Idempotent: rewrite displayed text in fan language, keep model details hidden."""
+    if "model_notes" not in reveal:
+        reveal["model_notes"] = list(reveal.get("assumptions") or [])
+    m = reveal.get("margin")
+    reveal["edge_wp"] = None if m is None else float(m)
+    reveal["layman_why"] = fan_why(reveal)
+    reveal["assumptions"] = list(FAN_ASSUMPTIONS)
+    return reveal

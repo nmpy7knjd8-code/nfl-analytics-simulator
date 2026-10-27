@@ -21,7 +21,7 @@ from nfl_sim.models.fourth_down import (
     FourthDownSituation,
     sensitivity_example,
 )
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, TransitionMode
 
 # Provenance + state columns surfaced to the lab (when present in PBP).
 PROVENANCE_COLUMNS: tuple[str, ...] = (

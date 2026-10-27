@@ -37,6 +37,7 @@ export type QuizReveal = {
   layman_why: string;
   transition_mode?: string;
   empirics_mode?: string;
+  /** Fan-language notes, safe to display. */
   assumptions?: string[];
   recommendation_changed_legacy_to_improved?: boolean;
 };
@@ -108,9 +109,26 @@ export function ballProgress(yardline100: number): number {
   return Math.max(0, Math.min(100, 100 - yardline100));
 }
 
+/** Longest field goal the game offers (house rule); kick distance = yards to the end zone + 18. */
+export const MAX_FG_YARDS = 64;
+
+export function fieldGoalYards(situation: Pick<QuizSituation, "yardline_100">): number {
+  return Math.round(situation.yardline_100 + 18);
+}
+
+/** The options a player may pick: only ones the reveal has a value for, never a kick over 64 yards. */
+export function availableChoices(item: { reveal: QuizReveal; situation: Pick<QuizSituation, "yardline_100"> }): QuizChoice[] {
+  return (["go", "fg", "punt"] as QuizChoice[]).filter((c) => {
+    const v = item.reveal.values[c];
+    if (typeof v !== "number" || Number.isNaN(v)) return false;
+    return c !== "fg" || fieldGoalYards(item.situation) <= MAX_FG_YARDS;
+  });
+}
+
 export function scoreQuizChoice(
   choice: QuizChoice,
   reveal: QuizReveal,
+  situation?: Pick<QuizSituation, "yardline_100">,
 ): {
   result: QuizResult;
   credit: number;
@@ -122,6 +140,21 @@ export function scoreQuizChoice(
 } {
   const inconclusive =
     Boolean(reveal.inconclusive) || reveal.recommendation === "inconclusive";
+  // A choice the reveal has no value for (or a kick past 64 yd) never earns credit, close call or not.
+  const offered = situation
+    ? availableChoices({ reveal, situation }).includes(choice)
+    : typeof reveal.values[choice] === "number";
+  if (!offered) {
+    return {
+      result: "incorrect",
+      credit: 0,
+      recommendation: reveal.recommendation,
+      inconclusive,
+      values: reveal.values,
+      layman_why: reveal.layman_why,
+      margin: reveal.margin,
+    };
+  }
   if (inconclusive) {
     return {
       result: "near_tie",

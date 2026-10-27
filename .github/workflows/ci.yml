@@ -75,3 +75,6 @@ jobs:
         run: node --import tsx ../scripts/acceptance/dump_site_data.ts > ../site-data.json
       - name: Acceptance checks
         run: python3 scripts/acceptance/check.py site-data.json _site
+      - name: House-rule checks (creative-builds.md, existing features)
+        if: always()
+        run: python3 scripts/acceptance/house_rules.py site-data.json _site

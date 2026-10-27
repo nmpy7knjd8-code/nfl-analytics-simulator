@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FourthDownEmpirics, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, FourthDownEmpirics, TransitionMode
 from nfl_sim.models.wp_model import WPModel
 
 INCONCLUSIVE_EPS = 0.01
