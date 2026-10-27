@@ -89,3 +89,11 @@ is `team_color4` if that is a distinct non-neutral color (not within RGB distanc
 nflverse's color3 is kept (or color2 when color3 and color4 are both blank: NYJ, TEN). Every such team is listed with
 the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Colors only, no logos.
 Regenerate with `python backend/scripts/build_team_colors.py`; checked by `frontend/lib/teamColors.test.ts`.
+
+Team logos: self-hosted under `frontend/public/teams/<ABBR>/logo.png` and `wordmark.png` for the same 32 abbreviations
+(never hotlink at runtime). `frontend/public/teams/manifest.json` (copy: `frontend/contracts/teamLogos.json`, types:
+`frontend/contracts/teamLogos.ts`) = `{ _source, fetched, teams: { [team_abbr]: { logo, wordmark } } }`, each file
+`{ path, source_url, bytes }` with `path` site-relative (`/teams/KC/logo.png`). Logos come from nflverse
+`team_logo_espn` (ESPN), shrunk to 256x256; wordmarks from nflverse `team_wordmark`, capped at 600px wide; both are
+256-colour palette PNGs with alpha. Regenerate with `python backend/scripts/fetch_team_logos.py` (needs network and
+Pillow); checked by `frontend/lib/teamLogos.test.ts`.
