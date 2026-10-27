@@ -93,13 +93,13 @@ def test_compact_round_trip_restores_v1():
           "final_home_wp": 1.0, "swing_play_ids": [2],
           "plays": [
               {"play_id": 1, "qtr": 4, "clock": "0:30", "posteam": "LV", "down": 4, "ydstogo": 2, "yardline_100": 30,
-               "text": "(0:30) run", "display_text": "Run.", "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
+               "text": "(0:30) run", "display_text": "Run.", "penalty_text": None, "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
                "home_score": 3, "away_score": 7,
                "fourth_down": {"recommendation": "go", "close_call": False, "gap_pts": 3.21, "wp": {"go": 0.41, "fg": 0.38},
                                "home_wp": {"go": 0.41, "fg": 0.38}, "options": ["go", "fg"], "actual": "go",
                                "kick_distance": 48, "engine_version": "e1"}},
               {"play_id": 2, "qtr": 4, "clock": "0:05", "posteam": "LV", "down": 1, "ydstogo": 10, "yardline_100": 5,
-               "text": "(0:05) pass TD", "display_text": "Touchdown pass.", "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
+               "text": "(0:05) pass TD", "display_text": "Touchdown pass.", "penalty_text": None, "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
                "home_score": 10, "away_score": 7, "fourth_down": None}]}
     back = expand(compact(v1))
     v1["plays"][0]["home_wp"] = 0.412
@@ -137,8 +137,10 @@ def test_game_files_display_text_nonempty_and_matches_lib_plays():
         shared = lib / f"{path.stem}.json"
         if shared.exists():
             got = dict(zip(map(str, c["play_id"]), c["display_text"]))
+            pen = dict(zip(map(str, c["play_id"]), c["penalty_text"]))
             for p in json.loads(shared.read_text())["plays"]:
                 assert got[p["play_id"]] == p["display_text"], (path.stem, p["play_id"])
+                assert pen[p["play_id"]] == p["penalty_text"], (path.stem, p["play_id"])
 
 
 def test_game_flow_rows_get_display_text():
@@ -149,7 +151,7 @@ def test_game_flow_rows_get_display_text():
 
 def test_compact_round_trips_display_text():
     doc = {"plays": [{"play_id": 1, "qtr": 1, "clock": "15:00", "posteam": "BUF", "down": None, "ydstogo": None,
-                      "yardline_100": None, "text": "GAME", "display_text": "Start of game.", "play_type": None,
+                      "yardline_100": None, "text": "GAME", "display_text": "Start of game.", "penalty_text": None, "play_type": None,
                       "home_wp": 0.5, "home_wp_after": 0.5, "swing": False, "home_score": 0, "away_score": 0,
                       "fourth_down": None}],
            "provenance": {"source": "nflverse"}, "game": {}, "wp_perspective": "home", "swing_threshold": 0.08,

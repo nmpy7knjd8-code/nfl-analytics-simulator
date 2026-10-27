@@ -92,6 +92,8 @@ export type EventPoint = WinProbabilityPoint & {
   event?: string;
   fourth_down_failed?: boolean;
   display_text?: string;
+  /** flags after the play (null on "No play" rows and flag-free plays); render after display_text */
+  penalty_text?: string | null;
   raw_desc?: string;
   down?: number | null;
   distance?: number | null;
