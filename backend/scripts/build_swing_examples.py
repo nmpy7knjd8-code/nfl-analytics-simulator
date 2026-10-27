@@ -15,25 +15,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend" / "src"))
-from nfl_sim.swing_examples import FIXTURE_COLUMNS, GAME_IDS, NAME_ROLES, build_export, build_play_lists  # noqa: E402
+from nfl_sim.play_names import ID_COLS, PLAYERS_CSV, attach_names, load_players, load_roster  # noqa: E402
+from nfl_sim.swing_examples import FIXTURE_COLUMNS, GAME_IDS, build_export, build_play_lists  # noqa: E402
 
-PLAYERS_CSV = "https://github.com/nflverse/nflverse-data/releases/download/players/players.csv"
-
-
-def main(path: str, players: str = PLAYERS_CSV) -> None:
+def main(path: str, players: str = PLAYERS_CSV, rosters: str | None = None) -> None:
     """players: nflverse players.csv (gsis_id -> display_name) for full names."""
     import pandas as pd
 
-    id_cols = [f"{role}_player_id" for role in NAME_ROLES]
-    df = pd.read_parquet(path, columns=FIXTURE_COLUMNS + id_cols)
+    df = pd.read_parquet(path, columns=FIXTURE_COLUMNS + ID_COLS)
     df = df[df.game_id.isin(GAME_IDS) & df.play_id.notna()].copy()
-    names = pd.read_csv(players, usecols=["gsis_id", "display_name"]).dropna().set_index("gsis_id").display_name.to_dict()
+    names, roster = load_players(players), load_roster(2023, rosters)
     rows = json.loads(df.to_json(orient="records"))
     for r in rows:
         r["play_id"] = str(int(r["play_id"]))
-        r["names"] = {role: names[r[f"{role}_player_id"]] for role in NAME_ROLES if r.get(f"{role}_player_id") in names}
-        for c in id_cols:
-            r.pop(c, None)
+        attach_names(r, names, roster)
     (ROOT / "backend/tests/fixtures/swing_pbp_rows.json").write_text(json.dumps(rows, separators=(",", ":")) + "\n")
     (ROOT / "frontend/lib/swingPlays.json").write_text(json.dumps(build_export(rows), separators=(",", ":")) + "\n")
     out = ROOT / "frontend/lib/plays"

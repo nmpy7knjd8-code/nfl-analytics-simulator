@@ -22,10 +22,9 @@ FIXTURE_COLUMNS = [
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
     "return_touchdown", "td_team",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "td_player_name",
+    "touchback", "penalty_team", "penalty_type", "penalty_yards", "penalty_player_name",
 ]
-# role -> pbp *_player_id column; build script resolves ids to full names into row["names"]
-NAME_ROLES = ("passer", "receiver", "rusher", "interception", "kicker", "punter", "punt_returner",
-              "kickoff_returner", "fumbled_1", "fumble_recovery_1", "sack")
+from nfl_sim.play_names import NAME_ROLES  # noqa: E402,F401  (re-export)
 
 
 def is_swing_candidate(r: dict[str, Any]) -> bool:
@@ -54,11 +53,11 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "yards_gained": _int(r.get("yards_gained")),
         "return_td": is_return_td(r),
         "fourth_down_failed": _int(r.get("down")) == 4 and bool(r.get("fourth_down_failed")),
-        "event": event_tag(r), "display_text": display_text(r), "raw_desc": r["desc"],
+        "event": event_tag(r), "display_text": display_text(r), "penalty_text": penalty_text(r), "raw_desc": r["desc"],
     }
 
 
-from nfl_sim.play_text import display_text, event_tag  # noqa: E402
+from nfl_sim.play_text import display_text, event_tag, penalty_text  # noqa: E402
 
 
 def _int(v: Any) -> int | None:

@@ -85,9 +85,40 @@ def _fit(s: str) -> str:
     return " ".join(words[:MAX_WORDS]).rstrip(",;") + "…"
 
 
+def _kickoff(r: dict[str, Any]) -> str | None:
+    k = _name(r, "kicker")
+    if not k:
+        return None
+    if _t(r.get("touchback")):
+        return f"{k} kicks off for a touchback."
+    ret, ry, dist = _name(r, "kickoff_returner"), r.get("return_yards"), r.get("kick_distance")
+    s = f"{k} kicks off" + (f" {_yds(dist)}" if dist else "")
+    if ret and ry is not None and _t(r.get("touchdown")):
+        return s + f", and {ret} returns it {_yds(ry)} for a touchdown."
+    if ret and ry is not None:
+        return s + f", and {ret} returns it {_yds(ry)}."
+    return None
+
+
+def _kneel_or_spike(r: dict[str, Any]) -> str | None:
+    if r.get("play_type") == "qb_spike":
+        qb = _name(r, "passer")
+        return f"{qb} spikes the ball to stop the clock." if qb else None
+    qb, yg = _name(r, "rusher"), r.get("yards_gained")
+    if not qb:
+        return None
+    if yg is not None and yg < 0:
+        return f"{qb} kneels for a loss of {_yds(-yg)}."
+    return f"{qb} kneels to run out the clock."
+
+
 def _templated(r: dict[str, Any]) -> str | None:
     pt, td = r.get("play_type"), _t(r.get("touchdown"))
     yg = r.get("yards_gained")
+    if pt == "kickoff":
+        return _kickoff(r)
+    if pt in ("qb_kneel", "qb_spike"):
+        return _kneel_or_spike(r)
     if r.get("play_type") == "no_play" or _t(r.get("penalty")) and pt not in ("pass", "run"):
         return None
     if _t(r.get("interception")):
@@ -120,6 +151,10 @@ def _templated(r: dict[str, Any]) -> str | None:
         elif wr and yg is not None and td:
             s = f"{qb} throws a {int(yg)}-yard touchdown pass to {wr}"
             td = False
+        elif wr and yg is not None and yg < 0:
+            s = f"{qb} completes a pass to {wr} for a loss of {_yds(-yg)}"
+        elif wr and yg == 0:
+            s = f"{qb} completes a pass to {wr} for no gain"
         elif wr and yg is not None:
             s = f"{qb} completes a pass to {wr} for {_yds(yg)}"
         else:
@@ -168,20 +203,141 @@ def _templated(r: dict[str, Any]) -> str | None:
     return s + "."
 
 
-def penalty_text(desc: str) -> str | None:
+def no_play_text(desc: str, r: dict[str, Any] | None = None) -> str | None:
     m = _PENALTY.search(desc)
     if not m:
         return None
     team, who, foul, yds = m.groups()
+    full = ((r or {}).get("names") or {}).get("penalty")
+    if full and who:
+        who = full
     whom = f"{who} ({team})" if who and team else (who or team)
     if not whom:
         return None
-    return f"Penalty on {whom}: {foul.strip().lower()}, {yds} yards. No play."
+    n = int(yds)
+    return f"Penalty on {whom}: {foul.strip().lower()}, {n} {'yard' if n == 1 else 'yards'}. No play."
+
+
+_SHORTHAND = (
+    (re.compile(r"\bfor -(\d+) yards?"), lambda m: f"for a loss of {_yds(int(m.group(1)))}"),
+    (re.compile(r"\bfor 0 yards?"), lambda m: "for no gain"),
+    (re.compile(r"\byds?\b\.?"), lambda m: "yards"),
+    (re.compile(r"\bob\b"), lambda m: "out of bounds"),
+    (re.compile(r"\bTouchback\b"), lambda m: "touchback"),
+    (re.compile(r"\bend zone, touchback"), lambda m: "the end zone for a touchback"),
+)
+
+
+def plain_english(s: str) -> str:
+    """Last pass: rewrite any feed shorthand left in fallback text."""
+    for pat, fn in _SHORTHAND:
+        s = pat.sub(fn, s)
+    return s
+
+
+_PEN_CLAUSE = re.compile(
+    r"PENALTY on ([A-Z]{2,3})(?:-(\d{1,2})-([\w.'\-]+))?,\s*([^,]+),\s*(\d+ yards?|declined|offsetting)", re.I)
+_FOUL_WORDS = {"offside on free kick": "offside on kickoff"}
+
+
+_COUNT = {2: "Two", 3: "Three", 4: "Four"}
+
+
+def _and(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def penalty_clauses(r: dict[str, Any], skip_first: bool = False) -> list[tuple[str, str | None, str, str]]:
+    """(team, full name or None, foul in plain words, '5 yards' | 'declined' | 'offsetting') per feed penalty."""
+    names = (r.get("names") or {}).get("penalties") or {}
+    out = []
+    for i, (team, num, _short, foul, res) in enumerate(_PEN_CLAUSE.findall(r.get("desc") or "")):
+        if skip_first and i == 0:
+            continue
+        foul = foul.strip().lower()
+        full = names.get(f"{team}-{num}") if num else None
+        if not full and i == 0 and num:
+            full = (r.get("names") or {}).get("penalty")
+        out.append((team.upper(), full, _FOUL_WORDS.get(foul, foul), res.lower()))
+    return out
+
+
+def _whom(team: str, full: str | None) -> str:
+    return f"{full} ({team})" if full else team
+
+
+def penalty_sentences(clauses: list[tuple[str, str | None, str, str]]) -> str | None:
+    """Plain sentences for penalties after a play (UI Critic P2-J / P3-H / P3-I)."""
+    if not clauses:
+        return None
+    if len(clauses) >= 2 and all(c[3] == "offsetting" for c in clauses):
+        fouls = {c[2] for c in clauses}
+        if len(fouls) == 1:
+            body = f"{clauses[0][2]} on " + _and([_whom(t, n) for t, n, _, _ in clauses])
+        else:
+            body = _and([f"{f} on {_whom(t, n)}" for t, n, f, _ in clauses])
+        return f"Offsetting penalties: {body}. The down is replayed."
+    out: list[str] = []
+    declined: dict[str, list] = {}
+    for t, n, f, res in clauses:
+        if res == "declined":
+            declined.setdefault(t, []).append((n, f))
+        elif res == "offsetting":
+            out.append(f"Penalty on {_whom(t, n)}: {f}, offsetting.")
+        else:
+            out.append(f"Penalty on {_whom(t, n)}: {f}, {res} against {t}.")
+    for t, flags in declined.items():
+        if len(flags) == 1:
+            n, f = flags[0]
+            out.append(f"Flag on {_whom(t, n)} for {f}, declined.")
+        else:
+            items = [f"{f} ({n})" if n else f for n, f in flags]
+            out.append(f"{_COUNT.get(len(flags), str(len(flags)))} {t} flags declined: {_and(items)}.")
+    return " ".join(out)
+
+
+def penalty_text(r: dict[str, Any]) -> str | None:
+    """Separate penalty field for plays that happened (None on 'No play' rows: the flag is in display_text)."""
+    if marker_text(r.get("desc") or "") is not None or _is_no_play(r):
+        return None
+    if re.search(r"(?i)penalty", _main_text(r)):  # fallback text already carries it
+        return None
+    return penalty_sentences(penalty_clauses(r))
+
+
+def _is_no_play(r: dict[str, Any]) -> bool:
+    return r.get("play_type") == "no_play" and no_play_text(r.get("desc") or "", r) is not None
+
+
+def _main_text(r: dict[str, Any]) -> str:
+    return plain_english(_fit(_templated(r) or clean_desc(r.get("desc") or ""))) or "Play details unavailable."
+
+
+_END_Q = re.compile(r"^END QUARTER (\d)", re.I)
+_TIMEOUT = re.compile(r"^Timeout #\d by ([A-Z]{2,3})", re.I)
+
+
+def marker_text(desc: str) -> str | None:
+    """Game-flow rows that aren't plays (game files keep them; play lists drop them)."""
+    d = desc.strip()
+    if d.upper() == "GAME":
+        return "Start of game."
+    if d.upper().startswith("END GAME"):
+        return "End of game."
+    if m := _END_Q.match(d):
+        return "End of overtime." if int(m.group(1)) >= 5 else f"End of quarter {m.group(1)}."
+    if "Two-Minute Warning" in d:
+        return "Two-minute warning."
+    if m := _TIMEOUT.match(d):
+        return f"Timeout by {m.group(1).upper()}."
+    return None
 
 
 def display_text(r: dict[str, Any]) -> str:
-    if r.get("play_type") == "no_play":
-        pen = penalty_text(r.get("desc") or "")
-        if pen:
-            return _fit(pen)
-    return _fit(_templated(r) or clean_desc(r.get("desc") or ""))
+    """Main sentence (<= MAX_WORDS). Penalties after a play go in penalty_text(); 'No play' rows keep theirs here."""
+    if (mk := marker_text(r.get("desc") or "")) is not None:
+        return mk
+    if _is_no_play(r):
+        rest = penalty_sentences(penalty_clauses(r, skip_first=True))
+        return " ".join(x for x in (_fit(no_play_text(r.get("desc") or "", r)), rest) if x)
+    return _main_text(r)
