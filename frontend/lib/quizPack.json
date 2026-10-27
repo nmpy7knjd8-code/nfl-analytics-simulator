@@ -34,7 +34,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 207
+        "quarter_seconds_remaining": 207,
+        "home_score_before": 31,
+        "away_score_before": 28,
+        "clock": "3:27"
       },
       "historical_action": "punt",
       "reveal": {
@@ -86,7 +89,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 596
+        "quarter_seconds_remaining": 596,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:56"
       },
       "historical_action": "punt",
       "reveal": {
@@ -138,7 +144,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 822
+        "quarter_seconds_remaining": 822,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:42"
       },
       "historical_action": "punt",
       "reveal": {
@@ -191,7 +200,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 679
+        "quarter_seconds_remaining": 679,
+        "home_score_before": 14,
+        "away_score_before": 3,
+        "clock": "11:19"
       },
       "historical_action": "punt",
       "reveal": {
@@ -243,7 +255,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 628
+        "quarter_seconds_remaining": 628,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "10:28"
       },
       "historical_action": "punt",
       "reveal": {
@@ -295,7 +310,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 22
+        "quarter_seconds_remaining": 22,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "0:22"
       },
       "historical_action": "go",
       "reveal": {
@@ -348,7 +366,10 @@
         "distance": 9,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 5
+        "quarter_seconds_remaining": 5,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "0:05"
       },
       "historical_action": "fg",
       "reveal": {
@@ -401,7 +422,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 826
+        "quarter_seconds_remaining": 826,
+        "home_score_before": 6,
+        "away_score_before": 0,
+        "clock": "13:46"
       },
       "historical_action": "punt",
       "reveal": {
@@ -453,7 +477,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 814
+        "quarter_seconds_remaining": 814,
+        "home_score_before": 14,
+        "away_score_before": 16,
+        "clock": "13:34"
       },
       "historical_action": "go",
       "reveal": {
@@ -506,7 +533,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 429
+        "quarter_seconds_remaining": 429,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "7:09"
       },
       "historical_action": "go",
       "reveal": {
@@ -559,7 +589,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 32
+        "quarter_seconds_remaining": 32,
+        "home_score_before": 7,
+        "away_score_before": 3,
+        "clock": "0:32"
       },
       "historical_action": "punt",
       "reveal": {
@@ -611,7 +644,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 199
+        "quarter_seconds_remaining": 199,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "3:19"
       },
       "historical_action": "fg",
       "reveal": {
@@ -664,7 +700,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 646
+        "quarter_seconds_remaining": 646,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "10:46"
       },
       "historical_action": "punt",
       "reveal": {
@@ -716,7 +755,10 @@
         "distance": 12,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 35
+        "quarter_seconds_remaining": 35,
+        "home_score_before": 25,
+        "away_score_before": 26,
+        "clock": "0:35"
       },
       "historical_action": "fg",
       "reveal": {
@@ -769,7 +811,10 @@
         "distance": 13,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 566
+        "quarter_seconds_remaining": 566,
+        "home_score_before": 27,
+        "away_score_before": 0,
+        "clock": "9:26"
       },
       "historical_action": "go",
       "reveal": {
@@ -822,7 +867,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 860
+        "quarter_seconds_remaining": 860,
+        "home_score_before": 7,
+        "away_score_before": 37,
+        "clock": "14:20"
       },
       "historical_action": "go",
       "reveal": {
@@ -875,7 +923,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 541
+        "quarter_seconds_remaining": 541,
+        "home_score_before": 7,
+        "away_score_before": 3,
+        "clock": "9:01"
       },
       "historical_action": "go",
       "reveal": {
@@ -928,7 +979,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 492
+        "quarter_seconds_remaining": 492,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "8:12"
       },
       "historical_action": "fg",
       "reveal": {
@@ -981,7 +1035,10 @@
         "distance": 4,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 2
+        "quarter_seconds_remaining": 2,
+        "home_score_before": 29,
+        "away_score_before": 29,
+        "clock": "0:02"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1034,7 +1091,10 @@
         "distance": 7,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 117
+        "quarter_seconds_remaining": 117,
+        "home_score_before": 14,
+        "away_score_before": 0,
+        "clock": "1:57"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1086,7 +1146,10 @@
         "distance": 8,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 55
+        "quarter_seconds_remaining": 55,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "0:55"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1138,7 +1201,10 @@
         "distance": 15,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 11
+        "quarter_seconds_remaining": 11,
+        "home_score_before": 3,
+        "away_score_before": 6,
+        "clock": "0:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1191,7 +1257,10 @@
         "distance": 13,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 323
+        "quarter_seconds_remaining": 323,
+        "home_score_before": 15,
+        "away_score_before": 14,
+        "clock": "5:23"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1244,7 +1313,10 @@
         "distance": 6,
         "posteam_timeouts": 2,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 133
+        "quarter_seconds_remaining": 133,
+        "home_score_before": 20,
+        "away_score_before": 12,
+        "clock": "2:13"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1296,7 +1368,10 @@
         "distance": 15,
         "posteam_timeouts": 2,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 26
+        "quarter_seconds_remaining": 26,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "0:26"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1349,7 +1424,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 858
+        "quarter_seconds_remaining": 858,
+        "home_score_before": 0,
+        "away_score_before": 16,
+        "clock": "14:18"
       },
       "historical_action": "go",
       "reveal": {
@@ -1402,7 +1480,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 613
+        "quarter_seconds_remaining": 613,
+        "home_score_before": 16,
+        "away_score_before": 0,
+        "clock": "10:13"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1455,7 +1536,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 188
+        "quarter_seconds_remaining": 188,
+        "home_score_before": 21,
+        "away_score_before": 23,
+        "clock": "3:08"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1507,7 +1591,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 133
+        "quarter_seconds_remaining": 133,
+        "home_score_before": 14,
+        "away_score_before": 26,
+        "clock": "2:13"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1559,7 +1646,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 30
+        "quarter_seconds_remaining": 30,
+        "home_score_before": 3,
+        "away_score_before": 10,
+        "clock": "0:30"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1612,7 +1702,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 310
+        "quarter_seconds_remaining": 310,
+        "home_score_before": 20,
+        "away_score_before": 12,
+        "clock": "5:10"
       },
       "historical_action": "go",
       "reveal": {
@@ -1665,7 +1758,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 795
+        "quarter_seconds_remaining": 795,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:15"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1717,7 +1813,10 @@
         "distance": 10,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 86
+        "quarter_seconds_remaining": 86,
+        "home_score_before": 10,
+        "away_score_before": 15,
+        "clock": "1:26"
       },
       "historical_action": "go",
       "reveal": {
@@ -1769,7 +1868,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 585
+        "quarter_seconds_remaining": 585,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "9:45"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1821,7 +1923,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 177
+        "quarter_seconds_remaining": 177,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "2:57"
       },
       "historical_action": "punt",
       "reveal": {
@@ -1873,7 +1978,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 584
+        "quarter_seconds_remaining": 584,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "9:44"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1926,7 +2034,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 614
+        "quarter_seconds_remaining": 614,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "10:14"
       },
       "historical_action": "fg",
       "reveal": {
@@ -1979,7 +2090,10 @@
         "distance": 13,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 857
+        "quarter_seconds_remaining": 857,
+        "home_score_before": 21,
+        "away_score_before": 17,
+        "clock": "14:17"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2032,7 +2146,10 @@
         "distance": 13,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 896
+        "quarter_seconds_remaining": 896,
+        "home_score_before": 21,
+        "away_score_before": 17,
+        "clock": "14:56"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2084,7 +2201,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 864
+        "quarter_seconds_remaining": 864,
+        "home_score_before": 17,
+        "away_score_before": 14,
+        "clock": "14:24"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2137,7 +2257,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 686
+        "quarter_seconds_remaining": 686,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "11:26"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2189,7 +2312,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 131
+        "quarter_seconds_remaining": 131,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "2:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2242,7 +2368,10 @@
         "distance": 6,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 886
+        "quarter_seconds_remaining": 886,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "14:46"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2294,7 +2423,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 139
+        "quarter_seconds_remaining": 139,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "2:19"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2347,7 +2479,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 414
+        "quarter_seconds_remaining": 414,
+        "home_score_before": 35,
+        "away_score_before": 28,
+        "clock": "6:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2399,7 +2534,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 456
+        "quarter_seconds_remaining": 456,
+        "home_score_before": 14,
+        "away_score_before": 10,
+        "clock": "7:36"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2451,7 +2589,10 @@
         "distance": 5,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 29
+        "quarter_seconds_remaining": 29,
+        "home_score_before": 24,
+        "away_score_before": 0,
+        "clock": "0:29"
       },
       "historical_action": "go",
       "reveal": {
@@ -2504,7 +2645,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 3,
+        "away_score_before": 13,
+        "clock": "2:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -2556,7 +2700,10 @@
         "distance": 14,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 138
+        "quarter_seconds_remaining": 138,
+        "home_score_before": 13,
+        "away_score_before": 28,
+        "clock": "2:18"
       },
       "historical_action": "go",
       "reveal": {
@@ -2608,7 +2755,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 573
+        "quarter_seconds_remaining": 573,
+        "home_score_before": 16,
+        "away_score_before": 14,
+        "clock": "9:33"
       },
       "historical_action": "go",
       "reveal": {
@@ -2661,7 +2811,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 433
+        "quarter_seconds_remaining": 433,
+        "home_score_before": 18,
+        "away_score_before": 21,
+        "clock": "7:13"
       },
       "historical_action": "go",
       "reveal": {
@@ -2713,7 +2866,10 @@
         "distance": 5,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 25
+        "quarter_seconds_remaining": 25,
+        "home_score_before": 10,
+        "away_score_before": 14,
+        "clock": "0:25"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2766,7 +2922,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 204
+        "quarter_seconds_remaining": 204,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "3:24"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2819,7 +2978,10 @@
         "distance": 11,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 221
+        "quarter_seconds_remaining": 221,
+        "home_score_before": 8,
+        "away_score_before": 14,
+        "clock": "3:41"
       },
       "historical_action": "fg",
       "reveal": {
@@ -2872,7 +3034,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 262
+        "quarter_seconds_remaining": 262,
+        "home_score_before": 3,
+        "away_score_before": 9,
+        "clock": "4:22"
       },
       "historical_action": "go",
       "reveal": {
@@ -2924,7 +3089,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 124
+        "quarter_seconds_remaining": 124,
+        "home_score_before": 15,
+        "away_score_before": 9,
+        "clock": "2:04"
       },
       "historical_action": "go",
       "reveal": {
@@ -2977,7 +3145,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 10,
+        "away_score_before": 3,
+        "clock": "2:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -3030,7 +3201,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 408
+        "quarter_seconds_remaining": 408,
+        "home_score_before": 14,
+        "away_score_before": 0,
+        "clock": "6:48"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3082,7 +3256,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 675
+        "quarter_seconds_remaining": 675,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "11:15"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3134,7 +3311,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 281
+        "quarter_seconds_remaining": 281,
+        "home_score_before": 14,
+        "away_score_before": 10,
+        "clock": "4:41"
       },
       "historical_action": "go",
       "reveal": {
@@ -3187,7 +3367,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 291
+        "quarter_seconds_remaining": 291,
+        "home_score_before": 14,
+        "away_score_before": 17,
+        "clock": "4:51"
       },
       "historical_action": "fg",
       "reveal": {
@@ -3240,7 +3423,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 662
+        "quarter_seconds_remaining": 662,
+        "home_score_before": 9,
+        "away_score_before": 10,
+        "clock": "11:02"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3292,7 +3478,10 @@
         "distance": 14,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 27
+        "quarter_seconds_remaining": 27,
+        "home_score_before": 16,
+        "away_score_before": 11,
+        "clock": "0:27"
       },
       "historical_action": "fg",
       "reveal": {
@@ -3345,7 +3534,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 148
+        "quarter_seconds_remaining": 148,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "2:28"
       },
       "historical_action": "go",
       "reveal": {
@@ -3398,7 +3590,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 812
+        "quarter_seconds_remaining": 812,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:32"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3450,7 +3645,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 186
+        "quarter_seconds_remaining": 186,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "3:06"
       },
       "historical_action": "go",
       "reveal": {
@@ -3503,7 +3701,10 @@
         "distance": 10,
         "posteam_timeouts": 0,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 3
+        "quarter_seconds_remaining": 3,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "0:03"
       },
       "historical_action": "go",
       "reveal": {
@@ -3555,7 +3756,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 207
+        "quarter_seconds_remaining": 207,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "3:27"
       },
       "historical_action": "fg",
       "reveal": {
@@ -3608,7 +3812,10 @@
         "distance": 4,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 68
+        "quarter_seconds_remaining": 68,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "1:08"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3660,7 +3867,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 198
+        "quarter_seconds_remaining": 198,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "3:18"
       },
       "historical_action": "go",
       "reveal": {
@@ -3713,7 +3923,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 15
+        "quarter_seconds_remaining": 15,
+        "home_score_before": 9,
+        "away_score_before": 10,
+        "clock": "0:15"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3766,7 +3979,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 703
+        "quarter_seconds_remaining": 703,
+        "home_score_before": 17,
+        "away_score_before": 3,
+        "clock": "11:43"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3818,7 +4034,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 819
+        "quarter_seconds_remaining": 819,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:39"
       },
       "historical_action": "punt",
       "reveal": {
@@ -3870,7 +4089,10 @@
         "distance": 6,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 76
+        "quarter_seconds_remaining": 76,
+        "home_score_before": 22,
+        "away_score_before": 17,
+        "clock": "1:16"
       },
       "historical_action": "fg",
       "reveal": {
@@ -3923,7 +4145,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 89
+        "quarter_seconds_remaining": 89,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "1:29"
       },
       "historical_action": "fg",
       "reveal": {
@@ -3976,7 +4201,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 395
+        "quarter_seconds_remaining": 395,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:35"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4029,7 +4257,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 525
+        "quarter_seconds_remaining": 525,
+        "home_score_before": 28,
+        "away_score_before": 34,
+        "clock": "8:45"
       },
       "historical_action": "punt",
       "reveal": {
@@ -4081,7 +4312,10 @@
         "distance": 10,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 712
+        "quarter_seconds_remaining": 712,
+        "home_score_before": 14,
+        "away_score_before": 13,
+        "clock": "11:52"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4134,7 +4368,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 852
+        "quarter_seconds_remaining": 852,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "14:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -4186,7 +4423,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 592
+        "quarter_seconds_remaining": 592,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "9:52"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4239,7 +4479,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 571
+        "quarter_seconds_remaining": 571,
+        "home_score_before": 13,
+        "away_score_before": 6,
+        "clock": "9:31"
       },
       "historical_action": "go",
       "reveal": {
@@ -4291,7 +4534,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 773
+        "quarter_seconds_remaining": 773,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:53"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4344,7 +4590,10 @@
         "distance": 1,
         "posteam_timeouts": 0,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 58
+        "quarter_seconds_remaining": 58,
+        "home_score_before": 6,
+        "away_score_before": 10,
+        "clock": "0:58"
       },
       "historical_action": "go",
       "reveal": {
@@ -4396,7 +4645,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 417
+        "quarter_seconds_remaining": 417,
+        "home_score_before": 0,
+        "away_score_before": 10,
+        "clock": "6:57"
       },
       "historical_action": "go",
       "reveal": {
@@ -4449,7 +4701,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 660
+        "quarter_seconds_remaining": 660,
+        "home_score_before": 20,
+        "away_score_before": 7,
+        "clock": "11:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -4502,7 +4757,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 340
+        "quarter_seconds_remaining": 340,
+        "home_score_before": 20,
+        "away_score_before": 13,
+        "clock": "5:40"
       },
       "historical_action": "go",
       "reveal": {
@@ -4555,7 +4813,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 377
+        "quarter_seconds_remaining": 377,
+        "home_score_before": 14,
+        "away_score_before": 20,
+        "clock": "6:17"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4608,7 +4869,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 253
+        "quarter_seconds_remaining": 253,
+        "home_score_before": 27,
+        "away_score_before": 17,
+        "clock": "4:13"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4661,7 +4925,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 726
+        "quarter_seconds_remaining": 726,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "12:06"
       },
       "historical_action": "punt",
       "reveal": {
@@ -4713,7 +4980,10 @@
         "distance": 5,
         "posteam_timeouts": 0,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 9
+        "quarter_seconds_remaining": 9,
+        "home_score_before": 7,
+        "away_score_before": 17,
+        "clock": "0:09"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4766,7 +5036,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 283
+        "quarter_seconds_remaining": 283,
+        "home_score_before": 6,
+        "away_score_before": 9,
+        "clock": "4:43"
       },
       "historical_action": "go",
       "reveal": {
@@ -4819,7 +5092,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 656
+        "quarter_seconds_remaining": 656,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:56"
       },
       "historical_action": "punt",
       "reveal": {
@@ -4871,7 +5147,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 533
+        "quarter_seconds_remaining": 533,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "8:53"
       },
       "historical_action": "go",
       "reveal": {
@@ -4924,7 +5203,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 671
+        "quarter_seconds_remaining": 671,
+        "home_score_before": 23,
+        "away_score_before": 21,
+        "clock": "11:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -4977,7 +5259,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 77
+        "quarter_seconds_remaining": 77,
+        "home_score_before": 31,
+        "away_score_before": 17,
+        "clock": "1:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -5030,7 +5315,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 654
+        "quarter_seconds_remaining": 654,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5082,7 +5370,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 570
+        "quarter_seconds_remaining": 570,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "9:30"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5135,7 +5426,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 358
+        "quarter_seconds_remaining": 358,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "5:58"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5188,7 +5482,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 506
+        "quarter_seconds_remaining": 506,
+        "home_score_before": 13,
+        "away_score_before": 13,
+        "clock": "8:26"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5241,7 +5538,10 @@
         "distance": 13,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 36
+        "quarter_seconds_remaining": 36,
+        "home_score_before": 23,
+        "away_score_before": 24,
+        "clock": "0:36"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5294,7 +5594,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 853
+        "quarter_seconds_remaining": 853,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "14:13"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5346,7 +5649,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 31
+        "quarter_seconds_remaining": 31,
+        "home_score_before": 3,
+        "away_score_before": 7,
+        "clock": "0:31"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5398,7 +5704,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 97
+        "quarter_seconds_remaining": 97,
+        "home_score_before": 14,
+        "away_score_before": 10,
+        "clock": "1:37"
       },
       "historical_action": "go",
       "reveal": {
@@ -5451,7 +5760,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 658
+        "quarter_seconds_remaining": 658,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:58"
       },
       "historical_action": "go",
       "reveal": {
@@ -5503,7 +5815,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 797
+        "quarter_seconds_remaining": 797,
+        "home_score_before": 31,
+        "away_score_before": 13,
+        "clock": "13:17"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5556,7 +5871,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "2:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -5608,7 +5926,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 413
+        "quarter_seconds_remaining": 413,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "6:53"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5661,7 +5982,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 483
+        "quarter_seconds_remaining": 483,
+        "home_score_before": 3,
+        "away_score_before": 6,
+        "clock": "8:03"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5713,7 +6037,10 @@
         "distance": 10,
         "posteam_timeouts": 0,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 7
+        "quarter_seconds_remaining": 7,
+        "home_score_before": 17,
+        "away_score_before": 9,
+        "clock": "0:07"
       },
       "historical_action": "go",
       "reveal": {
@@ -5766,7 +6093,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 631
+        "quarter_seconds_remaining": 631,
+        "home_score_before": 10,
+        "away_score_before": 17,
+        "clock": "10:31"
       },
       "historical_action": "fg",
       "reveal": {
@@ -5819,7 +6149,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 216
+        "quarter_seconds_remaining": 216,
+        "home_score_before": 21,
+        "away_score_before": 26,
+        "clock": "3:36"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5871,7 +6204,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 647
+        "quarter_seconds_remaining": 647,
+        "home_score_before": 3,
+        "away_score_before": 14,
+        "clock": "10:47"
       },
       "historical_action": "go",
       "reveal": {
@@ -5924,7 +6260,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 484
+        "quarter_seconds_remaining": 484,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "8:04"
       },
       "historical_action": "punt",
       "reveal": {
@@ -5976,7 +6315,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 260
+        "quarter_seconds_remaining": 260,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "4:20"
       },
       "historical_action": "go",
       "reveal": {
@@ -6029,7 +6371,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 29
+        "quarter_seconds_remaining": 29,
+        "home_score_before": 10,
+        "away_score_before": 24,
+        "clock": "0:29"
       },
       "historical_action": "go",
       "reveal": {
@@ -6082,7 +6427,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 431
+        "quarter_seconds_remaining": 431,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "7:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6135,7 +6483,10 @@
         "distance": 1,
         "posteam_timeouts": 0,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 3
+        "quarter_seconds_remaining": 3,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "0:03"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6188,7 +6539,10 @@
         "distance": 2,
         "posteam_timeouts": 0,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 23
+        "quarter_seconds_remaining": 23,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "0:23"
       },
       "historical_action": "punt",
       "reveal": {
@@ -6240,7 +6594,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 292
+        "quarter_seconds_remaining": 292,
+        "home_score_before": 21,
+        "away_score_before": 10,
+        "clock": "4:52"
       },
       "historical_action": "go",
       "reveal": {
@@ -6292,7 +6649,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 473
+        "quarter_seconds_remaining": 473,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "7:53"
       },
       "historical_action": "punt",
       "reveal": {
@@ -6344,7 +6704,10 @@
         "distance": 6,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 62
+        "quarter_seconds_remaining": 62,
+        "home_score_before": 19,
+        "away_score_before": 16,
+        "clock": "1:02"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6397,7 +6760,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 714
+        "quarter_seconds_remaining": 714,
+        "home_score_before": 12,
+        "away_score_before": 24,
+        "clock": "11:54"
       },
       "historical_action": "go",
       "reveal": {
@@ -6450,7 +6816,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 555
+        "quarter_seconds_remaining": 555,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:15"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6503,7 +6872,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 774
+        "quarter_seconds_remaining": 774,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "12:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -6555,7 +6927,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 175
+        "quarter_seconds_remaining": 175,
+        "home_score_before": 10,
+        "away_score_before": 3,
+        "clock": "2:55"
       },
       "historical_action": "go",
       "reveal": {
@@ -6607,7 +6982,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 582
+        "quarter_seconds_remaining": 582,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:42"
       },
       "historical_action": "go",
       "reveal": {
@@ -6659,7 +7037,10 @@
         "distance": 3,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 23
+        "quarter_seconds_remaining": 23,
+        "home_score_before": 6,
+        "away_score_before": 6,
+        "clock": "0:23"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6712,7 +7093,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 714
+        "quarter_seconds_remaining": 714,
+        "home_score_before": 20,
+        "away_score_before": 21,
+        "clock": "11:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -6764,7 +7148,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 10,
+        "away_score_before": 3,
+        "clock": "2:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -6817,7 +7204,10 @@
         "distance": 2,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 432
+        "quarter_seconds_remaining": 432,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "7:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -6869,7 +7259,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 579
+        "quarter_seconds_remaining": 579,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "9:39"
       },
       "historical_action": "go",
       "reveal": {
@@ -6922,7 +7315,10 @@
         "distance": 11,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 777
+        "quarter_seconds_remaining": 777,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "12:57"
       },
       "historical_action": "fg",
       "reveal": {
@@ -6975,7 +7371,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 709
+        "quarter_seconds_remaining": 709,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "11:49"
       },
       "historical_action": "go",
       "reveal": {
@@ -7028,7 +7427,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 205
+        "quarter_seconds_remaining": 205,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "3:25"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7080,7 +7482,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 425
+        "quarter_seconds_remaining": 425,
+        "home_score_before": 6,
+        "away_score_before": 0,
+        "clock": "7:05"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7132,7 +7537,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 787
+        "quarter_seconds_remaining": 787,
+        "home_score_before": 20,
+        "away_score_before": 13,
+        "clock": "13:07"
       },
       "historical_action": "go",
       "reveal": {
@@ -7184,7 +7592,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 53
+        "quarter_seconds_remaining": 53,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "0:53"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7236,7 +7647,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 446
+        "quarter_seconds_remaining": 446,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "7:26"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7288,7 +7702,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 234
+        "quarter_seconds_remaining": 234,
+        "home_score_before": 24,
+        "away_score_before": 24,
+        "clock": "3:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7340,7 +7757,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 295
+        "quarter_seconds_remaining": 295,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "4:55"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7392,7 +7812,10 @@
         "distance": 8,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "2:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -7445,7 +7868,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 214
+        "quarter_seconds_remaining": 214,
+        "home_score_before": 27,
+        "away_score_before": 23,
+        "clock": "3:34"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7497,7 +7923,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 649
+        "quarter_seconds_remaining": 649,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:49"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7549,7 +7978,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 63
+        "quarter_seconds_remaining": 63,
+        "home_score_before": 20,
+        "away_score_before": 16,
+        "clock": "1:03"
       },
       "historical_action": "fg",
       "reveal": {
@@ -7602,7 +8034,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 802
+        "quarter_seconds_remaining": 802,
+        "home_score_before": 0,
+        "away_score_before": 22,
+        "clock": "13:22"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7654,7 +8089,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 103
+        "quarter_seconds_remaining": 103,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "1:43"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7706,7 +8144,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 689
+        "quarter_seconds_remaining": 689,
+        "home_score_before": 13,
+        "away_score_before": 14,
+        "clock": "11:29"
       },
       "historical_action": "fg",
       "reveal": {
@@ -7759,7 +8200,10 @@
         "distance": 11,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 7,
+        "away_score_before": 3,
+        "clock": "15:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -7812,7 +8256,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 457
+        "quarter_seconds_remaining": 457,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "7:37"
       },
       "historical_action": "fg",
       "reveal": {
@@ -7865,7 +8312,10 @@
         "distance": 9,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 202
+        "quarter_seconds_remaining": 202,
+        "home_score_before": 10,
+        "away_score_before": 3,
+        "clock": "3:22"
       },
       "historical_action": "punt",
       "reveal": {
@@ -7917,7 +8367,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 641
+        "quarter_seconds_remaining": 641,
+        "home_score_before": 14,
+        "away_score_before": 14,
+        "clock": "10:41"
       },
       "historical_action": "go",
       "reveal": {
@@ -7970,7 +8423,10 @@
         "distance": 10,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 771
+        "quarter_seconds_remaining": 771,
+        "home_score_before": 20,
+        "away_score_before": 12,
+        "clock": "12:51"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8023,7 +8479,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 242
+        "quarter_seconds_remaining": 242,
+        "home_score_before": 13,
+        "away_score_before": 16,
+        "clock": "4:02"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8076,7 +8535,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 491
+        "quarter_seconds_remaining": 491,
+        "home_score_before": 0,
+        "away_score_before": 10,
+        "clock": "8:11"
       },
       "historical_action": "go",
       "reveal": {
@@ -8129,7 +8591,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 317
+        "quarter_seconds_remaining": 317,
+        "home_score_before": 6,
+        "away_score_before": 17,
+        "clock": "5:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -8182,7 +8647,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 688
+        "quarter_seconds_remaining": 688,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "11:28"
       },
       "historical_action": "go",
       "reveal": {
@@ -8235,7 +8703,10 @@
         "distance": 13,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 4
+        "quarter_seconds_remaining": 4,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "0:04"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8288,7 +8759,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 125
+        "quarter_seconds_remaining": 125,
+        "home_score_before": 20,
+        "away_score_before": 30,
+        "clock": "2:05"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8341,7 +8815,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 594
+        "quarter_seconds_remaining": 594,
+        "home_score_before": 17,
+        "away_score_before": 13,
+        "clock": "9:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8393,7 +8870,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 766
+        "quarter_seconds_remaining": 766,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "12:46"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8445,7 +8925,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 765
+        "quarter_seconds_remaining": 765,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:45"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8497,7 +8980,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 139
+        "quarter_seconds_remaining": 139,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "2:19"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8549,7 +9035,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 302
+        "quarter_seconds_remaining": 302,
+        "home_score_before": 0,
+        "away_score_before": 10,
+        "clock": "5:02"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8601,7 +9090,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 503
+        "quarter_seconds_remaining": 503,
+        "home_score_before": 17,
+        "away_score_before": 20,
+        "clock": "8:23"
       },
       "historical_action": "go",
       "reveal": {
@@ -8654,7 +9146,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 252
+        "quarter_seconds_remaining": 252,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "4:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8706,7 +9201,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 511
+        "quarter_seconds_remaining": 511,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "8:31"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8759,7 +9257,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 210
+        "quarter_seconds_remaining": 210,
+        "home_score_before": 21,
+        "away_score_before": 14,
+        "clock": "3:30"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8812,7 +9313,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 756
+        "quarter_seconds_remaining": 756,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:36"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8864,7 +9368,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 140
+        "quarter_seconds_remaining": 140,
+        "home_score_before": 24,
+        "away_score_before": 27,
+        "clock": "2:20"
       },
       "historical_action": "punt",
       "reveal": {
@@ -8916,7 +9423,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "15:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -8969,7 +9479,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 528
+        "quarter_seconds_remaining": 528,
+        "home_score_before": 30,
+        "away_score_before": 30,
+        "clock": "8:48"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9022,7 +9535,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 562
+        "quarter_seconds_remaining": 562,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:22"
       },
       "historical_action": "go",
       "reveal": {
@@ -9075,7 +9591,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 803
+        "quarter_seconds_remaining": 803,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:23"
       },
       "historical_action": "punt",
       "reveal": {
@@ -9127,7 +9646,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 89
+        "quarter_seconds_remaining": 89,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "1:29"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9180,7 +9702,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 43
+        "quarter_seconds_remaining": 43,
+        "home_score_before": 21,
+        "away_score_before": 20,
+        "clock": "0:43"
       },
       "historical_action": "go",
       "reveal": {
@@ -9232,7 +9757,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 79
+        "quarter_seconds_remaining": 79,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "1:19"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9285,7 +9813,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 860
+        "quarter_seconds_remaining": 860,
+        "home_score_before": 3,
+        "away_score_before": 6,
+        "clock": "14:20"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9338,7 +9869,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 275
+        "quarter_seconds_remaining": 275,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "4:35"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9391,7 +9925,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 406
+        "quarter_seconds_remaining": 406,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:46"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9444,7 +9981,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 308
+        "quarter_seconds_remaining": 308,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "5:08"
       },
       "historical_action": "go",
       "reveal": {
@@ -9497,7 +10037,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 30
+        "quarter_seconds_remaining": 30,
+        "home_score_before": 12,
+        "away_score_before": 20,
+        "clock": "0:30"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9550,7 +10093,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 382
+        "quarter_seconds_remaining": 382,
+        "home_score_before": 14,
+        "away_score_before": 10,
+        "clock": "6:22"
       },
       "historical_action": "go",
       "reveal": {
@@ -9603,7 +10149,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 312
+        "quarter_seconds_remaining": 312,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "5:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -9655,7 +10204,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 770
+        "quarter_seconds_remaining": 770,
+        "home_score_before": 7,
+        "away_score_before": 5,
+        "clock": "12:50"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9708,7 +10260,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 512
+        "quarter_seconds_remaining": 512,
+        "home_score_before": 20,
+        "away_score_before": 13,
+        "clock": "8:32"
       },
       "historical_action": "punt",
       "reveal": {
@@ -9760,7 +10315,10 @@
         "distance": 13,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 401
+        "quarter_seconds_remaining": 401,
+        "home_score_before": 21,
+        "away_score_before": 7,
+        "clock": "6:41"
       },
       "historical_action": "fg",
       "reveal": {
@@ -9813,7 +10371,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 857
+        "quarter_seconds_remaining": 857,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "14:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -9865,7 +10426,10 @@
         "distance": 11,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 158
+        "quarter_seconds_remaining": 158,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "2:38"
       },
       "historical_action": "punt",
       "reveal": {
@@ -9917,7 +10481,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 3,
+        "away_score_before": 13,
+        "clock": "15:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -9970,7 +10537,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 546
+        "quarter_seconds_remaining": 546,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:06"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10023,7 +10593,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 667
+        "quarter_seconds_remaining": 667,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "11:07"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10075,7 +10648,10 @@
         "distance": 15,
         "posteam_timeouts": 0,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 2
+        "quarter_seconds_remaining": 2,
+        "home_score_before": 6,
+        "away_score_before": 14,
+        "clock": "0:02"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10128,7 +10704,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 133
+        "quarter_seconds_remaining": 133,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "2:13"
       },
       "historical_action": "go",
       "reveal": {
@@ -10181,7 +10760,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 337
+        "quarter_seconds_remaining": 337,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "5:37"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10233,7 +10815,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 4
+        "quarter_seconds_remaining": 4,
+        "home_score_before": 0,
+        "away_score_before": 6,
+        "clock": "0:04"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10286,7 +10871,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 153
+        "quarter_seconds_remaining": 153,
+        "home_score_before": 27,
+        "away_score_before": 19,
+        "clock": "2:33"
       },
       "historical_action": "go",
       "reveal": {
@@ -10338,7 +10926,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 205
+        "quarter_seconds_remaining": 205,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "3:25"
       },
       "historical_action": "go",
       "reveal": {
@@ -10391,7 +10982,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 90
+        "quarter_seconds_remaining": 90,
+        "home_score_before": 14,
+        "away_score_before": 13,
+        "clock": "1:30"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10443,7 +11037,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 45
+        "quarter_seconds_remaining": 45,
+        "home_score_before": 17,
+        "away_score_before": 12,
+        "clock": "0:45"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10495,7 +11092,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 782
+        "quarter_seconds_remaining": 782,
+        "home_score_before": 3,
+        "away_score_before": 17,
+        "clock": "13:02"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10547,7 +11147,10 @@
         "distance": 13,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 808
+        "quarter_seconds_remaining": 808,
+        "home_score_before": 16,
+        "away_score_before": 20,
+        "clock": "13:28"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10600,7 +11203,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 580
+        "quarter_seconds_remaining": 580,
+        "home_score_before": 8,
+        "away_score_before": 14,
+        "clock": "9:40"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10653,7 +11259,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 760
+        "quarter_seconds_remaining": 760,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:40"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10705,7 +11314,10 @@
         "distance": 10,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 40
+        "quarter_seconds_remaining": 40,
+        "home_score_before": 37,
+        "away_score_before": 20,
+        "clock": "0:40"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10758,7 +11370,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 143
+        "quarter_seconds_remaining": 143,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "2:23"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10811,7 +11426,10 @@
         "distance": 2,
         "posteam_timeouts": 1,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 19
+        "quarter_seconds_remaining": 19,
+        "home_score_before": 3,
+        "away_score_before": 10,
+        "clock": "0:19"
       },
       "historical_action": "go",
       "reveal": {
@@ -10864,7 +11482,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 322
+        "quarter_seconds_remaining": 322,
+        "home_score_before": 21,
+        "away_score_before": 30,
+        "clock": "5:22"
       },
       "historical_action": "fg",
       "reveal": {
@@ -10917,7 +11538,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 242
+        "quarter_seconds_remaining": 242,
+        "home_score_before": 14,
+        "away_score_before": 6,
+        "clock": "4:02"
       },
       "historical_action": "punt",
       "reveal": {
@@ -10969,7 +11593,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 8,
+        "away_score_before": 14,
+        "clock": "2:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -11021,7 +11648,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "15:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11073,7 +11703,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 553
+        "quarter_seconds_remaining": 553,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "9:13"
       },
       "historical_action": "go",
       "reveal": {
@@ -11126,7 +11759,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 250
+        "quarter_seconds_remaining": 250,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "4:10"
       },
       "historical_action": "go",
       "reveal": {
@@ -11179,7 +11815,10 @@
         "distance": 6,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 42
+        "quarter_seconds_remaining": 42,
+        "home_score_before": 3,
+        "away_score_before": 7,
+        "clock": "0:42"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11231,7 +11870,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 159
+        "quarter_seconds_remaining": 159,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "2:39"
       },
       "historical_action": "fg",
       "reveal": {
@@ -11284,7 +11926,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 451
+        "quarter_seconds_remaining": 451,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "7:31"
       },
       "historical_action": "go",
       "reveal": {
@@ -11337,7 +11982,10 @@
         "distance": 11,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 431
+        "quarter_seconds_remaining": 431,
+        "home_score_before": 13,
+        "away_score_before": 10,
+        "clock": "7:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -11390,7 +12038,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 682
+        "quarter_seconds_remaining": 682,
+        "home_score_before": 6,
+        "away_score_before": 13,
+        "clock": "11:22"
       },
       "historical_action": "go",
       "reveal": {
@@ -11442,7 +12093,10 @@
         "distance": 4,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 175
+        "quarter_seconds_remaining": 175,
+        "home_score_before": 7,
+        "away_score_before": 13,
+        "clock": "2:55"
       },
       "historical_action": "fg",
       "reveal": {
@@ -11495,7 +12149,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 414
+        "quarter_seconds_remaining": 414,
+        "home_score_before": 14,
+        "away_score_before": 9,
+        "clock": "6:54"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11547,7 +12204,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 303
+        "quarter_seconds_remaining": 303,
+        "home_score_before": 0,
+        "away_score_before": 14,
+        "clock": "5:03"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11599,7 +12259,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 422
+        "quarter_seconds_remaining": 422,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "7:02"
       },
       "historical_action": "go",
       "reveal": {
@@ -11652,7 +12315,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 288
+        "quarter_seconds_remaining": 288,
+        "home_score_before": 3,
+        "away_score_before": 17,
+        "clock": "4:48"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11704,7 +12370,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 471
+        "quarter_seconds_remaining": 471,
+        "home_score_before": 14,
+        "away_score_before": 21,
+        "clock": "7:51"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11756,7 +12425,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 248
+        "quarter_seconds_remaining": 248,
+        "home_score_before": 31,
+        "away_score_before": 3,
+        "clock": "4:08"
       },
       "historical_action": "go",
       "reveal": {
@@ -11809,7 +12481,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 150
+        "quarter_seconds_remaining": 150,
+        "home_score_before": 16,
+        "away_score_before": 24,
+        "clock": "2:30"
       },
       "historical_action": "go",
       "reveal": {
@@ -11861,7 +12536,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 695
+        "quarter_seconds_remaining": 695,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "11:35"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11913,7 +12591,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 852
+        "quarter_seconds_remaining": 852,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "14:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -11965,7 +12646,10 @@
         "distance": 14,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 517
+        "quarter_seconds_remaining": 517,
+        "home_score_before": 17,
+        "away_score_before": 3,
+        "clock": "8:37"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12017,7 +12701,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 595
+        "quarter_seconds_remaining": 595,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "9:55"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12070,7 +12757,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 148
+        "quarter_seconds_remaining": 148,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "2:28"
       },
       "historical_action": "go",
       "reveal": {
@@ -12123,7 +12813,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 820
+        "quarter_seconds_remaining": 820,
+        "home_score_before": 9,
+        "away_score_before": 10,
+        "clock": "13:40"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12175,7 +12868,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 435
+        "quarter_seconds_remaining": 435,
+        "home_score_before": 10,
+        "away_score_before": 17,
+        "clock": "7:15"
       },
       "historical_action": "go",
       "reveal": {
@@ -12228,7 +12924,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 845
+        "quarter_seconds_remaining": 845,
+        "home_score_before": 7,
+        "away_score_before": 13,
+        "clock": "14:05"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12280,7 +12979,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 571
+        "quarter_seconds_remaining": 571,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "9:31"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12332,7 +13034,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 687
+        "quarter_seconds_remaining": 687,
+        "home_score_before": 20,
+        "away_score_before": 14,
+        "clock": "11:27"
       },
       "historical_action": "go",
       "reveal": {
@@ -12385,7 +13090,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 198
+        "quarter_seconds_remaining": 198,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "3:18"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12438,7 +13146,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 735
+        "quarter_seconds_remaining": 735,
+        "home_score_before": 10,
+        "away_score_before": 14,
+        "clock": "12:15"
       },
       "historical_action": "go",
       "reveal": {
@@ -12490,7 +13201,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 784
+        "quarter_seconds_remaining": 784,
+        "home_score_before": 6,
+        "away_score_before": 17,
+        "clock": "13:04"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12542,7 +13256,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 711
+        "quarter_seconds_remaining": 711,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "11:51"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12594,7 +13311,10 @@
         "distance": 4,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 21,
+        "away_score_before": 0,
+        "clock": "2:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12646,7 +13366,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 380
+        "quarter_seconds_remaining": 380,
+        "home_score_before": 13,
+        "away_score_before": 10,
+        "clock": "6:20"
       },
       "historical_action": "go",
       "reveal": {
@@ -12699,7 +13422,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 589
+        "quarter_seconds_remaining": 589,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:49"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12752,7 +13478,10 @@
         "distance": 2,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 195
+        "quarter_seconds_remaining": 195,
+        "home_score_before": 20,
+        "away_score_before": 20,
+        "clock": "3:15"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12805,7 +13534,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 69
+        "quarter_seconds_remaining": 69,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "1:09"
       },
       "historical_action": "punt",
       "reveal": {
@@ -12857,7 +13589,10 @@
         "distance": 4,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 46
+        "quarter_seconds_remaining": 46,
+        "home_score_before": 3,
+        "away_score_before": 6,
+        "clock": "0:46"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12910,7 +13645,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 385
+        "quarter_seconds_remaining": 385,
+        "home_score_before": 20,
+        "away_score_before": 13,
+        "clock": "6:25"
       },
       "historical_action": "fg",
       "reveal": {
@@ -12963,7 +13701,10 @@
         "distance": 7,
         "posteam_timeouts": 0,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 8
+        "quarter_seconds_remaining": 8,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "0:08"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13016,7 +13757,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 78
+        "quarter_seconds_remaining": 78,
+        "home_score_before": 3,
+        "away_score_before": 7,
+        "clock": "1:18"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13069,7 +13813,10 @@
         "distance": 10,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 93
+        "quarter_seconds_remaining": 93,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "1:33"
       },
       "historical_action": "go",
       "reveal": {
@@ -13121,7 +13868,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 153
+        "quarter_seconds_remaining": 153,
+        "home_score_before": 20,
+        "away_score_before": 20,
+        "clock": "2:33"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13174,7 +13924,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 40
+        "quarter_seconds_remaining": 40,
+        "home_score_before": 3,
+        "away_score_before": 3,
+        "clock": "0:40"
       },
       "historical_action": "punt",
       "reveal": {
@@ -13226,7 +13979,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 418
+        "quarter_seconds_remaining": 418,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:58"
       },
       "historical_action": "go",
       "reveal": {
@@ -13279,7 +14035,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 547
+        "quarter_seconds_remaining": 547,
+        "home_score_before": 0,
+        "away_score_before": 15,
+        "clock": "9:07"
       },
       "historical_action": "go",
       "reveal": {
@@ -13331,7 +14090,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 111
+        "quarter_seconds_remaining": 111,
+        "home_score_before": 23,
+        "away_score_before": 14,
+        "clock": "1:51"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13384,7 +14146,10 @@
         "distance": 11,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 397
+        "quarter_seconds_remaining": 397,
+        "home_score_before": 6,
+        "away_score_before": 6,
+        "clock": "6:37"
       },
       "historical_action": "punt",
       "reveal": {
@@ -13436,7 +14201,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 113
+        "quarter_seconds_remaining": 113,
+        "home_score_before": 10,
+        "away_score_before": 14,
+        "clock": "1:53"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13489,7 +14257,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 249
+        "quarter_seconds_remaining": 249,
+        "home_score_before": 24,
+        "away_score_before": 21,
+        "clock": "4:09"
       },
       "historical_action": "punt",
       "reveal": {
@@ -13541,7 +14312,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 493
+        "quarter_seconds_remaining": 493,
+        "home_score_before": 24,
+        "away_score_before": 10,
+        "clock": "8:13"
       },
       "historical_action": "go",
       "reveal": {
@@ -13594,7 +14368,10 @@
         "distance": 14,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "15:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13647,7 +14424,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 407
+        "quarter_seconds_remaining": 407,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:47"
       },
       "historical_action": "go",
       "reveal": {
@@ -13700,7 +14480,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 811
+        "quarter_seconds_remaining": 811,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:31"
       },
       "historical_action": "punt",
       "reveal": {
@@ -13752,7 +14535,10 @@
         "distance": 7,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 36
+        "quarter_seconds_remaining": 36,
+        "home_score_before": 17,
+        "away_score_before": 17,
+        "clock": "0:36"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13805,7 +14591,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 569
+        "quarter_seconds_remaining": 569,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "9:29"
       },
       "historical_action": "punt",
       "reveal": {
@@ -13857,7 +14646,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 124
+        "quarter_seconds_remaining": 124,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "2:04"
       },
       "historical_action": "go",
       "reveal": {
@@ -13910,7 +14702,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 174
+        "quarter_seconds_remaining": 174,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "2:54"
       },
       "historical_action": "fg",
       "reveal": {
@@ -13963,7 +14758,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 735
+        "quarter_seconds_remaining": 735,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:15"
       },
       "historical_action": "punt",
       "reveal": {
@@ -14015,7 +14813,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 174
+        "quarter_seconds_remaining": 174,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "2:54"
       },
       "historical_action": "go",
       "reveal": {
@@ -14068,7 +14869,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 649
+        "quarter_seconds_remaining": 649,
+        "home_score_before": 17,
+        "away_score_before": 20,
+        "clock": "10:49"
       },
       "historical_action": "punt",
       "reveal": {
@@ -14121,7 +14925,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
+        "quarter_seconds_remaining": 120,
+        "home_score_before": 26,
+        "away_score_before": 3,
+        "clock": "2:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -14173,7 +14980,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 11
+        "quarter_seconds_remaining": 11,
+        "home_score_before": 17,
+        "away_score_before": 14,
+        "clock": "0:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14226,7 +15036,10 @@
         "distance": 4,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 311
+        "quarter_seconds_remaining": 311,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "5:11"
       },
       "historical_action": "go",
       "reveal": {
@@ -14279,7 +15092,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 831
+        "quarter_seconds_remaining": 831,
+        "home_score_before": 13,
+        "away_score_before": 7,
+        "clock": "13:51"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14332,7 +15148,10 @@
         "distance": 6,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 100
+        "quarter_seconds_remaining": 100,
+        "home_score_before": 3,
+        "away_score_before": 19,
+        "clock": "1:40"
       },
       "historical_action": "go",
       "reveal": {
@@ -14385,7 +15204,10 @@
         "distance": 14,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 848
+        "quarter_seconds_remaining": 848,
+        "home_score_before": 3,
+        "away_score_before": 7,
+        "clock": "14:08"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14438,7 +15260,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 602
+        "quarter_seconds_remaining": 602,
+        "home_score_before": 17,
+        "away_score_before": 3,
+        "clock": "10:02"
       },
       "historical_action": "go",
       "reveal": {
@@ -14491,7 +15316,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 723
+        "quarter_seconds_remaining": 723,
+        "home_score_before": 10,
+        "away_score_before": 16,
+        "clock": "12:03"
       },
       "historical_action": "go",
       "reveal": {
@@ -14544,7 +15372,10 @@
         "distance": 15,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 148
+        "quarter_seconds_remaining": 148,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "2:28"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14597,7 +15428,10 @@
         "distance": 10,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 143
+        "quarter_seconds_remaining": 143,
+        "home_score_before": 17,
+        "away_score_before": 17,
+        "clock": "2:23"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14650,7 +15484,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 65
+        "quarter_seconds_remaining": 65,
+        "home_score_before": 7,
+        "away_score_before": 17,
+        "clock": "1:05"
       },
       "historical_action": "go",
       "reveal": {
@@ -14702,7 +15539,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 731
+        "quarter_seconds_remaining": 731,
+        "home_score_before": 14,
+        "away_score_before": 3,
+        "clock": "12:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14755,7 +15595,10 @@
         "distance": 13,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 642
+        "quarter_seconds_remaining": 642,
+        "home_score_before": 6,
+        "away_score_before": 6,
+        "clock": "10:42"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14808,7 +15651,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 406
+        "quarter_seconds_remaining": 406,
+        "home_score_before": 14,
+        "away_score_before": 6,
+        "clock": "6:46"
       },
       "historical_action": "go",
       "reveal": {
@@ -14861,7 +15707,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 641
+        "quarter_seconds_remaining": 641,
+        "home_score_before": 17,
+        "away_score_before": 7,
+        "clock": "10:41"
       },
       "historical_action": "fg",
       "reveal": {
@@ -14914,7 +15763,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 656
+        "quarter_seconds_remaining": 656,
+        "home_score_before": 6,
+        "away_score_before": 3,
+        "clock": "10:56"
       },
       "historical_action": "punt",
       "reveal": {
@@ -14966,7 +15818,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 468
+        "quarter_seconds_remaining": 468,
+        "home_score_before": 20,
+        "away_score_before": 10,
+        "clock": "7:48"
       },
       "historical_action": "go",
       "reveal": {
@@ -15018,7 +15873,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 365
+        "quarter_seconds_remaining": 365,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "6:05"
       },
       "historical_action": "go",
       "reveal": {
@@ -15071,7 +15929,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 766
+        "quarter_seconds_remaining": 766,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:46"
       },
       "historical_action": "punt",
       "reveal": {
@@ -15123,7 +15984,10 @@
         "distance": 5,
         "posteam_timeouts": 0,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 25
+        "quarter_seconds_remaining": 25,
+        "home_score_before": 3,
+        "away_score_before": 14,
+        "clock": "0:25"
       },
       "historical_action": "punt",
       "reveal": {
@@ -15175,7 +16039,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 756
+        "quarter_seconds_remaining": 756,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:36"
       },
       "historical_action": "punt",
       "reveal": {
@@ -15227,7 +16094,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 397
+        "quarter_seconds_remaining": 397,
+        "home_score_before": 7,
+        "away_score_before": 3,
+        "clock": "6:37"
       },
       "historical_action": "go",
       "reveal": {
@@ -15280,7 +16150,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 468
+        "quarter_seconds_remaining": 468,
+        "home_score_before": 3,
+        "away_score_before": 10,
+        "clock": "7:48"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15333,7 +16206,10 @@
         "distance": 13,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 172
+        "quarter_seconds_remaining": 172,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "2:52"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15386,7 +16262,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 92
+        "quarter_seconds_remaining": 92,
+        "home_score_before": 31,
+        "away_score_before": 16,
+        "clock": "1:32"
       },
       "historical_action": "go",
       "reveal": {
@@ -15439,7 +16318,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 210
+        "quarter_seconds_remaining": 210,
+        "home_score_before": 24,
+        "away_score_before": 24,
+        "clock": "3:30"
       },
       "historical_action": "go",
       "reveal": {
@@ -15492,7 +16374,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 737
+        "quarter_seconds_remaining": 737,
+        "home_score_before": 23,
+        "away_score_before": 10,
+        "clock": "12:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -15544,7 +16429,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 1
+        "quarter_seconds_remaining": 1,
+        "home_score_before": 6,
+        "away_score_before": 7,
+        "clock": "0:01"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15597,7 +16485,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 273
+        "quarter_seconds_remaining": 273,
+        "home_score_before": 10,
+        "away_score_before": 14,
+        "clock": "4:33"
       },
       "historical_action": "go",
       "reveal": {
@@ -15650,7 +16541,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 19
+        "quarter_seconds_remaining": 19,
+        "home_score_before": 24,
+        "away_score_before": 24,
+        "clock": "0:19"
       },
       "historical_action": "punt",
       "reveal": {
@@ -15702,7 +16596,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 640
+        "quarter_seconds_remaining": 640,
+        "home_score_before": 20,
+        "away_score_before": 10,
+        "clock": "10:40"
       },
       "historical_action": "go",
       "reveal": {
@@ -15755,7 +16652,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 158
+        "quarter_seconds_remaining": 158,
+        "home_score_before": 6,
+        "away_score_before": 10,
+        "clock": "2:38"
       },
       "historical_action": "punt",
       "reveal": {
@@ -15807,7 +16707,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 127
+        "quarter_seconds_remaining": 127,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "2:07"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15860,7 +16763,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 361
+        "quarter_seconds_remaining": 361,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:01"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15913,7 +16819,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 538
+        "quarter_seconds_remaining": 538,
+        "home_score_before": 6,
+        "away_score_before": 7,
+        "clock": "8:58"
       },
       "historical_action": "fg",
       "reveal": {
@@ -15966,7 +16875,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 601
+        "quarter_seconds_remaining": 601,
+        "home_score_before": 14,
+        "away_score_before": 14,
+        "clock": "10:01"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16019,7 +16931,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 127
+        "quarter_seconds_remaining": 127,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "2:07"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16072,7 +16987,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 89
+        "quarter_seconds_remaining": 89,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "1:29"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16124,7 +17042,10 @@
         "distance": 2,
         "posteam_timeouts": 0,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 491
+        "quarter_seconds_remaining": 491,
+        "home_score_before": 21,
+        "away_score_before": 10,
+        "clock": "8:11"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16177,7 +17098,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 789
+        "quarter_seconds_remaining": 789,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "13:09"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16229,7 +17153,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 170
+        "quarter_seconds_remaining": 170,
+        "home_score_before": 17,
+        "away_score_before": 3,
+        "clock": "2:50"
       },
       "historical_action": "go",
       "reveal": {
@@ -16282,7 +17209,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 540
+        "quarter_seconds_remaining": 540,
+        "home_score_before": 6,
+        "away_score_before": 9,
+        "clock": "9:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16334,7 +17264,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 741
+        "quarter_seconds_remaining": 741,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:21"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16386,7 +17319,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 476
+        "quarter_seconds_remaining": 476,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "7:56"
       },
       "historical_action": "go",
       "reveal": {
@@ -16439,7 +17375,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 445
+        "quarter_seconds_remaining": 445,
+        "home_score_before": 13,
+        "away_score_before": 0,
+        "clock": "7:25"
       },
       "historical_action": "go",
       "reveal": {
@@ -16492,7 +17431,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 430
+        "quarter_seconds_remaining": 430,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "7:10"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16545,7 +17487,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 897
+        "quarter_seconds_remaining": 897,
+        "home_score_before": 3,
+        "away_score_before": 6,
+        "clock": "14:57"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16597,7 +17542,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 692
+        "quarter_seconds_remaining": 692,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "11:32"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16649,7 +17597,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 551
+        "quarter_seconds_remaining": 551,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "9:11"
       },
       "historical_action": "go",
       "reveal": {
@@ -16702,7 +17653,10 @@
         "distance": 14,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 721
+        "quarter_seconds_remaining": 721,
+        "home_score_before": 3,
+        "away_score_before": 10,
+        "clock": "12:01"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16754,7 +17708,10 @@
         "distance": 2,
         "posteam_timeouts": 0,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 17
+        "quarter_seconds_remaining": 17,
+        "home_score_before": 23,
+        "away_score_before": 19,
+        "clock": "0:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -16807,7 +17764,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 900
+        "quarter_seconds_remaining": 900,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "15:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16860,7 +17820,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 853
+        "quarter_seconds_remaining": 853,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "14:13"
       },
       "historical_action": "punt",
       "reveal": {
@@ -16913,7 +17876,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 204
+        "quarter_seconds_remaining": 204,
+        "home_score_before": 0,
+        "away_score_before": 6,
+        "clock": "3:24"
       },
       "historical_action": "fg",
       "reveal": {
@@ -16966,7 +17932,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 358
+        "quarter_seconds_remaining": 358,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "5:58"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17018,7 +17987,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 159
+        "quarter_seconds_remaining": 159,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "2:39"
       },
       "historical_action": "go",
       "reveal": {
@@ -17071,7 +18043,10 @@
         "distance": 15,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 157
+        "quarter_seconds_remaining": 157,
+        "home_score_before": 28,
+        "away_score_before": 28,
+        "clock": "2:37"
       },
       "historical_action": "fg",
       "reveal": {
@@ -17124,7 +18099,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 737
+        "quarter_seconds_remaining": 737,
+        "home_score_before": 3,
+        "away_score_before": 0,
+        "clock": "12:17"
       },
       "historical_action": "go",
       "reveal": {
@@ -17177,7 +18155,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 551
+        "quarter_seconds_remaining": 551,
+        "home_score_before": 20,
+        "away_score_before": 17,
+        "clock": "9:11"
       },
       "historical_action": "go",
       "reveal": {
@@ -17229,7 +18210,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 535
+        "quarter_seconds_remaining": 535,
+        "home_score_before": 10,
+        "away_score_before": 17,
+        "clock": "8:55"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17281,7 +18265,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 404
+        "quarter_seconds_remaining": 404,
+        "home_score_before": 7,
+        "away_score_before": 0,
+        "clock": "6:44"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17333,7 +18320,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 325
+        "quarter_seconds_remaining": 325,
+        "home_score_before": 7,
+        "away_score_before": 10,
+        "clock": "5:25"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17385,7 +18375,10 @@
         "distance": 5,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 625
+        "quarter_seconds_remaining": 625,
+        "home_score_before": 10,
+        "away_score_before": 0,
+        "clock": "10:25"
       },
       "historical_action": "fg",
       "reveal": {
@@ -17438,7 +18431,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 151
+        "quarter_seconds_remaining": 151,
+        "home_score_before": 19,
+        "away_score_before": 16,
+        "clock": "2:31"
       },
       "historical_action": "fg",
       "reveal": {
@@ -17491,7 +18487,10 @@
         "distance": 6,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 739
+        "quarter_seconds_remaining": 739,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "12:19"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17543,7 +18542,10 @@
         "distance": 3,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 600
+        "quarter_seconds_remaining": 600,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "10:00"
       },
       "historical_action": "go",
       "reveal": {
@@ -17596,7 +18598,10 @@
         "distance": 8,
         "posteam_timeouts": 2,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 353
+        "quarter_seconds_remaining": 353,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "5:53"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17648,7 +18653,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 119
+        "quarter_seconds_remaining": 119,
+        "home_score_before": 17,
+        "away_score_before": 13,
+        "clock": "1:59"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17701,7 +18709,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 167
+        "quarter_seconds_remaining": 167,
+        "home_score_before": 7,
+        "away_score_before": 7,
+        "clock": "2:47"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17753,7 +18764,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 183
+        "quarter_seconds_remaining": 183,
+        "home_score_before": 9,
+        "away_score_before": 17,
+        "clock": "3:03"
       },
       "historical_action": "punt",
       "reveal": {
@@ -17805,7 +18819,10 @@
         "distance": 3,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 652
+        "quarter_seconds_remaining": 652,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:52"
       },
       "historical_action": "go",
       "reveal": {
@@ -17858,7 +18875,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 192
+        "quarter_seconds_remaining": 192,
+        "home_score_before": 6,
+        "away_score_before": 14,
+        "clock": "3:12"
       },
       "historical_action": "go",
       "reveal": {
@@ -17911,7 +18931,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 527
+        "quarter_seconds_remaining": 527,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "8:47"
       },
       "historical_action": "go",
       "reveal": {
@@ -17964,7 +18987,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 853
+        "quarter_seconds_remaining": 853,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "14:13"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18016,7 +19042,10 @@
         "distance": 7,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 856
+        "quarter_seconds_remaining": 856,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "14:16"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18068,7 +19097,10 @@
         "distance": 5,
         "posteam_timeouts": 1,
         "defteam_timeouts": 1,
-        "quarter_seconds_remaining": 72
+        "quarter_seconds_remaining": 72,
+        "home_score_before": 14,
+        "away_score_before": 17,
+        "clock": "1:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18120,7 +19152,10 @@
         "distance": 9,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 480
+        "quarter_seconds_remaining": 480,
+        "home_score_before": 17,
+        "away_score_before": 10,
+        "clock": "8:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18172,7 +19207,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 483
+        "quarter_seconds_remaining": 483,
+        "home_score_before": 7,
+        "away_score_before": 11,
+        "clock": "8:03"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18225,7 +19263,10 @@
         "distance": 5,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 417
+        "quarter_seconds_remaining": 417,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "6:57"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18278,7 +19319,10 @@
         "distance": 2,
         "posteam_timeouts": 1,
         "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 48
+        "quarter_seconds_remaining": 48,
+        "home_score_before": 24,
+        "away_score_before": 0,
+        "clock": "0:48"
       },
       "historical_action": "go",
       "reveal": {
@@ -18331,7 +19375,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 347
+        "quarter_seconds_remaining": 347,
+        "home_score_before": 10,
+        "away_score_before": 10,
+        "clock": "5:47"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18384,7 +19431,10 @@
         "distance": 8,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 890
+        "quarter_seconds_remaining": 890,
+        "home_score_before": 7,
+        "away_score_before": 3,
+        "clock": "14:50"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18436,7 +19486,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 86
+        "quarter_seconds_remaining": 86,
+        "home_score_before": 0,
+        "away_score_before": 3,
+        "clock": "1:26"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18489,7 +19542,10 @@
         "distance": 4,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 745
+        "quarter_seconds_remaining": 745,
+        "home_score_before": 0,
+        "away_score_before": 7,
+        "clock": "12:25"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18542,7 +19598,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 74
+        "quarter_seconds_remaining": 74,
+        "home_score_before": 19,
+        "away_score_before": 21,
+        "clock": "1:14"
       },
       "historical_action": "go",
       "reveal": {
@@ -18595,7 +19654,10 @@
         "distance": 12,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 413
+        "quarter_seconds_remaining": 413,
+        "home_score_before": 14,
+        "away_score_before": 7,
+        "clock": "6:53"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18648,7 +19710,10 @@
         "distance": 11,
         "posteam_timeouts": 0,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 7
+        "quarter_seconds_remaining": 7,
+        "home_score_before": 13,
+        "away_score_before": 10,
+        "clock": "0:07"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18701,7 +19766,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 655
+        "quarter_seconds_remaining": 655,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:55"
       },
       "historical_action": "go",
       "reveal": {
@@ -18754,7 +19822,10 @@
         "distance": 1,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 28
+        "quarter_seconds_remaining": 28,
+        "home_score_before": 10,
+        "away_score_before": 7,
+        "clock": "0:28"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18807,7 +19878,10 @@
         "distance": 11,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 420
+        "quarter_seconds_remaining": 420,
+        "home_score_before": 15,
+        "away_score_before": 12,
+        "clock": "7:00"
       },
       "historical_action": "fg",
       "reveal": {
@@ -18860,7 +19934,10 @@
         "distance": 1,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 685
+        "quarter_seconds_remaining": 685,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "11:25"
       },
       "historical_action": "go",
       "reveal": {
@@ -18913,7 +19990,10 @@
         "distance": 15,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 840
+        "quarter_seconds_remaining": 840,
+        "home_score_before": 20,
+        "away_score_before": 10,
+        "clock": "14:00"
       },
       "historical_action": "punt",
       "reveal": {
@@ -18965,7 +20045,10 @@
         "distance": 3,
         "posteam_timeouts": 1,
         "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 72
+        "quarter_seconds_remaining": 72,
+        "home_score_before": 28,
+        "away_score_before": 14,
+        "clock": "1:12"
       },
       "historical_action": "punt",
       "reveal": {
@@ -19017,7 +20100,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 641
+        "quarter_seconds_remaining": 641,
+        "home_score_before": 0,
+        "away_score_before": 0,
+        "clock": "10:41"
       },
       "historical_action": "fg",
       "reveal": {
@@ -19070,7 +20156,10 @@
         "distance": 1,
         "posteam_timeouts": 2,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 817
+        "quarter_seconds_remaining": 817,
+        "home_score_before": 19,
+        "away_score_before": 3,
+        "clock": "13:37"
       },
       "historical_action": "go",
       "reveal": {
@@ -19122,7 +20211,10 @@
         "distance": 2,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 201
+        "quarter_seconds_remaining": 201,
+        "home_score_before": 13,
+        "away_score_before": 13,
+        "clock": "3:21"
       },
       "historical_action": "punt",
       "reveal": {
@@ -19174,7 +20266,10 @@
         "distance": 10,
         "posteam_timeouts": 3,
         "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 381
+        "quarter_seconds_remaining": 381,
+        "home_score_before": 10,
+        "away_score_before": 3,
+        "clock": "6:21"
       },
       "historical_action": "punt",
       "reveal": {

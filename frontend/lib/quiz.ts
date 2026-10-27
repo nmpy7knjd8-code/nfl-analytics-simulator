@@ -27,6 +27,11 @@ export type QuizSituation = {
   distance: number;
   posteam_timeouts: number;
   defteam_timeouts: number;
+  /** Score bug: score before the snap, by side (from posteam/defteam score). */
+  home_score_before?: number;
+  away_score_before?: number;
+  /** quarter_seconds_remaining as "m:ss". */
+  clock?: string | null;
 };
 
 export type QuizReveal = {

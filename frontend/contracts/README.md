@@ -51,6 +51,7 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   down, distance /* ydstogo */, yardline_100,   // null when nflverse has none (kickoffs, PATs)
   yards_gained /* nflverse yards_gained, null if none */,
   return_td /* interception or fumble returned for a TD (nflverse return_touchdown, or td_team != posteam) */,
+  defense_team_id /* nflverse defteam */, posteam_timeouts_remaining, defteam_timeouts_remaining /* nflverse, 0-3 or null */,
   kick_return_td /* punt or kickoff returned for a TD (nflverse return_touchdown); never true with return_td */,
   fourth_down_failed /* down == 4 && nflverse fourth_down_failed == 1 */,
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
@@ -68,6 +69,11 @@ is one fan-facing sentence per row, same `play_text.display_text` as `lib/plays`
 plus `cols.penalty_text` (same rules as lib/plays); game-flow rows read "Start of game.", "End of quarter N.", "Two-minute warning.",
 "Timeout by TEAM.". `expandGameV2` exposes it as `play.display_text` (falls back to raw `text` on games-v2 files);
 `text` stays verbatim nflverse.
+
+Quiz / daily pack (`frontend/lib/quizPack.json`; `/daily/` reuses it, there is no separate daily pack): each
+`situation` also carries `home_score_before`, `away_score_before` (score before the snap) and `clock` ("m:ss" of
+`quarter_seconds_remaining`), next to the existing `posteam`, `defteam`, `posteam_timeouts`, `defteam_timeouts`,
+`qtr`, `yardline_100`. Plays already had `possession_team_id`, `qtr`, `clock`, `home/away_score_before`, `yardline_100`.
 
 `penalty_text` (UI Critic P2-J/P3-H/P3-I): accepted "Penalty on Name (TEAM): foul, N yards against TEAM.";
 declined "Flag on Name (TEAM) for foul, declined." or "Two NYJ flags declined: foul (Name) and foul (Name).";

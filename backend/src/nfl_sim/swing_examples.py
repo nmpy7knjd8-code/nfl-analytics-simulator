@@ -12,7 +12,8 @@ GAME_IDS = ("2023_01_BUF_NYJ", "2023_01_DET_KC", "2023_03_PHI_TB")
 SWING_PLAY_TYPES = frozenset({"run", "pass", "field_goal", "punt"})
 TOP_N = 5
 FIXTURE_COLUMNS = [
-    "game_id", "play_id", "qtr", "time", "desc", "play_type", "posteam", "home_team", "away_team",
+    "game_id", "play_id", "qtr", "time", "desc", "play_type", "posteam", "defteam",
+    "posteam_timeouts_remaining", "defteam_timeouts_remaining", "home_team", "away_team",
     "home_wp", "home_wp_post", "total_home_score", "total_away_score", "qb_kneel", "qb_spike",
     "touchdown", "home_score", "away_score",
     "down", "ydstogo", "yardline_100", "posteam_score", "defteam_score", "yards_gained",
@@ -47,6 +48,9 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "game_id": r["game_id"], "play_id": str(r["play_id"]), "qtr": int(r["qtr"]),
         "clock": r["time"], "clock_seconds": clock_seconds(r["time"]), "description": r["desc"],
         "play_type": r["play_type"], "possession_team_id": r["posteam"],
+        "defense_team_id": r.get("defteam"),
+        "posteam_timeouts_remaining": _int(r.get("posteam_timeouts_remaining")),
+        "defteam_timeouts_remaining": _int(r.get("defteam_timeouts_remaining")),
         "home_score_after": int(r["total_home_score"]), "away_score_after": int(r["total_away_score"]),
         "home_score_before": home_b, "away_score_before": away_b,
         "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),

@@ -265,3 +265,18 @@ def test_kick_return_td_separate_from_turnover_return_td():
         assert not (p["return_td"] and p["kick_return_td"])
         if p["kick_return_td"]:
             assert p["play_type"] in ("punt", "kickoff")
+
+
+def test_scoreboard_fields_match_pbp_rows():
+    n = 0
+    for p in _all_exported_plays():
+        r = BY_KEY[(p["game_id"], p["play_id"])]
+        assert p["possession_team_id"] == r["posteam"] and p["defense_team_id"] == r.get("defteam")
+        for side in ("posteam", "defteam"):
+            v, raw = p[f"{side}_timeouts_remaining"], r.get(f"{side}_timeouts_remaining")
+            assert v == (None if raw is None else int(raw))
+            assert v is None or 0 <= v <= 3
+            n += v is not None
+        assert p["qtr"] == int(r["qtr"]) and p["clock"] == r["time"]
+        assert p["yardline_100"] == (None if r.get("yardline_100") is None else int(r["yardline_100"]))
+    assert n > 0
