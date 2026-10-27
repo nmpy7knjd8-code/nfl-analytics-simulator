@@ -39,10 +39,6 @@ export type QuizReveal = {
   empirics_mode?: string;
   /** Fan-language notes, safe to display. */
   assumptions?: string[];
-  /** Not displayed: winning option's edge over the runner-up, in win-probability units. */
-  edge_wp?: number | null;
-  /** Not displayed: technical model assumptions. */
-  model_notes?: string[];
   recommendation_changed_legacy_to_improved?: boolean;
 };
 
