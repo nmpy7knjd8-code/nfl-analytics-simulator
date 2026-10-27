@@ -146,7 +146,7 @@ def test_game_files_display_text_nonempty_and_matches_lib_plays():
             pen = dict(zip(map(str, c["play_id"]), c["penalty_text"]))
             for p in json.loads(shared.read_text())["plays"]:
                 assert got[p["play_id"]] == p["display_text"], (path.stem, p["play_id"])
-                if (path.stem, p["play_id"]) in _PENDING_REBUILD.get(os.environ.get("GAMES_RELEASE_TAG", "games-v3"), ()):
+                if (path.stem, p["play_id"]) in _PENDING_REBUILD.get(os.environ.get("GAMES_RELEASE_TAG", ""), ()):
                     continue
                 assert pen[p["play_id"]] == p["penalty_text"], (path.stem, p["play_id"])
 
