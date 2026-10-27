@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GAME_SOURCE_LINE } from "../../lib/fixtures";
 import { TruthChip } from "../../components/TruthChip";
+import { TeamLogo } from "../../components/TeamLogo";
 import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
 
@@ -39,7 +40,7 @@ export default async function GamesPage() {
             <Link className="game-row" href={`/games/${encodeURIComponent(g.game_id)}`}>
               <span className="game-row-main">
                 <span className="game-row-matchup">
-                  {g.away_team_id} @ {g.home_team_id}
+                  <TeamLogo abbr={g.away_team_id} size={22} /> {g.away_team_id} @ <TeamLogo abbr={g.home_team_id} size={22} /> {g.home_team_id}
                 </span>
                 <span className="game-row-meta">
                   Week {g.week} · {g.game_date}
