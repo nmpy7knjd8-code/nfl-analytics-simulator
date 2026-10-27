@@ -231,3 +231,37 @@ def test_mixed_offsetting_fouls_named_separately():
     from nfl_sim.play_text import penalty_sentences
     assert penalty_sentences([("DET", "A B", "holding", "offsetting"), ("KC", None, "face mask", "offsetting")]) == (
         "Offsetting penalties: holding on A B (DET) and face mask on KC. The down is replayed.")
+
+
+def _by_id(gid, pid):
+    return next(p for p in PLAY_LISTS[gid]["plays"] if p["play_id"] == pid)
+
+
+def test_qa_2315_sentences():
+    assert _by_id("2023_03_PHI_TB", "2938")["display_text"] == "Rachaad White is tackled in the end zone for a safety."
+    assert _by_id("2023_03_PHI_TB", "3507")["display_text"] == (
+        "Two-point try: Baker Mayfield passes to Chris Godwin Jr., and it's good.")
+    assert _by_id("2023_01_BUF_NYJ", "2151")["display_text"] == (
+        "Breece Hall is stopped for a loss of 4 yards. He fumbles out of bounds; NYJ keeps the ball.")
+    assert _by_id("2023_01_DET_KC", "1273")["display_text"] == (
+        "Jared Goff is stopped for no gain. Frank Ragnow fumbles, and Jared Goff recovers.")
+    assert _by_id("2023_03_PHI_TB", "1987")["display_text"] == (
+        "Baker Mayfield is sacked for a loss of 11 yards. He fumbles, and Robert Hainsey recovers.")
+
+
+def test_two_point_failure_reads_as_failed_try():
+    from nfl_sim.play_text import display_text
+    r = {"play_type": "pass", "two_point_conv_result": "failure", "desc": "TWO-POINT CONVERSION ATTEMPT. x",
+         "names": {"passer": "Jalen Hurts", "receiver": "A.J. Brown"}}
+    assert display_text(r) == "Two-point try: Jalen Hurts passes to A.J. Brown, and it fails."
+
+
+def test_kick_return_td_separate_from_turnover_return_td():
+    ot = _by_id("2023_01_BUF_NYJ", "4010")
+    assert ot["kick_return_td"] is True and ot["return_td"] is False
+    assert ot in EXPORT["games"]["2023_01_BUF_NYJ"]["overtime_plays"]
+    assert _by_id("2023_01_DET_KC", "2364")["return_td"] is True and _by_id("2023_01_DET_KC", "2364")["kick_return_td"] is False
+    for p in _all_exported_plays():
+        assert not (p["return_td"] and p["kick_return_td"])
+        if p["kick_return_td"]:
+            assert p["play_type"] in ("punt", "kickoff")

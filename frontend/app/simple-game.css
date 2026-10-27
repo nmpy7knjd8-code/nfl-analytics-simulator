@@ -1,0 +1,83 @@
+/* Fourth & Daily simple game (Direction B v2). All selectors prefixed sg-. */
+.sg-app{--sg-b:#1E5BFF;--sg-g:#5f6368;max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:0 16px 8px;color:#000;background:#fff;font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.sg-app button{font-family:inherit;cursor:pointer}
+.sg-top{display:flex;justify-content:space-between;align-items:center;height:48px;flex:none}
+.sg-brand{font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
+.sg-top-r{display:flex;align-items:center;gap:6px;position:relative}
+.sg-count{font-size:14px;color:var(--sg-g);font-weight:600}
+.sg-menu{width:48px;height:48px;border:0;background:none;font-size:24px;margin-right:-12px;color:#000}
+.sg-menu-list{position:absolute;right:-8px;top:48px;background:#fff;border:2px solid #000;border-radius:12px;z-index:10;display:flex;flex-direction:column;min-width:160px;overflow:hidden}
+.sg-menu-list a{min-height:48px;display:flex;align-items:center;padding:0 16px;color:#000;font-weight:700;text-decoration:none}
+.sg-menu-list a+a{border-top:1px solid #e6e6e6}
+.sg-bug{height:56px;background:#000;color:#fff;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;flex:none;width:100%;max-width:358px;margin:0 auto}
+.sg-r1{height:32px;display:flex}
+.sg-tm{flex:1;display:flex;align-items:center;gap:5px;padding:0 7px 0 9px;position:relative;min-width:0}
+.sg-tm.sg-h{flex-direction:row-reverse;padding:0 9px 0 7px}
+.sg-edge{position:absolute;top:0;bottom:0;width:4px}.sg-a .sg-edge{left:0}.sg-h .sg-edge{right:0}
+.sg-has{box-shadow:inset 0 -3px 0 var(--sg-b)}
+.sg-tm img{width:20px;height:20px;object-fit:contain}
+.sg-code{font-size:15px;font-weight:700}
+.sg-sc{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;min-width:22px;text-align:center}
+.sg-a .sg-sc{margin-left:auto}.sg-h .sg-sc{margin-right:auto}
+.sg-pos{font-size:12px;width:12px;text-align:center}
+.sg-to{display:flex;gap:3px}.sg-to i{width:8px;height:8px;border-radius:50%;background:#fff}.sg-to i.sg-used{opacity:.35}
+.sg-clk{flex:none;display:flex;align-items:center;padding:0 8px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;border-left:1px solid #333;border-right:1px solid #333}
+.sg-r2{height:24px;background:var(--sg-b);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sg-sent{font-size:20px;line-height:1.3;font-weight:700;margin:12px 0 10px}
+.sg-field{border-radius:8px;overflow:hidden;flex:none;line-height:0;box-shadow:0 0 0 1px #0002}
+.sg-field svg{width:100%;height:auto;display:block;max-height:40vh}
+.sg-btns{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:12px}
+.sg-btn{min-height:54px;border:2px solid #000;background:#fff;border-radius:12px;font-weight:700;font-size:19px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;color:#000;width:100%}
+.sg-btn small{font-weight:600;font-size:15px;color:var(--sg-g)}
+.sg-btn:focus-visible,.sg-next:focus-visible,.sg-menu:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.sg-note{font-size:15px;color:var(--sg-g);text-align:center;margin:2px 0 0;font-weight:600}
+.sg-next{min-height:54px;border-radius:12px;font-weight:700;font-size:19px;border:0;width:100%;background:var(--sg-b);color:#fff}
+.sg-end .sg-next{margin-top:auto}
+.sg-verdict{font-size:32px;font-weight:800;line-height:1.1;margin:14px 0 10px;display:flex;align-items:center;gap:10px}
+.sg-glyph{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.sg-ok .sg-glyph{background:var(--sg-b);color:#fff}.sg-no .sg-glyph{background:#000;color:#fff}.sg-half .sg-glyph{border:2px solid #000;font-size:20px}
+.sg-res{border-radius:12px;padding:8px 14px;margin-bottom:10px;border:2px solid #000}.sg-ok .sg-res{border-color:var(--sg-b)}
+.sg-ln{padding:5px 0}.sg-ln+.sg-ln{border-top:1px solid #e6e6e6}
+.sg-lbl{font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--sg-g)}
+.sg-v{font-size:17px;font-weight:700;line-height:1.3}
+.sg-final{font-weight:600;color:var(--sg-g)}
+.sg-tag{display:inline-block;font-size:13px;font-weight:800;padding:2px 8px;border-radius:999px;vertical-align:2px;margin-left:4px}
+.sg-best{background:var(--sg-b);color:#fff}.sg-close{background:#000;color:#fff}
+.sg-tm-note{font-size:13px;color:var(--sg-g);text-align:center;margin:8px 0 0;line-height:1.3}
+.sg-center{text-align:center;margin-top:10px}
+.sg-big{font-size:64px;font-weight:800;text-align:center;margin-top:10px;line-height:1}
+.sg-marks{display:flex;justify-content:center;gap:8px;margin:12px 0 4px}.sg-marks span{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+.sg-marks .sg-y{background:var(--sg-b);color:#fff}.sg-marks .sg-n{border:2px solid #000}
+.sg-streak{text-align:center;font-size:18px;font-weight:700;margin-bottom:10px}
+.sg-recap{border-top:1px solid #e6e6e6}.sg-recap>div{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #e6e6e6;font-size:16px}
+.sg-recap b{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:14px}
+.sg-recap .sg-y b{background:var(--sg-b);color:#fff}.sg-recap .sg-n b{border:2px solid #000}
+.sg-recap img{width:22px;height:22px;object-fit:contain}.sg-c{margin-left:auto;color:var(--sg-g);font-weight:600;font-size:15px;white-space:nowrap}
+.sg-share{background:#f4f4f4;border-radius:10px;padding:10px 12px;font:15px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:12px 0}
+.sg-status{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;font-size:18px;font-weight:700;min-height:50vh}
+.sg-status p{margin:0}
+.sg-spin{width:28px;height:28px;border:3px solid #e6e6e6;border-top-color:var(--sg-b);border-radius:50%}
+@media (prefers-reduced-motion:no-preference){.sg-spin{animation:sg-spin .8s linear infinite}}
+@keyframes sg-spin{to{transform:rotate(360deg)}}
+@media (max-width:375px){.sg-tm img{display:none}.sg-field svg{max-height:33vh}.sg-verdict{margin:10px 0 8px}.sg-sent{font-size:18px;margin:10px 0 8px}.sg-tm-note{font-size:12px}.sg-big{font-size:56px}.sg-recap>div{gap:8px;font-size:15px}.sg-c{font-size:14px}}
+/* Game routes hide the old chrome (☰ menu replaces bottom nav). */
+body:has(.sg-app) .app-stage{padding:0;min-height:0}
+@media (max-width:375px){.sg-rv .sg-v{font-size:15px}.sg-rv .sg-lbl{font-size:12px}.sg-rv .sg-ln{padding:3px 0}.sg-rv .sg-field svg{max-height:24vh}.sg-rv .sg-verdict{font-size:30px;margin:8px 0 6px}.sg-rv .sg-btns{padding-top:8px}}
+/* Card design (Garrett, 10-27): solid black page, the whole game on one clean rounded white card. */
+body:has(.sg-app),body:has(.sg-app) .app-shell,body:has(.sg-app) .app-stage{background:#000}
+html:has(.sg-app){background:#000}
+.sg-app{min-height:calc(100dvh - 16px);margin:8px auto;width:calc(100% - 16px);max-width:414px;border-radius:20px;padding:0 14px 8px}
+@media (max-width:375px){.sg-app{min-height:calc(100dvh - 12px);margin:6px auto;width:calc(100% - 12px);border-radius:16px;padding:0 12px 6px}}
+/* Garrett 10-27: simple oval buttons, clean outlined card on pure black. */
+html:has(.sg-app),body:has(.sg-app){background:#000}
+.sg-app{border:1px solid #d9d9d9;box-shadow:none}
+.sg-btn,.sg-next,.sg-keep,.sg-reset{border-radius:999px;box-shadow:none}
+.sg-btn,.sg-keep,.sg-reset{background:#fff;border:1.5px solid #000;color:#000}
+.sg-btn{padding:0 22px}
+.sg-next{background:var(--sg-b);color:#fff;border:0}
+.sg-reset{padding:0 16px}
+/* Reveal: the field takes whatever room is left (up to 40vh), so long play text never makes the card scroll. */
+.sg-rv .sg-field{flex:1 1 0;min-height:96px;max-height:40vh;position:relative}
+.sg-rv .sg-field svg{position:absolute;inset:0;height:100%;max-height:none}
+/* The card is narrower than the 358px bug at ≤400px: drop bug logos so scores never collide. */
+@media (max-width:400px){.sg-tm img{display:none}}

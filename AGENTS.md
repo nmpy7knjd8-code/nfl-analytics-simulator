@@ -37,6 +37,12 @@ If an existing project conflicts with these defaults, inspect it and document th
 14. Do not silently change a public interface or canonical schema. Document and test changes.
 15. After every phase, run the relevant tests, report actual results, document limitations, and stop for user approval before starting the next phase.
 
+## Fan-site house rules (checked by scripts/acceptance)
+
+* No EPA, WPA or xpass on fan screens; no odds, lines or betting text.
+* No field goal offered over 64 yards; no overtime win chance; CHECKER_ENABLED stays false until approved.
+* Team colors and logos: self-hosted nflverse team logos and wordmarks are allowed. Never hotlink external images (logo files must be self-hosted under /teams/ and listed in teams/manifest.json). The footer carries "Team names and logos are trademarks of the NFL and its teams. Not affiliated."
+
 ## Core domain invariants
 
 * Every game, team, player, play, model, and simulation has a stable identifier where applicable.

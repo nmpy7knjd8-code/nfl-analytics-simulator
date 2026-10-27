@@ -14,7 +14,7 @@ ID_COLS = [f"{role}_player_id" for role in NAME_ROLES]
 TEXT_COLUMNS = [
     "desc", "play_type", "yards_gained", "touchdown", "interception", "fumble_lost", "fourth_down_failed",
     "field_goal_result", "kick_distance", "return_yards", "incomplete_pass", "sack", "penalty",
-    "extra_point_result", "touchback", "qb_kneel", "qb_spike", "down",
+    "extra_point_result", "two_point_conv_result", "touchback", "safety", "fumble", "fumble_recovery_1_team", "posteam", "qb_kneel", "qb_spike", "down",
     "passer_player_name", "receiver_player_name", "rusher_player_name", "interception_player_name",
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "penalty_player_name",
