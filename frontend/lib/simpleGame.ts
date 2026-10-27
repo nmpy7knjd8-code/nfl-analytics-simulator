@@ -62,7 +62,7 @@ export function optionTags(item: DailyItem, scored: ScoredCall): OptionTag[] {
 export function bestCallText(tags: OptionTag[]): string {
   const best = tags.filter((t) => t.tag === "Best").map((t) => BEST_PHRASE[t.id]);
   const close = tags.filter((t) => t.tag === "Close call · ½ point").map((t) => BEST_PHRASE[t.id]);
-  if (best.length > 1) return `${cap(best.slice(0, -1).join(", "))} and ${best[best.length - 1]} were equally good. Both count.`;
+  if (best.length > 1) return `${cap(best.slice(0, -1).join(", "))} and ${best[best.length - 1]} were equally good. ${best.length > 2 ? "All three" : "Both"} count.`;
   if (close.length) return `${cap(best[0])} was the best call, and ${close.join(" and ")} was close behind.`;
   return `${cap(best[0])} was the best call.`;
 }
@@ -77,6 +77,8 @@ export type Outcome = {
   /** Offense-frame yards from the opponent's goal where the ball ended; -7 = through the uprights. */
   endYardline100: number;
   label: string;
+  /** Penalty sentence(s) for the play (games-v3 penalty_text), shown after the play text. */
+  penalty?: string | null;
   /** "The Eagles won 22–16." */
   finalText: string | null;
 };
@@ -92,7 +94,14 @@ export function outcomeFromGame(doc: GameFileV2, item: DailyItem, nick: (abbr: s
   const yl = item.situation.yardline_100;
   const type = c.play_type[i];
   const raw = c.text[i] ?? "";
-  const text = c.display_text?.[i]?.trim() || null;
+  let text = c.display_text?.[i]?.trim() || null;
+  const penalty = c.penalty_text?.[i]?.trim() || null;
+  // game.v2 has no punt_blocked/interception/fumble_lost columns: read nflverse's raw desc (QA 0116 SG1/SG2).
+  const blocked = type === "punt" && /\bBLOCKED\b/i.test(raw);
+  const intercepted = /\bINTERCEPTED\b/i.test(raw);
+  const recoveredBy = /\bFUMBLES\b/i.test(raw) ? raw.match(/RECOVERED by ([A-Z]{2,3})-/i)?.[1] : undefined;
+  const fumbleLost = recoveredBy != null && recoveredBy !== pos;
+  if (blocked && text) text = text.replace(/ punts 0 yards\./i, "'s punt is blocked.");
   let j = i + 1;
   while (j < c.play_id.length && (c.play_type[j] == null || NON_PLAY.test(c.text[j] ?? ""))) j++;
   // A kickoff next (half ended, or a score) says nothing about where this ball was downed.
@@ -110,7 +119,7 @@ export function outcomeFromGame(doc: GameFileV2, item: DailyItem, nick: (abbr: s
     label = good ? `${yds}-yd FG · good` : "Field goal missed";
   } else if (type === "punt") {
     end = next >= 0 && c.posteam[next] !== pos && c.yardline_100[next] != null ? 100 - (c.yardline_100[next] as number) : yl;
-    label = "Punted";
+    label = blocked ? "Punt blocked" : "Punted";
   } else if ((after ?? 0) - (before ?? 0) >= 6) {
     end = 0;
     label = "Touchdown";
@@ -119,7 +128,7 @@ export function outcomeFromGame(doc: GameFileV2, item: DailyItem, nick: (abbr: s
     label = c.down[next] === 1 ? `First down · ${end === 50 ? "midfield" : end > 50 ? `own ${100 - end}` : `${item.situation.defteam} ${end}`}` : "Short";
   } else {
     end = next >= 0 && c.yardline_100[next] != null ? 100 - (c.yardline_100[next] as number) : yl;
-    label = "Turnover on downs";
+    label = intercepted ? "Intercepted" : fumbleLost ? "Fumble lost" : "Turnover on downs";
   }
   end = Math.max(-7, Math.min(100, end));
   const g = doc.game as { home: string; away: string; home_score?: number; away_score?: number };
@@ -129,7 +138,7 @@ export function outcomeFromGame(doc: GameFileV2, item: DailyItem, nick: (abbr: s
     finalText = ws === ls ? `It ended in a ${ws}–${ls} tie.` : `The ${nick(w)} won ${ws}–${ls}.`;
     void wl;
   }
-  return { text, endYardline100: end, label, finalText };
+  return { text, endYardline100: end, label, penalty, finalText };
 }
 
 /** Coach line: "Went for it.", "Kicked a field goal.", "Punted." */

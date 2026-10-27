@@ -194,16 +194,23 @@ def _toy_empirics():
 
 
 def _toy_with_tail():
-    from nfl_sim.models.fourth_down_empirics import _build_fg_tail
+    from nfl_sim.models.fourth_down_empirics import _build_fg_table
 
     emp = _toy_empirics()
     # Real-looking long-kick sample incl. makes past 64 (nflverse has 66–68 yd makes).
     kd = pd.Series([50] * 40 + [55] * 30 + [60] * 10 + [63] * 6 + [66] * 2 + [68] * 2)
     made = pd.Series([True] * 32 + [False] * 8 + [True] * 20 + [False] * 10 + [True] * 4 + [False] * 6
                      + [True] * 2 + [False] * 4 + [True, False] + [True, False])
-    emp.fg_by_kick_distance = {**{k: v for k, v in emp.fg_by_kick_distance.items() if k[0] < 60},
-                               **_build_fg_tail(kd, made)}
+    emp.fg_by_kick_distance = _build_fg_table(kd, made)
     return emp
+
+
+def test_fg_make_rate_is_one_smooth_curve_by_distance():
+    """M12: per-yard logistic, no 10-yd steps: strictly falling, small change per yard."""
+    emp = _toy_with_tail()
+    ps = [emp.p_make(k)[0] for k in range(18, 69)]
+    assert all(x > y for x, y in zip(ps, ps[1:]))
+    assert max(x - y for x, y in zip(ps, ps[1:])) < 0.05
 
 
 @pytest.mark.parametrize("kd", [65, 66, 67, 68])

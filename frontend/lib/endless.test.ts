@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+// Frozen copy of 2022_03_NO_CAR-2560 with the tie it had when these tests were written;
+// model rebuilds may move its live values, but the tie-scoring rules need a real tie.
+import tieItemJson from "./tieItem.fixture.json";
 import { DAILY_ITEMS, scoreCall } from "./daily";
 import { ENDLESS_STORAGE_KEY, accuracyText, addEndless, emptyEndless, loadEndless, nextEndless, resetEndless, saveEndless, tallyText } from "./endless";
 
@@ -29,7 +32,7 @@ test("no repeats within a session until the whole pool is used", () => {
 test("accuracy uses the daily scoring rules: tie = full, close = ½", () => {
   let s = emptyEndless();
   assert.equal(accuracyText(s), "–");
-  const car = byId("2022_03_NO_CAR-2560"); // Go and Kick tie at the shown %
+  const car = (tieItemJson as unknown as (typeof DAILY_ITEMS)[number]); // Go and Kick tie at the shown %
   const ne = byId("2022_03_BAL_NE-819"); // FG is the close-call pick
   const det = byId("2023_01_DET_KC-1986"); // Punt is wrong
   s = addEndless(s, scoreCall("fg", car));
