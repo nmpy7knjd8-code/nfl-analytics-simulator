@@ -189,3 +189,6 @@ test("0015 follow-up: CAR-NO Q3 5:11, Kick and Go tie at 91.9% so both are Best;
   assert.deepEqual(g.fg, { tag: "Best", best: true });
   assert.equal(g.punt?.tag, "About as good");
 });
+
+// P1 schedule pin tests live in their own file; imported here so npm test runs them without a package.json change.
+import "./dailySchedule.test";
