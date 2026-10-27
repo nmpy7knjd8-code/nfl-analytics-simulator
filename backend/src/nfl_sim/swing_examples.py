@@ -20,6 +20,7 @@ FIXTURE_COLUMNS = [
     "return_yards", "incomplete_pass", "sack", "penalty", "extra_point_result", "two_point_conv_result",
     "passer_player_name", "receiver_player_name", "rusher_player_name", "interception_player_name",
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
+    "return_touchdown", "td_team",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "td_player_name",
 ]
 # role -> pbp *_player_id column; build script resolves ids to full names into row["names"]
@@ -50,6 +51,8 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "home_score_after": int(r["total_home_score"]), "away_score_after": int(r["total_away_score"]),
         "home_score_before": home_b, "away_score_before": away_b,
         "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),
+        "yards_gained": _int(r.get("yards_gained")),
+        "return_td": is_return_td(r),
         "fourth_down_failed": _int(r.get("down")) == 4 and bool(r.get("fourth_down_failed")),
         "event": event_tag(r), "display_text": display_text(r), "raw_desc": r["desc"],
     }
@@ -60,6 +63,14 @@ from nfl_sim.play_text import display_text, event_tag  # noqa: E402
 
 def _int(v: Any) -> int | None:
     return None if v is None else int(v)
+
+
+def is_return_td(r: dict[str, Any]) -> bool:
+    """Interception or fumble returned for a TD by the defense (not punt/kick returns)."""
+    if not (r.get("interception") or r.get("fumble_lost")):
+        return False
+    td_team, pos = r.get("td_team"), r.get("posteam")
+    return bool(r.get("return_touchdown")) or bool(td_team and pos and td_team != pos)
 
 
 def score_before(r: dict[str, Any]) -> tuple[int, int]:
