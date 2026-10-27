@@ -19,7 +19,7 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: backend/pyproject.toml
-      - name: Workflow guard (only daily-snapshot may write PRs; no auto-merge/approve)
+      - name: Workflow guard (only daily-snapshot may write PRs; no PR merge or approval)
         working-directory: .
         run: python scripts/ci/workflow_guard.py
       - name: Install backend
