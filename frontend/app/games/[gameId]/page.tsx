@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PlayPenalty } from "../../../components/PlayText";
 import Link from "next/link";
 import { periodName, quarterClockFromHalf } from "../../../lib/clock";
 import { shareMetadata } from "../../../lib/share";
@@ -64,7 +65,7 @@ export default async function GameReplayPage({ params }: Props) {
   const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
   const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
     const r = fileRows.get(p.play_id);
-    return { ...p, display_text: p.display_text || r?.display_text, raw_desc: p.raw_desc || r?.raw_desc };
+    return { ...p, display_text: p.display_text || r?.display_text, penalty_text: p.penalty_text ?? r?.penalty_text ?? null, raw_desc: p.raw_desc || r?.raw_desc };
   });
   // P2-D: play-by-play grouped by quarter under sticky headings.
   const quarters: { q: number; items: NonNullable<typeof plays>["data"]["items"] }[] = [];
@@ -153,6 +154,7 @@ export default async function GameReplayPage({ params }: Props) {
                                 </span>
                               ) : null}
                               {p.description}
+                              <PlayPenalty text={fileRows.get(p.play_id)?.penalty_text} />
                             </p>
                           </li>
                         );

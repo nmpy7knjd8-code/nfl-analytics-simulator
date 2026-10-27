@@ -1,3 +1,4 @@
+import { PlayPenalty } from "./PlayText";
 import {
   clockLabel,
   situationLine,
@@ -151,6 +152,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
             {sit ? <div className="swing-sit">{sit}</div> : null}
             <p className="play-desc swing-headline">
               <a className="swing-link" href={`#play-${s.point.play_id}`}>{text}</a>
+              <PlayPenalty text={p.penalty_text} />
             </p>
             <RawText raw={raw} text={text} />
             <p className="swing-why">
@@ -175,7 +177,10 @@ export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePla
             {decided && p.play_id === lastId ? <span className="ot-winner">Game-winning play · </span> : null}
             {clockLabel(p)}
           </div>
-          <p className="play-desc swing-headline">{fanText(p as EventPoint)}</p>
+          <p className="play-desc swing-headline">
+            {fanText(p as EventPoint)}
+            <PlayPenalty text={p.penalty_text} />
+          </p>
           <RawText raw={p.raw_desc ?? p.description ?? ""} text={fanText(p as EventPoint)} />
         </li>
       ))}
