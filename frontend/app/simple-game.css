@@ -63,3 +63,21 @@
 /* Game routes hide the old chrome (☰ menu replaces bottom nav). */
 body:has(.sg-app) .app-stage{padding:0;min-height:0}
 @media (max-width:375px){.sg-rv .sg-v{font-size:15px}.sg-rv .sg-lbl{font-size:12px}.sg-rv .sg-ln{padding:3px 0}.sg-rv .sg-field svg{max-height:24vh}.sg-rv .sg-verdict{font-size:30px;margin:8px 0 6px}.sg-rv .sg-btns{padding-top:8px}}
+/* Card design (Garrett, 10-27): solid black page, the whole game on one clean rounded white card. */
+body:has(.sg-app),body:has(.sg-app) .app-shell,body:has(.sg-app) .app-stage{background:#000}
+html:has(.sg-app){background:#000}
+.sg-app{min-height:calc(100dvh - 16px);margin:8px auto;width:calc(100% - 16px);max-width:414px;border-radius:20px;padding:0 14px 8px}
+@media (max-width:375px){.sg-app{min-height:calc(100dvh - 12px);margin:6px auto;width:calc(100% - 12px);border-radius:16px;padding:0 12px 6px}}
+/* Garrett 10-27: simple oval buttons, clean outlined card on pure black. */
+html:has(.sg-app),body:has(.sg-app){background:#000}
+.sg-app{border:1px solid #d9d9d9;box-shadow:none}
+.sg-btn,.sg-next,.sg-keep,.sg-reset{border-radius:999px;box-shadow:none}
+.sg-btn,.sg-keep,.sg-reset{background:#fff;border:1.5px solid #000;color:#000}
+.sg-btn{padding:0 22px}
+.sg-next{background:var(--sg-b);color:#fff;border:0}
+.sg-reset{padding:0 16px}
+/* Reveal: the field takes whatever room is left (up to 40vh), so long play text never makes the card scroll. */
+.sg-rv .sg-field{flex:1 1 0;min-height:96px;max-height:40vh;position:relative}
+.sg-rv .sg-field svg{position:absolute;inset:0;height:100%;max-height:none}
+/* The card is narrower than the 358px bug at ≤400px: drop bug logos so scores never collide. */
+@media (max-width:400px){.sg-tm img{display:none}}
