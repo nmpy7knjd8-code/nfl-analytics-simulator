@@ -85,9 +85,40 @@ def _fit(s: str) -> str:
     return " ".join(words[:MAX_WORDS]).rstrip(",;") + "…"
 
 
+def _kickoff(r: dict[str, Any]) -> str | None:
+    k = _name(r, "kicker")
+    if not k:
+        return None
+    if _t(r.get("touchback")):
+        return f"{k} kicks off for a touchback."
+    ret, ry, dist = _name(r, "kickoff_returner"), r.get("return_yards"), r.get("kick_distance")
+    s = f"{k} kicks off" + (f" {_yds(dist)}" if dist else "")
+    if ret and ry is not None and _t(r.get("touchdown")):
+        return s + f", and {ret} returns it {_yds(ry)} for a touchdown."
+    if ret and ry is not None:
+        return s + f", and {ret} returns it {_yds(ry)}."
+    return None
+
+
+def _kneel_or_spike(r: dict[str, Any]) -> str | None:
+    if r.get("play_type") == "qb_spike":
+        qb = _name(r, "passer")
+        return f"{qb} spikes the ball to stop the clock." if qb else None
+    qb, yg = _name(r, "rusher"), r.get("yards_gained")
+    if not qb:
+        return None
+    if yg is not None and yg < 0:
+        return f"{qb} kneels for a loss of {_yds(-yg)}."
+    return f"{qb} kneels to run out the clock."
+
+
 def _templated(r: dict[str, Any]) -> str | None:
     pt, td = r.get("play_type"), _t(r.get("touchdown"))
     yg = r.get("yards_gained")
+    if pt == "kickoff":
+        return _kickoff(r)
+    if pt in ("qb_kneel", "qb_spike"):
+        return _kneel_or_spike(r)
     if r.get("play_type") == "no_play" or _t(r.get("penalty")) and pt not in ("pass", "run"):
         return None
     if _t(r.get("interception")):
@@ -120,6 +151,10 @@ def _templated(r: dict[str, Any]) -> str | None:
         elif wr and yg is not None and td:
             s = f"{qb} throws a {int(yg)}-yard touchdown pass to {wr}"
             td = False
+        elif wr and yg is not None and yg < 0:
+            s = f"{qb} completes a pass to {wr} for a loss of {_yds(-yg)}"
+        elif wr and yg == 0:
+            s = f"{qb} completes a pass to {wr} for no gain"
         elif wr and yg is not None:
             s = f"{qb} completes a pass to {wr} for {_yds(yg)}"
         else:
@@ -168,20 +203,42 @@ def _templated(r: dict[str, Any]) -> str | None:
     return s + "."
 
 
-def penalty_text(desc: str) -> str | None:
+def penalty_text(desc: str, r: dict[str, Any] | None = None) -> str | None:
     m = _PENALTY.search(desc)
     if not m:
         return None
     team, who, foul, yds = m.groups()
+    full = ((r or {}).get("names") or {}).get("penalty")
+    if full and who:
+        who = full
     whom = f"{who} ({team})" if who and team else (who or team)
     if not whom:
         return None
-    return f"Penalty on {whom}: {foul.strip().lower()}, {yds} yards. No play."
+    n = int(yds)
+    return f"Penalty on {whom}: {foul.strip().lower()}, {n} {'yard' if n == 1 else 'yards'}. No play."
+
+
+_SHORTHAND = (
+    (re.compile(r"\bfor -(\d+) yards?"), lambda m: f"for a loss of {_yds(int(m.group(1)))}"),
+    (re.compile(r"\bfor 0 yards?"), lambda m: "for no gain"),
+    (re.compile(r"\byds?\b\.?"), lambda m: "yards"),
+    (re.compile(r"\bob\b"), lambda m: "out of bounds"),
+    (re.compile(r"\bTouchback\b"), lambda m: "touchback"),
+    (re.compile(r"\bend zone, touchback"), lambda m: "the end zone for a touchback"),
+)
+
+
+def plain_english(s: str) -> str:
+    """Last pass: rewrite any feed shorthand left in fallback text."""
+    for pat, fn in _SHORTHAND:
+        s = pat.sub(fn, s)
+    return s
 
 
 def display_text(r: dict[str, Any]) -> str:
     if r.get("play_type") == "no_play":
-        pen = penalty_text(r.get("desc") or "")
+        pen = penalty_text(r.get("desc") or "", r)
         if pen:
             return _fit(pen)
-    return _fit(_templated(r) or clean_desc(r.get("desc") or ""))
+    s = _fit(_templated(r) or clean_desc(r.get("desc") or ""))
+    return plain_english(s) or "Play details unavailable."

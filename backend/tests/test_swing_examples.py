@@ -122,3 +122,60 @@ def test_opening_win_chance_is_nflverse_first_real_play():
     # QA H7: BUF (away) opens at 43%, PHI (away) at 45%
     assert round(EXPORT["games"]["2023_01_BUF_NYJ"]["opening_away_wp"] * 100) == 43
     assert round(EXPORT["games"]["2023_03_PHI_TB"]["opening_away_wp"] * 100) == 45
+
+
+def test_yards_gained_and_return_td_match_pbp():
+    for p in _every_play():
+        r = BY_KEY[(p["game_id"], p["play_id"])]
+        assert p["yards_gained"] == (None if r.get("yards_gained") is None else int(r["yards_gained"])), p
+        turnover = bool(r.get("interception") or r.get("fumble_lost"))
+        td_by_def = bool(r.get("return_touchdown")) or bool(r.get("td_team") and r.get("posteam") and r["td_team"] != r["posteam"])
+        assert p["return_td"] is (turnover and td_by_def), p
+
+
+def test_branch_pick_six_return_td_and_hall_83_yards():
+    def find(gid, qtr, clock):
+        return next(p for p in PLAY_LISTS[gid]["plays"] if p["qtr"] == qtr and p["clock"] == clock and p["play_type"] != "no_play")
+    assert find("2023_01_DET_KC", 3, "11:04")["return_td"] is True
+    assert find("2023_01_BUF_NYJ", 2, "13:02")["yards_gained"] == 83
+    gipson = EXPORT["games"]["2023_01_BUF_NYJ"]["overtime_plays"][0]
+    assert gipson["return_td"] is False  # punt return, not a turnover
+
+
+FEED_SHORTHAND = re.compile(r"for -\d|\b-\d+ yards?\b|\byds?\b|\bob\b|Touchback|\b[A-Z]\.[A-Z][a-z]|\bto [A-Z]{2,3} -?\d+\b|from [A-Z]{2,3} \d+")
+
+
+def _all_exported_plays():
+    for g in EXPORT["games"].values():
+        yield from g["swings"]
+        yield from g["overtime_plays"]
+        yield from g["chart"]
+    for pl in PLAY_LISTS.values():
+        yield from pl["plays"]
+
+
+def test_no_exported_play_has_empty_display_text():
+    plays = list(_all_exported_plays())
+    assert plays and all((p.get("display_text") or "").strip() for p in plays)
+    ot = EXPORT["games"]["2023_01_BUF_NYJ"]["overtime_plays"]
+    assert ot and all(p["display_text"].strip() for p in ot)
+
+
+def test_no_display_text_uses_feed_shorthand():
+    for p in _all_exported_plays():
+        assert not FEED_SHORTHAND.search(p["display_text"]), (p["play_type"], p["display_text"])
+
+
+def _texts(gid):
+    return {p["display_text"] for p in PLAY_LISTS[gid]["plays"]}
+
+
+def test_kickoff_kneel_penalty_text_reads_plainly():
+    bn, dk = _texts("2023_01_BUF_NYJ"), _texts("2023_01_DET_KC")
+    assert "Harrison Butker kicks off for a touchback." in dk
+    assert "Tyler Bass kicks off 61 yards, and Xavier Gipson returns it 18 yards." in bn
+    assert "Zach Wilson kneels for a loss of 1 yard." in bn
+    assert "Jared Goff kneels for a loss of 1 yard." in dk
+    assert "Penalty on Spencer Brown (BUF): false start, 5 yards. No play." in bn
+    assert "Josh Allen spikes the ball to stop the clock." in bn
+    assert "Zach Wilson completes a pass to Garrett Wilson for a loss of 2 yards." in bn

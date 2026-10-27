@@ -37,6 +37,10 @@ export interface SwingPlay {
   event: SwingEvent;
   /** down == 4 and nflverse fourth_down_failed == 1 (go-for-it that failed). */
   fourth_down_failed: boolean;
+  /** nflverse yards_gained (null when nflverse has none). */
+  yards_gained: number | null;
+  /** Interception or fumble returned for a TD by the defense. */
+  return_td: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */

@@ -41,7 +41,7 @@ def write_packs(pack: dict) -> None:
     FRONTEND_PACK.write_text(json.dumps(frontend_pack(pack), indent=2) + "\n")
 ACTION = {"pass": "go", "run": "go", "punt": "punt", "field_goal": "fg"}
 # Target mix of what teams actually did, so the pack isn't 70% punts.
-MIX = {"punt": 0.38, "go": 0.3, "fg": 0.32}  # H6: fg nudged so >=15% of answers are FG
+MIX = {"punt": 0.36, "go": 0.3, "fg": 0.34}  # fg nudged so >=15% of answers are FG (H6, goal-line fix)
 
 
 def _key(r) -> str:
