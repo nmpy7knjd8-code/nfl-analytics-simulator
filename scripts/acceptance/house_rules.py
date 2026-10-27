@@ -15,9 +15,17 @@ Prints every failure, exits 1 if any.
 import html, json, os, re, sys
 
 FAN_JARGON = re.compile(r"\b(EPA|WPA|xpass|xPass|CPOE)\b")
+# Odds-style numbers only: a signed whole number >= 100 (no decimals) next to an
+# odds/line/ML/spread word, or a moneyline pair like "-150 / +130". Plain signed
+# coach values (+293.5, -136 in "coach value" text) are not odds.
+_ODDS_NUM = r"(?<![\w.])[+\-\u2212]\d{3,}(?![\d.,]|\s*(?:yd|yards|%))"
+_ODDS_WORD = r"(?:odds|line|ML|spread)"
 BETTING = re.compile(
     r"\b(moneyline|money line|point spread|parlay|sportsbook|wager\w*|bet(s|ting|tor)?|bookie|"
-    r"over/under|vig|juice|stakes?|odds-on)\b|(?<![\w.%])[+-]\d{3}\b(?!\s*(yd|yards|%))",
+    r"over/under|vig|juice|stakes?|odds-on)\b"
+    rf"|\b{_ODDS_WORD}\b(?:\s+(?:is|was|at|of))?\W{{0,3}}{_ODDS_NUM}"
+    rf"|{_ODDS_NUM}\s*\(?{_ODDS_WORD}\b"
+    rf"|{_ODDS_NUM}\s*/\s*{_ODDS_NUM}",
     re.I,
 )
 BAD_GAME = "2019_03_CIN_BUF"
