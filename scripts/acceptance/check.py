@@ -137,6 +137,11 @@ def main() -> int:
     for p in data["wpPoints"]:
         clock_ok(qsec_from_game(p.get("quarter"), p.get("game_seconds_remaining")), f"chart point {p['game_id']}#{p['play_index']}")
 
+    # House rule: no overtime win chance ships (lines stop at the end of regulation).
+    for p in data["wpPoints"]:
+        if p.get("is_overtime") or (p.get("quarter") or 0) > 4:
+            fail(f"overtime: chart point {p['game_id']}#{p['play_index']} ships an OT win chance")
+
     for sc in data["scenarios"]:
         s = sc["situation"]
         for t in (s["offense"], s["defense"]):
@@ -188,6 +193,8 @@ def main() -> int:
                     continue
                 path = os.path.join(root, f)
                 text = open(path, encoding="utf-8", errors="replace").read()
+                if re.search(r'is_overtime\\?":true[^}]*home_wp|home_wp[^}]*is_overtime\\?":true', text):
+                    fail(f"overtime: {os.path.relpath(path, site)} embeds an OT win-chance point")
                 for needle in DEV_TEXT:
                     if needle in text:
                         fail(f"dev text: {os.path.relpath(path, site)} contains {needle!r}")

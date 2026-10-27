@@ -1493,6 +1493,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .wp-mid { stroke: var(--color-border-strong); stroke-dasharray: 4 4; }
 .wp-grid { stroke: var(--color-divider); }
 .wp-axis { font: 11px var(--font-mono); fill: var(--color-ink-muted); }
+.wp-ot-line { stroke: var(--color-ink-muted); stroke-dasharray: 3 3; }
+.wp-ot-label { font-size: 11px; fill: var(--color-ink-muted); font-family: var(--font-body); }
+.ot-item { border-left-color: var(--color-border-strong); }
 .wp-swing { fill: var(--color-blue); stroke: var(--color-bg-elevated); stroke-width: 2; }
 .swing-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.75rem; }
 .swing-item { border-left: 3px solid var(--color-blue); padding: 0.5rem 0.75rem; background: var(--color-bg-elevated); }
