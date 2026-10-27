@@ -4,7 +4,7 @@ Dropped because derivable (expand() restores them):
   home_wp_after      = next play's home_wp; last play = final_home_wp
   swing              = play_id in swing_play_ids
   fourth_down.home_wp = wp when is_home_offense, else 1 − wp
-  fourth_down.options = keys of wp;  kick_distance = yardline_100 + 18;  engine_version → top level
+  fourth_down.options = keys of wp;  kick_distance = yardline_100 + FG_SNAP_YARDS;  engine_version → top level
   clock "mm:ss"      → seconds left in the quarter (int)
 Per-file provenance is cut to source / data_sha256 / build_date (full provenance in games/{season}.json).
 """
