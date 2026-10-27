@@ -40,7 +40,7 @@ test("no play repeats inside a cycle; schedule is fixed per date", () => {
   const start = dayNumber("2026-10-26") - (dayNumber("2026-10-26") % days);
   for (let i = 0; i < days; i++) {
     const d = new Date(Date.UTC(2026, 0, 1 + start + i)).toISOString().slice(0, 10);
-    for (const it of dailySet(d)) {
+    for (const it of dailySet(d, [...DAILY_ITEMS])) { // shuffle fallback (custom list skips the schedule)
       assert.ok(!seen.has(it.id), `repeat ${it.id} on ${d}`);
       seen.add(it.id);
     }
