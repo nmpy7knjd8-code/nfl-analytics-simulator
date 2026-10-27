@@ -69,3 +69,31 @@ def test_fanify_is_idempotent_and_plain():
     assert json.dumps(rv, sort_keys=True) == once
     assert rv["layman_why"].startswith("Going for it added about 3% win chance")
     assert rv["model_notes"] == ["Path A uncalibrated WP only (no isotonic)"]
+
+
+def test_l7_about_the_same_only_lists_options_within_close_margin():
+    """QA L7: no option named as 'about the same' may be >= CLOSE_MARGIN_WP below the best."""
+    import json
+    import re
+    from pathlib import Path
+
+    from nfl_sim.quiz.pack import _FAN_SHORT, CLOSE_MARGIN_WP
+
+    root = Path(__file__).resolve().parents[2]
+    for path in (root / "frontend/lib/quizPack.json", root / "backend/src/nfl_sim/quiz/data/curated_pack.json"):
+        checked = 0
+        for it in json.loads(path.read_text())["items"]:
+            why, vals = it["reveal"]["layman_why"], it["reveal"]["values"]
+            m = re.match(r"Close call: (.+?) give about the same", why)
+            if not m:
+                continue
+            checked += 1
+            best = max(vals.values())
+            for k, label in _FAN_SHORT.items():
+                if k in vals and label in m.group(1):
+                    assert best - vals[k] < CLOSE_MARGIN_WP, (it["id"], k, why)
+        assert checked > 0
+    from nfl_sim.quiz.pack import fan_why
+    why = fan_why({"inconclusive": True, "recommendation": "inconclusive",
+                   "values": {"go": 0.6167, "punt": 0.5129, "fg": 0.6207}})
+    assert why == "Close call: a field goal and going for it give about the same win chance (around 62%); punting is lower (51%)."

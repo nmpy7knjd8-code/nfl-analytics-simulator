@@ -9,7 +9,7 @@ import { ordinalDown, periodLabel, teamNickname } from "../lib/teams";
 function TeamMark({ abbr }: { abbr: string }) {
   return (
     <span className="quiz-team-mark" aria-hidden>
-      {abbr.slice(0, 2)}
+      {abbr}
     </span>
   );
 }
