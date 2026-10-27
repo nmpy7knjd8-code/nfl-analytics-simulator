@@ -42,6 +42,8 @@ FG_SNAP_YARDS = 18
 # record distance). Past the longest attempt in the data there is no evidence: p = 0.
 TAIL_START = 60
 TAIL_FIT_FROM = 50
+FG_MAX_STEP = 0.04
+FG_LONG_BINS: tuple[tuple[int, int], ...] = ((60, 62), (63, 70))  # QA 0116 P3: observed-rate caps
 FG_MIN_KICK = 18  # per-yard table starts here (shortest real kicks are 18-19 yd)
 
 # Legacy FG kick-distance bands (older pickles / toy tests only). Fits are per-yard now.
@@ -115,13 +117,29 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
                 for lo, hi in FG_BINS}
     a, b = _logit_fit(kd.to_numpy(), made.to_numpy().astype(float))
     longest = int(kd.max())
+    # QA 0116 P3: the single logistic is too generous past 60 yd (0.49 at 64 vs 14% observed
+    # at 63+). Within each 60+ bin, scale the logistic down so its bin mean equals the observed
+    # (pooled) make rate when the fit is higher; scaling keeps it strictly falling per yard.
+    caps: dict[int, float] = {}
+    logit = lambda y: float(1.0 / (1.0 + np.exp(-(a + b * y))))  # noqa: E731
+    for lo, hi in FG_LONG_BINS:
+        hi = max(hi, longest) if hi == FG_LONG_BINS[-1][1] else hi
+        inb = kd.round().between(lo, hi)
+        if inb.sum():
+            scale = min(1.0, float(made[inb].mean()) / np.mean([logit(y) for y in range(lo, hi + 1)]))
+            for yd in range(lo, hi + 1):
+                caps[yd] = scale
     tbl: dict[tuple[int, int], dict[str, Any]] = {}
+    prev = 1.0
     for yd in range(FG_MIN_KICK, longest + 1):
         at = kd.round().eq(yd)
+        # ease into the cap (<= FG_MAX_STEP per yard) so the curve has no cliff at 60 yd
+        p = min(max(logit(yd) * caps.get(yd, 1.0), prev - FG_MAX_STEP), prev * 0.999)
+        prev = p
         tbl[(yd, yd)] = {
             "n": int(at.sum()),
             "made": int(made[at].sum()),
-            "p_make": float(1.0 / (1.0 + np.exp(-(a + b * yd)))),
+            "p_make": p,
             "filter": f"REG field_goal; logistic fit on kick_distance over {len(kd)} attempts "
                       f"(longest {longest} yd)",
         }

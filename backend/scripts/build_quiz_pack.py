@@ -97,6 +97,8 @@ DAILY_SCHEDULE = REPO / "frontend" / "lib" / "dailySchedule.json"
 def scheduled_ids() -> set[str]:
     if not DAILY_SCHEDULE.exists():
         return set()
+    # Retired ids (lib/retiredDailyIds.json, #143) are already gone from future days, so this
+    # only keeps the ones still on played days (before the retirement date).
     return {i for ids in json.loads(DAILY_SCHEDULE.read_text())["days"].values() for i in ids}
 
 

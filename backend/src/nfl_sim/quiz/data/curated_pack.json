@@ -170,7 +170,7 @@
         "values": {
           "go": 0.5822235022629254,
           "punt": 0.5485096775527336,
-          "fg": 0.5120943571362085
+          "fg": 0.5066612800353504
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (58.2% vs 54.9%).",
         "transition_mode": "improved",
@@ -488,7 +488,7 @@
         "values": {
           "go": 0.6808466398347448,
           "punt": 0.5866135053068302,
-          "fg": 0.5812834988766336
+          "fg": 0.5731842344475448
         },
         "layman_why": "Going for it added about 9% win chance over the next-best option (68.1% vs 58.7%).",
         "transition_mode": "improved",
@@ -830,134 +830,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.11035190887038515
-      }
-    },
-    {
-      "id": "2023_16_JAX_TB-2462",
-      "label": "JAX @ TB \u2014 4th & 13",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_16_JAX_TB",
-        "play_id": 2462,
-        "note": "",
-        "week": 16,
-        "game_date": "2023-12-24"
-      },
-      "situation": {
-        "posteam": "JAX",
-        "defteam": "TB",
-        "home_team": "TB",
-        "away_team": "JAX",
-        "posteam_score": 0,
-        "defteam_score": 27,
-        "score_differential": -27,
-        "qtr": 3,
-        "game_seconds_remaining": 1466,
-        "half_seconds_remaining": 1466,
-        "yardline_100": 40,
-        "down": 4,
-        "distance": 13,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 566
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.00011576196877899,
-        "values": {
-          "go": 0.0070181873311318185,
-          "punt": 0.006473607280961163,
-          "fg": 0.0071339492999108085
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 1%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 0.00011576196877899
-      }
-    },
-    {
-      "id": "2022_01_KC_ARI-3161",
-      "label": "KC @ ARI \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_01_KC_ARI",
-        "play_id": 3161,
-        "note": "",
-        "week": 1,
-        "game_date": "2022-09-11"
-      },
-      "situation": {
-        "posteam": "ARI",
-        "defteam": "KC",
-        "home_team": "ARI",
-        "away_team": "KC",
-        "posteam_score": 7,
-        "defteam_score": 37,
-        "score_differential": -30,
-        "qtr": 4,
-        "game_seconds_remaining": 860,
-        "half_seconds_remaining": 860,
-        "yardline_100": 24,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 860
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 4.641917990726315e-05,
-        "values": {
-          "go": 0.0014139016204867925,
-          "punt": 0.0008304512186538549,
-          "fg": 0.0013674824405795294
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 4.641917990726315e-05
       }
     },
     {
@@ -2804,70 +2676,6 @@
       }
     },
     {
-      "id": "2022_02_IND_JAX-3445",
-      "label": "IND @ JAX \u2014 4th & 5",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_02_IND_JAX",
-        "play_id": 3445,
-        "note": "",
-        "week": 2,
-        "game_date": "2022-09-18"
-      },
-      "situation": {
-        "posteam": "JAX",
-        "defteam": "IND",
-        "home_team": "JAX",
-        "away_team": "IND",
-        "posteam_score": 24,
-        "defteam_score": 0,
-        "score_differential": 24,
-        "qtr": 4,
-        "game_seconds_remaining": 29,
-        "half_seconds_remaining": 29,
-        "yardline_100": 29,
-        "down": 4,
-        "distance": 5,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 0,
-        "quarter_seconds_remaining": 29
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 1.0819919935567412e-06,
-        "values": {
-          "go": 0.9999964218447741,
-          "punt": 0.9999954433118526,
-          "fg": 0.9999975038367677
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 100%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 1.0819919935567412e-06
-      }
-    },
-    {
       "id": "2022_16_JAX_NYJ-1580",
       "label": "JAX @ NYJ \u2014 4th & 12",
       "kind": "historical",
@@ -2928,69 +2736,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.02166400125138282
-      }
-    },
-    {
-      "id": "2022_16_BUF_CHI-3564",
-      "label": "BUF @ CHI \u2014 4th & 14",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_BUF_CHI",
-        "play_id": 3564,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "CHI",
-        "defteam": "BUF",
-        "home_team": "CHI",
-        "away_team": "BUF",
-        "posteam_score": 13,
-        "defteam_score": 28,
-        "score_differential": -15,
-        "qtr": 4,
-        "game_seconds_remaining": 138,
-        "half_seconds_remaining": 138,
-        "yardline_100": 79,
-        "down": 4,
-        "distance": 14,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 138
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 6.466367260895569e-05,
-        "values": {
-          "go": 0.0010020826525231842,
-          "punt": 0.0009374189799142285
-        },
-        "layman_why": "Close call: going for it and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 6.466367260895569e-05
       }
     },
     {
@@ -3409,11 +3154,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0057547337400642995,
+        "margin": 0.007934241568158473,
         "values": {
           "go": 0.923306792070846,
           "punt": 0.9142864443100347,
-          "fg": 0.9175520583307817
+          "fg": 0.9153725505026875
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
@@ -3436,7 +3181,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0057547337400642995
+        "edge_wp": 0.007934241568158473
       }
     },
     {
@@ -3667,7 +3412,7 @@
         "values": {
           "go": 0.2838853669399327,
           "punt": 0.2562032843600087,
-          "fg": 0.24094869572869643
+          "fg": 0.23612199308558368
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (28.4% vs 25.6%).",
         "transition_mode": "improved",
@@ -4430,7 +4175,7 @@
         "values": {
           "go": 0.5598326605069012,
           "punt": 0.5132843344954905,
-          "fg": 0.5025440997893
+          "fg": 0.4943941448177547
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (56.0% vs 51.3%).",
         "transition_mode": "improved",
@@ -6430,70 +6175,6 @@
       }
     },
     {
-      "id": "2022_16_DET_CAR-2870",
-      "label": "DET @ CAR \u2014 4th & 7",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_DET_CAR",
-        "play_id": 2870,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "CAR",
-        "defteam": "DET",
-        "home_team": "CAR",
-        "away_team": "DET",
-        "posteam_score": 31,
-        "defteam_score": 13,
-        "score_differential": 18,
-        "qtr": 4,
-        "game_seconds_remaining": 797,
-        "half_seconds_remaining": 797,
-        "yardline_100": 22,
-        "down": 4,
-        "distance": 7,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 797
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0030916955517727995,
-        "values": {
-          "go": 0.9861905300130702,
-          "punt": 0.9832055631126867,
-          "fg": 0.989282225564843
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 99%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 0.0030916955517727995
-      }
-    },
-    {
       "id": "2022_12_TB_CLE-1572",
       "label": "TB @ CLE \u2014 4th & 1",
       "kind": "historical",
@@ -6717,13 +6398,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04165202703260554,
+        "margin": 0.04261374852572378,
         "values": {
           "go": 0.17716603138427833,
           "punt": 0.13455228285855456,
-          "fg": 0.1355140043516728
+          "fg": 0.13453374732305695
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (17.7% vs 13.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (17.7% vs 13.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6744,7 +6425,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04165202703260554
+        "edge_wp": 0.04261374852572378
       }
     },
     {
@@ -6912,7 +6593,7 @@
         "values": {
           "go": 0.2501201684620082,
           "punt": 0.2202024065086905,
-          "fg": 0.20772116221433712
+          "fg": 0.2036304055697608
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (25.0% vs 22.0%).",
         "transition_mode": "improved",
@@ -9387,7 +9068,7 @@
         "values": {
           "go": 0.536765437336789,
           "punt": 0.46626645890927676,
-          "fg": 0.44054983877331333
+          "fg": 0.4340741161323346
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (53.7% vs 46.6%).",
         "transition_mode": "improved",
@@ -11166,7 +10847,7 @@
         "values": {
           "go": 0.32070899123198965,
           "punt": 0.2901169218255528,
-          "fg": 0.2845216041799635
+          "fg": 0.2829303788798012
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (32.1% vs 29.0%).",
         "transition_mode": "improved",
@@ -11741,7 +11422,7 @@
         "values": {
           "go": 0.4686756659160724,
           "punt": 0.4406534979891671,
-          "fg": 0.4301149821097703
+          "fg": 0.4282366331231694
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 44.1%).",
         "transition_mode": "improved",
@@ -12690,14 +12371,14 @@
       "historical_action": "punt",
       "reveal": {
         "recommendation": "punt",
-        "inconclusive": true,
-        "margin": 0.018977928164460645,
+        "inconclusive": false,
+        "margin": 0.02326884989864164,
         "values": {
           "go": 0.6291341627174559,
           "punt": 0.6524030126160976,
-          "fg": 0.6334250844516369
+          "fg": 0.6266894635556008
         },
-        "layman_why": "Close call: a field goal and punting give about the same win chance (around 65%); going for it is lower (63%).",
+        "layman_why": "Punting added about 2% win chance over the next-best option (65.2% vs 62.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12718,7 +12399,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.018977928164460645
+        "edge_wp": 0.02326884989864164
       }
     },
     {
@@ -13036,70 +12717,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.009940150091673872
-      }
-    },
-    {
-      "id": "2022_16_DET_CAR-3955",
-      "label": "DET @ CAR \u2014 4th & 10",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_DET_CAR",
-        "play_id": 3955,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-24"
-      },
-      "situation": {
-        "posteam": "DET",
-        "defteam": "CAR",
-        "home_team": "CAR",
-        "away_team": "DET",
-        "posteam_score": 20,
-        "defteam_score": 37,
-        "score_differential": -17,
-        "qtr": 4,
-        "game_seconds_remaining": 40,
-        "half_seconds_remaining": 40,
-        "yardline_100": 16,
-        "down": 4,
-        "distance": 10,
-        "posteam_timeouts": 0,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 40
-      },
-      "historical_action": "fg",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.00021004729098600264,
-        "values": {
-          "go": 0.0006222598965394763,
-          "punt": 9.629750557257899e-05,
-          "fg": 0.0004122126055534737
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 0.00021004729098600264
       }
     },
     {
@@ -13585,7 +13202,7 @@
         "values": {
           "go": 0.5233069991279213,
           "punt": 0.49965059455716976,
-          "fg": 0.4734440838425604
+          "fg": 0.4671408754129035
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (52.3% vs 50.0%).",
         "transition_mode": "improved",
@@ -14244,70 +13861,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.02479017850333526
-      }
-    },
-    {
-      "id": "2022_17_IND_NYG-2637",
-      "label": "IND @ NYG \u2014 4th & 6",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_17_IND_NYG",
-        "play_id": 2637,
-        "note": "",
-        "week": 17,
-        "game_date": "2023-01-01"
-      },
-      "situation": {
-        "posteam": "IND",
-        "defteam": "NYG",
-        "home_team": "NYG",
-        "away_team": "IND",
-        "posteam_score": 3,
-        "defteam_score": 31,
-        "score_differential": -28,
-        "qtr": 3,
-        "game_seconds_remaining": 1148,
-        "half_seconds_remaining": 1148,
-        "yardline_100": 18,
-        "down": 4,
-        "distance": 6,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 248
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 8.557305922648074e-05,
-        "values": {
-          "go": 0.0044776189521496396,
-          "punt": 0.0028514414403374433,
-          "fg": 0.00456319201137612
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 8.557305922648074e-05
       }
     },
     {
@@ -15321,69 +14874,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.047666827056769445
-      }
-    },
-    {
-      "id": "2022_05_ATL_TB-2899",
-      "label": "ATL @ TB \u2014 4th & 4",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_05_ATL_TB",
-        "play_id": 2899,
-        "note": "",
-        "week": 5,
-        "game_date": "2022-10-09"
-      },
-      "situation": {
-        "posteam": "TB",
-        "defteam": "ATL",
-        "home_team": "TB",
-        "away_team": "ATL",
-        "posteam_score": 21,
-        "defteam_score": 0,
-        "score_differential": 21,
-        "qtr": 3,
-        "game_seconds_remaining": 1020,
-        "half_seconds_remaining": 1020,
-        "yardline_100": 81,
-        "down": 4,
-        "distance": 4,
-        "posteam_timeouts": 2,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 120
-      },
-      "historical_action": "punt",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0006119741174041016,
-        "values": {
-          "go": 0.9804353875201747,
-          "punt": 0.9810473616375788
-        },
-        "layman_why": "Close call: going for it and punting give about the same win chance (around 98%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 0.0006119741174041016
       }
     },
     {
@@ -17016,7 +16506,7 @@
         "values": {
           "go": 0.36298821417582383,
           "punt": 0.33602948937940824,
-          "fg": 0.3110584329061881
+          "fg": 0.3060479522435273
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (36.3% vs 33.6%).",
         "transition_mode": "improved",
@@ -17362,70 +16852,6 @@
       }
     },
     {
-      "id": "2022_16_JAX_NYJ-3834",
-      "label": "JAX @ NYJ \u2014 4th & 6",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_16_JAX_NYJ",
-        "play_id": 3834,
-        "note": "",
-        "week": 16,
-        "game_date": "2022-12-22"
-      },
-      "situation": {
-        "posteam": "NYJ",
-        "defteam": "JAX",
-        "home_team": "NYJ",
-        "away_team": "JAX",
-        "posteam_score": 3,
-        "defteam_score": 19,
-        "score_differential": -16,
-        "qtr": 4,
-        "game_seconds_remaining": 100,
-        "half_seconds_remaining": 100,
-        "yardline_100": 34,
-        "down": 4,
-        "distance": 6,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 100
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 0.0003589837479504416,
-        "values": {
-          "go": 0.0008750672597219273,
-          "punt": 0.00048462340784979907,
-          "fg": 0.001234051007672369
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 0.0003589837479504416
-      }
-    },
-    {
       "id": "2022_11_CLE_BUF-845",
       "label": "CLE @ BUF \u2014 4th & 14",
       "kind": "historical",
@@ -17523,13 +16949,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.033714567042936405,
+        "margin": 0.03423219847539011,
         "values": {
           "go": 0.0953527082303833,
           "punt": 0.05924234685957935,
-          "fg": 0.0616381411874469
+          "fg": 0.061120509754993196
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (9.5% vs 6.2%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (9.5% vs 6.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17550,7 +16976,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.033714567042936405
+        "edge_wp": 0.03423219847539011
       }
     },
     {
@@ -18762,70 +18188,6 @@
       }
     },
     {
-      "id": "2023_05_NYG_MIA-3934",
-      "label": "NYG @ MIA \u2014 4th & 3",
-      "kind": "historical",
-      "source": {
-        "season": 2023,
-        "game_id": "2023_05_NYG_MIA",
-        "play_id": 3934,
-        "note": "",
-        "week": 5,
-        "game_date": "2023-10-08"
-      },
-      "situation": {
-        "posteam": "NYG",
-        "defteam": "MIA",
-        "home_team": "MIA",
-        "away_team": "NYG",
-        "posteam_score": 16,
-        "defteam_score": 31,
-        "score_differential": -15,
-        "qtr": 4,
-        "game_seconds_remaining": 92,
-        "half_seconds_remaining": 92,
-        "yardline_100": 19,
-        "down": 4,
-        "distance": 3,
-        "posteam_timeouts": 3,
-        "defteam_timeouts": 3,
-        "quarter_seconds_remaining": 92
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 3.74078886573319e-05,
-        "values": {
-          "go": 0.002862923741483012,
-          "punt": 0.0008324064509290519,
-          "fg": 0.00282551585282568
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 3.74078886573319e-05
-      }
-    },
-    {
       "id": "2022_11_CHI_ATL-3434",
       "label": "CHI @ ATL \u2014 4th & 2",
       "kind": "historical",
@@ -18859,13 +18221,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05968942622833384,
+        "margin": 0.07209152707030053,
         "values": {
           "go": 0.5398752237063564,
           "punt": 0.4442184460000126,
-          "fg": 0.4801857974780226
+          "fg": 0.4677836966360559
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (54.0% vs 48.0%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (54.0% vs 46.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18886,7 +18248,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05968942622833384
+        "edge_wp": 0.07209152707030053
       }
     },
     {
@@ -20581,7 +19943,7 @@
         "values": {
           "go": 0.5684119007319087,
           "punt": 0.5302451277706535,
-          "fg": 0.5033106255982591
+          "fg": 0.4975371276090455
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (56.8% vs 53.0%).",
         "transition_mode": "improved",
@@ -21471,7 +20833,7 @@
         "values": {
           "go": 0.31603782408064895,
           "punt": 0.26515656777194174,
-          "fg": 0.2576854516358388
+          "fg": 0.25161198843682303
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (31.6% vs 26.5%).",
         "transition_mode": "improved",
@@ -22038,13 +21400,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02981825398321092,
+        "margin": 0.03170185309717527,
         "values": {
           "go": 0.3228684446251821,
           "punt": 0.28877199149554456,
-          "fg": 0.2930501906419712
+          "fg": 0.29116659152800684
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (32.3% vs 29.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (32.3% vs 29.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -22065,7 +21427,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02981825398321092
+        "edge_wp": 0.03170185309717527
       }
     },
     {
@@ -22130,70 +21492,6 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.03317061217630124
-      }
-    },
-    {
-      "id": "2022_08_LV_NO-3619",
-      "label": "LV @ NO \u2014 4th & 2",
-      "kind": "historical",
-      "source": {
-        "season": 2022,
-        "game_id": "2022_08_LV_NO",
-        "play_id": 3619,
-        "note": "",
-        "week": 8,
-        "game_date": "2022-10-30"
-      },
-      "situation": {
-        "posteam": "LV",
-        "defteam": "NO",
-        "home_team": "NO",
-        "away_team": "LV",
-        "posteam_score": 0,
-        "defteam_score": 24,
-        "score_differential": -24,
-        "qtr": 4,
-        "game_seconds_remaining": 48,
-        "half_seconds_remaining": 48,
-        "yardline_100": 30,
-        "down": 4,
-        "distance": 2,
-        "posteam_timeouts": 1,
-        "defteam_timeouts": 2,
-        "quarter_seconds_remaining": 48
-      },
-      "historical_action": "go",
-      "reveal": {
-        "recommendation": "inconclusive",
-        "inconclusive": true,
-        "margin": 2.095836747394176e-06,
-        "values": {
-          "go": 1.1469270957692925e-05,
-          "punt": 3.891438913161682e-06,
-          "fg": 1.35651077050871e-05
-        },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 0%).",
-        "transition_mode": "improved",
-        "empirics_mode": "pooled",
-        "assumptions": [
-          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
-          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
-          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
-          "Punts use where real punts from this spot usually ended up.",
-          "The clock runs about as long as it really did after each kind of play."
-        ],
-        "recommendation_changed_legacy_to_improved": false,
-        "model_notes": [
-          "Path A uncalibrated WP only (no isotonic)",
-          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
-          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
-          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
-          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
-          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
-          "Empirics mode=pooled; Pooled REG train empirics",
-          "Transition mode=improved"
-        ],
-        "edge_wp": 2.095836747394176e-06
       }
     },
     {
@@ -23213,6 +22511,706 @@
           "Transition mode=improved"
         ],
         "edge_wp": 0.06324905982307372
+      }
+    },
+    {
+      "id": "2023_04_DET_GB-1699",
+      "label": "DET @ GB \u2014 4th & 5",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_04_DET_GB",
+        "play_id": 1699,
+        "note": "",
+        "week": 4,
+        "game_date": "2023-09-28"
+      },
+      "situation": {
+        "posteam": "GB",
+        "defteam": "DET",
+        "home_team": "GB",
+        "away_team": "DET",
+        "posteam_score": 3,
+        "defteam_score": 24,
+        "score_differential": -21,
+        "qtr": 2,
+        "game_seconds_remaining": 2141,
+        "half_seconds_remaining": 341,
+        "yardline_100": 76,
+        "down": 4,
+        "distance": 5,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 341
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0008911043274317174,
+        "values": {
+          "go": 0.04395186688776009,
+          "punt": 0.04306076256032837
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 4%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.0008911043274317174
+      }
+    },
+    {
+      "id": "2022_08_MIA_DET-371",
+      "label": "MIA @ DET \u2014 4th & 4",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_MIA_DET",
+        "play_id": 371,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "MIA",
+        "defteam": "DET",
+        "home_team": "DET",
+        "away_team": "MIA",
+        "posteam_score": 0,
+        "defteam_score": 7,
+        "score_differential": -7,
+        "qtr": 1,
+        "game_seconds_remaining": 3233,
+        "half_seconds_remaining": 1433,
+        "yardline_100": 44,
+        "down": 4,
+        "distance": 4,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 533
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.004486586931917114,
+        "values": {
+          "go": 0.38115364992721484,
+          "punt": 0.37666706299529773,
+          "fg": 0.3463569863046426
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 38%); a field goal is lower (35%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.004486586931917114
+      }
+    },
+    {
+      "id": "2022_16_JAX_NYJ-2432",
+      "label": "JAX @ NYJ \u2014 4th & 10",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_16_JAX_NYJ",
+        "play_id": 2432,
+        "note": "",
+        "week": 16,
+        "game_date": "2022-12-22"
+      },
+      "situation": {
+        "posteam": "JAX",
+        "defteam": "NYJ",
+        "home_team": "NYJ",
+        "away_team": "JAX",
+        "posteam_score": 13,
+        "defteam_score": 3,
+        "score_differential": 10,
+        "qtr": 3,
+        "game_seconds_remaining": 1329,
+        "half_seconds_remaining": 1329,
+        "yardline_100": 23,
+        "down": 4,
+        "distance": 10,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 429
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "fg",
+        "inconclusive": true,
+        "margin": 0.016113046183492186,
+        "values": {
+          "go": 0.8741776305372023,
+          "punt": 0.8513067146633129,
+          "fg": 0.8902906767206945
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 89%); punting is lower (85%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.016113046183492186
+      }
+    },
+    {
+      "id": "2023_10_NYJ_LV-130",
+      "label": "NYJ @ LV \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_10_NYJ_LV",
+        "play_id": 130,
+        "note": "",
+        "week": 10,
+        "game_date": "2023-11-12"
+      },
+      "situation": {
+        "posteam": "LV",
+        "defteam": "NYJ",
+        "home_team": "LV",
+        "away_team": "NYJ",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 1,
+        "game_seconds_remaining": 3513,
+        "half_seconds_remaining": 1713,
+        "yardline_100": 66,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 813
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 7.711728425952025e-05,
+        "values": {
+          "go": 0.40921093304799017,
+          "punt": 0.4092880503322497
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 41%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 7.711728425952025e-05
+      }
+    },
+    {
+      "id": "2022_17_CHI_DET-1798",
+      "label": "CHI @ DET \u2014 4th & 1",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_17_CHI_DET",
+        "play_id": 1798,
+        "note": "",
+        "week": 17,
+        "game_date": "2023-01-01"
+      },
+      "situation": {
+        "posteam": "DET",
+        "defteam": "CHI",
+        "home_team": "DET",
+        "away_team": "CHI",
+        "posteam_score": 21,
+        "defteam_score": 10,
+        "score_differential": 11,
+        "qtr": 2,
+        "game_seconds_remaining": 1820,
+        "half_seconds_remaining": 20,
+        "yardline_100": 4,
+        "down": 4,
+        "distance": 1,
+        "posteam_timeouts": 2,
+        "defteam_timeouts": 0,
+        "quarter_seconds_remaining": 20
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.016014880528726017,
+        "values": {
+          "go": 0.9378003002391775,
+          "punt": 0.8906347202791525,
+          "fg": 0.9217854197104515
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 94%); punting is lower (89%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.016014880528726017
+      }
+    },
+    {
+      "id": "2022_08_GB_BUF-360",
+      "label": "GB @ BUF \u2014 4th & 3",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_GB_BUF",
+        "play_id": 360,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "GB",
+        "defteam": "BUF",
+        "home_team": "BUF",
+        "away_team": "GB",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 1,
+        "game_seconds_remaining": 3231,
+        "half_seconds_remaining": 1431,
+        "yardline_100": 38,
+        "down": 4,
+        "distance": 3,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 531
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "go",
+        "inconclusive": true,
+        "margin": 0.010779502325954038,
+        "values": {
+          "go": 0.6037281134471977,
+          "punt": 0.5929486111212436,
+          "fg": 0.5905753034321753
+        },
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 60%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.010779502325954038
+      }
+    },
+    {
+      "id": "2023_16_DET_MIN-1071",
+      "label": "DET @ MIN \u2014 4th & 4",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_16_DET_MIN",
+        "play_id": 1071,
+        "note": "",
+        "week": 16,
+        "game_date": "2023-12-24"
+      },
+      "situation": {
+        "posteam": "DET",
+        "defteam": "MIN",
+        "home_team": "MIN",
+        "away_team": "DET",
+        "posteam_score": 7,
+        "defteam_score": 7,
+        "score_differential": 0,
+        "qtr": 2,
+        "game_seconds_remaining": 2652,
+        "half_seconds_remaining": 852,
+        "yardline_100": 74,
+        "down": 4,
+        "distance": 4,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 852
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "punt",
+        "inconclusive": true,
+        "margin": 0.014266792230205494,
+        "values": {
+          "go": 0.3715725804443296,
+          "punt": 0.3858393726745351
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 39%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.014266792230205494
+      }
+    },
+    {
+      "id": "2022_15_BAL_CLE-786",
+      "label": "BAL @ CLE \u2014 4th & 7",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_15_BAL_CLE",
+        "play_id": 786,
+        "note": "",
+        "week": 15,
+        "game_date": "2022-12-17"
+      },
+      "situation": {
+        "posteam": "CLE",
+        "defteam": "BAL",
+        "home_team": "CLE",
+        "away_team": "BAL",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 2,
+        "game_seconds_remaining": 2655,
+        "half_seconds_remaining": 855,
+        "yardline_100": 29,
+        "down": 4,
+        "distance": 7,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 855
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.009510642411106385,
+        "values": {
+          "go": 0.4548600774998849,
+          "punt": 0.42318225289999745,
+          "fg": 0.46437071991099127
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 46%); punting is lower (42%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.009510642411106385
+      }
+    },
+    {
+      "id": "2023_12_GB_DET-3316",
+      "label": "GB @ DET \u2014 4th & 7",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_12_GB_DET",
+        "play_id": 3316,
+        "note": "",
+        "week": 12,
+        "game_date": "2023-11-23"
+      },
+      "situation": {
+        "posteam": "DET",
+        "defteam": "GB",
+        "home_team": "DET",
+        "away_team": "GB",
+        "posteam_score": 14,
+        "defteam_score": 29,
+        "score_differential": -15,
+        "qtr": 4,
+        "game_seconds_remaining": 817,
+        "half_seconds_remaining": 817,
+        "yardline_100": 31,
+        "down": 4,
+        "distance": 7,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 817
+      },
+      "historical_action": "go",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0007290818746462507,
+        "values": {
+          "go": 0.03453574407530646,
+          "punt": 0.023859629678329608,
+          "fg": 0.03526482594995271
+        },
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 4%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.0007290818746462507
+      }
+    },
+    {
+      "id": "2023_14_MIN_LV-3117",
+      "label": "MIN @ LV \u2014 4th & 6",
+      "kind": "historical",
+      "source": {
+        "season": 2023,
+        "game_id": "2023_14_MIN_LV",
+        "play_id": 3117,
+        "note": "",
+        "week": 14,
+        "game_date": "2023-12-10"
+      },
+      "situation": {
+        "posteam": "MIN",
+        "defteam": "LV",
+        "home_team": "LV",
+        "away_team": "MIN",
+        "posteam_score": 0,
+        "defteam_score": 0,
+        "score_differential": 0,
+        "qtr": 4,
+        "game_seconds_remaining": 695,
+        "half_seconds_remaining": 695,
+        "yardline_100": 76,
+        "down": 4,
+        "distance": 6,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 695
+      },
+      "historical_action": "punt",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.008061999148727461,
+        "values": {
+          "go": 0.4164255762213955,
+          "punt": 0.408363577072668
+        },
+        "layman_why": "Close call: going for it and punting give about the same win chance (around 42%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": true,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.008061999148727461
+      }
+    },
+    {
+      "id": "2022_08_DEN_JAX-1361",
+      "label": "DEN @ JAX \u2014 4th & 5",
+      "kind": "historical",
+      "source": {
+        "season": 2022,
+        "game_id": "2022_08_DEN_JAX",
+        "play_id": 1361,
+        "note": "",
+        "week": 8,
+        "game_date": "2022-10-30"
+      },
+      "situation": {
+        "posteam": "JAX",
+        "defteam": "DEN",
+        "home_team": "JAX",
+        "away_team": "DEN",
+        "posteam_score": 7,
+        "defteam_score": 0,
+        "score_differential": 7,
+        "qtr": 2,
+        "game_seconds_remaining": 2326,
+        "half_seconds_remaining": 526,
+        "yardline_100": 19,
+        "down": 4,
+        "distance": 5,
+        "posteam_timeouts": 3,
+        "defteam_timeouts": 3,
+        "quarter_seconds_remaining": 526
+      },
+      "historical_action": "fg",
+      "reveal": {
+        "recommendation": "inconclusive",
+        "inconclusive": true,
+        "margin": 0.0021286614924541647,
+        "values": {
+          "go": 0.8284737439690059,
+          "punt": 0.7891849114434735,
+          "fg": 0.83060240546146
+        },
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 83%); punting is lower (79%).",
+        "transition_mode": "improved",
+        "empirics_mode": "pooled",
+        "assumptions": [
+          "Win chances come from a model trained on real NFL games (2019\u20132021 regular seasons).",
+          "Field goal distance is the line of scrimmage plus 18 yards; no kicks over 64 yards.",
+          "A failed 4th down or missed kick hands the opponent the ball at that spot.",
+          "Punts use where real punts from this spot usually ended up.",
+          "The clock runs about as long as it really did after each kind of play."
+        ],
+        "recommendation_changed_legacy_to_improved": false,
+        "model_notes": [
+          "Path A uncalibrated WP only (no isotonic)",
+          "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
+          "FG distance = yardline_100 + 18; kickoff TB \u2192 yardline_100=75",
+          "Go fail / FG miss \u2192 opponent at 100\u2212yardline_100",
+          "Punt \u2192 E[WP] over empirical q25/q50/q75 opp yardline buckets (TB\u219280 in fit)",
+          "Empirics fit REG train 2019\u20132021 only (never 2023+)",
+          "Empirics mode=pooled; Pooled REG train empirics",
+          "Transition mode=improved"
+        ],
+        "edge_wp": 0.0021286614924541647
       }
     }
   ]
