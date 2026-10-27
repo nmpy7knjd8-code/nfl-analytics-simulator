@@ -6,13 +6,14 @@ import type { QuizChoice } from "../lib/quiz";
 import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
-  practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
+  practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, shortDate, visibleStreak,
   dailySet, emptyStreak, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, fieldGoalYards, MAX_FG_YARDS, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
 import { gapPoints } from "../lib/winFormat";
 import { CHECKER_ENABLED } from "../lib/features";
+import { CONFIDENCE_STEPS, HARD_MODE_KEY, archiveKey, calibrationScore, challengeQuery, coachTally, readChallenge, type Challenge } from "../lib/batch1";
 import { CardSkeleton, EmptyState } from "./EmptyState";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
@@ -120,6 +121,12 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const [pending, setPending] = useState<QuizChoice | null>(null);
   const [howto, setHowto] = useState(false);
   const [restoredDone, setRestoredDone] = useState(false);
+  // Batch 1: ?d= archive, ?c= friend challenge, hard mode (confidence before each reveal).
+  const [archive, setArchive] = useState<string | null>(null);
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [hard, setHard] = useState(false);
+  const [conf, setConf] = useState<number>(70);
+  const [confs, setConfs] = useState<number[]>([]);
   const choiceRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Client-only: the day is the viewer's current ET date.
@@ -134,7 +141,20 @@ export function DailyGame({ mode }: { mode: Mode }) {
     } catch {
       /* no storage: don't nag */
     }
+    let past: string | null = null;
     if (mode === "daily") {
+      const params = new URLSearchParams(window.location.search);
+      const ch = readChallenge(params, key);
+      past = ch ? (ch.key === key ? null : ch.key) : archiveKey(params.get("d"), key);
+      setChallenge(ch);
+      setArchive(past);
+      try {
+        setHard(storage()?.getItem(HARD_MODE_KEY) === "1");
+      } catch {
+        /* default off */
+      }
+    }
+    if (mode === "daily" && !past) {
       try {
         const raw = storage()?.getItem(PROGRESS_KEY);
         const p = raw ? (JSON.parse(raw) as { date: string; picks: Picks }) : null;
@@ -164,10 +184,10 @@ export function DailyGame({ mode }: { mode: Mode }) {
 
   const items = useMemo(() => {
     if (!today) return [];
-    if (mode === "daily") return dailySet(today);
+    if (mode === "daily") return dailySet(archive ?? today);
     if (mode === "yesterday") return dailySet(shiftDay(today, -1));
     return practiceSet(String(seed));
-  }, [today, seed, mode]);
+  }, [today, seed, mode, archive]);
 
   const scores = useMemo(
     () => items.map((it, i) => (picks[i] ? scoreCall(picks[i]!, it) : null)),
@@ -176,23 +196,23 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const finished = items.length > 0 && scores.every(Boolean);
 
   useEffect(() => {
-    if (mode !== "daily" || !today) return;
+    if (mode !== "daily" || !today || archive) return;
     try {
       storage()?.setItem(PROGRESS_KEY, JSON.stringify({ date: today, picks }));
     } catch {
       /* not persisted */
     }
-  }, [picks, today, mode]);
+  }, [picks, today, mode, archive]);
 
   useEffect(() => {
-    if (mode !== "daily" || !finished || !today || !streak) return;
+    if (mode !== "daily" || !finished || !today || !streak || archive) return;
     const credit = scores.reduce((a, s) => a + (s?.credit ?? 0), 0);
-    const next = recordDaily(streak, { date: today, credit, answered: items.length, results: scores.map((s) => s!.result) });
+    const next = recordDaily(streak, { date: today, credit, answered: items.length, results: scores.map((s) => s!.result), calls: items.map((it, i) => ({ id: it.id, pick: picks[i]! })) });
     if (next !== streak) {
       saveStreak(storage(), next);
       setStreak(next);
     }
-  }, [finished, mode, today, streak, scores, items.length]);
+  }, [finished, mode, today, streak, scores, items, picks, archive]);
 
   // UI recheck P1-A: hide the tab bar while a /daily/ set is in play.
   const inPlay = mode === "daily" && items.length > 0 && !(index >= items.length && finished) && !restoredDone;
@@ -223,8 +243,19 @@ export function DailyGame({ mode }: { mode: Mode }) {
     while (p.length < items.length) p.push(null);
     p[index] = c;
     setPicks(p);
+    if (hard) setConfs((cs) => { const n = [...cs]; n[index] = conf; return n; });
     setPending(null);
     setRevealed(true);
+  }
+
+  function toggleHard() {
+    const v = !hard;
+    setHard(v);
+    try {
+      storage()?.setItem(HARD_MODE_KEY, v ? "1" : "0");
+    } catch {
+      /* not persisted */
+    }
   }
 
   function nextCard() {
@@ -249,7 +280,14 @@ export function DailyGame({ mode }: { mode: Mode }) {
     const worst = [...ranked].sort((a, b) => b.c - a.c)[0];
     const best = [...ranked].filter((r) => r.s.result === "right").sort((a, b) => b.s.gap - a.s.gap)[0];
     const url = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
-    const share = shareText(today, done.map((s) => s.result), shown, url);
+    const setKey = archive ?? today;
+    const myPicks = done.map((s) => s.pick);
+    const coachSet = coachTally(items.map((it, i) => ({ id: it.id, pick: myPicks[i] })));
+    const coachAll = streak ? coachTally(streak.history.flatMap((h) => h.calls ?? [])) : null;
+    const calib = hard && confs.length === done.length ? calibrationScore(done.map((s, i) => ({ confidence: confs[i], result: s.result }))) : null;
+    const challengeUrl = url ? `${url}?${challengeQuery(setKey, myPicks)}` : "";
+    const friend = challenge && challenge.key === setKey ? challenge.picks.map((p, i) => scoreCall(p, items[i])) : null;
+    const share = shareText(archive ?? today, done.map((s) => s.result), shown, url);
     const stats = mode === "daily" && streak ? dailyStats(streak, today) : null;
     const maxDays = stats ? Math.max(1, ...stats.score_distribution) : 1;
     const playedCard = mode === "daily" && restoredDone ? (
@@ -262,7 +300,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
       {playedCard}
       <section className="fd-card fd-end" aria-labelledby="fd-end-title">
         <h2 id="fd-end-title" className="fd-end-title">
-          {mode === "daily" ? `Fourth & Daily #${setNumber(today)}` : mode === "yesterday" ? `Fourth & Daily #${setNumber(shiftDay(today, -1))} (yesterday)` : "Practice set"}
+          {mode === "daily" ? `Fourth & Daily #${setNumber(setKey)}${archive ? ` (${shortDate(archive)})` : ""}` : mode === "yesterday" ? `Fourth & Daily #${setNumber(shiftDay(today, -1))} (yesterday)` : "Practice set"}
         </h2>
         <p className="fd-end-score" aria-label={`Score ${formatScore(credit)} out of ${items.length}`}>
           {formatScore(credit)}/{items.length}
@@ -284,7 +322,59 @@ export function DailyGame({ mode }: { mode: Mode }) {
             {gapPoints(worst.c)} of win chance.
           </p>
         ) : null}
-        {mode === "daily" && stats ? (
+        {mode === "daily" ? (
+          <section className="fd-coach" aria-labelledby="fd-coach-title">
+            <h3 id="fd-coach-title">Coach vs. You</h3>
+            <p>
+              {archive ? "In this set" : "Today"} you agreed with the real coach on {coachSet.agreed} of {coachSet.calls} and beat the coach&apos;s call on {coachSet.beat}.
+              {coachAll && coachAll.calls > coachSet.calls ? <> This season: you agreed with coaches {coachAll.agreedPct}% and beat them {coachAll.beatPct}% ({coachAll.calls} calls).</> : null}
+            </p>
+            <p className="fd-muted">&ldquo;Beat&rdquo; means your call had a higher win chance than the coach&apos;s.</p>
+          </section>
+        ) : null}
+        {calib != null ? (
+          <p className="fd-calib"><strong>Hard mode calibration:</strong> {calib}/100. 100 means your confidence matched your results exactly.</p>
+        ) : null}
+        {friend ? (
+          <section className="fd-vs" aria-labelledby="fd-vs-title">
+            <h3 id="fd-vs-title">You vs. your friend</h3>
+            <table className="fd-vs-table">
+              <thead><tr><th scope="col">Call</th><th scope="col">You</th><th scope="col">Friend</th></tr></thead>
+              <tbody>
+                {done.map((s, i) => (
+                  <tr key={i}>
+                    <th scope="row">{i + 1}</th>
+                    <td>{CHOICE_NAME[s.pick]} · {RESULT_NAME[s.result]}</td>
+                    <td>{CHOICE_NAME[friend[i].pick]} · {RESULT_NAME[friend[i].result]}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot><tr><th scope="row">Score</th><td>{formatScore(credit)}/{items.length}</td><td>{formatScore(friend.reduce((a, f) => a + f.credit, 0))}/{items.length}</td></tr></tfoot>
+            </table>
+          </section>
+        ) : null}
+        {mode === "daily" && challengeUrl ? (
+          <div className="fd-actions">
+            <button
+              type="button"
+              className="fd-btn"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(challengeUrl);
+                  setCopied("Challenge link copied. Your friend plays the same five and sees your picks after.");
+                } catch {
+                  setCopied(challengeUrl);
+                }
+              }}
+            >
+              Challenge a friend
+            </button>
+          </div>
+        ) : null}
+        {mode === "daily" && archive ? (
+          <p>This was an archive set, so it doesn&apos;t count toward your streak. <Link href="/">Back to today&apos;s five</Link> · <Link href="/daily/stats/">Pick another day</Link></p>
+        ) : null}
+        {mode === "daily" && stats && !archive ? (
           <>
             <dl className="fd-stats">
               <div><dt>Current streak</dt><dd>{stats.current_streak}</dd></div>
@@ -328,7 +418,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
             {copied ? <p className="fd-muted fd-copied" aria-live="polite">{copied}</p> : null}
             {!restoredDone ? <p><Link href="/daily/yesterday/">Play yesterday&apos;s five</Link> (practice, doesn&apos;t count for streaks)</p> : null}
           </>
-        ) : mode === "yesterday" ? (
+        ) : mode === "daily" ? null : mode === "yesterday" ? (
           <div className="fd-actions">
             <Link className="fd-btn fd-btn-primary fd-empty-btn" href="/">Back to today&apos;s five</Link>
           </div>
@@ -346,7 +436,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
 
   const item = items[index];
   const scored = scores[index];
-  const classic = mode !== "practice" && seasonMode(mode === "yesterday" ? shiftDay(today, -1) : today) === "classic";
+  const classic = mode !== "practice" && seasonMode(mode === "yesterday" ? shiftDay(today, -1) : archive ?? today) === "classic";
   const opts = optionStates(item);
   // Recheck P1-D: an out-of-range FG stays as a disabled row (never pickable, never credited).
   const fgFar = fieldGoalYards(item) > MAX_FG_YARDS;
@@ -384,7 +474,9 @@ export function DailyGame({ mode }: { mode: Mode }) {
           {classic ? <> <span className="fd-classic">Classic</span></> : null}
         </span>
         <span className="fd-top-right">
-          {mode === "daily" ? (
+          {mode === "daily" && (archive || challenge) ? (
+            <span className="fd-count">{challenge ? "Friend challenge" : `Archive · ${shortDate(archive!)}`}</span>
+          ) : mode === "daily" ? (
             <span className="fd-count" aria-label={`Current streak ${shown} ${shown === 1 ? "day" : "days"}`}>
               Streak: {shown} {shown === 1 ? "day" : "days"}
             </span>
@@ -424,6 +516,25 @@ export function DailyGame({ mode }: { mode: Mode }) {
               </button>
             ))}
           </div>
+          {mode === "daily" ? (
+            <label className="fd-hard">
+              <input type="checkbox" checked={hard} onChange={toggleHard} disabled={index > 0 || revealed} />
+              <span>Hard mode: say how sure you are before each reveal</span>
+            </label>
+          ) : null}
+          {hard && mode === "daily" ? (
+            <fieldset className="fd-conf">
+              <legend>How sure are you?</legend>
+              <div className="fd-conf-row">
+                {CONFIDENCE_STEPS.map((c) => (
+                  <label key={c} className={`fd-conf-opt${conf === c ? " is-on" : ""}`}>
+                    <input type="radio" name="fd-conf" value={c} checked={conf === c} onChange={() => setConf(c)} />
+                    <span>{c}%</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ) : null}
           <button type="button" className="fd-btn fd-btn-primary fd-lock" disabled={!pending} onClick={() => lockIn()}>
             {pending ? `Lock in ${CHOICE_NAME[pending]}` : "Pick a call"}
           </button>

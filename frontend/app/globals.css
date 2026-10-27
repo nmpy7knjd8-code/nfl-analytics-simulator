@@ -1534,7 +1534,7 @@ body { font-variant-numeric: tabular-nums; }
 .fd-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)); gap: 0.5rem; }
 .fd-choice { min-height: 56px; border-radius: 10px; border: 1px solid #52525b; background: #ffffff; color: #0a0a0a; font: inherit; font-weight: 800; font-size: 1.125rem; display: grid; place-items: center; gap: 0.1rem; cursor: pointer; padding: 0.5rem; }
 .fd-choice small { font-weight: 500; font-size: 0.8125rem; color: #3f3f46; }
-.fd-choice:hover:not(:disabled) { background: #e4e4e7; }
+.fd-choice:hover:not(:disabled):not(.is-picked):not(.is-off) { background: #e4e4e7; }
 .fd-choice:disabled { background: #1c1c1f; color: #a1a1aa; border-color: #3f3f46; cursor: not-allowed; }
 .fd-choice:disabled small { color: #a1a1aa; }
 .fd-choice:focus-visible, .fd-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
@@ -1815,3 +1815,28 @@ a.fd-btn { display: inline-flex; align-items: center; justify-content: center; t
 .fd-page .empty-state p { margin: 0 0 1.25rem; }
 .fd-page .empty-state .empty-state-label { margin: 0 0 0.25rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #a1a1aa; }
 .fd-page .empty-state-cta { width: auto; min-height: 48px; padding: 0 1.5rem; background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
+
+/* Batch 1: calendar, Coach vs. You, hard mode, friend challenge, archive. */
+.fd-cal { display: flex; gap: 4px; overflow-x: auto; padding: 0.25rem 0; }
+.fd-cal-week { display: grid; grid-template-rows: repeat(7, 14px); gap: 4px; }
+.fd-cal-day { display: inline-block; width: 14px; height: 14px; border-radius: 3px; background: #27272a; vertical-align: middle; }
+.fd-cal-day.is-played { background: var(--color-blue-fill); }
+.fd-cal-day.is-shield { background: transparent; outline: 1.5px solid #f0f0f4; outline-offset: -1.5px; }
+.fd-cal-day.is-today { outline: 1px dashed #a1a1aa; outline-offset: -1px; }
+.fd-cal-day.is-future { background: transparent; }
+.fd-cal-key .fd-cal-day { margin: 0 0.25rem 0 0.5rem; }
+.fd-coach, .fd-vs { margin-top: 1rem; }
+.fd-coach h3, .fd-vs h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+.fd-vs-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.fd-vs-table th, .fd-vs-table td { text-align: left; padding: 0.4rem 0.25rem; border-bottom: 1px solid #3f3f46; }
+.fd-hard { display: flex; align-items: center; gap: 0.5rem; min-height: 48px; font-size: 0.9375rem; }
+.fd-hard input { width: 20px; height: 20px; }
+.fd-conf { border: 0; padding: 0; margin: 0 0 0.75rem; }
+.fd-conf legend { font-weight: 700; margin-bottom: 0.25rem; }
+.fd-conf-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.fd-conf-opt { position: relative; display: flex; align-items: center; justify-content: center; min-height: 48px; border: 1px solid #52525b; border-radius: 10px; font-weight: 700; cursor: pointer; }
+.fd-conf-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.fd-conf-opt.is-on { border-color: #f0f0f4; outline: 1.5px solid #f0f0f4; }
+.fd-conf-opt:focus-within { outline: 2px solid var(--color-blue); outline-offset: 2px; }
+.fd-archive { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.25rem; }
+.fd-archive a { display: flex; align-items: center; min-height: 48px; }

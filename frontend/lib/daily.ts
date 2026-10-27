@@ -245,6 +245,8 @@ export type DailyResult = {
   answered: number;
   /** Per-situation outcomes in order (for share grid + stats). Older saves may lack it. */
   results?: CallResult[];
+  /** Batch 1 Coach vs. You: item id + your pick for each call. Older saves may lack it. */
+  calls?: { id: string; pick: QuizChoice }[];
 };
 
 export type StreakState = {
