@@ -10,6 +10,10 @@ permissions:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    # Explicit on the job: repo default workflow token is read-only.
+    permissions:
+      contents: write
+      pull-requests: write
     defaults:
       run:
         working-directory: frontend
