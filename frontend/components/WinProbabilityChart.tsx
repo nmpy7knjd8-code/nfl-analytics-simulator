@@ -1,3 +1,4 @@
+import { PlayPenalty } from "./PlayText";
 import {
   clockLabel,
   situationLine,
@@ -151,6 +152,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
             {sit ? <div className="swing-sit">{sit}</div> : null}
             <p className="play-desc swing-headline">
               <a className="swing-link" href={`#play-${s.point.play_id}`}>{text}</a>
+              <PlayPenalty text={p.penalty_text} />
             </p>
             <RawText raw={raw} text={text} />
             <p className="swing-why">
@@ -164,7 +166,8 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
 }
 
 /** Overtime plays: listed like any other play, with no win-chance numbers. */
-export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePlay[]; decided?: boolean }) {
+/** `winner`: team code that won in OT (null for a tie), named on the last play (QA 0019 N19). */
+export function OvertimePlayList({ plays, winner = null }: { plays: OvertimePlay[]; winner?: string | null }) {
   if (!plays.length) return null;
   const lastId = plays.at(-1)!.play_id;
   return (
@@ -172,10 +175,13 @@ export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePla
       {plays.map((p) => (
         <li key={p.play_id} className="swing-item ot-item">
           <div className="play-meta">
-            {decided && p.play_id === lastId ? <span className="ot-winner">Game-winning play · </span> : null}
+            {winner && p.play_id === lastId ? <span className="ot-winner">{winner} wins it · Game-winning play · </span> : null}
             {clockLabel(p)}
           </div>
-          <p className="play-desc swing-headline">{fanText(p as EventPoint)}</p>
+          <p className="play-desc swing-headline">
+            {fanText(p as EventPoint)}
+            <PlayPenalty text={p.penalty_text} />
+          </p>
           <RawText raw={p.raw_desc ?? p.description ?? ""} text={fanText(p as EventPoint)} />
         </li>
       ))}

@@ -112,9 +112,61 @@ def _kneel_or_spike(r: dict[str, Any]) -> str | None:
     return f"{qb} kneels to run out the clock."
 
 
+def _two_point(r: dict[str, Any]) -> str | None:
+    res, pt = r.get("two_point_conv_result"), r.get("play_type")
+    ok = {"success": True, "failure": False}.get(res or "")
+    if ok is None:
+        return None
+    end = "and it's good" if ok else "and it fails"
+    qb, wr, rb = _name(r, "passer"), _name(r, "receiver"), _name(r, "rusher")
+    if pt == "pass" and qb and wr:
+        return f"Two-point try: {qb} passes to {wr}, {end}."
+    if pt == "pass" and qb:
+        return f"Two-point try: {qb} throws, {end}."
+    if pt == "run" and rb:
+        return f"Two-point try: {rb} runs, {end}."
+    return "Two-point try is good." if ok else "Two-point try fails."
+
+
+def _safety(r: dict[str, Any]) -> str | None:
+    if _t(r.get("sack")) and _name(r, "passer"):
+        return f"{_name(r, 'passer')} is sacked in the end zone for a safety."
+    who = _name(r, "rusher") or _name(r, "passer")
+    return f"{who} is tackled in the end zone for a safety." if who else None
+
+
+def _kept_fumble(r: dict[str, Any], main: str) -> str | None:
+    """Fumble the offense recovered (nflverse fumble=1, fumble_lost=0)."""
+    f = _name(r, "fumbled_1")
+    if not f:
+        return None
+    subj = "He" if main.startswith(f) else f
+    rec, team = _name(r, "fumble_recovery_1"), r.get("posteam")
+    if rec and rec == f:
+        return f"{subj} fumbles but recovers."
+    if rec:
+        return f"{subj} fumbles, and {rec} recovers."
+    if "out of bounds" in (r.get("desc") or ""):
+        return f"{subj} fumbles out of bounds; {team} keeps the ball." if team else f"{subj} fumbles out of bounds."
+    return f"{subj} fumbles, but {team} keeps the ball." if team else None
+
+
 def _templated(r: dict[str, Any]) -> str | None:
+    s = _templated_main(r)
+    if s and _t(r.get("fumble")) and not _t(r.get("fumble_lost")) and r.get("play_type") in ("run", "pass"):
+        extra = _kept_fumble(r, s)
+        if extra:
+            s = f"{s} {extra}"
+    return s
+
+
+def _templated_main(r: dict[str, Any]) -> str | None:
     pt, td = r.get("play_type"), _t(r.get("touchdown"))
     yg = r.get("yards_gained")
+    if r.get("two_point_conv_result"):
+        return _two_point(r)
+    if _t(r.get("safety")) and pt in ("run", "pass"):
+        return _safety(r)
     if pt == "kickoff":
         return _kickoff(r)
     if pt in ("qb_kneel", "qb_spike"):

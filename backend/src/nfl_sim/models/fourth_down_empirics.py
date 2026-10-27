@@ -142,6 +142,20 @@ def _wquantile(v: np.ndarray, w: np.ndarray, q: float) -> float:
     return float(np.interp(q * w.sum(), cw, v))
 
 
+# Punt outcomes are priced yard by yard (H8): a Gaussian kernel over nearby pre-punt
+# yard lines, so the punt value moves smoothly up the field instead of in flat bands.
+PUNT_KERNEL_YARDS = 4.0
+PUNT_KERNEL_MIN_N = 200.0
+PUNT_MONOTONE_FROM = 50  # widen the kernel where punts are rare (deep in opp territory)
+
+
+def _wquantile(v: np.ndarray, w: np.ndarray, q: float) -> float:
+    o = np.argsort(v)
+    v, w = v[o], w[o]
+    cw = np.cumsum(w) - 0.5 * w
+    return float(np.interp(q * w.sum(), cw, v))
+
+
 def _build_punt_table(
     yl: pd.Series,
     opp_yl: pd.Series,

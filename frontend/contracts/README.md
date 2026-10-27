@@ -51,6 +51,7 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   down, distance /* ydstogo */, yardline_100,   // null when nflverse has none (kickoffs, PATs)
   yards_gained /* nflverse yards_gained, null if none */,
   return_td /* interception or fumble returned for a TD (nflverse return_touchdown, or td_team != posteam) */,
+  kick_return_td /* punt or kickoff returned for a TD (nflverse return_touchdown); never true with return_td */,
   fourth_down_failed /* down == 4 && nflverse fourth_down_failed == 1 */,
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
   display_text /* fan text, <= 20 words: show this */,
@@ -73,6 +74,10 @@ declined "Flag on Name (TEAM) for foul, declined." or "Two NYJ flags declined: f
 all-offsetting "Offsetting penalties: foul on A (DET) and B (KC). The down is replayed." 'No play' rows keep the
 flag in `display_text` ("Penalty on Name (TEAM): foul, N yards. No play.") and have `penalty_text: null`.
 
+Special cases: safeties "X is tackled in the end zone for a safety." (sacks: "is sacked in the end zone");
+two-point tries "Two-point try: QB passes to WR, and it's good." / "..., and it fails."; fumbles the offense keeps add
+"He fumbles, and Name recovers." / "He fumbles out of bounds; TEAM keeps the ball."
+
 `display_text` rules (`backend/src/nfl_sim/play_text.py`): no clock, formation tags, jersey numbers, tackler
 parentheses or pressure brackets; sentence case; full names from nflverse player ids (players.csv) for the main
 roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 words; only facts in the row.
@@ -87,5 +92,13 @@ the 32 current nflverse abbreviations the repo uses (Rams = `LA`; `LAR`/`OAK`/`S
 `team_color3`. When color3 is missing, neutral (white/black/gray) or an exact duplicate of primary/secondary, `tertiary`
 is `team_color4` if that is a distinct non-neutral color (not within RGB distance 40 of primary/secondary); otherwise
 nflverse's color3 is kept (or color2 when color3 and color4 are both blank: NYJ, TEN). Every such team is listed with
-the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Colors only, no logos.
+the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Logos are allowed only as self-hosted nflverse logo/wordmark files (no hotlinked images).
 Regenerate with `python backend/scripts/build_team_colors.py`; checked by `frontend/lib/teamColors.test.ts`.
+
+Team logos: self-hosted under `frontend/public/teams/<ABBR>/logo.png` and `wordmark.png` for the same 32 abbreviations
+(never hotlink at runtime). `frontend/public/teams/manifest.json` (copy: `frontend/contracts/teamLogos.json`, types:
+`frontend/contracts/teamLogos.ts`) = `{ _source, fetched, teams: { [team_abbr]: { logo, wordmark } } }`, each file
+`{ path, source_url, bytes }` with `path` site-relative (`/teams/KC/logo.png`). Logos come from nflverse
+`team_logo_espn` (ESPN), shrunk to 256x256; wordmarks from nflverse `team_wordmark`, capped at 600px wide; both are
+256-colour palette PNGs with alpha. Regenerate with `python backend/scripts/fetch_team_logos.py` (needs network and
+Pillow); checked by `frontend/lib/teamLogos.test.ts`.
