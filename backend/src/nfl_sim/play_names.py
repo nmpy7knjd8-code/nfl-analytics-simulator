@@ -8,7 +8,7 @@ from typing import Any
 PLAYERS_CSV = "https://github.com/nflverse/nflverse-data/releases/download/players/players.csv"
 ROSTERS = "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_{season}.parquet"
 NAME_ROLES = ("passer", "receiver", "rusher", "interception", "kicker", "punter", "punt_returner",
-              "kickoff_returner", "fumbled_1", "fumble_recovery_1", "sack", "penalty")
+              "kickoff_returner", "fumbled_1", "fumble_recovery_1", "sack", "penalty", "blocked", "td")
 ID_COLS = [f"{role}_player_id" for role in NAME_ROLES]
 # pbp columns play_text reads (beyond desc/play_type), plus the id columns above
 TEXT_COLUMNS = [
@@ -18,6 +18,7 @@ TEXT_COLUMNS = [
     "passer_player_name", "receiver_player_name", "rusher_player_name", "interception_player_name",
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "penalty_player_name",
+    "punt_blocked", "blocked_player_name", "td_player_name",
 ]
 _PEN = re.compile(r"PENALTY on ([A-Z]{2,3})-(\d{1,2})-[A-Za-z]+\.([\w'\-]+)", re.I)
 
