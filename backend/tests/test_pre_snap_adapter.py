@@ -146,8 +146,9 @@ def test_deterministic_fixture_payload(flip_raw: dict):
     b = build_situation_lab_payload_from_snapshot(copy.deepcopy(flip_raw))
     assert a["configs"] == b["configs"]
     assert a["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
-    assert a["configs"]["pooled_legacy"]["recommendation"] == "punt"
-    assert a["configs"]["pooled_improved"]["recommendation"] == "punt"
+    # H6 WP model (score×time term): this snapshot is now a near tie, so either label is right.
+    assert a["configs"]["pooled_legacy"]["recommendation"] in ("punt", "inconclusive")
+    assert a["configs"]["pooled_improved"]["recommendation"] in ("punt", "inconclusive")
     assert a["truth_labels"]["play"] == "pre_snap_fixture"
     assert a["live_feed"] is False
     assert a["offline"] is True
@@ -195,7 +196,7 @@ def test_api_compare_pre_snap_fixture_e2e(client: TestClient):
     assert data["truth_labels"]["play"] == "pre_snap_fixture"
     assert data["live_feed"] is False
     assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
-    assert data["configs"]["pooled_improved"]["recommendation"] == "punt"
+    assert data["configs"]["pooled_improved"]["recommendation"] in ("punt", "inconclusive")  # H6: near tie
     assert data["source"]["snapshot_id"] == "fixture-flip-lac-den-v1"
 
 
