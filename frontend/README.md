@@ -20,4 +20,4 @@ npm run build:pages  # static export → frontend/out (copy to docs/demo for Git
 
 Optional live API: `NFL_SIM_API_ORIGIN` (default `http://127.0.0.1:8000`). Without it, example data is used automatically.
 
-**GitHub Pages demo:** `NFL_SIM_STATIC_EXPORT=1` builds fixtures-only HTML under `docs/demo/` → [demo site](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/) · [quiz](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/demo/quiz/). No Sportradar / live feed.
+**GitHub Pages:** `npm run build:pages` builds the static site into `out/` (served at `/nfl-analytics-simulator/`) and writes redirects for old `/demo/` links → [live site](https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/). No Sportradar / live feed.
