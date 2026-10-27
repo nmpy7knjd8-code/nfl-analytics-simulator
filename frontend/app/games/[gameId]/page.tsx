@@ -8,6 +8,8 @@ import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
 import { findSwingPlays } from "../../../lib/winProbability";
 import { openingWinChance } from "../../../lib/wpFixtures";
+import { matchupColors, tint } from "../../../lib/teamColors";
+import { TeamChip } from "../../../components/TeamChip";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -56,6 +58,7 @@ export default async function GameReplayPage({ params }: Props) {
   const swings = wpSeries ? findSwingPlays(wpSeries.series) : [];
   const swingRank = new Map(swings.map((s, i) => [s.point.play_id, i + 1]));
   const opening = game ? openingWinChance(id) : null;
+  const colors = game ? matchupColors(game.data.home_team_id, game.data.away_team_id) : null;
 
 
   return (
@@ -74,7 +77,17 @@ export default async function GameReplayPage({ params }: Props) {
 
       {game && plays ? (
         <>
-          <header className="section-head">
+          <header
+            className="section-head matchup-head"
+            style={
+              colors?.home && colors.away
+                ? {
+                    borderImage: `linear-gradient(90deg, ${colors.away} 50%, ${colors.home} 50%) 1`,
+                    background: `linear-gradient(90deg, ${tint(colors.away)}, ${tint(colors.home)})`,
+                  }
+                : undefined
+            }
+          >
             <div className="overline">
               <TruthChip kind="historical" />
               <span className="muted">
@@ -83,7 +96,8 @@ export default async function GameReplayPage({ params }: Props) {
             </div>
             <div className="scoreboard">
               <h1 className="scoreboard-matchup">
-                {game.data.away_team_id} @ {game.data.home_team_id}
+                <TeamChip team={game.data.away_team_id} color={colors?.away} /> @{" "}
+                <TeamChip team={game.data.home_team_id} color={colors?.home} />
               </h1>
               <span className="scoreboard-final">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
@@ -99,9 +113,9 @@ export default async function GameReplayPage({ params }: Props) {
                   At kickoff: {game.data.away_team_id} {pct(opening.away)} · {game.data.home_team_id} {pct(opening.home)}
                 </p>
               ) : null}
-              <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
+              <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} colors={colors ?? undefined} />
               {swings.length ? <h3>Swing plays</h3> : null}
-              <SwingPlayList swings={swings} series={wpSeries.series} />
+              <SwingPlayList swings={swings} series={wpSeries.series} colors={colors ?? undefined} />
               {wpSeries.overtimePlays.length ? <h3>Overtime</h3> : null}
               <OvertimePlayList plays={wpSeries.overtimePlays} />
             </section>

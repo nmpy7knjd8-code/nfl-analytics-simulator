@@ -20,10 +20,12 @@ export function WinProbabilityChart({
   series,
   swings,
   note,
+  colors,
 }: {
   series: WinProbabilitySeries;
   swings: SwingPlay[];
   note: string;
+  colors?: { home: string | null; away: string | null };
 }) {
   // Plot each play's pre-snap value, then the final post-snap result. Regulation only:
   // the line stops at 0:00 of Q4 and overtime gets a plain marker instead (house rule).
@@ -81,7 +83,20 @@ export function WinProbabilityChart({
             </text>
           </g>
         ) : null}
-        <path d={path} className="wp-line" />
+        {colors?.home && colors.away ? (
+          <defs>
+            {/* Team colors: the line takes the home color above 50% and the away color below. */}
+            <linearGradient id={`wp-team-${series.game_id}`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1={PAD.t} y2={H - PAD.b}>
+              <stop offset="0.5" stopColor={colors.home} />
+              <stop offset="0.5" stopColor={colors.away} />
+            </linearGradient>
+          </defs>
+        ) : null}
+        <path
+          d={path}
+          className="wp-line"
+          style={colors?.home && colors.away ? { stroke: `url(#wp-team-${series.game_id})` } : undefined}
+        />
         {placed.map((d) => (
           <g key={d.rank} className="wp-swing-dot">
             {d.dy ? <line x1={d.cx} x2={d.cx} y1={d.cy} y2={d.cy + d.dy} className="wp-leader" /> : null}
@@ -96,14 +111,22 @@ export function WinProbabilityChart({
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Each point is the chance at the snap. Numbered blue dots are the biggest swing plays.
+        {series.away_team_id}; the line takes the color of the team that is ahead). Each point is the chance at the snap. Numbered blue dots are the biggest swing plays.
         {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""} {note}
       </figcaption>
     </figure>
   );
 }
 
-export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series: WinProbabilitySeries }) {
+export function SwingPlayList({
+  swings,
+  series,
+  colors,
+}: {
+  swings: SwingPlay[];
+  series: WinProbabilitySeries;
+  colors?: { home: string | null; away: string | null };
+}) {
   if (!swings.length) return null;
   return (
     <ol className="swing-list">
@@ -113,7 +136,14 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
         const raw = p.raw_desc ?? p.description ?? "";
         const text = fanText(p);
         return (
-        <li key={s.point.play_id} className="swing-item">
+        <li
+          key={s.point.play_id}
+          className="swing-item"
+          style={(() => {
+            const c = s.favored_team_id === series.home_team_id ? colors?.home : colors?.away;
+            return c ? { borderLeftColor: c } : undefined;
+          })()}
+        >
           <div className="play-meta">
             <span className="swing-badge" aria-hidden="true">{i + 1}</span>
             {clockLabel(s.point)} · {s.favored_team_id} +
