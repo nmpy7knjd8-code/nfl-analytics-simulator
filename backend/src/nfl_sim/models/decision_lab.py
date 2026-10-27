@@ -15,7 +15,6 @@ import pandas as pd
 from nfl_sim.ingest.derive import derive_receive_2h_ko
 from nfl_sim.models.dataset import load_raw_seasons
 from nfl_sim.models.fourth_down import (
-    FG_SNAP_YARDS,
     FourthDownAnalyzer,
     FourthDownResult,
     FourthDownSituation,
