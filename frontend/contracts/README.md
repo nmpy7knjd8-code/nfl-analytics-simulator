@@ -49,6 +49,8 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   clock_seconds, description /* nflverse desc, verbatim */, play_type, possession_team_id,
   home_score_after, away_score_after, home_score_before, away_score_before,
   down, distance /* ydstogo */, yardline_100,   // null when nflverse has none (kickoffs, PATs)
+  yards_gained /* nflverse yards_gained, null if none */,
+  return_td /* interception or fumble returned for a TD (nflverse return_touchdown, or td_team != posteam) */,
   fourth_down_failed /* down == 4 && nflverse fourth_down_failed == 1 */,
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
   display_text /* fan text, <= 20 words: show this */, raw_desc /* verbatim nflverse desc */,

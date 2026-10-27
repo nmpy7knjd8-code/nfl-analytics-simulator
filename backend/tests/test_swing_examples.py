@@ -122,3 +122,21 @@ def test_opening_win_chance_is_nflverse_first_real_play():
     # QA H7: BUF (away) opens at 43%, PHI (away) at 45%
     assert round(EXPORT["games"]["2023_01_BUF_NYJ"]["opening_away_wp"] * 100) == 43
     assert round(EXPORT["games"]["2023_03_PHI_TB"]["opening_away_wp"] * 100) == 45
+
+
+def test_yards_gained_and_return_td_match_pbp():
+    for p in _every_play():
+        r = BY_KEY[(p["game_id"], p["play_id"])]
+        assert p["yards_gained"] == (None if r.get("yards_gained") is None else int(r["yards_gained"])), p
+        turnover = bool(r.get("interception") or r.get("fumble_lost"))
+        td_by_def = bool(r.get("return_touchdown")) or bool(r.get("td_team") and r.get("posteam") and r["td_team"] != r["posteam"])
+        assert p["return_td"] is (turnover and td_by_def), p
+
+
+def test_branch_pick_six_return_td_and_hall_83_yards():
+    def find(gid, qtr, clock):
+        return next(p for p in PLAY_LISTS[gid]["plays"] if p["qtr"] == qtr and p["clock"] == clock and p["play_type"] != "no_play")
+    assert find("2023_01_DET_KC", 3, "11:04")["return_td"] is True
+    assert find("2023_01_BUF_NYJ", 2, "13:02")["yards_gained"] == 83
+    gipson = EXPORT["games"]["2023_01_BUF_NYJ"]["overtime_plays"][0]
+    assert gipson["return_td"] is False  # punt return, not a turnover
