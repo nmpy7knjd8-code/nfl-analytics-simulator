@@ -1168,14 +1168,14 @@ button {
 }
 
 .quiz-team-mark {
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.62rem;
-  letter-spacing: -0.02em;
+  font-size: 11px;
+  letter-spacing: -0.03em;
   font-weight: 700;
   background: #1a1a1d;
   color: #f0f0f2;
@@ -1545,8 +1545,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .quiz-reveal:has(.quiz-result.is-correct) .quiz-value.is-picked { outline: 1.5px solid #f0f0f4; color: #fff; }
 .quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-close { outline: 1.5px solid #f0f0f4; }
 .quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-picked { outline: 1px dashed rgba(240, 240, 244, 0.7); }
-.quiz-value-right { display: inline-flex; align-items: baseline; }
-.quiz-tag { font-size: 0.72rem; font-weight: 600; color: #c8c8d0; margin-right: 0.5rem; text-transform: none; font-family: var(--font-body); }
+/* 2250 P2-I: tag sits under the option name; % stays alone on the right. */
+.quiz-value-name { display: flex; flex-direction: column; gap: 2px; }
+.quiz-tag { font-size: 0.75rem; font-weight: 600; color: #d4d4d8; margin: 0; text-transform: none; font-family: var(--font-body); }
 /* Recheck 2146 P3-D: "Close call (½) point", neutral, the ½ in a chip. */
 .quiz-half { font-weight: 500; color: #c8c8d0; display: inline-flex; align-items: center; gap: 0.4em; margin-left: 0.4em; }
 .quiz-half-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5em; height: 1.5em; padding: 0 0.35em; border: 1.5px solid #c8c8d0; border-radius: 999px; font-size: 0.9em; line-height: 1; font-weight: 700; color: #f0f0f4; }
