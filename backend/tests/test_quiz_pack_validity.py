@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE
+from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS, MAX_FG_DISTANCE
 from nfl_sim.quiz.pack import QUIZ_PACK_PATH
 
 REPO = Path(__file__).resolve().parents[2]
@@ -18,8 +18,13 @@ PACK = json.loads(QUIZ_PACK_PATH.read_text())
 ITEMS = PACK["items"]
 
 
-def test_frontend_and_backend_packs_are_identical():
-    assert (REPO / "frontend/lib/quizPack.json").read_text() == QUIZ_PACK_PATH.read_text()
+def test_frontend_pack_is_backend_pack_minus_model_details():
+    front = json.loads((REPO / "frontend/lib/quizPack.json").read_text())
+    back = json.loads(QUIZ_PACK_PATH.read_text())
+    for it in back["items"]:
+        it["reveal"].pop("model_notes", None)
+        it["reveal"].pop("edge_wp", None)
+    assert front == back
 
 
 def test_pack_size_and_unique_ids():
@@ -52,7 +57,7 @@ def test_item_is_a_real_play(item):
 
 @pytest.mark.parametrize("item", ITEMS, ids=lambda i: i["id"])
 def test_no_field_goal_beyond_64_yards(item):
-    kick = item["situation"]["yardline_100"] + 18
+    kick = item["situation"]["yardline_100"] + FG_SNAP_YARDS
     r = item["reveal"]
     if kick > MAX_FG_DISTANCE:
         assert "fg" not in r["values"], f"{kick}-yd FG offered"

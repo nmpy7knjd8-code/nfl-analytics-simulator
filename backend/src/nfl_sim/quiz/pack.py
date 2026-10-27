@@ -217,9 +217,7 @@ def fan_why(reveal: dict[str, Any]) -> str:
 def fanify_reveal(reveal: dict[str, Any]) -> dict[str, Any]:
     """Idempotent: rewrite displayed text in fan language, keep model details hidden."""
     if "model_notes" not in reveal:
-        reveal["model_notes"] = [
-            a.replace("yardline_100 + 17", "yardline_100 + 18") for a in reveal.get("assumptions") or []
-        ]
+        reveal["model_notes"] = list(reveal.get("assumptions") or [])
     m = reveal.get("margin")
     reveal["edge_wp"] = None if m is None else float(m)
     reveal["layman_why"] = fan_why(reveal)
