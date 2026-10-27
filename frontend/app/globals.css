@@ -1612,3 +1612,7 @@ body:has(.quiz-page) .app-nav-item.is-current {
   .wp-dots-narrow { display: inline; }
   .wp-swing-num { font-size: 16px; }
 }
+
+/* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
+@media (max-width: 640px) { .wp-axis-team { display: none; } }
+.ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
