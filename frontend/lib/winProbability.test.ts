@@ -1,10 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clockLabel, findSwingPlays, isSwing, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
+import { clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
 import { GAME_PLAY_LISTS } from "./gamePlays";
 import { openingWinChance } from "./wpFixtures";
-import { situationLine, type EventPoint } from "./winProbability";
+import { situationLine, inGameOrder, swingMeta, type EventPoint } from "./winProbability";
 import { SWING_EXPORT, WP_FIXTURES } from "./wpFixtures";
 
 test("fixtures follow the contract: home, pre-snap, post = next pre, final = result", () => {
@@ -57,7 +57,7 @@ test("swing plays are biggest first, at most 3, with a Why", () => {
   for (let i = 1; i < sw.length; i++) assert.ok(Math.abs(sw[i - 1].delta) >= Math.abs(sw[i].delta));
   const pick6 = sw.find((s) => /INTERCEPTED/.test(s.point.description ?? ""));
   assert.ok(pick6 && pick6.favored_team_id === "DET");
-  assert.match(pick6.why, /turnover/);
+  assert.match(pick6.why, /interception returned for a touchdown/);
 });
 
 test("BUF@NYJ: Week 1, 2023-09-11, NYJ (home) wins 22–16 in OT", () => {
@@ -78,6 +78,20 @@ test("BUF@NYJ: Week 1, 2023-09-11, NYJ (home) wins 22–16 in OT", () => {
   assert.equal(ot.length, 1);
   assert.match(ot[0].description, /Gipson/);
   assert.ok(!("home_wp_pre" in ot[0]) && !("home_wp_post" in ot[0]));
+});
+
+test("2240 P2-A: BUF_NYJ overtime plays carry display_text, not raw feed text", () => {
+  const ot = WP_FIXTURES["2023_01_BUF_NYJ"].overtimePlays;
+  const gipson = ot.find((p) => /Gipson/.test(p.raw_desc ?? ""))!;
+  assert.equal(gipson.display_text, "Sam Martin punts 42 yards, and Xavier Gipson returns it 65 yards for a touchdown.");
+  assert.match(gipson.raw_desc!, /^\(9:21\)/);
+});
+
+test("2240 P3-A + open item: swing meta reads as win chance; cards run in game order", () => {
+  const sw = inGameOrder(findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series));
+  for (let i = 1; i < sw.length; i++) assert.ok(sw[i - 1].point.game_seconds_elapsed <= sw[i].point.game_seconds_elapsed);
+  for (const s of sw) assert.match(swingMeta(s), /^[A-Z]{2,3} win chance \+\d+$/);
+  assert.equal(swingMeta({ delta: -0.236, favored_team_id: "DET" }), "DET win chance +24");
 });
 
 test("clock labels from game_seconds_elapsed, including OT", () => {
@@ -194,4 +208,30 @@ test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & 
       assert.match(situationLine(p, series.home_team_id, series.away_team_id) ?? "", /^4th & \d+/);
     }
   assert.ok(n > 0);
+});
+
+test("L5: DET_KC Q3 11:04 pick-six Why names the interception return TD", () => {
+  const s = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series).find((x) => clockLabel(x.point) === "Q3 11:04")!;
+  assert.ok(s, "pick-six is a swing play");
+  assert.equal((s.point as EventPoint).return_td, true);
+  assert.match(s.why, /because an interception returned for a touchdown put 7 points on the board/);
+});
+
+test("L5: a fumble return TD says fumble", () => {
+  const p = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], event: "fumble_lost", return_td: true } as EventPoint;
+  assert.match(whyText(0.2, p, "DET"), /a fumble returned for a touchdown/);
+});
+
+test("L6: BUF_NYJ Q2 13:02 Breece Hall 83 yds says a big gain flipped field position", () => {
+  const s = findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series).find((x) => clockLabel(x.point) === "Q2 13:02")!;
+  assert.ok(s, "Hall run is a swing play");
+  assert.equal((s.point as EventPoint).yards_gained, 83);
+  assert.match(s.why, /because a big gain flipped field position/);
+});
+
+test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", () => {
+  const ot = SWING_EXPORT.games["2023_01_BUF_NYJ"].overtime_plays.find((r) => /Gipson returns it 65 yards/.test(r.display_text))!;
+  assert.equal(ot.return_td, false);
+  const p = { ...WP_FIXTURES["2023_01_BUF_NYJ"].series.points[0], event: ot.event, return_td: ot.return_td, yards_gained: ot.yards_gained, description: ot.description, is_overtime: true } as EventPoint;
+  assert.doesNotMatch(whyText(0.3, p, "NYJ"), /returned for a touchdown/);
 });
