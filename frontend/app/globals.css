@@ -1531,3 +1531,7 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .not-found-label { font-weight: 600; }
 .not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
 .not-found-links a:hover .not-found-label { color: var(--nf-accent); }
+
+/* H6: paused 4th-down checker page. */
+.decide-page .empty-state { display: grid; gap: 0.75rem; padding: 1.5rem 1rem; border: 1px solid var(--color-divider, #2a2a30); border-radius: 12px; }
+.decide-page .empty-state .btn { min-height: 48px; }
