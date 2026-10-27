@@ -53,13 +53,25 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   return_td /* interception or fumble returned for a TD (nflverse return_touchdown, or td_team != posteam) */,
   fourth_down_failed /* down == 4 && nflverse fourth_down_failed == 1 */,
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
-  display_text /* fan text, <= 20 words: show this */, raw_desc /* verbatim nflverse desc */,
+  display_text /* fan text, <= 20 words: show this */,
+  penalty_text /* string | null: flags after a play, shown after display_text; null on 'No play' rows */, raw_desc /* verbatim nflverse desc */,
   home_wp_pre?, home_wp_post?, delta_home_wp? /* swings */, swing_eligible? /* chart */ }
 ```
 
 Full play lists: `frontend/lib/plays/<game_id>.json` = `{ game_id, plays: SwingPlay[] }` (type `GamePlayList`),
 every real play in order incl. penalties/no-plays, kickoffs, PATs and OT; no timeouts, two-minute warnings or
 quarter/game markers. Kept out of swingPlays.json for size (~85-92 KB each); fetch/import per page.
+
+Game files (`/data/games/<game_id>.json`, game.v2, shipped in the `games-v3` release asset and later): `cols.display_text`
+is one fan-facing sentence per row, same `play_text.display_text` as `lib/plays` (identical for the shared games),
+plus `cols.penalty_text` (same rules as lib/plays); game-flow rows read "Start of game.", "End of quarter N.", "Two-minute warning.",
+"Timeout by TEAM.". `expandGameV2` exposes it as `play.display_text` (falls back to raw `text` on games-v2 files);
+`text` stays verbatim nflverse.
+
+`penalty_text` (UI Critic P2-J/P3-H/P3-I): accepted "Penalty on Name (TEAM): foul, N yards against TEAM.";
+declined "Flag on Name (TEAM) for foul, declined." or "Two NYJ flags declined: foul (Name) and foul (Name).";
+all-offsetting "Offsetting penalties: foul on A (DET) and B (KC). The down is replayed." 'No play' rows keep the
+flag in `display_text` ("Penalty on Name (TEAM): foul, N yards. No play.") and have `penalty_text: null`.
 
 `display_text` rules (`backend/src/nfl_sim/play_text.py`): no clock, formation tags, jersey numbers, tackler
 parentheses or pressure brackets; sentence case; full names from nflverse player ids (players.csv) for the main
