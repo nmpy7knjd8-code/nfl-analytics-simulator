@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { CLOSE_LABEL } from "../lib/labels";
 import {
   FOURTH_DOWN_SCENARIOS,
   getRecommendation,
@@ -30,7 +31,7 @@ function SituationBlock({ scenario }: { scenario: FourthDownScenario }) {
 function RecommendationCard({ rec }: { rec: Recommendation }) {
   const title =
     rec.kind === "inconclusive"
-      ? "Too close to call"
+      ? CLOSE_LABEL
       : rec.option.label;
 
   const pickLine =
