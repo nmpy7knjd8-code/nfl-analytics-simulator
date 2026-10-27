@@ -1,0 +1,20 @@
+{
+  "defense_convert": {
+    "k": 982.0,
+    "league_rate": 0.4727,
+    "n_team_seasons": 160,
+    "tau": 0.0159
+  },
+  "kicker_fg_make": {
+    "k": 58.5,
+    "league_rate": 0.8465,
+    "n_team_seasons": 218,
+    "tau": 0.0472
+  },
+  "offense_convert": {
+    "k": 412.0,
+    "league_rate": 0.4727,
+    "n_team_seasons": 160,
+    "tau": 0.0246
+  }
+}

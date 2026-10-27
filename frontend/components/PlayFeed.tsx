@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { periodName } from "../lib/clock";
-import { PenaltyText } from "./PenaltyText";
+import { PlayPenalty } from "./PlayText";
 import { feedRowsFromGameV2, gameFileUrl, isGameFileV2, type FeedRow } from "../lib/gameFileV2";
 
 const ORD = ["", "1st", "2nd", "3rd", "4th"];
@@ -42,7 +42,7 @@ export function PlayFeed({
       .then((doc: unknown) => {
         if (!isGameFileV2(doc)) throw new Error("not game.v2");
         const fan = new Map(fallback.map((r) => [r.id, r.text]));
-        const pen = new Map(fallback.map((r) => [r.id, r.penalty]));
+        const pen = new Map(fallback.map((r) => [r.id, r.penalty_text ?? null]));
         setState({ kind: "ready", rows: feedRowsFromGameV2(doc, fan, pen) });
       })
       .catch((e: unknown) => {
@@ -103,7 +103,7 @@ export function PlayFeed({
                       </span>
                     ) : null}
                     {p.text}
-                    <PenaltyText text={p.penalty} />
+                    <PlayPenalty text={p.penalty_text} />
                   </p>
                 </li>
               );

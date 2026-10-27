@@ -73,8 +73,8 @@ export type FeedRow = {
   down: number | null;
   distance: number | null;
   text: string;
-  /** #106 penalty sentence(s) after the play; null when none. */
-  penalty: string | null;
+  /** Penalty sentence(s) shown after `text` (#106); null/absent when none or already in `text`. */
+  penalty_text?: string | null;
 };
 
 /** Live per-game file served by Pages (fetched from the games-v2 release at build). */
@@ -90,18 +90,21 @@ export function gameFileUrl(gameId: string, basePath = ""): string {
 export function feedRowsFromGameV2(
   doc: GameFileV2,
   fanText: Map<string, string> = new Map(),
-  penalties: Map<string, string | null> = new Map(),
+  penaltyText: Map<string, string | null> = new Map(),
 ): FeedRow[] {
   const c = doc.cols;
   const rows: FeedRow[] = [];
   for (let i = 0; i < c.play_id.length; i++) {
     if (c.play_type[i] == null || NON_PLAY.test(c.text[i] ?? "")) continue;
     const id = String(c.play_id[i]);
-    // #105: the file's own display_text column first (games-v3), then lib/plays by play_id, then raw desc.
-    const text = c.display_text?.[i]?.trim() || fanText.get(id)?.trim() || c.text[i]?.trim();
-    const penalty = (c.penalty_text ? c.penalty_text[i] : penalties.get(id)) ?? null;
+    // Penalty sentences pair with the fan text they were split from (#106): export rows use the
+    // export's penalty_text; games-v3 rows use their own cols; raw v2 desc already includes the flags.
+    const fan = fanText.get(id)?.trim();
+    const own = c.display_text?.[i]?.trim();
+    const text = fan || own || c.text[i]?.trim();
     if (!text) continue;
-    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text, penalty });
+    const penalty_text = fan ? penaltyText.get(id) ?? null : own ? c.penalty_text?.[i] ?? null : null;
+    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text, penalty_text });
   }
   return rows;
 }

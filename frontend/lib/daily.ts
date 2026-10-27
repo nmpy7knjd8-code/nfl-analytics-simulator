@@ -185,8 +185,16 @@ export function rankedValues(item: DailyItem): [QuizChoice, number][] {
 /**
  * #93 scoring: the highest win chance is always Right (1). On a close call (top two within 2 pts) an
  * option within 2 pts of the top earns ½ (Close call). Anything else, or an option that isn't offered
- * (kick past 64 yd, hidden punt, no value), is 0.
+ * (kick past 64 yd, hidden punt, no value), is 0. A pick showing the same % as the best is also Right.
  */
+function shownTie(item: DailyItem, pick: QuizChoice, best: QuizChoice): boolean {
+  // Same list and formatting as the reveal rows.
+  const ranked = rankedValues(item);
+  const f = formatPercents(ranked.map(([, v]) => v));
+  const at = (c: QuizChoice) => f[ranked.findIndex(([x]) => x === c)];
+  return at(pick) === at(best);
+}
+
 export function scoreCall(pick: QuizChoice, item: DailyItem): ScoredCall {
   const offered = new Set(optionStates(item).filter((o) => o.shown && !o.disabled).map((o) => o.id));
   const ranked = rankedValues(item).filter(([c]) => offered.has(c));
@@ -197,6 +205,8 @@ export function scoreCall(pick: QuizChoice, item: DailyItem): ScoredCall {
   let result: CallResult;
   if (mine == null) result = "wrong";
   else if (pick === best) result = "right";
+  // Garrett 10-27: score on the % the fan sees, so a pick that ties the best at display precision is Right.
+  else if (shownTie(item, pick, best)) result = "right";
   else if (closeCall && bestV - mine < CLOSE_CALL_GAP) result = "close";
   else result = "wrong";
   return {
@@ -370,5 +380,7 @@ export function closeNote(s: ScoredCall): string | null {
     return `${cap(near.map(([c]) => DOING[c]).join(" and "))} ${near.length > 1 ? "were" : "was"} about as good (${f.join(", ")}).`;
   }
   const [a, b] = formatPercents([bestV, s.values[s.pick]!]);
+  // QA M13: never "0.1% vs 0.1%".
+  if (a === b) return `${cap(DOING[s.best])} was about as good (both ${a}), so this pick gets ½.`;
   return `${cap(DOING[s.best])} was a little better (${a} vs ${b}), so this pick gets ½.`;
 }

@@ -1,3 +1,4 @@
+import { PlayPenalty } from "./PlayText";
 import {
   clockLabel,
   situationLine,
@@ -7,7 +8,6 @@ import {
   type SwingPlay,
   type WinProbabilitySeries,
 } from "../lib/winProbability";
-import { PenaltyText } from "./PenaltyText";
 
 /** Fan text from the export (#86): display_text, else raw nflverse desc. */
 function fanText(p: EventPoint): string {
@@ -152,7 +152,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
             {sit ? <div className="swing-sit">{sit}</div> : null}
             <p className="play-desc swing-headline">
               <a className="swing-link" href={`#play-${s.point.play_id}`}>{text}</a>
-              <PenaltyText text={p.penalty_text} />
+              <PlayPenalty text={p.penalty_text} />
             </p>
             <RawText raw={raw} text={text} />
             <p className="swing-why">
@@ -179,7 +179,7 @@ export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePla
           </div>
           <p className="play-desc swing-headline">
             {fanText(p as EventPoint)}
-            <PenaltyText text={p.penalty_text} />
+            <PlayPenalty text={p.penalty_text} />
           </p>
           <RawText raw={p.raw_desc ?? p.description ?? ""} text={fanText(p as EventPoint)} />
         </li>
