@@ -1580,7 +1580,6 @@ body { font-variant-numeric: tabular-nums; }
 .fd-prose h1 { font-size: 1.75rem; margin: 0; }
 .fd-prose h2 { font-size: 1.2rem; margin: 0.5rem 0 0; }
 .fd-prose p, .fd-prose ul { margin: 0; }
-=======
 /* Branded 404 (QA2 L4): black, white type, one blue accent. */
 .not-found {
   --nf-accent: #1f6feb;
@@ -1698,6 +1697,11 @@ body { font-variant-numeric: tabular-nums; }
   .wp-swing-num { font-size: 16px; }
 }
 
+/* Live play file states (PlayFeed). */
+.play-feed-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--color-ink-secondary); margin: 0 0 8px; }
+.play-feed-retry { min-height: 48px; }
+.error-band .play-feed-retry { margin-left: 12px; }
+.play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
 /* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
 @media (max-width: 640px) { .wp-axis-team { display: none; } }
 .ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }

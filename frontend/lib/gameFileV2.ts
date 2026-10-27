@@ -59,3 +59,47 @@ export function expandGameV2(doc: GameFileV2) {
   const { cols: _c, fourth: _f, fourth_cols: _fc, engine_version: _e, ...rest } = doc;
   return { ...rest, schema_version: "game.v1" as const, plays };
 }
+
+/** Clock stoppages and markers, not plays (same rows the #86 plays files leave out). */
+const NON_PLAY = /^(GAME|END (QUARTER \d|GAME)|Two-Minute Warning|Timeout #\d)/i;
+
+/** One row of the Game Story play-by-play list. */
+export type FeedRow = {
+  /** nflverse play_id (named `id`: the static HTML carries these props, and 'play_id' is dev text). */
+  id: string;
+  quarter: number;
+  /** Seconds left in the quarter (OT: in the period). */
+  clock_seconds: number | null;
+  down: number | null;
+  distance: number | null;
+  text: string;
+};
+
+/** Live per-game file served by Pages (fetched from the games-v2 release at build). */
+export function gameFileUrl(gameId: string, basePath = ""): string {
+  return `${basePath}/data/games/${encodeURIComponent(gameId)}.json`;
+}
+
+/**
+ * game.v2 → play-list rows, in game order. Drops non-plays (game start, quarter ends, timeouts,
+ * two-minute warnings). The v2 file carries only nflverse's raw desc, so fan text comes from
+ * `fanText` (display_text by play_id, from the export) when present; we never write play text.
+ */
+export function feedRowsFromGameV2(doc: GameFileV2, fanText: Map<string, string> = new Map()): FeedRow[] {
+  const c = doc.cols;
+  const rows: FeedRow[] = [];
+  for (let i = 0; i < c.play_id.length; i++) {
+    if (c.play_type[i] == null || NON_PLAY.test(c.text[i] ?? "")) continue;
+    const id = String(c.play_id[i]);
+    const text = fanText.get(id)?.trim() || c.text[i]?.trim();
+    if (!text) continue;
+    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text });
+  }
+  return rows;
+}
+
+/** Narrow an unknown JSON body to game.v2 (anything else is treated as a load error). */
+export function isGameFileV2(x: unknown): x is GameFileV2 {
+  const d = x as Partial<GameFileV2> | null;
+  return !!d && d.schema_version === "game.v2" && !!d.cols && Array.isArray(d.cols.play_id);
+}
