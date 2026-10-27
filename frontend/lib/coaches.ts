@@ -124,10 +124,9 @@ export function callWinChances(c: CoachCall): string {
 export const ROUGH_NOTE =
   "“Beat expectation” is rough: it compares nflverse's win chance after the real play with our 4th-down model's estimate, two different models.";
 
-/** Negative values get a real minus; positives carry no "+" so "+293.5" never reads like a price line. */
 export function signedPts(x: number): string {
   const r = Math.round(x * 10) / 10;
-  return `${r < 0 ? "−" : ""}${Math.abs(r).toFixed(1)}`;
+  return `${r > 0 ? "+" : r < 0 ? "-" : ""}${Math.abs(r).toFixed(1)}`;
 }
 
 export function coachHref(team: string, season: number): string {
