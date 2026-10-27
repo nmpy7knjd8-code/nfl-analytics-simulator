@@ -235,10 +235,37 @@ def plain_english(s: str) -> str:
     return s
 
 
+_PEN_CLAUSE = re.compile(
+    r"PENALTY on ([A-Z]{2,3})(?:-(\d{1,2})-([\w.'\-]+))?,\s*([^,]+),\s*(\d+ yards?|declined|offsetting)", re.I)
+_FOUL_WORDS = {"offside on free kick": "offside on kickoff"}
+
+
+def penalty_notes(r: dict[str, Any], skip_first: bool = False) -> list[str]:
+    """One plain sentence per penalty clause in the feed text (accepted, declined or offsetting)."""
+    names = (r.get("names") or {}).get("penalties") or {}
+    out = []
+    for i, (team, num, short, foul, res) in enumerate(_PEN_CLAUSE.findall(r.get("desc") or "")):
+        if skip_first and i == 0:
+            continue
+        foul = foul.strip().lower()
+        foul = _FOUL_WORDS.get(foul, foul)
+        full = names.get(f"{team}-{num}") if num else None
+        if not full and i == 0 and num:
+            full = (r.get("names") or {}).get("penalty")
+        whom = f"{full} ({team})" if full else team
+        res = res.lower()
+        tail = res if res in ("declined", "offsetting") else res
+        out.append(f"Penalty on {whom}: {foul}, {tail}.")
+    return out
+
+
 def display_text(r: dict[str, Any]) -> str:
+    """Main sentence (<= MAX_WORDS) plus one short sentence per penalty in the feed text."""
     if r.get("play_type") == "no_play":
         pen = penalty_text(r.get("desc") or "", r)
         if pen:
-            return _fit(pen)
-    s = _fit(_templated(r) or clean_desc(r.get("desc") or ""))
-    return plain_english(s) or "Play details unavailable."
+            return " ".join([_fit(pen), *penalty_notes(r, skip_first=True)])
+    s = plain_english(_fit(_templated(r) or clean_desc(r.get("desc") or ""))) or "Play details unavailable."
+    if re.search(r"(?i)penalty", s):  # fallback text already carries it
+        return s
+    return " ".join([s, *penalty_notes(r)])
