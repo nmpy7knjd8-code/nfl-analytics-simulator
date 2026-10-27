@@ -1168,16 +1168,15 @@ button {
 }
 
 .quiz-team-mark {
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.56rem;
+  font-size: 0.62rem;
   letter-spacing: -0.02em;
   font-weight: 700;
-  letter-spacing: 0.02em;
   background: #1a1a1d;
   color: #f0f0f2;
   border: 1px solid #4a4a50;
@@ -1427,7 +1426,7 @@ button {
 }
 
 .quiz-value.is-picked:not(.is-rec) {
-  outline: 1.5px solid rgba(196, 92, 92, 0.7);
+  outline: 1px dashed rgba(240, 240, 244, 0.7); /* 2236 P1-E: no red */
 }
 
 .quiz-value-pct {
@@ -1541,11 +1540,16 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .quiz-value.is-off, .quiz-value.is-off .quiz-value-off { color: #a1a1aa; }
 /* Recheck P2-D: close call = neutral white outline on the pick, dashed on the other close option (no gold, no red). */
 .quiz-result.is-near_tie { color: #f0f0f4; }
-.quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-picked { outline: 1.5px solid #f0f0f4; }
 .quiz-value.is-close { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+/* 2236 P1-E: a Correct pick is always solid white. P2-H: on a Close call the better option is solid, the pick dashed. */
+.quiz-reveal:has(.quiz-result.is-correct) .quiz-value.is-picked { outline: 1.5px solid #f0f0f4; color: #fff; }
+.quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-close { outline: 1.5px solid #f0f0f4; }
+.quiz-reveal:has(.quiz-result.is-near_tie) .quiz-value.is-picked { outline: 1px dashed rgba(240, 240, 244, 0.7); }
+.quiz-value-right { display: inline-flex; align-items: baseline; }
+.quiz-tag { font-size: 0.72rem; font-weight: 600; color: #c8c8d0; margin-right: 0.5rem; text-transform: none; font-family: var(--font-body); }
 /* Recheck 2146 P3-D: "Close call (½) point", neutral, the ½ in a chip. */
 .quiz-half { font-weight: 500; color: #c8c8d0; display: inline-flex; align-items: center; gap: 0.4em; margin-left: 0.4em; }
-.quiz-half-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5em; height: 1.5em; padding: 0 0.35em; border: 1.5px solid #c8c8d0; border-radius: 999px; font-size: 0.9em; line-height: 1; }
+.quiz-half-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 1.5em; height: 1.5em; padding: 0 0.35em; border: 1.5px solid #c8c8d0; border-radius: 999px; font-size: 0.9em; line-height: 1; font-weight: 700; color: #f0f0f4; }
 /* H6: paused 4th-down checker page. */
 .decide-page .empty-state { display: grid; gap: 0.75rem; padding: 1.5rem 1rem; border: 1px solid var(--color-divider, #2a2a30); border-radius: 12px; }
 .decide-page .empty-state .btn { min-height: 48px; }
