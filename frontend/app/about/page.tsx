@@ -17,7 +17,7 @@ export default function AboutPage() {
       <ul>
         <li><strong>Right call:</strong> you picked the option with the best win chance. Worth 1.</li>
         <li><strong>Close call:</strong> when the top two options are within 2 points of win chance, the best one still earns the full point and the other one earns ½.</li>
-        <li><strong>Kick</strong> is greyed out past a 64-yard try. <strong>Punt</strong> isn&apos;t offered inside the opponent&apos;s 35.</li>
+        <li><strong>Kick</strong> isn&apos;t offered when the try would be 65+ yards (&ldquo;Too far to kick&rdquo;). <strong>Punt</strong> isn&apos;t offered inside the opponent&apos;s 35.</li>
         <li>Your streak and stats stay in this browser. No sign-in, nothing sent anywhere.</li>
       </ul>
       <h2>The numbers</h2>
