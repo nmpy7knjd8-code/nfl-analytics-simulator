@@ -53,6 +53,19 @@ test("game-file feed rows pair penalty_text with the fan text it came from", () 
   assert.equal(feedRowsFromGameV2(v3).at(-1)!.penalty_text, "Flag, declined.");
 });
 
+test("games-v3 display_text and penalty_text win over saved rows (QA N2: BUF_NYJ 1551)", () => {
+  const doc = {
+    cols: { play_id: [1551], qtr: [2], sec: [197], down: [1], ydstogo: [10], play_type: ["pass"],
+      text: ["(3:17) 2-Z.Wilson pass ... INTERCEPTED by 58-M.Milano ... PENALTY on BUF-58-M.Milano, Taunting, 15 yards"],
+      display_text: ["Matt Milano intercepts Zach Wilson and returns it 13 yards."],
+      penalty_text: ["Penalty on Matt Milano (BUF): taunting, 15 yards against BUF."] },
+  } as unknown as GameFileV2;
+  // Saved row without the penalty (pre-#106 shape) must not hide the file's penalty sentence.
+  const [row] = feedRowsFromGameV2(doc, new Map([["1551", "Old fan text."]]), new Map([["1551", null]]));
+  assert.equal(row.text, "Matt Milano intercepts Zach Wilson and returns it 13 yards.");
+  assert.equal(row.penalty_text, "Penalty on Matt Milano (BUF): taunting, 15 yards against BUF.");
+});
+
 test("every plays-file row with penalty_text renders it", () => {
   let n = 0;
   const feeds = Object.fromEntries(Object.keys(GAME_PLAY_LISTS).map((id) => [id, feedHtml(id)]));
