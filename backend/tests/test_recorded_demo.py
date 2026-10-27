@@ -75,8 +75,8 @@ def test_api_walkthrough_success_then_reject(client: TestClient):
     assert r1.status_code == 200, r1.text
     d1 = r1.json()
     assert d1["source"]["snapshot_id"] == "demo-lac-den-f1"
-    assert d1["recommendation_changed_legacy_to_improved"] is True
-    assert d1["configs"]["pooled_legacy"]["recommendation"] == "inconclusive"
+    assert d1["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
+    assert d1["configs"]["pooled_legacy"]["recommendation"] == "punt"
     assert d1["configs"]["pooled_improved"]["recommendation"] == "punt"
     # Score/clock changed vs frame 0
     assert d1["play"]["game_state"]["score_differential"] != d0["play"]["game_state"][
@@ -127,7 +127,7 @@ def test_historical_path_still_selectable(client: TestClient):
     assert r.status_code == 200
     data = r.json()
     assert data["truth_labels"]["play"] == "historical"
-    assert data["recommendation_changed_legacy_to_improved"] is True
+    assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
     assert "layman_why" in data
 
 

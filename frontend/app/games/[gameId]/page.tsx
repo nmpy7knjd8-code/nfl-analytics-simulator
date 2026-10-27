@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { shareMetadata } from "../../../lib/share";
 import { notFound } from "next/navigation";
 import { GameChart } from "../../../components/GameChart";
 import { GameScrubber, type ScrubPoint } from "../../../components/GameScrubber";
@@ -14,11 +16,18 @@ export function generateStaticParams() {
   return STORY_GAME_IDS.map((gameId) => ({ gameId }));
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { gameId } = await params;
   if (!hasStory(gameId)) return {};
   const g = readGameFile(gameId).game;
-  return { title: `${g.away} @ ${g.home}, ${g.season} Week ${g.week} · Fourth & Daily` };
+  const matchup = `${g.away} ${g.away_score} @ ${g.home} ${g.home_score}`;
+  return shareMetadata({
+    title: `${g.away} @ ${g.home}, ${g.season} Week ${g.week} · Fourth & Daily`,
+    description: `Every play of ${matchup} (Week ${g.week}, ${g.season}) with its win-chance swing.`,
+    path: `/games/${gameId}/`,
+    card: `games/${gameId}`,
+    alt: `${matchup}, Week ${g.week}, ${g.season}: the plays that swung it. Data: nflverse`,
+  });
 }
 
 function downText(down: number | null, togo: number, yl: number | null, posteam: string | null, defteam: string) {

@@ -43,6 +43,7 @@ test("table numbers come straight from the file", () => {
   assert.equal(wentWhenShould(c), 5 / 9);
   assert.equal(signedPts(c.net_wp_pts), "−41.8");
   assert.equal(signedPts(0), "0.0");
+  assert.equal(signedPts(293.46), "293.5");
   assert.equal(coachHref("ARI", 2023), "/coaches/ARI/2023/");
   assert.equal(wentWhenShould({ ...c, should_go: 0 }), null);
 });

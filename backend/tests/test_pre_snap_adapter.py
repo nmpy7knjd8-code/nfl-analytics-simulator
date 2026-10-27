@@ -145,8 +145,8 @@ def test_deterministic_fixture_payload(flip_raw: dict):
     a = build_situation_lab_payload_from_snapshot(flip_raw)
     b = build_situation_lab_payload_from_snapshot(copy.deepcopy(flip_raw))
     assert a["configs"] == b["configs"]
-    assert a["recommendation_changed_legacy_to_improved"] is True
-    assert a["configs"]["pooled_legacy"]["recommendation"] == "inconclusive"
+    assert a["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
+    assert a["configs"]["pooled_legacy"]["recommendation"] == "punt"
     assert a["configs"]["pooled_improved"]["recommendation"] == "punt"
     assert a["truth_labels"]["play"] == "pre_snap_fixture"
     assert a["live_feed"] is False
@@ -170,7 +170,7 @@ def test_historical_path_still_works():
         season=2022, game_id="2022_18_LAC_DEN", play_id=3897
     )
     assert data["truth_labels"]["play"] == "historical"
-    assert data["recommendation_changed_legacy_to_improved"] is True
+    assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
     assert data["live_feed"] is False
 
 
@@ -194,7 +194,7 @@ def test_api_compare_pre_snap_fixture_e2e(client: TestClient):
     data = r.json()
     assert data["truth_labels"]["play"] == "pre_snap_fixture"
     assert data["live_feed"] is False
-    assert data["recommendation_changed_legacy_to_improved"] is True
+    assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
     assert data["configs"]["pooled_improved"]["recommendation"] == "punt"
     assert data["source"]["snapshot_id"] == "fixture-flip-lac-den-v1"
 
@@ -206,7 +206,6 @@ def test_api_compare_pre_snap_post(client: TestClient, flip_raw: dict):
     assert r.json()["live_feed"] is False
 
 
-@pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing (API loads model before validating)")
 def test_api_rejects_stale(client: TestClient, flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     bad["source"]["freshness"] = "stale"
@@ -215,7 +214,6 @@ def test_api_rejects_stale(client: TestClient, flip_raw: dict):
     assert "stale" in r.json()["detail"].lower()
 
 
-@pytest.mark.skipif(not WP_MODEL_ARTIFACT.exists(), reason="WP artifact missing (API loads model before validating)")
 def test_api_rejects_missing_field(client: TestClient, flip_raw: dict):
     bad = copy.deepcopy(flip_raw)
     del bad["situation"]["yardline_100"]
@@ -249,7 +247,7 @@ def test_api_user_fallback_partial_e2e(client: TestClient, flip_raw: dict):
     data = r.json()
     assert data["field_sources"]["yardline_100"] == "user_fallback"
     assert data["field_sources"]["game_id"] == "snapshot"
-    assert data["recommendation_changed_legacy_to_improved"] is True
+    assert data["recommendation_changed_legacy_to_improved"] is False  # was True only via a phantom 81-yd FG (yardline 64 + 17); FG now out of range
     assert data["live_feed"] is False
 
 

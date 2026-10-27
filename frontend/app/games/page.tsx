@@ -1,8 +1,15 @@
 import Link from "next/link";
+import { shareMetadata } from "../../lib/share";
 import { readGameFile } from "../../lib/gameFiles";
 import { longDate, STORY_GAME_IDS, winner } from "../../lib/gameStory";
 
-export const metadata = { title: "Games · Fourth & Daily" };
+export const metadata = shareMetadata({
+  title: "Games · Fourth & Daily",
+  description: "Every play, the win chance after it, and the 4th-down calls. Real nflverse data.",
+  path: "/games/",
+  card: "games",
+  alt: "NFL game stories: every play's win-chance swing. Data: nflverse",
+});
 
 export default function GamesPage() {
   const games = STORY_GAME_IDS.map((id) => readGameFile(id).game);
