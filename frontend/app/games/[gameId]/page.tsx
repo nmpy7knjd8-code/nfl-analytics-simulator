@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { periodName, quarterClockFromHalf } from "../../../lib/clock";
 import { shareMetadata } from "../../../lib/share";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
@@ -8,6 +7,8 @@ import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
 import { findSwingPlays, inGameOrder } from "../../../lib/winProbability";
 import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
+import { PlayFeed } from "../../../components/PlayFeed";
+import type { FeedRow } from "../../../lib/gameFileV2";
 import { openingWinChance } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
@@ -30,17 +31,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function formatClock(quarter: number, halfSeconds: number | null | undefined): string {
-  if (halfSeconds == null) return "—";
-  return quarterClockFromHalf(quarter, halfSeconds);
-}
 
 /** Whole percents (UI Critic 2240 P3-B): the chart axis is whole percents too. */
 function pct(v: number): string {
   return `${Math.round(v * 100)}%`;
 }
 
-const ORD = ["", "1st", "2nd", "3rd", "4th"];
 
 export default async function GameReplayPage({ params }: Props) {
   const { gameId } = await params;
@@ -64,15 +60,19 @@ export default async function GameReplayPage({ params }: Props) {
   const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
   const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
     const r = fileRows.get(p.play_id);
-    return { ...p, display_text: p.display_text || r?.display_text, raw_desc: p.raw_desc || r?.raw_desc };
+    return { ...p, display_text: p.display_text || r?.display_text, penalty_text: p.penalty_text ?? r?.penalty_text ?? null, raw_desc: p.raw_desc || r?.raw_desc };
   });
-  // P2-D: play-by-play grouped by quarter under sticky headings.
-  const quarters: { q: number; items: NonNullable<typeof plays>["data"]["items"] }[] = [];
-  for (const p of plays?.data.items ?? []) {
-    const last = quarters.at(-1);
-    if (last && last.q === p.quarter) last.items.push(p);
-    else quarters.push({ q: p.quarter, items: [p] });
-  }
+  // Committed lib/plays rows: static fallback and display_text source for the live game.v2 file.
+  const fallbackRows: FeedRow[] = (plays?.data.items ?? []).map((p) => ({
+    id: p.play_id,
+    quarter: p.quarter,
+    clock_seconds:
+      p.half_seconds_remaining == null ? null : p.quarter > 4 || p.quarter % 2 === 0 ? p.half_seconds_remaining : p.half_seconds_remaining - 900,
+    down: p.down ?? null,
+    distance: p.distance ?? null,
+    text: p.description ?? "",
+    penalty_text: fileRows.get(p.play_id)?.penalty_text ?? null,
+  }));
   const opening = game ? openingWinChance(id) : null;
 
 
@@ -127,43 +127,7 @@ export default async function GameReplayPage({ params }: Props) {
 
           <section aria-labelledby="pbp-head">
             <h2 id="pbp-head">Play by play</h2>
-            {plays.data.items.length ? (
-              <>
-                <p className="list-count">{plays.data.total} plays</p>
-                {quarters.map(({ q, items }) => (
-                  <section className="play-quarter" key={q} aria-label={periodName(q)}>
-                    <h3 className="play-quarter-head">{periodName(q)}</h3>
-                    <ol className="play-feed">
-                      {items.map((p) => {
-                        const rank = swingRank.get(p.play_id);
-                        return (
-                          <li
-                            className={`play-card${rank ? " is-swing" : ""}`}
-                            key={`${p.game_id}-${p.play_id}`}
-                            id={`play-${p.play_id}`}
-                          >
-                            <span className="play-meta">
-                              {periodName(p.quarter)} · {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
-                              {p.down ? ` · ${ORD[p.down]} & ${p.distance}` : ""}
-                            </span>
-                            <p className="play-desc">
-                              {rank ? (
-                                <span className="swing-badge" aria-label={`Swing play ${rank}`}>
-                                  {rank}
-                                </span>
-                              ) : null}
-                              {p.description}
-                            </p>
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  </section>
-                ))}
-              </>
-            ) : (
-              <p className="muted play-feed-soon">Full play-by-play coming soon.</p>
-            )}
+            <PlayFeed gameId={id} fallback={fallbackRows} swingRanks={[...swingRank]} />
           </section>
 
           <aside className="disclaimer">
