@@ -8,10 +8,6 @@ export const teamWordmark = (abbr: string) => `${BASE}/teams/${abbr}/wordmark.pn
 export const teamColor = (abbr: string, k: "primary" | "secondary" = "primary") =>
   (colors as { teams: Record<string, { primary: string; secondary: string }> }).teams[abbr]?.[k] ?? "#333";
 
-/** QA 0116 U4: logos that are almost all dark (mean opaque-pixel luminance < 0.2, no light outline;
- * measured from public/teams/<ABBR>/logo.png) get a subtle light plate on the black score bug. */
-export const DARK_LOGOS = new Set(["NYG", "LA", "CAR"]);
-export const darkLogo = (abbr: string) => DARK_LOGOS.has(abbr);
 
 function Dots({ n }: { n: number }) {
   return (
@@ -34,7 +30,7 @@ export function ScoreBug({ item }: { item: DailyItem }) {
       <span className="sg-edge" style={{ background: teamColor(t) }} />
       <span className="sg-pos" aria-hidden="true">{t === s.posteam ? "▶" : ""}</span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={teamLogo(t)} alt="" width={20} height={20} className={darkLogo(t) ? "sg-plate" : undefined} />
+      <img src={teamLogo(t)} alt="" width={20} height={20} className="sg-plate" />
       <span className="sg-code">{t}</span>
       {showDots ? <Dots n={to(t) as number} /> : null}
       <span className="sg-sc">{score(t)}</span>

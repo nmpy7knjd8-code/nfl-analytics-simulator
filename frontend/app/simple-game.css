@@ -91,6 +91,7 @@ html:has(.sg-app),body:has(.sg-app){background:#000}
 /* The card is narrower than the 358px bug at ≤400px: drop bug logos so scores never collide. */
 @media (max-width:400px){.sg-tm img{display:none}}
 /* QA 0116 U4: subtle plate behind dark logos (NYG) on the black score bug. */
+img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-tm img.sg-plate{background:rgba(255,255,255,.85);border-radius:50%;padding:1px}
 /* Result pill: HTML overlay inside the field so it can never be clipped (P1, 10-27). */
 .sg-field{position:relative}
