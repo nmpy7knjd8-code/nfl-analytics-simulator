@@ -31,6 +31,14 @@ WP_NUMERIC_FEATURES: tuple[str, ...] = (
 # H6: the primary WP model adds a score×time interaction (lead / sqrt(hours left)).
 WP_MODEL_FEATURES: tuple[str, ...] = WP_NUMERIC_FEATURES + ("score_time_ratio",)
 
+# Pregame strength (internal model input only; never exported to fans): the possession
+# team's pregame point spread (nflverse spread_line, + = favored) and the same spread
+# decayed with game time, exp(-SPREAD_DECAY * elapsed share), as nflfastR's spread model.
+# What-if states with no matchup (the 4th-down grid) use 0 = evenly matched teams.
+SPREAD_DECAY = 4.0
+WP_PREGAME_FEATURES: tuple[str, ...] = ("posteam_spread", "posteam_spread_decayed")
+WP_SPREAD_MODEL_FEATURES: tuple[str, ...] = WP_MODEL_FEATURES + WP_PREGAME_FEATURES
+
 # Minimal score+time baseline subset
 WP_SCORE_TIME_FEATURES: tuple[str, ...] = (
     "score_differential",
@@ -67,6 +75,16 @@ def build_wp_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
     # Spec: outside first half → encode as 0
     r2h = r2h.fillna(0.0)
 
+    if "posteam_spread" in pbp.columns:
+        spread = pd.to_numeric(pbp["posteam_spread"], errors="coerce")
+    elif "spread_line" in pbp.columns:
+        line = pd.to_numeric(pbp["spread_line"], errors="coerce")
+        spread = pd.Series(np.where(is_home == 1.0, line, -line), index=pbp.index)
+    else:
+        spread = pd.Series(0.0, index=pbp.index)
+    spread = spread.fillna(0.0).astype(float)
+    elapsed = (3600.0 - gsec.clip(lower=0, upper=3600)) / 3600.0
+
     frame = pd.DataFrame(
         {
             "score_differential": sd,
@@ -82,6 +100,8 @@ def build_wp_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
             # H6: a lead matters more as the clock runs down; a linear model needs
             # the interaction spelled out (used by WP_V2_FEATURES only).
             "score_time_ratio": sd / np.sqrt(gsec.clip(lower=0) / 3600.0 + 0.05),
+            "posteam_spread": spread,
+            "posteam_spread_decayed": spread * np.exp(-SPREAD_DECAY * elapsed),
         },
         index=pbp.index,
     )
