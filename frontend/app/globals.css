@@ -1808,3 +1808,10 @@ body.is-playing .app-stage { padding-bottom: calc(var(--safe-bottom) + 16px); }
 .fd-bar.is-close-pick { outline: 1.5px solid #f0f0f4; outline-offset: 3px; border-radius: 6px; }
 .fd-bar.is-close-other { outline: 1px dashed rgba(240, 240, 244, 0.7); outline-offset: 3px; border-radius: 6px; }
 a.fd-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: #ffffff; }
+
+/* Paused checker page (recheck 2039 M1/M2). Border #71717a on the dark page is > 3:1. */
+.fd-page .empty-state { display: grid; justify-items: start; gap: 0; max-width: 560px; width: 100%; margin: 12vh auto 0; padding: 2rem; border: 1px solid #71717a; border-radius: 12px; }
+.fd-page .empty-state h1 { margin: 0 0 0.5rem; font-size: clamp(1.5rem, 4vw, 2rem); }
+.fd-page .empty-state p { margin: 0 0 1.25rem; }
+.fd-page .empty-state .empty-state-label { margin: 0 0 0.25rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #a1a1aa; }
+.fd-page .empty-state-cta { width: auto; min-height: 48px; padding: 0 1.5rem; background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }

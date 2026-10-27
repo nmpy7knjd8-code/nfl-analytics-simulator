@@ -8,6 +8,8 @@ test("H6: 4th-down checker is off on the live site", () => {
   assert.equal(CHECKER_ENABLED, false);
   assert.doesNotMatch(CHECKER_PAUSED.title + CHECKER_PAUSED.body, /\d+\s*%|\d+\s*pts?/);
   assert.equal(CHECKER_PAUSED.cta.href, "/daily/");
+  assert.equal(CHECKER_PAUSED.title, "4th-down checker, back soon");
+  assert.equal(CHECKER_PAUSED.heading, "Back soon");
 });
 
 test("nav and 404 links honour the flag", () => {
