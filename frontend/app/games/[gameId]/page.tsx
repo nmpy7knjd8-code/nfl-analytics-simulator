@@ -60,7 +60,7 @@ export default async function GameReplayPage({ params }: Props) {
   const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
   const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
     const r = fileRows.get(p.play_id);
-    return { ...p, display_text: p.display_text || r?.display_text, raw_desc: p.raw_desc || r?.raw_desc };
+    return { ...p, display_text: p.display_text || r?.display_text, penalty_text: p.penalty_text ?? r?.penalty_text ?? null, raw_desc: p.raw_desc || r?.raw_desc };
   });
   // Committed lib/plays rows: static fallback and display_text source for the live game.v2 file.
   const fallbackRows: FeedRow[] = (plays?.data.items ?? []).map((p) => ({
@@ -71,6 +71,7 @@ export default async function GameReplayPage({ params }: Props) {
     down: p.down ?? null,
     distance: p.distance ?? null,
     text: p.description ?? "",
+    penalty_text: fileRows.get(p.play_id)?.penalty_text ?? null,
   }));
   const opening = game ? openingWinChance(id) : null;
 

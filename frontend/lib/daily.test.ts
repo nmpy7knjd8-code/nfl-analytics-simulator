@@ -144,7 +144,7 @@ test("#96 L7: close-call Why names only options within 2 pts as about the same",
   const base = { ...DAILY_ITEMS[0], situation: { ...DAILY_ITEMS[0].situation, yardline_100: 40 } };
   const it: DailyItem = { ...base, reveal: { ...base.reveal, values: { go: 0.621, punt: 0.617, fg: 0.3 } } };
   const t = whyText(it, scoreCall("go", it));
-  assert.match(t, /give about the same win chance \(62\.1% vs 61\.7%\); .* is lower \(30\.0%\)\./);
+  assert.match(t, /\(62\.1% vs 61\.7%\) give about the same win chance; .* is lower \(30\.0%\)\./);
 });
 
 test("M13: daily close-call text never shows identical 'X% vs X%'", async () => {
@@ -152,4 +152,40 @@ test("M13: daily close-call text never shows identical 'X% vs X%'", async () => 
   const n = closeNote({ result: "close", credit: 0.5, pick: "fg", best: "go", gap: 0.0001, closeCall: true, values: { go: 0.0012, fg: 0.0011, punt: 0.00105 } } as never)!;
   assert.doesNotMatch(n, /(\d+(?:\.\d)?%) vs \1/);
   assert.match(n, /both 0\.1%/);
+});
+
+test("0015 P1-B: CAR-NO Q3 5:11, Kick and Go both show 91.9%, so both are Right", () => {
+  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  for (const pick of ["fg", "go"] as const) {
+    const s = scoreCall(pick, item);
+    assert.equal(s.result, "right", pick);
+    assert.equal(s.credit, 1, pick);
+  }
+  assert.equal(scoreCall("punt", item).credit, 0.5);
+});
+
+test("0015 P1-A: Why groups equal shown values (CAR-NO Q3 5:11)", async () => {
+  const { whyText, groupedNames } = await import("./dailyView");
+  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  assert.equal(
+    whyText(item, scoreCall("go", item)),
+    "Close call for the Panthers: Kick and Go (both 91.9%) and Punt (90.8%) give about the same win chance.",
+  );
+  assert.equal(groupedNames(["Kick", "Go", "Punt"], ["9%", "9%", "9%"]), "Kick, Go and Punt (all 9%)");
+  assert.equal(groupedNames(["Go", "Kick"], ["24%", "23%"]), "Go and Kick (24% vs 23%)");
+  assert.equal(groupedNames(["Go", "Kick", "Punt"], ["24%", "23%", "22%"]), "Go, Kick and Punt (24% vs 23% vs 22%)");
+});
+
+test("0015 follow-up: CAR-NO Q3 5:11, Kick and Go tie at 91.9% so both are Best; Punt is About as good", async () => {
+  const { barTags } = await import("./dailyView");
+  const item = DAILY_ITEMS.find((i) => i.id === "2022_03_NO_CAR-2560")!;
+  const t = barTags(item, scoreCall("punt", item));
+  assert.deepEqual(t.fg, { tag: "Best", best: true });
+  assert.deepEqual(t.go, { tag: "Best", best: true });
+  assert.deepEqual(t.punt, { tag: "Your pick", best: false });
+  // A tied pick keeps its one tag but gets the blue bar; the other tied row is still Best.
+  const g = barTags(item, scoreCall("go", item));
+  assert.deepEqual(g.go, { tag: "Your pick", best: true });
+  assert.deepEqual(g.fg, { tag: "Best", best: true });
+  assert.equal(g.punt?.tag, "About as good");
 });
