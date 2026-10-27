@@ -976,11 +976,6 @@ button {
   font-weight: 500;
 }
 
-@media (min-width: 720px) {
-  body {
-    background: linear-gradient(180deg, #ebebec 0%, var(--color-bg) 50%);
-  }
-}
 
 /* —— Fourth-down quiz (night CGI + bubble card) —— */
 .quiz-page {
