@@ -20,7 +20,8 @@ def test_curated_pack_has_flip_and_at_least_five():
     flip = next(it for it in items if it["id"] == "flip-lac-den")
     assert flip["source"]["game_id"] == "2022_18_LAC_DEN"
     assert float(flip["source"]["play_id"]) == 3897.0
-    assert flip["reveal"]["recommendation"] == "punt"
+    # H6 model: LAC@DEN is now a close call (go 19.8% vs punt 19.1%).
+    assert flip["reveal"]["recommendation"] in ("punt", "inconclusive")
     # No legacy→improved flip once the phantom 81-yd FG is gone (FG cap).
     assert flip["reveal"]["recommendation_changed_legacy_to_improved"] is False
     assert "fg" not in flip["reveal"]["values"]
@@ -40,7 +41,10 @@ def test_public_pack_hides_reveal():
 
 def test_score_exact_near_tie_incorrect():
     pack = load_curated_pack()
-    flip = next(it for it in pack["items"] if it["id"] == "flip-lac-den")
+    # a clear punt call (LAC@DEN became a close call under the H6 WP model)
+    flip = next(it for it in pack["items"]
+                if it["reveal"]["recommendation"] == "punt" and not it["reveal"].get("inconclusive")
+                and "go" in it["reveal"]["values"])
     near = next(it for it in pack["items"] if it["reveal"].get("inconclusive"))
     go_item = next(
         it
@@ -92,8 +96,8 @@ def test_quiz_api_pack_and_score():
     assert scored.status_code == 200, scored.text
     body = scored.json()
     assert body["live_feed"] is False
-    assert body["scored"]["result"] == "correct"
-    assert body["session"]["exact"] == 1
+    assert body["scored"]["result"] in ("correct", "near_tie")  # close call under H6 model
+    assert body["session"]["exact"] + body["session"]["near_tie"] == 1
 
 
 def test_situation_lab_presets_still_intact():

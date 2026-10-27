@@ -35,6 +35,11 @@ jobs:
       - name: Install frontend
         working-directory: frontend
         run: npm ci
+      - name: Game files from release asset (repo variable GAMES_RELEASE_TAG; sha256-verified)
+        env:
+          GAMES_RELEASE_TAG: ${{ vars.GAMES_RELEASE_TAG }}
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/pages/game_files_release.sh fetch
       - name: Prebuild share cards (1200x675 OG / X images)
         working-directory: frontend
         run: |
