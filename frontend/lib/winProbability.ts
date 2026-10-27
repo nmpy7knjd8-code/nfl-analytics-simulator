@@ -33,7 +33,7 @@ export type ChartSeries = {
 export type OvertimePlay = Pick<
   WinProbabilityPoint,
   "play_id" | "play_index" | "quarter" | "is_overtime" | "game_seconds_elapsed" | "possession_team_id" | "description"
-> & { display_text?: string; raw_desc?: string };
+> & { display_text?: string; raw_desc?: string; penalty_text?: string | null };
 
 /**
  * House rule (creative-builds.md): win chance stops at the end of regulation.
@@ -57,6 +57,7 @@ export function splitAtRegulation(series: WinProbabilitySeries): {
     // UI Critic 2240 P2-A: the OT card shows the export's fan text like every other card.
     display_text: (p as { display_text?: string }).display_text,
     raw_desc: (p as { raw_desc?: string }).raw_desc,
+    penalty_text: (p as { penalty_text?: string | null }).penalty_text ?? null,
   }));
   const kept = new Set(regulation.map((p) => p.play_id));
   return {

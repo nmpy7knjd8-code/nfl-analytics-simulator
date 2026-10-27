@@ -85,6 +85,7 @@ function fanFields(r: SwingPlay) {
     event: r.event,
     fourth_down_failed: r.fourth_down_failed,
     display_text: r.display_text,
+    penalty_text: r.penalty_text ?? null,
     raw_desc: r.raw_desc,
     down: r.down,
     distance: r.distance,

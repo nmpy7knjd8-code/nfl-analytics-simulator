@@ -73,6 +73,8 @@ export type FeedRow = {
   down: number | null;
   distance: number | null;
   text: string;
+  /** #106 penalty sentence(s) after the play; null when none. */
+  penalty: string | null;
 };
 
 /** Live per-game file served by Pages (fetched from the games-v2 release at build). */
@@ -85,15 +87,21 @@ export function gameFileUrl(gameId: string, basePath = ""): string {
  * two-minute warnings). The v2 file carries only nflverse's raw desc, so fan text comes from
  * `fanText` (display_text by play_id, from the export) when present; we never write play text.
  */
-export function feedRowsFromGameV2(doc: GameFileV2, fanText: Map<string, string> = new Map()): FeedRow[] {
+export function feedRowsFromGameV2(
+  doc: GameFileV2,
+  fanText: Map<string, string> = new Map(),
+  penalties: Map<string, string | null> = new Map(),
+): FeedRow[] {
   const c = doc.cols;
   const rows: FeedRow[] = [];
   for (let i = 0; i < c.play_id.length; i++) {
     if (c.play_type[i] == null || NON_PLAY.test(c.text[i] ?? "")) continue;
     const id = String(c.play_id[i]);
-    const text = fanText.get(id)?.trim() || c.text[i]?.trim();
+    // #105: the file's own display_text column first (games-v3), then lib/plays by play_id, then raw desc.
+    const text = c.display_text?.[i]?.trim() || fanText.get(id)?.trim() || c.text[i]?.trim();
+    const penalty = (c.penalty_text ? c.penalty_text[i] : penalties.get(id)) ?? null;
     if (!text) continue;
-    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text });
+    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text, penalty });
   }
   return rows;
 }

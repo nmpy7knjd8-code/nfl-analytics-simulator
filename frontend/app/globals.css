@@ -1622,3 +1622,9 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .play-feed-retry { min-height: 48px; }
 .error-band .play-feed-retry { margin-left: 12px; }
 .play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
+
+/* #106 penalty_text after the play. #a1a1aa is the dark-theme value (7.7:1 on #0b0b0f) but only 2.3:1 on
+   this light page bg (#f2f2f3), so it applies only under a dark background; light pages use ink-muted (4.9:1). */
+.play-penalty { display: block; margin-top: 2px; font-size: inherit; font-weight: 400; color: var(--color-penalty, var(--color-ink-muted)); }
+.quiz-page .play-penalty, [data-theme="dark"] .play-penalty { --color-penalty: #a1a1aa; }
+.swing-headline:has(.play-penalty) { display: block; -webkit-line-clamp: unset; }

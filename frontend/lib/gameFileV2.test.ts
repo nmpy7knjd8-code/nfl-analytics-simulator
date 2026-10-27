@@ -34,3 +34,14 @@ test("game.v2 → feed rows: real plays only, fan text by play_id, raw text othe
   assert.ok(bare.some((r) => /^\(\d+:\d\d\)/.test(r.text)), "without fan text the raw nflverse desc shows (never invented)");
   for (let i = 1; i < rows.length; i++) assert.ok(rows[i].quarter >= rows[i - 1].quarter);
 });
+
+test("#105/#106: feed rows prefer the file's display_text column and carry penalty_text", () => {
+  const raw = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_DET_KC.json", import.meta.url), "utf8")) as GameFileV2;
+  const n = raw.cols.play_id.length;
+  const v3 = { ...raw, cols: { ...raw.cols, display_text: raw.cols.text.map((t, i) => (i === 2 ? "From the file column." : t)), penalty_text: Array.from({ length: n }, (_, i) => (i === 2 ? "Flag, declined." : null)) } };
+  const rows = feedRowsFromGameV2(v3, new Map([[String(raw.cols.play_id[2]), "From lib/plays."]]));
+  const r = rows.find((x) => x.id === String(raw.cols.play_id[2]))!;
+  assert.equal(r.text, "From the file column.");
+  assert.equal(r.penalty, "Flag, declined.");
+  assert.equal(rows.filter((x) => x.penalty).length, 1);
+});
