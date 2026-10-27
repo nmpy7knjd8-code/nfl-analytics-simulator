@@ -31,14 +31,15 @@ export function FieldView({ item, outcome }: { item: DailyItem; outcome?: Outcom
   const y0 = Math.max(-1, Math.min(c - h / 2, 121 - h));
   const label = reveal ? outcome.label : "";
   const chipW = label.length * 1.62 + 2.6;
-  const chipX = EX > W / 2 ? EX - chipW - 3 : EX + 3;
+  // QA 0116 U2: keep the chip 1.6 field units (~10px at 390) inside the sidelines so it never looks clipped.
+  const chipX = Math.max(1.6, Math.min(W - chipW - 1.6, EX > W / 2 ? EX - chipW - 3 : EX + 3));
   const chipY = throughPosts ? endY + 2.4 : endY - 4.8;
   const stripes = [];
   for (let y = 0; y < 120; y += 5) stripes.push(<rect key={y} x={0} y={y} width={W} height={5} fill={(y / 5) % 2 ? "#3f8a3a" : "#367d32"} />);
   const yardLines = [];
   for (let v = 0; v <= 100; v += 5) yardLines.push(<line key={v} x1={0} x2={W} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={v % 100 ? 0.28 : 0.6} />);
   const hashes = [];
-  for (let v = 1; v < 100; v++) if (v % 5) for (const x of [0.4, 22.9, 29.8, W - 1.4]) hashes.push(<line key={`${v}-${x}`} x1={x} x2={x + 1} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={0.22} />);
+  for (let v = 1; v < 100; v++) if (v % 5) for (const x of [0.4, W / 2 - 3.45 - 0.5, W / 2 + 3.45 - 0.5, W - 1.4]) /* QA 0116 SG5: inbound hashes centred on W/2 */ hashes.push(<line key={`${v}-${x}`} x1={x} x2={x + 1} y1={Y(v)} y2={Y(v)} stroke="#fff" strokeWidth={0.22} />);
   const nums = [];
   for (let v = 10; v < 100; v += 10) {
     const n = v <= 50 ? v : 100 - v;

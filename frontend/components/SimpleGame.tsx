@@ -32,8 +32,10 @@ function Header({ right }: { right: string }) {
         <button type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>☰</button>
         {open ? (
           <nav className="sg-menu-list" aria-label="Menu">
+            <Link href="/practice/">Practice</Link>
             <Link href="/games/">Games</Link>
             <Link href="/daily/stats/">Stats</Link>
+            <Link href="/about/">About</Link>
           </nav>
         ) : null}
       </div>
