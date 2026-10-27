@@ -9,6 +9,7 @@ on the site (daily quiz, 4th-down page, Game Story / games).
   3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
   4. No team logos in the built site, except the self-hosted team logos/wordmarks listed in
      teams/manifest.json (teams/<ABBR>/logo.png, wordmark.png) and <img> tags pointing at /teams/.
+     Any external image (img src/srcset, SVG <image href>, CSS url() over http(s): or //) fails.
   5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios;
      kick distance = yardline_100 + 18, as in the engine since #64).
 Prints every failure, exits 1 if any.
@@ -64,10 +65,22 @@ def scan(text: str, where: str) -> None:
 
 # Logo ban exception (approved by Garrett, 2026-10-27, PR #125): the self-hosted team logos and
 # wordmarks under teams/<ABBR>/ that are listed in teams/manifest.json may ship, and <img> tags may
-# point at /teams/. Every other logo file or logo <img> in the built site still fails.
+# point at a same-site /teams/ path. Every other logo file or logo <img> in the built site still fails.
 TEAM_FILE = re.compile(r"^teams/[A-Z]{2,3}/(logo|wordmark)\.png$")
 LOGO_IMG = re.compile(r"<img[^>]+(logo|teamlogo)[^>]*>", re.I)
-TEAMS_IMG_SRC = re.compile(r"""\ssrc=["'](?:[^"']*/)?teams/[A-Z]{2,3}/(logo|wordmark)\.png["']""")
+# Same-site path only: no scheme, no protocol-relative //. An optional basePath prefix
+# (e.g. /nfl-analytics-simulator/teams/KC/logo.png) is fine.
+TEAMS_IMG_SRC = re.compile(
+    r"""\ssrc=["'](?:/[A-Za-z0-9._-]+)*/teams/[A-Z]{2,3}/(logo|wordmark)\.png["']""")
+
+# No external images at all: <img src/srcset>, <source srcset>, SVG <image href/xlink:href>,
+# and CSS url() pointing at http(s): or protocol-relative //. (Fonts in CSS url() are not images.)
+_EXT = r"""\s*(?:https?:)?//"""
+EXT_IMG_ATTR = re.compile(rf"""<img\b[^>]*?\ssrc\s*=\s*["']?{_EXT}[^>]*>""", re.I)
+EXT_SRCSET = re.compile(r"""<(?:img|source)\b[^>]*?\ssrcset\s*=\s*["']([^"']*)["'][^>]*>""", re.I)
+EXT_SVG_IMAGE = re.compile(rf"""<image\b[^>]*?\s(?:xlink:)?href\s*=\s*["']?{_EXT}[^>]*>""", re.I)
+EXT_CSS_URL = re.compile(rf"""url\(\s*["']?{_EXT}([^)"']*)["']?\s*\)""", re.I)
+FONT_EXT = re.compile(r"\.(woff2?|ttf|otf|eot)(?:[?#][^)]*)?$", re.I)
 
 
 def manifest_files(site: str) -> set[str]:
@@ -85,6 +98,17 @@ def logo_file_allowed(rel: str, allowed: set[str]) -> bool:
 
 def bad_logo_imgs(page: str) -> list[str]:
     return [m.group(0) for m in LOGO_IMG.finditer(page) if not TEAMS_IMG_SRC.search(m.group(0))]
+
+
+def external_images(text: str) -> list[str]:
+    """Every external image reference in an HTML page or CSS file."""
+    out = [m.group(0) for m in EXT_IMG_ATTR.finditer(text)]
+    out += [m.group(0) for m in EXT_SVG_IMAGE.finditer(text)]
+    for m in EXT_SRCSET.finditer(text):
+        if any(re.match(_EXT, c.strip().split(" ")[0] if c.strip() else "x") for c in m.group(1).split(",")):
+            out.append(m.group(0))
+    out += [m.group(0) for m in EXT_CSS_URL.finditer(text) if not FONT_EXT.search(m.group(1))]
+    return out
 
 
 def main() -> int:
@@ -111,9 +135,13 @@ def main() -> int:
             path, rel = os.path.join(root, f), os.path.relpath(os.path.join(root, f), site)
             if re.search(r"logo", f, re.I) and not logo_file_allowed(rel, allowed):
                 fails.append(f"logo: built site ships {rel}")
-            if not f.endswith(".html"):
+            if not f.endswith((".html", ".css")):
                 continue
             page = open(path, encoding="utf-8", errors="replace").read()
+            for ref in external_images(page)[:3]:
+                fails.append(f"external image: /{rel} loads {ref[:120]!r}")
+            if not f.endswith(".html"):
+                continue
             if bad_logo_imgs(page):
                 fails.append(f"logo: /{rel} renders a logo image")
             if 'http-equiv="refresh"' not in page:
