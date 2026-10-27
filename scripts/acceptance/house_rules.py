@@ -7,8 +7,7 @@ on the site (daily quiz, 4th-down page, Game Story / games).
   1. Words: no "EPA", "WPA" or "xpass" on fan screens.
   2. No betting: no odds formats, lines or stakes language.
   3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
-  4. Logos: self-hosted nflverse team logos/wordmarks are allowed; no hotlinked
-     external images (img src/srcset, CSS url(), <image href>) in built pages or CSS.
+  4. No team logos in the built site.
   5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios;
      kick distance = yardline_100 + 18, as in the engine since #64).
 Prints every failure, exits 1 if any.
@@ -27,11 +26,6 @@ BETTING = re.compile(
     rf"|\b{_ODDS_WORD}\b(?:\s+(?:is|was|at|of))?\W{{0,3}}{_ODDS_NUM}"
     rf"|{_ODDS_NUM}\s*\(?{_ODDS_WORD}\b"
     rf"|{_ODDS_NUM}\s*/\s*{_ODDS_NUM}",
-    re.I,
-)
-# External image URLs (self-hosted files are fine): <img src>, srcset, SVG <image href>, CSS url().
-HOTLINK = re.compile(
-    r"""(?:<img\b[^>]*?\s(?:src|srcset)\s*=\s*["']?\s*|<image\b[^>]*?\s(?:xlink:)?href\s*=\s*["']?\s*|url\(\s*["']?)((?:https?:)?//[^\s"')>,]+)""",
     re.I,
 )
 BAD_GAME = "2019_03_CIN_BUF"
@@ -88,13 +82,13 @@ def main() -> int:
     for root, _, files in os.walk(site):
         for f in files:
             path, rel = os.path.join(root, f), os.path.relpath(os.path.join(root, f), site)
-            if not f.endswith((".html", ".css")):
-                continue
-            page = open(path, encoding="utf-8", errors="replace").read()
-            for m in HOTLINK.finditer(page):
-                fails.append(f"hotlinked image: /{rel} loads {m.group(1)!r} (self-host it)")
+            if re.search(r"logo", f, re.I):
+                fails.append(f"logo: built site ships {rel}")
             if not f.endswith(".html"):
                 continue
+            page = open(path, encoding="utf-8", errors="replace").read()
+            if re.search(r"<img[^>]+(logo|teamlogo)", page, re.I):
+                fails.append(f"logo: /{rel} renders a logo image")
             if 'http-equiv="refresh"' not in page:
                 scan(visible_text(page), f"page /{rel}")
 
