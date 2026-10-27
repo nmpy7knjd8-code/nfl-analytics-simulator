@@ -46,9 +46,21 @@ CI (`backend/tests/test_swing_examples.py`) checks every play against a committe
 } } }
 SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT */, clock /* "MM:SS" quarter clock */,
   clock_seconds, description /* nflverse desc, verbatim */, play_type, possession_team_id,
-  home_score_after, away_score_after,
+  home_score_after, away_score_after, home_score_before, away_score_before,
+  down, distance /* ydstogo */, yardline_100,   // null when nflverse has none (kickoffs, PATs)
+  event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
+  display_text /* fan text, <= 20 words: show this */, raw_desc /* verbatim nflverse desc */,
   home_wp_pre?, home_wp_post?, delta_home_wp? /* swings */, swing_eligible? /* chart */ }
 ```
+
+Full play lists: `frontend/lib/plays/<game_id>.json` = `{ game_id, plays: SwingPlay[] }` (type `GamePlayList`),
+every real play in order incl. penalties/no-plays, kickoffs, PATs and OT; no timeouts, two-minute warnings or
+quarter/game markers. Kept out of swingPlays.json for size (~85-92 KB each); fetch/import per page.
+
+`display_text` rules (`backend/src/nfl_sim/play_text.py`): no clock, formation tags, jersey numbers, tackler
+parentheses or pressure brackets; sentence case; full names from nflverse player ids (players.csv) for the main
+roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 words; only facts in the row.
+`event` priority: turnover_on_downs > interception > fumble_lost > touchdown > field_goal > punt > other.
 
 Swing filter: regulation (qtr 1–4) `run` / `pass` / `field_goal` / `punt` only; kneels, spikes, no-plays, kickoffs,
 timeouts and other non-play rows never swing. WP is nflverse's `home_wp` / `home_wp_post`, not our model.
