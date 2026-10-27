@@ -1720,3 +1720,8 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 0019 N18: the checker-paused CTA on /fourth-down/ is the primary action, blue like other primaries. */
 .decide-page .empty-state .btn-primary { background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
 .decide-page .empty-state .btn-primary:hover { background: #2a6fe0; }
+
+/* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
+.fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+.fd-bar-num { white-space: nowrap; min-width: 5.75rem; text-align: right; font-variant-numeric: tabular-nums; }
+.fd-bar-track { flex: 1 1 auto; min-width: 0; }
