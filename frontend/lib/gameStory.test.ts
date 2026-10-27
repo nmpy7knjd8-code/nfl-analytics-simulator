@@ -72,7 +72,7 @@ test("4th-down mini grade follows the engine record", () => {
 
 test("See this game at this play: only for games with a story page, and the play exists there", () => {
   const linked = DAILY_ITEMS.filter((i) => storyHref(i.source.game_id, playIdFromItemId(i.id)));
-  assert.deepEqual(linked.map((i) => i.id), ["2023_01_DET_KC-1986"]);
+  assert.deepEqual(linked.map((i) => i.id), ["2023_01_DET_KC-1537", "2023_01_DET_KC-1986"]);
   for (const i of linked) {
     const f = load(i.source.game_id!);
     assert.ok(f.plays.some((p) => p.play_id === playIdFromItemId(i.id)));
