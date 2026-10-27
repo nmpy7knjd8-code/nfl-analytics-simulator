@@ -30,6 +30,26 @@ def test_img_tags():
     assert hr.bad_logo_imgs('<img src="/img/logo.png">')
     assert hr.bad_logo_imgs('<img src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png">')
     assert hr.bad_logo_imgs('<img class="teamlogo" src="/x/kc.png">')
+    assert hr.bad_logo_imgs('<img src="https://evil.example.com/teams/BUF/logo.png">')
+    assert hr.bad_logo_imgs('<img src="//evil.example.com/teams/BUF/logo.png">')
+
+
+def test_external_images_fail():
+    for bad in ('<img src="https://evil.example.com/teams/BUF/logo.png">',
+                '<img src="https://upload.wikimedia.org/kc.svg">',
+                '<img alt="x" src="//cdn.example.com/a.png">',
+                '<img src="/a.png" srcset="/a.png 1x, https://cdn.example.com/a@2x.png 2x">',
+                '<picture><source srcset="http://x.example/a.webp"></picture>',
+                '<svg><image href="https://x.example/a.png"/></svg>',
+                '<svg><image xlink:href="//x.example/a.png"/></svg>',
+                '.a{background:url("https://x.example/bg.png")}',
+                ".a{background-image:url(//x.example/bg.jpg)}"):
+        assert hr.external_images(bad), bad
+    for ok in ('<img src="/teams/KC/logo.png">', '<img src="/base/teams/KC/wordmark.png" srcset="/a.png 2x">',
+               '<svg><image href="/teams/KC/logo.png"/></svg>', ".a{background:url(/img/bg.png)}",
+               '.a{background:url("data:image/png;base64,AAA")}',
+               "@font-face{src:url(https://fonts.gstatic.com/s/x.woff2) format('woff2')}"):
+        assert hr.external_images(ok) == [], ok
 
 
 def test_built_site_scan(tmp_path):
@@ -49,3 +69,8 @@ def test_built_site_scan(tmp_path):
     (site / "assets/logo.png").write_bytes(b"x")
     out = run()
     assert "logo: built site ships assets/logo.png" in out.stdout + out.stderr
+    (site / "assets/logo.png").unlink()
+    (site / "kc.html").write_text('<html><body><img src="https://upload.wikimedia.org/kc.svg"></body></html>')
+    (site / "x.css").write_text('.a{background:url(https://evil.example.com/teams/BUF/logo.png)}')
+    out = run().stdout
+    assert "external image: /kc.html" in out and "external image: /x.css" in out
