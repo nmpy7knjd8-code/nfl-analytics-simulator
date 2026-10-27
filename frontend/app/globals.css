@@ -1494,13 +1494,16 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .wp-mid { stroke: var(--color-border-strong); stroke-dasharray: 4 4; }
 .wp-grid { stroke: var(--color-divider); }
 .wp-axis { font: 11px var(--font-mono); fill: var(--color-ink-muted); }
+.wp-ot-line { stroke: var(--color-ink-muted); stroke-dasharray: 3 3; }
+.wp-ot-label { font-size: 11px; fill: var(--color-ink-muted); font-family: var(--font-body); }
+.ot-item { border-left-color: var(--color-border-strong); }
 .wp-swing { fill: var(--color-blue); stroke: var(--color-bg-elevated); stroke-width: 2; }
 .swing-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.75rem; }
 .swing-item { border-left: 3px solid var(--color-blue); padding: 0.5rem 0.75rem; background: var(--color-bg-elevated); }
 .swing-why { font-size: var(--text-body-sm); color: var(--color-ink-secondary); margin: 0.25rem 0 0; }
 
 
-/* ================= Fourth & Daily design system (C3) =================
+/* ================= Fourth & Daily design system (C3) ==========
    Black / white / greys, one blue for "the right call". No page-enter motion;
    150 ms only on reveals. Tabular numerals, body 16 px, labels >= 13 px. */
 body { font-variant-numeric: tabular-nums; }
@@ -1571,3 +1574,34 @@ body { font-variant-numeric: tabular-nums; }
 .fd-prose h1 { font-size: 1.75rem; margin: 0; }
 .fd-prose h2 { font-size: 1.2rem; margin: 0.5rem 0 0; }
 .fd-prose p, .fd-prose ul { margin: 0; }
+=======
+/* Branded 404 (QA2 L4): black, white type, one blue accent. */
+.not-found {
+  --nf-accent: #1f6feb;
+  background: #000;
+  color: #fff;
+  min-height: 70vh;
+  padding: clamp(2rem, 8vh, 5rem) var(--page-pad-x);
+  border-radius: var(--radius-lg);
+}
+.not-found-code {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 0 0.5rem;
+  color: var(--nf-accent);
+}
+.not-found-title { font-family: var(--font-display); font-size: var(--text-h1); margin: 0 0 0.75rem; color: #fff; }
+.not-found-copy { color: rgba(255, 255, 255, 0.75); margin: 0 0 1.5rem; }
+.not-found-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; max-width: 28rem; }
+.not-found-links a {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: 0.85rem 1rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: var(--radius-md);
+  color: #fff; text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.not-found-links a:hover, .not-found-links a:focus-visible { border-color: var(--nf-accent); outline: none; }
+.not-found-label { font-weight: 600; }
+.not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
+.not-found-links a:hover .not-found-label { color: var(--nf-accent); }
