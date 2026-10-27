@@ -143,3 +143,21 @@ def test_priors_are_reported_by_the_model(model):
     assert set(p) == {"offense_convert", "defense_convert", "kicker_fg_make"}
     assert all(isinstance(v, dict) and v["k"] > 0 for v in p.values())
     assert isinstance(model.offense, Prior)
+
+
+def test_plain_language_fourth_down_fields():
+    from nfl_sim.products.fourth_down_text import fourth_down_text
+
+    row = dict(posteam="DET", yardline_100=28, ydstogo=2, actual="fg", result="fg_made",
+               engine=json.dumps({"recommendation": "go", "wp": {"go": 0.62, "fg": 0.585}}))
+    t = fourth_down_text(row)
+    assert t["coach_call"] == "On 4th and 2 at the opponent's 28, DET kicked a field goal."
+    assert t["what_happened"] == "The kick was good."
+    assert t["best_call"] == ("Best call: going for it, worth 3.5 more points of win chance than kicking the "
+                              "field goal. Kicking the field goal cost 3.5 points.")
+    assert t["edge_pts"] == 3.5
+    goal = fourth_down_text({**row, "yardline_100": 2, "actual": "go", "result": "touchdown"})
+    assert goal["coach_call"].startswith("On 4th and goal at the opponent's 2, DET went for it.")
+    assert goal["best_call"].endswith("The coach made the right call.")
+    for v in (*t.values(), *goal.values()):
+        assert not re.search(r"spread|odds|line|betting|vegas|favou?rite", str(v), re.I)
