@@ -33,7 +33,7 @@ export type ChartSeries = {
 export type OvertimePlay = Pick<
   WinProbabilityPoint,
   "play_id" | "play_index" | "quarter" | "is_overtime" | "game_seconds_elapsed" | "possession_team_id" | "description"
->;
+> & { display_text?: string; raw_desc?: string };
 
 /**
  * House rule (creative-builds.md): win chance stops at the end of regulation.
@@ -54,6 +54,9 @@ export function splitAtRegulation(series: WinProbabilitySeries): {
     game_seconds_elapsed: p.game_seconds_elapsed,
     possession_team_id: p.possession_team_id,
     description: p.description,
+    // UI Critic 2240 P2-A: the OT card shows the export's fan text like every other card.
+    display_text: (p as { display_text?: string }).display_text,
+    raw_desc: (p as { raw_desc?: string }).raw_desc,
   }));
   const kept = new Set(regulation.map((p) => p.play_id));
   return {
@@ -98,6 +101,10 @@ export type EventPoint = WinProbabilityPoint & {
   yardline_100?: number | null;
   home_score_before?: number;
   away_score_before?: number;
+  /** nflverse yards_gained (#97). */
+  yards_gained?: number | null;
+  /** Interception or fumble returned for a TD by the defense (#97). */
+  return_td?: boolean;
 };
 
 /** "4th & 7 · KC 35 · DET 14–13 KC" (UI Critic 2110 P1-B). Null when the situation fields are absent. */
@@ -116,17 +123,22 @@ export function situationLine(p: EventPoint, home: string, away: string): string
   return parts.length ? parts.join(" · ") : null;
 }
 
-function whyText(delta: number, p: EventPoint, favored: string): string {
+export function whyText(delta: number, p: EventPoint, favored: string): string {
   const pts = Math.round(Math.abs(delta) * 100);
   const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
   // QA M10 / UI P1-B: the event tag from nflverse (#86) decides the cause before any text match.
-  if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
+  // QA L5: a defensive return TD names the turnover and the 7 points (#97 return_td).
+  if (p.return_td && p.event === "fumble_lost") cause = "a fumble returned for a touchdown put 7 points on the board";
+  else if (p.return_td) cause = "an interception returned for a touchdown put 7 points on the board";
+  else if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
   else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover hands the ball and field position to the other side";
   else if (p.event === "touchdown") cause = "a touchdown changes the score in one snap";
   else if (p.event === "field_goal") cause = "points went on the board";
   else if (p.event === "punt") cause = "a punt flips field position";
+  // QA L6: a 20+ yard gain (#97 yards_gained) is about field position, not the score.
+  else if ((p.yards_gained ?? 0) >= 20) cause = "a big gain flipped field position";
   else if (p.event === "other") cause = /sack/.test(d) ? "a sack loses yards and can kill a drive" : "it moved the ball and the clock";
   else if (/intercept|fumble/.test(d)) cause = "a turnover hands the ball and field position to the other side";
   else if (/touchdown/.test(d)) cause = "a touchdown changes the score in one snap";
@@ -146,6 +158,16 @@ export function clockLabel(p: Pick<WinProbabilityPoint, "quarter" | "is_overtime
   }
   const left = p.quarter * QUARTER_SECONDS - p.game_seconds_elapsed;
   return `Q${p.quarter} ${fmt(Math.max(0, Math.min(QUARTER_SECONDS, left)))}`;
+}
+
+/** The same swings in game order (cards and dot numbers read left to right; UI Critic open item). */
+export function inGameOrder(swings: SwingPlay[]): SwingPlay[] {
+  return [...swings].sort((a, b) => a.point.game_seconds_elapsed - b.point.game_seconds_elapsed || a.point.play_index - b.point.play_index);
+}
+
+/** "DET win chance +24" (UI Critic 2240 P3-A: not "gains 24 pts", which reads like game points). */
+export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id">): string {
+  return `${s.favored_team_id} win chance +${Math.round(Math.abs(s.delta) * 100)}`;
 }
 
 /** Swing plays, largest first, capped at `limit`. */
