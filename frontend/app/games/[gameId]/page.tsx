@@ -96,8 +96,13 @@ export default async function GameReplayPage({ params }: Props) {
             </div>
             <div className="scoreboard">
               <h1 className="scoreboard-matchup">
-                <TeamChip team={game.data.away_team_id} color={colors?.away} /> @{" "}
-                <TeamChip team={game.data.home_team_id} color={colors?.home} />
+                <span className="team-mark" style={colors?.away ? { borderBottomColor: colors.away } : undefined}>
+                  {game.data.away_team_id}
+                </span>{" "}
+                @{" "}
+                <span className="team-mark" style={colors?.home ? { borderBottomColor: colors.home } : undefined}>
+                  {game.data.home_team_id}
+                </span>
               </h1>
               <span className="scoreboard-final">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
@@ -110,7 +115,8 @@ export default async function GameReplayPage({ params }: Props) {
               <h2 id="wp-head">Win chance</h2>
               {opening ? (
                 <p className="wp-opening">
-                  At kickoff: {game.data.away_team_id} {pct(opening.away)} · {game.data.home_team_id} {pct(opening.home)}
+                  At kickoff: <TeamChip team={game.data.away_team_id} color={colors?.away} /> {pct(opening.away)} ·{" "}
+                  <TeamChip team={game.data.home_team_id} color={colors?.home} /> {pct(opening.home)}
                 </p>
               ) : null}
               <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} colors={colors ?? undefined} />
