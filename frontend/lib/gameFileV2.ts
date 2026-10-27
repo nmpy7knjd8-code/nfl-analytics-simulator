@@ -23,6 +23,8 @@ export type GameFileV2 = {
     home_score: (number | null)[]; away_score: (number | null)[];
     /** fan-facing sentence (backend play_text.display_text); games-v3+, absent in games-v2 */
     display_text?: string[];
+    /** penalty sentence(s) after a play; null on 'No play' rows (flag is in display_text) and flag-free rows */
+    penalty_text?: (string | null)[];
   };
   /** row index → [recommendation, close_call 0/1, gap_pts, wp (offense), actual, is_home_offense 0/1] */
   fourth: Record<string, [Opt, number, number, Partial<Record<Opt, number>>, Opt | null, number]>;
@@ -40,7 +42,7 @@ export function expandGameV2(doc: GameFileV2) {
     const yl = c.yardline_100[i];
     return {
       play_id: c.play_id[i], qtr: c.qtr[i], clock: clock(c.sec[i]), posteam: c.posteam[i], down: c.down[i],
-      ydstogo: c.ydstogo[i], yardline_100: yl, text: c.text[i], display_text: c.display_text?.[i] ?? c.text[i], play_type: c.play_type[i],
+      ydstogo: c.ydstogo[i], yardline_100: yl, text: c.text[i], display_text: c.display_text?.[i] ?? c.text[i], penalty_text: c.penalty_text?.[i] ?? null, play_type: c.play_type[i],
       home_wp: c.home_wp[i], home_wp_after: i + 1 < n ? c.home_wp[i + 1] : doc.final_home_wp,
       swing: swings.has(c.play_id[i]), home_score: c.home_score[i], away_score: c.away_score[i],
       fourth_down: f

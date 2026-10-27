@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend" / "src"))
 from nfl_sim.play_names import PLAYERS_CSV, load_players, load_roster  # noqa: E402
-from nfl_sim.products.games import PBP_COLS, SEASONS, play_display_texts  # noqa: E402
+from nfl_sim.products.games import PBP_COLS, SEASONS, play_texts  # noqa: E402
 
 GAMES = ROOT / "frontend/public/data/games"
 
@@ -36,9 +36,10 @@ def main(pbp_dir: str, players: str = PLAYERS_CSV, rosters_dir: str | None = Non
             doc = json.loads(f.read_text())
             g = by_game[f.stem]
             recs = g.to_dict("records")
-            text = dict(zip((int(r["play_id"]) for r in recs), play_display_texts(recs, names, roster)))
+            text = dict(zip((int(r["play_id"]) for r in recs), play_texts(recs, names, roster)))
             cols = doc["cols"]
-            cols["display_text"] = [text[pid] for pid in cols["play_id"]]
+            cols["display_text"] = [text[pid][0] for pid in cols["play_id"]]
+            cols["penalty_text"] = [text[pid][1] for pid in cols["play_id"]]
             f.write_text(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
             n += 1
     print(f"updated {n} game files")
