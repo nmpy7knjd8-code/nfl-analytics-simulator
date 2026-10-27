@@ -60,11 +60,12 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
       nearTie: ranked.filter(([c, v]) => offered.has(c) && bestV - v < CLOSE_CALL_GAP).map(([c]) => c),
       off: !offered.has(id),
     });
-  // M13: only the top value is ever tagged Best.
+  // M13: only the top value is ever tagged Best, and not when it shows the same number as the pick.
+  const shownPct = (id: QuizChoice) => pcts[ranked.findIndex(([c]) => c === id)];
   const tagFor = (id: QuizChoice) => {
     const t = row(id).tag;
     if (t === "Your pick") return t;
-    if (id === scored.best) return "Best";
+    if (id === scored.best) return shownPct(id) === shownPct(scored.pick) ? "About as good" : "Best";
     return t === "Best" ? "About as good" : t;
   };
   return (
