@@ -1,0 +1,9 @@
+name: tmp-bad
+on: workflow_dispatch
+permissions:
+  pull-requests: write
+jobs:
+  x:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh pr merge 1 --auto --squash
