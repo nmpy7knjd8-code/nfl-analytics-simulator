@@ -24,7 +24,7 @@
 .sg-clk{flex:none;display:flex;align-items:center;padding:0 8px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;border-left:1px solid #333;border-right:1px solid #333}
 .sg-r2{height:24px;background:var(--sg-b);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .sg-sent{font-size:20px;line-height:1.3;font-weight:700;margin:12px 0 10px}
-.sg-field{border-radius:8px;overflow:hidden;flex:none;line-height:0;box-shadow:0 0 0 1px #0002}
+.sg-field{background:#367d32;border-radius:8px;overflow:hidden;flex:none;line-height:0;box-shadow:0 0 0 1px #0002}
 .sg-field svg{width:100%;height:auto;display:block;max-height:40vh}
 .sg-btns{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding-top:12px}
 .sg-btn{min-height:54px;border:2px solid #000;background:#fff;border-radius:12px;font-weight:700;font-size:19px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;color:#000;width:100%}

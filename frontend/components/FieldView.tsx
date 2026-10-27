@@ -26,7 +26,8 @@ export function FieldView({ item, outcome }: { item: DailyItem; outcome?: Outcom
   const throughPosts = reveal && outcome.endYardline100 < 0;
   const endY = reveal ? (throughPosts ? 1.5 : Y(outcome.endYardline100)) : los;
   const EX = throughPosts ? W / 2 : BX;
-  const h = 38;
+  // Long plays (punts) widen the window so the start and the end both stay in view.
+  const h = reveal ? Math.min(121, Math.max(38, Math.abs(los - endY) + 14)) : 38;
   const c = (Math.min(los, endY) + Math.max(los, endY)) / 2 - 3;
   const y0 = Math.max(-1, Math.min(c - h / 2, 121 - h));
   const label = reveal ? outcome.label : "";
@@ -47,7 +48,7 @@ export function FieldView({ item, outcome }: { item: DailyItem; outcome?: Outcom
   }
   return (
     <div className="sg-field">
-      <svg viewBox={`0 ${y0} ${W} ${h}`} preserveAspectRatio={throughPosts ? "xMidYMin slice" : "xMidYMid slice"} role="img"
+      <svg viewBox={`0 ${y0} ${W} ${h}`} preserveAspectRatio={reveal ? "xMidYMid meet" : "xMidYMid slice"} role="img"
         aria-label={reveal ? `Field: the ball moved from ${spotText(item)}. ${label}.` : `Field: ball at ${spotText(item)}, ${s.posteam} going up`}>
         <defs>
           <filter id="sg-t"><feTurbulence type="fractalNoise" baseFrequency="2.4" numOctaves={2} seed={4} /><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .16 0" /><feComposite in2="SourceGraphic" operator="in" /></filter>
