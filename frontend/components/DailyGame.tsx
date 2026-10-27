@@ -65,7 +65,7 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
       {ranked.map(([id, v]) => (
         <li key={id} className={`fd-bar res-${scored.result}${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}${row(id).rec ? " is-rec" : ""}${row(id).close ? " is-close" : ""}`}>
           <span className="fd-bar-label">
-            {CHOICE_NAME[id]}
+            <span className="fd-bar-name">{CHOICE_NAME[id]}</span>
             {row(id).tag ? <span className="quiz-tag fd-tag">{row(id).tag}</span> : null}
           </span>
           <span className="fd-bar-track">
