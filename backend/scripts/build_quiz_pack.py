@@ -80,9 +80,40 @@ def item_id_of(r) -> str:
     return f"{r.game_id}-{int(r.play_id)}"
 
 
+# A game already decided (every option under 2% or over 98% win chance) makes a poor
+# question and produces 0.1% "ties" (QA 2026-10-26 23:15, M13). Skip those plays.
+DECIDED_WP = 0.02
+
+
+def is_decided(values: dict) -> bool:
+    return all(v < DECIDED_WP or v > 1.0 - DECIDED_WP for v in values.values())
+
+
+# Ids pinned in the daily schedule must never leave the pack (played days can't change and
+# future days are owned by Product UI). Decided ones are kept and flagged instead.
+DAILY_SCHEDULE = REPO / "frontend" / "lib" / "dailySchedule.json"
+
+
+def scheduled_ids() -> set[str]:
+    if not DAILY_SCHEDULE.exists():
+        return set()
+    # Retired ids (lib/retiredDailyIds.json, #143) are already gone from future days, so this
+    # only keeps the ones still on played days (before the retirement date).
+    return {i for ids in json.loads(DAILY_SCHEDULE.read_text())["days"].values() for i in ids}
+
+
+SCHEDULED = scheduled_ids()
+FLAGGED: list[str] = []
+
+
 def keep_item(item: dict) -> bool:
-    """Whether a baked item may stay in the pack (hook for per-item filters)."""
-    return True
+    """Whether a baked item may stay in the pack: decided games are dropped unless scheduled."""
+    if not is_decided(item["reveal"]["values"]):
+        return True
+    if item["id"] in SCHEDULED:
+        FLAGGED.append(item["id"])
+        return True
+    return False
 
 
 def stable_select(existing_ids, rebake, fresh, n: int):
@@ -240,6 +271,8 @@ def main() -> int:
         "items": items,
     }
     write_packs(pack)
+    if FLAGGED:
+        print(f"FLAGGED {len(set(FLAGGED))} decided ids kept because dailySchedule.json pins them: {sorted(set(FLAGGED))}")
     print(f"{len(items)} items in {time.time() - t0:.1f}s")
     return 0
 
