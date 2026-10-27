@@ -95,7 +95,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     return (
       <div className="sg-app">
         <Header right="" />
-        <div className="sg-status" role="status" aria-live="polite"><span className="sg-spin" aria-hidden="true" />Loading today&apos;s plays…</div>
+        <div className="sg-status" role="status" aria-live="polite"><span className="sg-spin" aria-hidden="true" />{mode === "daily" ? "Loading today\u2019s plays…" : "Loading plays…"}</div>
         <Trademark />
       </div>
     );
@@ -114,7 +114,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       <div className="sg-app">
         <Header right="" />
         <div className="sg-status" role="alert">
-          <p>Couldn&apos;t load today&apos;s plays. Try again.</p>
+          <p>{mode === "daily" ? "Couldn\u2019t load today\u2019s plays. Try again." : "Couldn\u2019t load plays. Try again."}</p>
           <button type="button" className="sg-next" onClick={() => setAttempt((a) => a + 1)}>Try again</button>
         </div>
         <Trademark />
@@ -166,7 +166,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
 
   const it = items[idx];
   const p = picks[idx];
-  const counter = `Play ${idx + 1} of ${n}`;
+  const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
   if (!p) {
     return (
       <div className="sg-app">
