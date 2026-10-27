@@ -24,7 +24,7 @@ FIXTURE_COLUMNS = [
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
     "return_touchdown", "td_team",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "td_player_name",
-    "touchback", "penalty_team", "penalty_type", "penalty_yards", "penalty_player_name",
+    "touchback", "safety", "fumble", "fumble_recovery_1_team", "penalty_team", "penalty_type", "penalty_yards", "penalty_player_name",
 ]
 from nfl_sim.play_names import NAME_ROLES  # noqa: E402,F401  (re-export)
 
@@ -54,6 +54,7 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),
         "yards_gained": _int(r.get("yards_gained")),
         "return_td": is_return_td(r),
+        "kick_return_td": is_kick_return_td(r),
         "fourth_down_failed": _int(r.get("down")) == 4 and bool(r.get("fourth_down_failed")),
         "event": event_tag(r), "display_text": display_text(r), "penalty_text": penalty_text(r), "raw_desc": r["desc"],
     }
@@ -72,6 +73,11 @@ def is_return_td(r: dict[str, Any]) -> bool:
         return False
     td_team, pos = r.get("td_team"), r.get("posteam")
     return bool(r.get("return_touchdown")) or bool(td_team and pos and td_team != pos)
+
+
+def is_kick_return_td(r: dict[str, Any]) -> bool:
+    """Punt or kickoff returned for a TD (nflverse return_touchdown); turnovers stay in return_td."""
+    return bool(r.get("return_touchdown")) and r.get("play_type") in ("punt", "kickoff") and not is_return_td(r)
 
 
 def score_before(r: dict[str, Any]) -> tuple[int, int]:

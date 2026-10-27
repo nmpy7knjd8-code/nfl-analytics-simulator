@@ -1,5 +1,10 @@
 """Every regulation 4th down 2019–2025 from nflverse, valued once by the shared engine.
 
+Real-game what-ifs are team-aware: the offense/defense conversion and kicker FG shifts
+(empirical Bayes, that season's earlier games only; models/team_strength.py) and the game's
+pregame spread go into the separate spread WP model. Both are internal inputs: the table keeps
+only the shift columns, never the spread, and no fan field carries either.
+
 The games, daily, and coach products all read this one table, so a play's values
 are identical everywhere. Cached (gitignored) at data/products/fourth_downs.parquet.
 
@@ -9,6 +14,7 @@ from __future__ import annotations
 
 import json
 import sys
+from dataclasses import replace
 from multiprocessing import Pool
 
 import pandas as pd
@@ -24,6 +30,8 @@ PBP_COLS = ["game_id", "play_id", "season", "season_type", "week", "game_date", 
             "defteam_timeouts_remaining", "play_type", "desc", "home_coach", "away_coach", "home_wp", "wp",
             "yards_gained", "fourth_down_converted", "fourth_down_failed", "field_goal_result", "touchdown",
             "punt_blocked", "interception", "fumble_lost", "game_seconds_remaining", "half_seconds_remaining"]
+PRIORS_REPORT = REPO_ROOT / "reports" / "fourth_down" / "team_strength_priors.json"
+REAL_GAME_INPUTS = "team_aware.v1"  # EB team shifts + spread WP model
 ACTUAL = {"pass": "go", "run": "go", "field_goal": "fg", "punt": "punt"}
 
 
@@ -38,7 +46,14 @@ def opening_receivers(pbp: pd.DataFrame) -> dict[str, str]:
     return k.groupby("game_id")["posteam"].first().to_dict()
 
 
-def candidate_rows(season: int) -> pd.DataFrame:
+def team_strength_model():
+    from nfl_sim.models.team_strength import PBP_COLUMNS, PRIOR_SEASONS, TeamStrengthModel
+
+    cols = PBP_COLUMNS + ["home_team", "away_team"]
+    return TeamStrengthModel.fit({s: load_pbp(s, cols) for s in PRIOR_SEASONS})
+
+
+def candidate_rows(season: int, strength=None) -> pd.DataFrame:
     pbp = load_pbp(season)
     recv = opening_receivers(pbp)
     df = pbp[(pbp["down"] == 4) & (pbp["qtr"] <= 4) & pbp["play_type"].isin(list(ACTUAL))][PBP_COLS].copy()
@@ -47,6 +62,15 @@ def candidate_rows(season: int) -> pd.DataFrame:
                            zip(df["game_id"], df["qtr"], df["posteam"])]
     df["is_home_possession"] = df["posteam"] == df["home_team"]
     df["result"] = [outcome(r) for r in df.to_dict("records")]
+    if strength is not None:
+        sh = strength.season_shifts(pbp).set_index(["game_id", "team"])
+        off = sh.reindex(list(zip(df["game_id"], df["posteam"])))
+        de = sh.reindex(list(zip(df["game_id"], df["defteam"])))
+        df["convert_shift"] = (off["convert_off_shift"].to_numpy() + de["convert_def_shift"].to_numpy())
+        df["fg_make_shift"] = off["fg_make_shift"].to_numpy()
+        df[["convert_shift", "fg_make_shift"]] = df[["convert_shift", "fg_make_shift"]].fillna(0.0)
+        # internal-only pregame input, dropped after evaluation (never stored)
+        df["_home_spread"] = df["game_id"].map(pbp.drop_duplicates("game_id").set_index("game_id")["spread_line"])
     return df.dropna(subset=["yardline_100", "ydstogo", "quarter_seconds_remaining", "score_differential"])
 
 
@@ -69,23 +93,36 @@ _ENGINE = None
 
 def _init():
     global _ENGINE
-    _ENGINE = load_engine()
+    _ENGINE = load_engine(with_spread_model=True)
+
+
+def real_game_input(row: dict) -> EngineInput:
+    x = EngineInput.from_play_row(row)
+    hs = row.get("_home_spread")
+    return replace(x, convert_shift=float(row.get("convert_shift") or 0.0),
+                   fg_make_shift=float(row.get("fg_make_shift") or 0.0),
+                   home_spread=None if hs is None or hs != hs else float(hs))
 
 
 def _eval(row: dict):
     try:
-        x = EngineInput.from_play_row(row)
+        x = real_game_input(row)
     except ValueError:
         return None
     return json.dumps(_ENGINE.evaluate(x).to_dict(), sort_keys=True)
 
 
 def build(procs: int = 8) -> pd.DataFrame:
-    df = pd.concat([candidate_rows(s) for s in SEASONS], ignore_index=True)
+    strength = team_strength_model()
+    PRIORS_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    PRIORS_REPORT.write_text(json.dumps(strength.priors(), indent=2, sort_keys=True) + "\n")
+    df = pd.concat([candidate_rows(s, strength) for s in SEASONS], ignore_index=True)
     with Pool(procs, initializer=_init) as pool:
         df["engine"] = pool.map(_eval, df.to_dict("records"), chunksize=128)
     df = df[df["engine"].notna()].reset_index(drop=True)
+    df = df.drop(columns=["_home_spread"])
     df["engine_version"] = ENGINE_VERSION
+    df["real_game_inputs"] = REAL_GAME_INPUTS
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(CACHE, index=False)
     return df

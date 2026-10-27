@@ -24,14 +24,13 @@ export default function AboutPage() {
       <p>
         Today&apos;s plays come from {pack.items.length} real regular-season 4th downs from the {seasons.join(" and ")} seasons.
         For each one, the model estimates the team&apos;s chance to win after going for it, kicking or punting, using what usually
-        happens next in similar spots (learned from 2019–2021 games). A field goal try is the line of scrimmage plus 17 yards.
+        happens next in similar spots (learned from 2019–2021 games). A field goal try is the line of scrimmage plus 18 yards: the ball is snapped about 8 yards back, and the goalposts sit at the back of the 10-yard end zone.
       </p>
       <p>
         These are estimates, not certainties. The win-chance model is not yet calibrated, so treat a gap of a few points as close.
       </p>
       <p>
-        With {pack.items.length} plays and 5 a day, the set repeats every {Math.floor(pack.items.length / 5)} days until the bigger
-        pack lands.
+        With {pack.items.length} plays and 5 a day, the set repeats every {Math.floor(pack.items.length / 5)} days.
       </p>
       <h2>Data</h2>
       <p>

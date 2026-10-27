@@ -655,6 +655,14 @@ button {
   font-size: 1.02rem;
   line-height: 1.4;
 }
+/* #106 penalty sentence after the play: own line, same size, secondary ink (11:1 on --color-bg) */
+.play-penalty {
+  display: block;
+  margin-top: 2px;
+  font-size: inherit;
+  line-height: 1.4;
+  color: var(--color-ink-secondary);
+}
 
 .win-chance {
   margin-top: 0.25rem;
@@ -1705,3 +1713,8 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
 @media (max-width: 640px) { .wp-axis-team { display: none; } }
 .ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
+
+/* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
+.fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+.fd-bar-num { white-space: nowrap; min-width: 5.75rem; text-align: right; font-variant-numeric: tabular-nums; }
+.fd-bar-track { flex: 1 1 auto; min-width: 0; }
