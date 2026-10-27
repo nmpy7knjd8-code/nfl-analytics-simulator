@@ -26,7 +26,7 @@ test("game.v2 → feed rows: real plays only, fan text by play_id, raw text othe
   const fan = new Map(GAME_PLAY_LISTS["2023_01_DET_KC"].plays.map((p) => [p.play_id, p.display_text]));
   const rows = feedRowsFromGameV2(raw, fan);
   assert.ok(rows.every((r) => r.text !== "GAME" && !/^END QUARTER|^Timeout/.test(r.text)));
-  const ids = rows.map((r) => r.play_id);
+  const ids = rows.map((r) => r.id);
   for (const p of GAME_PLAY_LISTS["2023_01_DET_KC"].plays) assert.ok(ids.includes(p.play_id), `plays-file row ${p.play_id} in the live file`);
   const branch = rows.find((r) => /Brian Branch intercepts/.test(r.text));
   assert.ok(branch, "export display_text wins over raw desc");

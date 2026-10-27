@@ -40,7 +40,7 @@ export function PlayFeed({
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((doc: unknown) => {
         if (!isGameFileV2(doc)) throw new Error("not game.v2");
-        const fan = new Map(fallback.map((r) => [r.play_id, r.text]));
+        const fan = new Map(fallback.map((r) => [r.id, r.text]));
         setState({ kind: "ready", rows: feedRowsFromGameV2(doc, fan) });
       })
       .catch((e: unknown) => {
@@ -87,9 +87,9 @@ export function PlayFeed({
           <h3 className="play-quarter-head">{periodName(q)}</h3>
           <ol className="play-feed">
             {items.map((p) => {
-              const r = rank.get(p.play_id);
+              const r = rank.get(p.id);
               return (
-                <li className={`play-card${r ? " is-swing" : ""}`} key={p.play_id} id={`play-${p.play_id}`}>
+                <li className={`play-card${r ? " is-swing" : ""}`} key={p.id} id={`play-${p.id}`}>
                   <span className="play-meta">
                     {periodName(p.quarter)} · {clock(p.clock_seconds)}
                     {p.down ? ` · ${ORD[p.down]} & ${p.distance}` : ""}

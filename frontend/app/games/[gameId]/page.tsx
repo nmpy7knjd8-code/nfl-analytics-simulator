@@ -64,7 +64,7 @@ export default async function GameReplayPage({ params }: Props) {
   });
   // Committed lib/plays rows: static fallback and display_text source for the live game.v2 file.
   const fallbackRows: FeedRow[] = (plays?.data.items ?? []).map((p) => ({
-    play_id: p.play_id,
+    id: p.play_id,
     quarter: p.quarter,
     clock_seconds:
       p.half_seconds_remaining == null ? null : p.quarter > 4 || p.quarter % 2 === 0 ? p.half_seconds_remaining : p.half_seconds_remaining - 900,

@@ -61,7 +61,8 @@ const NON_PLAY = /^(GAME|END (QUARTER \d|GAME)|Two-Minute Warning|Timeout #\d)/i
 
 /** One row of the Game Story play-by-play list. */
 export type FeedRow = {
-  play_id: string;
+  /** nflverse play_id (named `id`: the static HTML carries these props, and 'play_id' is dev text). */
+  id: string;
   quarter: number;
   /** Seconds left in the quarter (OT: in the period). */
   clock_seconds: number | null;
@@ -88,7 +89,7 @@ export function feedRowsFromGameV2(doc: GameFileV2, fanText: Map<string, string>
     const id = String(c.play_id[i]);
     const text = fanText.get(id)?.trim() || c.text[i]?.trim();
     if (!text) continue;
-    rows.push({ play_id: id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text });
+    rows.push({ id, quarter: c.qtr[i], clock_seconds: c.sec[i], down: c.down[i], distance: c.ydstogo[i], text });
   }
   return rows;
 }
