@@ -3,6 +3,7 @@
  * Clearly labeled example data — not live model output.
  */
 
+import { CLOSE_LABEL } from "./labels";
 import type { CanonicalPlay, GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
 import { GAME_FACTS } from "./gameFacts";
@@ -343,7 +344,7 @@ export const FOURTH_DOWN_SCENARIOS: FourthDownScenario[] = [
   },
   {
     id: "demo-4th-3",
-    title: "Too close to call",
+    title: CLOSE_LABEL,
     setup:
       "Colts up three on the Packers with 1:58 left (2020, Week 11). 4th and 4 at the Green Bay 36 — a 54-yard kick, go for it, or punt?",
     // Real play: nflverse 2020_11_GB_IND play_id 3892. Win chances from the offline
