@@ -1,7 +1,13 @@
-import { availableChoices, MAX_FG_YARDS, type QuizChoice, type QuizReveal, type QuizSituation } from "./quiz";
+import { availableChoices, fieldGoalYards, type QuizChoice, type QuizReveal, type QuizSituation } from "./quiz";
 
-/** Recheck P1-D: the label for a field goal that's out of range (a disabled row, never credited). */
-export const FG_OUT_OF_RANGE = `Too far to kick (${MAX_FG_YARDS + 1}+ yards)`;
+/** Recheck 2054 P3-B: an out-of-range field goal names this kick's real distance (yardline + 18), not the cutoff. */
+export function fgTooFarButton(s: Pick<QuizSituation, "yardline_100">): string {
+  return `Field goal · ${fieldGoalYards(s)}-yd kick, too far`;
+}
+export function fgTooFarReveal(s: Pick<QuizSituation, "yardline_100">): string {
+  return `Too far (${fieldGoalYards(s)} yd)`;
+}
+
 export const ALL_CHOICES: QuizChoice[] = ["go", "fg", "punt"];
 
 const DOING: Record<QuizChoice, string> = { go: "going for it", fg: "kicking a field goal", punt: "punting" };
