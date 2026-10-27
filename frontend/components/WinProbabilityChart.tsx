@@ -1,8 +1,20 @@
-import { clockLabel, type OvertimePlay, type SwingPlay, type WinProbabilitySeries } from "../lib/winProbability";
+import {
+  clockLabel,
+  situationLine,
+  type EventPoint,
+  type OvertimePlay,
+  type SwingPlay,
+  type WinProbabilitySeries,
+} from "../lib/winProbability";
+
+/** Fan text from the export (#86): display_text, else raw nflverse desc. */
+function fanText(p: EventPoint): string {
+  return p.display_text?.trim() || p.raw_desc?.trim() || p.description || "";
+}
 
 const W = 640;
 const H = 220;
-const PAD = { l: 40, r: 12, t: 12, b: 26 };
+const PAD = { l: 92, r: 12, t: 16, b: 34 };
 
 export function WinProbabilityChart({
   series,
@@ -28,7 +40,20 @@ export function WinProbabilityChart({
   const x = (i: number) => PAD.l + (pts[i].t / span) * (W - PAD.l - PAD.r);
   const y = (wp: number) => PAD.t + (1 - wp) * (H - PAD.t - PAD.b);
   const path = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.wp).toFixed(1)}`).join(" ");
-  const swingIds = new Set(swings.map((s) => s.point.play_id));
+  // UI Critic 2110 P2-B: numbered dots; a dot within 18px of an earlier one lifts 14px on a leader line.
+  const dots = swings
+    .map((s, rank) => {
+      const i = pts.findIndex((p) => p.id === s.point.play_id);
+      return i < 0 ? null : { rank: rank + 1, cx: x(i), cy: y(pts[i].wp), title: fanText(s.point) };
+    })
+    .filter((d): d is { rank: number; cx: number; cy: number; title: string } => d !== null)
+    .sort((a, b) => a.cx - b.cx);
+  const placed: { rank: number; cx: number; cy: number; dy: number; title: string }[] = [];
+  for (const d of dots) {
+    let dy = 0;
+    while (placed.some((q) => Math.hypot(q.cx - d.cx, q.cy + q.dy - (d.cy + dy)) < 18)) dy -= 14;
+    placed.push({ ...d, dy });
+  }
 
   return (
     <figure className="wp-chart">
@@ -57,39 +82,57 @@ export function WinProbabilityChart({
           </g>
         ) : null}
         <path d={path} className="wp-line" />
-        {pts.map((p, i) =>
-          swingIds.has(p.id) ? (
-            <circle key={p.id} cx={x(i)} cy={y(p.wp)} r={5} className="wp-swing">
-              <title>{reg[i]?.description}</title>
+        {placed.map((d) => (
+          <g key={d.rank} className="wp-swing-dot">
+            {d.dy ? <line x1={d.cx} x2={d.cx} y1={d.cy} y2={d.cy + d.dy} className="wp-leader" /> : null}
+            <circle cx={d.cx} cy={d.cy + d.dy} r={7} className="wp-swing">
+              <title>{`${d.rank}. ${d.title}`}</title>
             </circle>
-          ) : null,
-        )}
+            <text x={d.cx} y={d.cy + d.dy + 3.5} textAnchor="middle" className="wp-swing-num" aria-hidden="true">
+              {d.rank}
+            </text>
+          </g>
+        ))}
       </svg>
       <figcaption className="muted">
         Line shows {series.home_team_id}&apos;s chance to win (top = {series.home_team_id}, bottom ={" "}
-        {series.away_team_id}). Each point is the chance at the snap. Blue dots are the biggest swing plays.
-        {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""} {note}
+        {series.away_team_id}). Numbered blue dots are the biggest swing plays.
+        {series.has_overtime ? " The game went to overtime; the line stops at the end of regulation." : ""}
       </figcaption>
+      <p className="wp-source">{note}</p>
     </figure>
   );
 }
 
-export function SwingPlayList({ swings }: { swings: SwingPlay[] }) {
+export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series: WinProbabilitySeries }) {
   if (!swings.length) return null;
   return (
     <ol className="swing-list">
-      {swings.map((s) => (
+      {swings.map((s, i) => {
+        const p = s.point as EventPoint;
+        const sit = situationLine(p, series.home_team_id, series.away_team_id);
+        const raw = p.raw_desc ?? p.description ?? "";
+        const text = fanText(p);
+        return (
         <li key={s.point.play_id} className="swing-item">
           <div className="play-meta">
-            {clockLabel(s.point)} · {s.favored_team_id} +
-            {Math.round(Math.abs(s.delta) * 100)}%
+            <span className="swing-badge" aria-hidden="true">{i + 1}</span>
+            {clockLabel(s.point)} · {s.favored_team_id} gains {Math.round(Math.abs(s.delta) * 100)} pts
           </div>
-          <p className="play-desc">{s.point.description}</p>
+          {sit ? <div className="swing-sit">{sit}</div> : null}
+          <p className="play-desc swing-headline">{text}</p>
+          {raw && raw !== text ? (
+            <details className="swing-raw">
+              <summary>Play-by-play text</summary>
+              <p>{raw}</p>
+            </details>
+          ) : null}
           <p className="swing-why">
             <strong>Why:</strong> {s.why}
           </p>
         </li>
-      ))}
+        );
+      })}
     </ol>
   );
 }
@@ -102,7 +145,7 @@ export function OvertimePlayList({ plays }: { plays: OvertimePlay[] }) {
       {plays.map((p) => (
         <li key={p.play_id} className="swing-item ot-item">
           <div className="play-meta">{clockLabel(p)}</div>
-          <p className="play-desc">{p.description}</p>
+          <p className="play-desc">{fanText(p as EventPoint)}</p>
         </li>
       ))}
     </ol>

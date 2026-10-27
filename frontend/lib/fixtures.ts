@@ -4,9 +4,10 @@
  */
 
 import { CLOSE_LABEL } from "./labels";
-import type { CanonicalPlay, GameSummary } from "../contracts";
+import type { GameSummary } from "../contracts";
 import type { GamesResponse, PlaysResponse } from "./api";
 import { GAME_FACTS } from "./gameFacts";
+import { gamePlays } from "./gamePlays";
 
 /** The one source line on game pages (real nflverse plays and win chance). */
 export const GAME_SOURCE_LINE = "Real plays and win chance from nflverse (not our model).";
@@ -23,101 +24,6 @@ export const FIXTURE_GAMES: GamesResponse = {
   truth_label: "historical",
 };
 
-/** Example only. reference.wp = possession team's pre-snap win chance (nflverse style); home_wp = KC's. */
-const DET_KC_PLAYS: CanonicalPlay[] = [
-  {
-    play_id: "1",
-    game_id: "2023_01_DET_KC",
-    play_index: 1,
-    quarter: 1,
-    half_seconds_remaining: 1800,
-    down: null,
-    distance: null,
-    yardline_100: 35,
-    possession_team_id: "KC",
-    play_type: "kickoff",
-    description: "Kickoff — Harrison Butker kicks to Detroit 8. Returned to Detroit 28.",
-    yards_gained: 0,
-  },
-  {
-    play_id: "2",
-    game_id: "2023_01_DET_KC",
-    play_index: 2,
-    quarter: 1,
-    half_seconds_remaining: 1794,
-    down: 1,
-    distance: 10,
-    yardline_100: 72,
-    possession_team_id: "DET",
-    play_type: "pass",
-    description: "Jared Goff pass short middle to Amon-Ra St. Brown for 8 yards.",
-    yards_gained: 8,
-    reference: { wp: 0.48, home_wp: 0.52, ep: 1.1 },
-  },
-  {
-    play_id: "3",
-    game_id: "2023_01_DET_KC",
-    play_index: 3,
-    quarter: 1,
-    half_seconds_remaining: 1752,
-    down: 2,
-    distance: 2,
-    yardline_100: 64,
-    possession_team_id: "DET",
-    play_type: "rush",
-    description: "David Montgomery right tackle for 3 yards (first down).",
-    yards_gained: 3,
-    reference: { wp: 0.5, home_wp: 0.5, ep: 1.4 },
-  },
-  {
-    play_id: "4",
-    game_id: "2023_01_DET_KC",
-    play_index: 4,
-    quarter: 2,
-    half_seconds_remaining: 120,
-    down: 4,
-    distance: 1,
-    yardline_100: 38,
-    possession_team_id: "DET",
-    play_type: "rush",
-    description:
-      "Fourth-and-1 — Detroit goes for it. Montgomery short gain; first down.",
-    yards_gained: 2,
-    reference: { wp: 0.55, home_wp: 0.45, ep: 2.2 },
-  },
-  {
-    play_id: "5",
-    game_id: "2023_01_DET_KC",
-    play_index: 5,
-    quarter: 4,
-    half_seconds_remaining: 45,
-    down: 3,
-    distance: 7,
-    yardline_100: 28,
-    possession_team_id: "KC",
-    play_type: "pass",
-    description: "Patrick Mahomes pass incomplete on fourth down. Detroit takes over.",
-    yards_gained: 0,
-    reference: { wp: 0.08, home_wp: 0.08, ep: 2.8 },
-  },
-  {
-    play_id: "6",
-    game_id: "2023_01_DET_KC",
-    play_index: 6,
-    quarter: 4,
-    half_seconds_remaining: 0,
-    down: null,
-    distance: null,
-    yardline_100: null,
-    possession_team_id: "DET",
-    play_type: "other",
-    description: "Final — Lions 21, Chiefs 20.",
-    yards_gained: 0,
-    // Final state: DET (away) won 21–20. DET has the ball, so DET wp = 1, home (KC) wp = 0.
-    reference: { wp: 1.0, home_wp: 0.0 },
-  },
-];
-
 export function fixtureGame(gameId: string): GameSummary | null {
   return FIXTURE_GAMES.items.find((g) => g.game_id === gameId) ?? null;
 }
@@ -125,40 +31,8 @@ export function fixtureGame(gameId: string): GameSummary | null {
 export function fixturePlays(gameId: string): PlaysResponse | null {
   const game = fixtureGame(gameId);
   if (!game) return null;
-  const items =
-    gameId === "2023_01_DET_KC"
-      ? DET_KC_PLAYS
-      : [
-          {
-            play_id: "1",
-            game_id: gameId,
-            play_index: 1,
-            quarter: 1,
-            half_seconds_remaining: 1800,
-            down: 1,
-            distance: 10,
-            yardline_100: 75,
-            possession_team_id: game.away_team_id,
-            play_type: "pass" as const,
-            description: `Opening drive sample play for ${game.away_team_id} @ ${game.home_team_id}.`,
-            yards_gained: 6,
-            reference: { wp: 0.47, ep: 0.9 },
-          },
-          {
-            play_id: "2",
-            game_id: gameId,
-            play_index: 2,
-            quarter: 4,
-            half_seconds_remaining: 0,
-            down: null,
-            distance: null,
-            yardline_100: null,
-            possession_team_id: game.home_team_id,
-            play_type: "other" as const,
-            description: `Final — ${game.away_team_id} ${game.away_score}, ${game.home_team_id} ${game.home_score}.`,
-            yards_gained: 0,
-          },
-        ];
+  // Real nflverse rows from lib/plays/<game_id>.json (#86); the hand-written rows are gone (QA H7).
+  const items = gamePlays(gameId) ?? [];
   return {
     game_id: gameId,
     items,
@@ -167,7 +41,7 @@ export function fixturePlays(gameId: string): PlaysResponse | null {
     offset: 0,
     truth_label: "historical",
     reference_disclaimer:
-      "Example reference columns for demo only. Not live model output from this repository.",
+      GAME_SOURCE_LINE,
   };
 }
 

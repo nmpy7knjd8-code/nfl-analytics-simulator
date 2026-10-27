@@ -1549,3 +1549,30 @@ body:has(.quiz-page) .app-nav-item.is-current {
 /* H6: paused 4th-down checker page. */
 .decide-page .empty-state { display: grid; gap: 0.75rem; padding: 1.5rem 1rem; border: 1px solid var(--color-divider, #2a2a30); border-radius: 12px; }
 .decide-page .empty-state .btn { min-height: 48px; }
+
+/* Game Story: UI Critic 2110 (P1-A/B/C, P2-B). */
+.wp-opening { font-variant-numeric: tabular-nums; color: var(--color-ink-secondary); margin: 0 0 0.5rem; }
+.wp-swing-num { font: 700 10px var(--font-body); fill: #fff; pointer-events: none; }
+.wp-leader { stroke: var(--color-ink-muted); stroke-width: 1; }
+.swing-badge {
+  display: inline-grid; place-items: center; min-width: 1.25rem; height: 1.25rem; margin-right: 0.4rem;
+  border-radius: 999px; background: var(--color-blue); color: #fff; font: 700 0.75rem/1 var(--font-body);
+}
+.swing-sit { font-size: 13px; color: var(--color-ink-secondary); font-variant-numeric: tabular-nums; }
+.swing-headline { font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.swing-raw { font-size: 13px; line-height: 1.45; color: var(--color-ink-secondary); }
+.swing-raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+.play-feed { list-style: none; padding: 0; }
+.play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); padding-left: 0.75rem; }
+.play-feed-soon { font-size: 14px; line-height: 1.5; color: var(--color-ink-secondary); padding: 16px 0; border-top: 1px solid var(--color-divider); margin: 0; }
+/* Recheck 2145: intro leads, source line and disclaimer stay quiet. */
+.games-intro { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
+.wp-source { font-size: 13px; line-height: 1.45; color: var(--color-ink-muted); margin: 4px 0 20px; }
+.wp-chart .wp-source, figure + .wp-source { font-size: 12px; margin-top: 6px; }
+.disclaimer { font-size: 12px; color: var(--color-ink-muted); }
+/* QA 2220: axis text stays readable when the 640-wide chart scales down to a phone (~0.55x). */
+@media (max-width: 640px) {
+  .wp-axis { font-size: 20px; }
+  .wp-ot-label { font-size: 18px; }
+  .wp-swing-num { font-size: 12px; }
+}

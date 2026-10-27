@@ -7,6 +7,7 @@ import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
 import { findSwingPlays } from "../../../lib/winProbability";
+import { openingWinChance } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -33,7 +34,10 @@ function formatClock(quarter: number, halfSeconds: number | null | undefined): s
   return quarterClockFromHalf(quarter, halfSeconds);
 }
 
-/** reference.wp is the possession team's pre-snap chance; always say whose it is. */
+function pct(v: number): string {
+  return `${(v * 100).toFixed(1)}%`;
+}
+
 export default async function GameReplayPage({ params }: Props) {
   const { gameId } = await params;
   const id = decodeURIComponent(gameId);
@@ -50,6 +54,8 @@ export default async function GameReplayPage({ params }: Props) {
   // Contract endpoint first; otherwise the clearly labeled example series.
   const wpSeries = game ? await fetchWinProbability(id) : null;
   const swings = wpSeries ? findSwingPlays(wpSeries.series) : [];
+  const swingRank = new Map(swings.map((s, i) => [s.point.play_id, i + 1]));
+  const opening = game ? openingWinChance(id) : null;
 
 
   return (
@@ -83,22 +89,59 @@ export default async function GameReplayPage({ params }: Props) {
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
               </span>
             </div>
-            <p>Scroll the story.</p>
           </header>
 
           {wpSeries ? (
             <section aria-labelledby="wp-head">
               <h2 id="wp-head">Win chance</h2>
+              {opening ? (
+                <p className="wp-opening">
+                  At kickoff: {game.data.away_team_id} {pct(opening.away)} · {game.data.home_team_id} {pct(opening.home)}
+                </p>
+              ) : null}
               <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
-              <SwingPlayList swings={swings} />
+              <SwingPlayList swings={swings} series={wpSeries.series} />
               {wpSeries.overtimePlays.length ? <h3>Overtime</h3> : null}
               <OvertimePlayList plays={wpSeries.overtimePlays} />
             </section>
           ) : null}
 
-          {/* QA H7: the old hand-written list stated wrong facts; hidden until #76 builds it from lib/plays. */}
-          <p className="muted play-feed-soon">Full play-by-play coming soon.</p>
+          <section aria-labelledby="pbp-head">
+            <h2 id="pbp-head">Play by play</h2>
+            {plays.data.items.length ? (
+              <>
+                <p className="list-count">{plays.data.total} plays</p>
+                <ol className="play-feed">
+                  {plays.data.items.map((p) => {
+                    const rank = swingRank.get(p.play_id);
+                    return (
+                      <li
+                        className={`play-card${rank ? " is-swing" : ""}`}
+                        key={`${p.game_id}-${p.play_id}`}
+                        data-play-id={p.play_id}
+                      >
+                        <div className="play-top">
+                          <span className="play-meta">
+                            {periodName(p.quarter)} · {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
+                            {p.down ? ` · ${["", "1st", "2nd", "3rd", "4th"][p.down]} & ${p.distance}` : ""}
+                          </span>
+                          {rank ? (
+                            <span className="swing-badge" aria-label={`Swing play ${rank}`}>
+                              {rank}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="play-desc">{p.description}</p>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </>
+            ) : (
+              <p className="muted play-feed-soon">Full play-by-play coming soon.</p>
+            )}
+          </section>
 
           <aside className="disclaimer">
             Win chance is an estimate of each side’s chances at the snap.
