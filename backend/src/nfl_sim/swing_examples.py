@@ -15,7 +15,16 @@ FIXTURE_COLUMNS = [
     "game_id", "play_id", "qtr", "time", "desc", "play_type", "posteam", "home_team", "away_team",
     "home_wp", "home_wp_post", "total_home_score", "total_away_score", "qb_kneel", "qb_spike",
     "touchdown", "home_score", "away_score",
+    "down", "ydstogo", "yardline_100", "posteam_score", "defteam_score", "yards_gained",
+    "interception", "fumble_lost", "fourth_down_failed", "field_goal_result", "kick_distance",
+    "return_yards", "incomplete_pass", "sack", "penalty", "extra_point_result", "two_point_conv_result",
+    "passer_player_name", "receiver_player_name", "rusher_player_name", "interception_player_name",
+    "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
+    "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "td_player_name",
 ]
+# role -> pbp *_player_id column; build script resolves ids to full names into row["names"]
+NAME_ROLES = ("passer", "receiver", "rusher", "interception", "kicker", "punter", "punt_returner",
+              "kickoff_returner", "fumbled_1", "fumble_recovery_1", "sack")
 
 
 def is_swing_candidate(r: dict[str, Any]) -> bool:
@@ -33,12 +42,43 @@ def clock_seconds(clock: str) -> int:
 
 
 def _play(r: dict[str, Any]) -> dict[str, Any]:
+    home_b, away_b = score_before(r)
     return {
         "game_id": r["game_id"], "play_id": str(r["play_id"]), "qtr": int(r["qtr"]),
         "clock": r["time"], "clock_seconds": clock_seconds(r["time"]), "description": r["desc"],
         "play_type": r["play_type"], "possession_team_id": r["posteam"],
         "home_score_after": int(r["total_home_score"]), "away_score_after": int(r["total_away_score"]),
+        "home_score_before": home_b, "away_score_before": away_b,
+        "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),
+        "event": event_tag(r), "display_text": display_text(r), "raw_desc": r["desc"],
     }
+
+
+from nfl_sim.play_text import display_text, event_tag  # noqa: E402
+
+
+def _int(v: Any) -> int | None:
+    return None if v is None else int(v)
+
+
+def score_before(r: dict[str, Any]) -> tuple[int, int]:
+    """Score before the snap: nflverse posteam_score/defteam_score; else the prior row's totals (_prev_*)."""
+    if r.get("posteam") and r.get("posteam_score") is not None and r.get("defteam_score") is not None:
+        ps, ds = int(r["posteam_score"]), int(r["defteam_score"])
+        return (ps, ds) if r["posteam"] == r["home_team"] else (ds, ps)
+    return int(r.get("_prev_home", 0)), int(r.get("_prev_away", 0))
+
+
+def is_real_play(r: dict[str, Any]) -> bool:
+    """Every real snap/kick incl. penalties (no_play); drops timeouts, quarter/game markers, etc."""
+    if not r.get("play_type") or not r.get("time"):
+        return False
+    d = (r.get("desc") or "").lstrip()
+    return not d.startswith("Timeout") and not d.startswith("END ") and "Two-Minute Warning" not in d
+
+
+def all_plays(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [_play(r) for r in rows if is_real_play(r)]
 
 
 def top_swings(rows: list[dict[str, Any]], n: int = TOP_N) -> list[dict[str, Any]]:
@@ -70,7 +110,7 @@ def chart_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for i, r in enumerate(rows):
         if r.get("qtr") is None or int(r["qtr"]) > 4 or r.get("home_wp") is None:
             continue
-        if not r.get("play_type") or not r.get("time"):
+        if not is_real_play(r):
             continue
         post = r.get("home_wp_post")
         if post is None:
@@ -84,10 +124,24 @@ def chart_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def _with_prev_scores(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    out, h, a = [], 0, 0
+    for r in rows:
+        out.append({**r, "_prev_home": h, "_prev_away": a})
+        if r.get("total_home_score") is not None:
+            h, a = int(r["total_home_score"]), int(r["total_away_score"])
+    return out
+
+
+def build_play_lists(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Per-game full play lists (frontend/lib/plays/<game_id>.json), kept out of swingPlays.json for size."""
+    return {gid: all_plays(_with_prev_scores([r for r in rows if r["game_id"] == gid])) for gid in GAME_IDS}
+
+
 def build_export(rows: list[dict[str, Any]]) -> dict[str, Any]:
     games = {}
     for gid in GAME_IDS:
-        g = [r for r in rows if r["game_id"] == gid]
+        g = _with_prev_scores([r for r in rows if r["game_id"] == gid])
         last = g[-1]
         games[gid] = {
             "game_id": gid, "home_team_id": last["home_team"], "away_team_id": last["away_team"],

@@ -26,10 +26,28 @@ export interface SwingPlay {
   possession_team_id: string | null;
   home_score_after: number;
   away_score_after: number;
+  home_score_before: number;
+  away_score_before: number;
+  down: number | null;
+  /** ydstogo */
+  distance: number | null;
+  yardline_100: number | null;
+  event: SwingEvent;
+  /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
+  display_text: string;
+  /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
+  raw_desc: string;
   home_wp_pre?: number;
   home_wp_post?: number;
   delta_home_wp?: number;
   swing_eligible?: boolean;
+}
+export type SwingEvent =
+  | "turnover_on_downs" | "interception" | "fumble_lost" | "touchdown" | "field_goal" | "punt" | "other";
+/** frontend/lib/plays/<game_id>.json: every real play (incl. penalties), no timeouts/quarter markers. */
+export interface GamePlayList {
+  game_id: string;
+  plays: SwingPlay[];
 }
 export interface SwingGame {
   game_id: string;
