@@ -17,6 +17,7 @@ import {
   type SessionStats,
 } from "../lib/quiz";
 import { CLOSE_LABEL } from "../lib/labels";
+import { revealRow } from "../lib/revealRow";
 import { ALL_CHOICES, closeCallNote, nearTieOptions, fgButton, formatPercents, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
 
 
@@ -164,18 +165,14 @@ export function QuizGame() {
                 {ALL_CHOICES.map((id) => {
                   const v = scored.values[id];
                   const off = !availableChoices(item).includes(id);
-                  // 2146 P2-G: dashed outline on the other near-tie option(s), on a Correct or Close call reveal.
-                  const close = scored.inconclusive && scored.result !== "incorrect" && !off && selected !== id && nearTie.includes(id);
-                  // P2-F: on a close call the solid outline marks only your pick, never "recommended".
-                  const rec =
-                    !scored.inconclusive && scored.recommendation === id;
-                  const isPicked = selected === id;
+                  // 2236 P1-E/P2-H: row state and text tag (see lib/revealRow.ts).
+                  const { rec, picked: isPicked, close, tag } = revealRow(id, { inconclusive: scored.inconclusive, result: scored.result, recommendation: scored.recommendation, selected, nearTie, off });
                   return (
                     <li
                       key={id}
                       className={`quiz-value${rec ? " is-rec" : ""}${isPicked ? " is-picked" : ""}${off ? " is-off" : ""}${close ? " is-close" : ""}`}
                     >
-                      <span>{CHOICE_LABELS[id]}</span>
+                      <span className="quiz-value-name">{CHOICE_LABELS[id]}{tag ? <span className="quiz-tag">{tag}</span> : null}</span>
                       {off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${rowPct[id] ?? pct(v)}`}</span>}
                     </li>
                   );
