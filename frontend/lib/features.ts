@@ -10,6 +10,6 @@ export const CHECKER_ENABLED = false;
 /** Copy for the page while the checker is off. */
 export const CHECKER_PAUSED = {
   title: "Checker is being recalibrated, back soon",
-  body: "We're re-checking the win chances behind the 4th-down checker. Until then, try the 4th-down quiz with real fourth downs.",
-  cta: { href: "/daily/", label: "Play the 4th-down quiz" },
+  body: "We're re-checking the win chances behind the 4th-down checker. Until then, play Today's 5: five real fourth downs, new every day.",
+  cta: { href: "/", label: "Play Today's 5" },
 } as const;
