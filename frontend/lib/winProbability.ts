@@ -98,6 +98,10 @@ export type EventPoint = WinProbabilityPoint & {
   yardline_100?: number | null;
   home_score_before?: number;
   away_score_before?: number;
+  /** nflverse yards_gained (#97). */
+  yards_gained?: number | null;
+  /** Interception or fumble returned for a TD by the defense (#97). */
+  return_td?: boolean;
 };
 
 /** "4th & 7 · KC 35 · DET 14–13 KC" (UI Critic 2110 P1-B). Null when the situation fields are absent. */
@@ -116,17 +120,22 @@ export function situationLine(p: EventPoint, home: string, away: string): string
   return parts.length ? parts.join(" · ") : null;
 }
 
-function whyText(delta: number, p: EventPoint, favored: string): string {
+export function whyText(delta: number, p: EventPoint, favored: string): string {
   const pts = Math.round(Math.abs(delta) * 100);
   const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
   // QA M10 / UI P1-B: the event tag from nflverse (#86) decides the cause before any text match.
-  if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
+  // QA L5: a defensive return TD names the turnover and the 7 points (#97 return_td).
+  if (p.return_td && p.event === "fumble_lost") cause = "a fumble returned for a touchdown put 7 points on the board";
+  else if (p.return_td) cause = "an interception returned for a touchdown put 7 points on the board";
+  else if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down hands the ball over";
   else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover hands the ball and field position to the other side";
   else if (p.event === "touchdown") cause = "a touchdown changes the score in one snap";
   else if (p.event === "field_goal") cause = "points went on the board";
   else if (p.event === "punt") cause = "a punt flips field position";
+  // QA L6: a 20+ yard gain (#97 yards_gained) is about field position, not the score.
+  else if ((p.yards_gained ?? 0) >= 20) cause = "a big gain flipped field position";
   else if (p.event === "other") cause = /sack/.test(d) ? "a sack loses yards and can kill a drive" : "it moved the ball and the clock";
   else if (/intercept|fumble/.test(d)) cause = "a turnover hands the ball and field position to the other side";
   else if (/touchdown/.test(d)) cause = "a touchdown changes the score in one snap";
