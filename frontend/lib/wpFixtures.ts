@@ -8,6 +8,7 @@ import {
   DEFAULT_SWING_WP_THRESHOLD,
   REGULATION_SECONDS,
   isSwing,
+  splitAtRegulation,
   type ChartSeries,
   type WinProbabilityPoint,
   type WinProbabilitySeries,
@@ -61,7 +62,7 @@ function build(
     points,
     swing_play_ids: points.filter((p) => p.is_swing).map((p) => p.play_id),
   };
-  return { series, origin: "example", note: "Example win chance — hand-made for the demo, not model output." };
+  return { ...splitAtRegulation(series), origin: "example", note: "Example win chance — hand-made for the demo, not model output." };
 }
 
 export const WP_FIXTURES: Record<string, ChartSeries> = {

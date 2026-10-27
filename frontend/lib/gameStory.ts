@@ -202,3 +202,8 @@ export function longDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
+
+/** House rule (#73): no win chance in overtime. The chart, swings and story use regulation plays only. */
+export function regulationOnly(file: GameFile): GameFile {
+  return { ...file, plays: file.plays.filter((p) => p.qtr <= 4) };
+}
