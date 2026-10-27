@@ -7,9 +7,11 @@
  */
 export const CHECKER_ENABLED = false;
 
-/** Copy for the page while the checker is off. */
+/** Copy and metadata for the page while the checker is off (recheck 2039 L1/L2). */
 export const CHECKER_PAUSED = {
-  title: "Checker is being recalibrated, back soon",
+  title: "4th-down checker, back soon",
+  label: "4th-down checker",
+  heading: "Back soon",
   body: "We're re-checking the win chances behind the 4th-down checker. Until then, try today's five real fourth downs.",
   cta: { href: "/daily/", label: "Play today's five" },
 } as const;
