@@ -14,7 +14,7 @@ function fanText(p: EventPoint): string {
 
 const W = 640;
 const H = 220;
-const PAD = { l: 64, r: 12, t: 12, b: 26 };
+const PAD = { l: 92, r: 12, t: 16, b: 34 };
 
 export function WinProbabilityChart({
   series,
