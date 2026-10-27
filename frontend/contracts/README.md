@@ -66,3 +66,12 @@ roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 
 
 Swing filter: regulation (qtr 1–4) `run` / `pass` / `field_goal` / `punt` only; kneels, spikes, no-plays, kickoffs,
 timeouts and other non-play rows never swing. WP is nflverse's `home_wp` / `home_wp_post`, not our model.
+
+Team colors: `frontend/lib/teamColors.json` = `{ _source, _tertiary_notes, teams: { [team_abbr]: { primary, secondary, tertiary } } }`,
+the 32 current nflverse abbreviations the repo uses (Rams = `LA`; `LAR`/`OAK`/`SD`/`STL` alias rows dropped), uppercase
+`#RRGGBB` from nflverse `teams_colors_logos`: `primary` = `team_color`, `secondary` = `team_color2`, `tertiary` =
+`team_color3`. When color3 is missing, neutral (white/black/gray) or an exact duplicate of primary/secondary, `tertiary`
+is `team_color4` if that is a distinct non-neutral color (not within RGB distance 40 of primary/secondary); otherwise
+nflverse's color3 is kept (or color2 when color3 and color4 are both blank: NYJ, TEN). Every such team is listed with
+the reason in `_tertiary_notes`. No colors are invented and there is no neutral fallback. Colors only, no logos.
+Regenerate with `python backend/scripts/build_team_colors.py`; checked by `frontend/lib/teamColors.test.ts`.
