@@ -101,3 +101,24 @@ def test_branch_pick_six_display_text():
     sw = {s["play_id"]: s for s in EXPORT["games"]["2023_01_DET_KC"]["swings"]}
     texts = [s["display_text"] for s in sw.values()]
     assert "Brian Branch intercepts Patrick Mahomes and returns it 50 yards for a touchdown." in texts
+
+
+def test_fourth_down_failed_matches_pbp():
+    n = 0
+    for p in _every_play():
+        r = BY_KEY[(p["game_id"], p["play_id"])]
+        want = r.get("down") == 4 and bool(r.get("fourth_down_failed"))
+        assert p["fourth_down_failed"] is want, p
+        n += want
+    assert n >= 3  # Goff 2:33, Mahomes 2:09, Gainwell 9:14 at least
+
+
+def test_opening_win_chance_is_nflverse_first_real_play():
+    expected = {"2023_01_BUF_NYJ": 0.5668, "2023_01_DET_KC": 0.5668, "2023_03_PHI_TB": 0.5463}
+    for gid, g in EXPORT["games"].items():
+        first = next(r for r in ROWS if r["game_id"] == gid and r.get("play_type") and r.get("time"))
+        assert g["opening_home_wp"] == round(first["home_wp"], 4) == expected[gid]
+        assert abs(g["opening_home_wp"] + g["opening_away_wp"] - 1) < 1e-9
+    # QA H7: BUF (away) opens at 43%, PHI (away) at 45%
+    assert round(EXPORT["games"]["2023_01_BUF_NYJ"]["opening_away_wp"] * 100) == 43
+    assert round(EXPORT["games"]["2023_03_PHI_TB"]["opening_away_wp"] * 100) == 45

@@ -40,6 +40,7 @@ CI (`backend/tests/test_swing_examples.py`) checks every play against a committe
   games: { [game_id]: {
     game_id, home_team_id, away_team_id, home_score, away_score,   // final, incl. OT
     first_home_wp,                                                 // nflverse pre-snap home WP of the first row
+    opening_home_wp, opening_away_wp,                              // nflverse pre-snap WP at the first real play (kickoff); away = 1 - home
     swings:         SwingPlay[],  // top_n by |delta_home_wp|, shared swing filter, in game order
     overtime_plays: SwingPlay[],  // OT scoring plays, NO win-chance fields (house rule)
     chart:          SwingPlay[]   // every regulation play row with WP (+ swing_eligible), for the line
@@ -48,6 +49,7 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   clock_seconds, description /* nflverse desc, verbatim */, play_type, possession_team_id,
   home_score_after, away_score_after, home_score_before, away_score_before,
   down, distance /* ydstogo */, yardline_100,   // null when nflverse has none (kickoffs, PATs)
+  fourth_down_failed /* down == 4 && nflverse fourth_down_failed == 1 */,
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
   display_text /* fan text, <= 20 words: show this */, raw_desc /* verbatim nflverse desc */,
   home_wp_pre?, home_wp_post?, delta_home_wp? /* swings */, swing_eligible? /* chart */ }
