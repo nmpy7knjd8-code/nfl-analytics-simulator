@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { periodName, quarterClockFromHalf } from "../../../lib/clock";
 import { shareMetadata } from "../../../lib/share";
 import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
-import { findSwingPlays } from "../../../lib/winProbability";
+import { findSwingPlays, inGameOrder } from "../../../lib/winProbability";
+import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
+import { PlayFeed } from "../../../components/PlayFeed";
+import type { FeedRow } from "../../../lib/gameFileV2";
 import { openingWinChance } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
@@ -29,14 +31,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function formatClock(quarter: number, halfSeconds: number | null | undefined): string {
-  if (halfSeconds == null) return "—";
-  return quarterClockFromHalf(quarter, halfSeconds);
+
+/** Whole percents (UI Critic 2240 P3-B): the chart axis is whole percents too. */
+function pct(v: number): string {
+  return `${Math.round(v * 100)}%`;
 }
 
-function pct(v: number): string {
-  return `${(v * 100).toFixed(1)}%`;
-}
 
 export default async function GameReplayPage({ params }: Props) {
   const { gameId } = await params;
@@ -53,8 +53,25 @@ export default async function GameReplayPage({ params }: Props) {
 
   // Contract endpoint first; otherwise the clearly labeled example series.
   const wpSeries = game ? await fetchWinProbability(id) : null;
-  const swings = wpSeries ? findSwingPlays(wpSeries.series) : [];
+  // Biggest three swings, shown in game order so card and dot numbers read left to right.
+  const swings = wpSeries ? inGameOrder(findSwingPlays(wpSeries.series)) : [];
   const swingRank = new Map(swings.map((s, i) => [s.point.play_id, i + 1]));
+  // UI Critic 2240 P2-A: OT plays use the plays file's fan text when the OT export lacks it.
+  const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
+  const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
+    const r = fileRows.get(p.play_id);
+    return { ...p, display_text: p.display_text || r?.display_text, raw_desc: p.raw_desc || r?.raw_desc };
+  });
+  // Committed lib/plays rows: static fallback and display_text source for the live game.v2 file.
+  const fallbackRows: FeedRow[] = (plays?.data.items ?? []).map((p) => ({
+    id: p.play_id,
+    quarter: p.quarter,
+    clock_seconds:
+      p.half_seconds_remaining == null ? null : p.quarter > 4 || p.quarter % 2 === 0 ? p.half_seconds_remaining : p.half_seconds_remaining - 900,
+    down: p.down ?? null,
+    distance: p.distance ?? null,
+    text: p.description ?? "",
+  }));
   const opening = game ? openingWinChance(id) : null;
 
 
@@ -102,45 +119,14 @@ export default async function GameReplayPage({ params }: Props) {
               <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} series={wpSeries.series} />
-              {wpSeries.overtimePlays.length ? <h3>Overtime</h3> : null}
-              <OvertimePlayList plays={wpSeries.overtimePlays} />
+              {overtimePlays.length ? <h3>Overtime</h3> : null}
+              <OvertimePlayList plays={overtimePlays} decided={game.data.home_score !== game.data.away_score} />
             </section>
           ) : null}
 
           <section aria-labelledby="pbp-head">
             <h2 id="pbp-head">Play by play</h2>
-            {plays.data.items.length ? (
-              <>
-                <p className="list-count">{plays.data.total} plays</p>
-                <ol className="play-feed">
-                  {plays.data.items.map((p) => {
-                    const rank = swingRank.get(p.play_id);
-                    return (
-                      <li
-                        className={`play-card${rank ? " is-swing" : ""}`}
-                        key={`${p.game_id}-${p.play_id}`}
-                        data-play-id={p.play_id}
-                      >
-                        <div className="play-top">
-                          <span className="play-meta">
-                            {periodName(p.quarter)} · {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
-                            {p.down ? ` · ${["", "1st", "2nd", "3rd", "4th"][p.down]} & ${p.distance}` : ""}
-                          </span>
-                          {rank ? (
-                            <span className="swing-badge" aria-label={`Swing play ${rank}`}>
-                              {rank}
-                            </span>
-                          ) : null}
-                        </div>
-                        <p className="play-desc">{p.description}</p>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </>
-            ) : (
-              <p className="muted play-feed-soon">Full play-by-play coming soon.</p>
-            )}
+            <PlayFeed gameId={id} fallback={fallbackRows} swingRanks={[...swingRank]} />
           </section>
 
           <aside className="disclaimer">
