@@ -6,7 +6,8 @@ import { TruthChip } from "../../../components/TruthChip";
 import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
 import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
-import { findSwingPlays } from "../../../lib/winProbability";
+import { findSwingPlays, inGameOrder } from "../../../lib/winProbability";
+import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
 import { openingWinChance } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
@@ -34,9 +35,12 @@ function formatClock(quarter: number, halfSeconds: number | null | undefined): s
   return quarterClockFromHalf(quarter, halfSeconds);
 }
 
+/** Whole percents (UI Critic 2240 P3-B): the chart axis is whole percents too. */
 function pct(v: number): string {
-  return `${(v * 100).toFixed(1)}%`;
+  return `${Math.round(v * 100)}%`;
 }
+
+const ORD = ["", "1st", "2nd", "3rd", "4th"];
 
 export default async function GameReplayPage({ params }: Props) {
   const { gameId } = await params;
@@ -53,8 +57,22 @@ export default async function GameReplayPage({ params }: Props) {
 
   // Contract endpoint first; otherwise the clearly labeled example series.
   const wpSeries = game ? await fetchWinProbability(id) : null;
-  const swings = wpSeries ? findSwingPlays(wpSeries.series) : [];
+  // Biggest three swings, shown in game order so card and dot numbers read left to right.
+  const swings = wpSeries ? inGameOrder(findSwingPlays(wpSeries.series)) : [];
   const swingRank = new Map(swings.map((s, i) => [s.point.play_id, i + 1]));
+  // UI Critic 2240 P2-A: OT plays use the plays file's fan text when the OT export lacks it.
+  const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
+  const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
+    const r = fileRows.get(p.play_id);
+    return { ...p, display_text: p.display_text || r?.display_text, raw_desc: p.raw_desc || r?.raw_desc };
+  });
+  // P2-D: play-by-play grouped by quarter under sticky headings.
+  const quarters: { q: number; items: NonNullable<typeof plays>["data"]["items"] }[] = [];
+  for (const p of plays?.data.items ?? []) {
+    const last = quarters.at(-1);
+    if (last && last.q === p.quarter) last.items.push(p);
+    else quarters.push({ q: p.quarter, items: [p] });
+  }
   const opening = game ? openingWinChance(id) : null;
 
 
@@ -102,8 +120,8 @@ export default async function GameReplayPage({ params }: Props) {
               <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} series={wpSeries.series} />
-              {wpSeries.overtimePlays.length ? <h3>Overtime</h3> : null}
-              <OvertimePlayList plays={wpSeries.overtimePlays} />
+              {overtimePlays.length ? <h3>Overtime</h3> : null}
+              <OvertimePlayList plays={overtimePlays} />
             </section>
           ) : null}
 
@@ -112,31 +130,36 @@ export default async function GameReplayPage({ params }: Props) {
             {plays.data.items.length ? (
               <>
                 <p className="list-count">{plays.data.total} plays</p>
-                <ol className="play-feed">
-                  {plays.data.items.map((p) => {
-                    const rank = swingRank.get(p.play_id);
-                    return (
-                      <li
-                        className={`play-card${rank ? " is-swing" : ""}`}
-                        key={`${p.game_id}-${p.play_id}`}
-                        data-play-id={p.play_id}
-                      >
-                        <div className="play-top">
-                          <span className="play-meta">
-                            {periodName(p.quarter)} · {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
-                            {p.down ? ` · ${["", "1st", "2nd", "3rd", "4th"][p.down]} & ${p.distance}` : ""}
-                          </span>
-                          {rank ? (
-                            <span className="swing-badge" aria-label={`Swing play ${rank}`}>
-                              {rank}
+                {quarters.map(({ q, items }) => (
+                  <section className="play-quarter" key={q} aria-label={periodName(q)}>
+                    <h3 className="play-quarter-head">{periodName(q)}</h3>
+                    <ol className="play-feed">
+                      {items.map((p) => {
+                        const rank = swingRank.get(p.play_id);
+                        return (
+                          <li
+                            className={`play-card${rank ? " is-swing" : ""}`}
+                            key={`${p.game_id}-${p.play_id}`}
+                            id={`play-${p.play_id}`}
+                          >
+                            <span className="play-meta">
+                              {periodName(p.quarter)} · {formatClock(p.quarter, p.half_seconds_remaining ?? null)}
+                              {p.down ? ` · ${ORD[p.down]} & ${p.distance}` : ""}
                             </span>
-                          ) : null}
-                        </div>
-                        <p className="play-desc">{p.description}</p>
-                      </li>
-                    );
-                  })}
-                </ol>
+                            <p className="play-desc">
+                              {rank ? (
+                                <span className="swing-badge" aria-label={`Swing play ${rank}`}>
+                                  {rank}
+                                </span>
+                              ) : null}
+                              {p.description}
+                            </p>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </section>
+                ))}
               </>
             ) : (
               <p className="muted play-feed-soon">Full play-by-play coming soon.</p>
