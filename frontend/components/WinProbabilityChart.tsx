@@ -119,7 +119,9 @@ export function WinProbabilityChart({
 }
 
 /** "Play-by-play text" disclosure for the raw nflverse string (only when it differs from the fan text). */
-function RawText({ raw, text }: { raw: string; text: string }) {
+function RawText({ raw: full, text }: { raw: string; text: string }) {
+  // Recheck 2255 P2-A: the card already shows the clock, so drop nflverse's "(9:21) " prefix.
+  const raw = full.replace(/^\(\d{1,2}:\d{2}\)\s*/, "");
   if (!raw || raw === text) return null;
   return (
     <details className="swing-raw">
