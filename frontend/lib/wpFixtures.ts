@@ -33,6 +33,8 @@ export interface SwingPlay {
   distance: number | null;
   yardline_100: number | null;
   event: SwingEvent;
+  /** down == 4 and nflverse fourth_down_failed == 1 (go-for-it that failed). */
+  fourth_down_failed: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
@@ -56,6 +58,9 @@ export interface SwingGame {
   home_score: number;
   away_score: number;
   first_home_wp: number;
+  /** nflverse pre-snap home_wp of the first real play (opening kickoff); away = 1 - home. */
+  opening_home_wp: number;
+  opening_away_wp: number;
   swings: SwingPlay[];
   overtime_plays: SwingPlay[];
   chart: SwingPlay[];
