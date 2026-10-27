@@ -39,6 +39,17 @@ def _name(r: dict[str, Any], role: str) -> str | None:
     return full or r.get(f"{role}_player_name")
 
 
+def _td_name(r: dict[str, Any]) -> str | None:
+    """Scorer, named like the other roles on the row when it is the same player (full name if attached)."""
+    raw = r.get("td_player_name")
+    if (r.get("names") or {}).get("td") or not raw:
+        return _name(r, "td")
+    for role in ("interception", "fumble_recovery_1", "rusher", "receiver", "kickoff_returner", "punt_returner", "fumbled_1"):
+        if r.get(f"{role}_player_name") == raw:
+            return _name(r, role)
+    return raw
+
+
 def _yds(n: Any) -> str:
     n = int(n)
     return f"{n} yard" if abs(n) == 1 else f"{n} yards"
@@ -49,7 +60,7 @@ _LEAD_TAGS = re.compile(r"^\s*\((?:[^()]*?(?:Shotgun|No Huddle|Punt formation|Fi
 _JERSEY = re.compile(r"\b\d{1,2}-(?=[A-Z])")
 _PARENS = re.compile(r"\s*\([^()]*\)")
 _BRACKETS = re.compile(r"\s*\[[^\]]*\]")
-_SNAPPER = re.compile(r",?\s*\b(?:Center|Holder)-(?:\d{1,2}-)?[A-Z][\w'\-]*(?:\.\s?[\w'\-]+)*")
+_SNAPPER = re.compile(r",?\s*\b(?:Center|Holder)-(?:\d{1,2}-)?[A-Z][\w'\-]*(?:\.[\w'\-]+)*(?: [A-Z][a-z][\w'\-]*)?(?: (?:Jr|Sr|II|III|IV|V)\b\.?)?")
 _CAPS = re.compile(r"\b[A-Z]{4,}\b")  # 2-3 letter team codes stay upper-case
 _PENALTY = re.compile(r"PENALTY on (?:([A-Z]{2,3})-)?(?:\d{1,2}-)?([A-Z][\w.'\- ]*?)?,\s*([^,]+),\s*(\d+) yards?", re.I)
 
@@ -102,6 +113,8 @@ def _kickoff(r: dict[str, Any]) -> str | None:
         ry = raw if raw is not None else ry
     if ret and ry is not None and _t(r.get("touchdown")):
         return s + f", and {ret} returns it {_yds(ry)} for a touchdown."
+    if ret and ry == 0:  # QA 0116: no "returns it 0 yards"
+        return s + f", and {ret} returns it for no gain."
     if ret and ry is not None:
         return s + f", and {ret} returns it {_yds(ry)}."
     return None
@@ -174,7 +187,10 @@ def _templated(r: dict[str, Any]) -> str | None:
     s = _templated_main(r)
     if s and _t(r.get("fumble")) and not _t(r.get("fumble_lost")) and r.get("play_type") in ("run", "pass"):
         extra = _kept_fumble(r, s)
-        if extra:
+        if extra and "Aborted" in (r.get("desc") or ""):  # QA 0116: the botched snap came first (DET_KC 1273)
+            extra = extra.replace("He fumbles", f"{_name(r, 'fumbled_1')} fumbles", 1)
+            s = f"Botched snap: {extra} {s}"
+        elif extra:
             s = f"{s} {extra}"
     return s
 
@@ -190,7 +206,8 @@ def _templated_main(r: dict[str, Any]) -> str | None:
         return _kickoff(r)
     if pt in ("qb_kneel", "qb_spike"):
         return _kneel_or_spike(r)
-    if r.get("play_type") == "no_play" or _t(r.get("penalty")) and pt not in ("pass", "run"):
+    # QA 0116 N6: kicks with a flag are templated too; the flag goes in penalty_text.
+    if r.get("play_type") == "no_play" or _t(r.get("penalty")) and pt not in ("pass", "run", "punt", "kickoff", "field_goal", "extra_point"):
         return None
     if _t(r.get("interception")):
         who, qb = _name(r, "interception"), _name(r, "passer")
@@ -198,7 +215,9 @@ def _templated_main(r: dict[str, Any]) -> str | None:
             return None
         s = f"{who} intercepts {qb}"
         ry = r.get("return_yards")
-        if td and ry is not None:
+        if td and _td_name(r) not in (None, who):  # someone else scored (2025_05_TEN_ARI 4224); see _must_mention
+            pass
+        elif td and ry is not None:
             s += f" and returns it {_yds(ry)} for a touchdown"
         elif ry:
             s += f" and returns it {_yds(ry)}"
@@ -210,7 +229,7 @@ def _templated_main(r: dict[str, Any]) -> str | None:
         if rec == f:
             return f"{f} fumbles and the defense recovers."
         if td:  # QA 0019 N4: fumble returned (or recovered) for a touchdown
-            scorer = _name(r, "td")
+            scorer = _td_name(r)
             if scorer and scorer != rec:  # recovered, fumbled again, returned (2019_10_SEA_SF 3345)
                 return f"{f} fumbles, and {scorer} returns it for a touchdown."
             return f"{f} fumbles, and {rec} recovers and scores a touchdown."
@@ -252,6 +271,8 @@ def _templated_main(r: dict[str, Any]) -> str | None:
             s = f"{rb} is stopped for no gain"
     elif pt == "extra_point":
         k, res = _name(r, "kicker"), r.get("extra_point_result")
+        if not res and "No Play" in (r.get("desc") or ""):  # QA 0116 N6: flag wiped out the try
+            return f"{k}'s extra point try doesn't count (no play)." if k else "The extra point try doesn't count (no play)."
         word = {"good": "is good", "failed": "is no good", "blocked": "is blocked"}.get(res or "")
         return f"{k}'s extra point {word}." if k and word else None
     elif pt == "field_goal":
@@ -323,7 +344,8 @@ def plain_english(s: str) -> str:
 
 
 _PEN_CLAUSE = re.compile(
-    r"PENALTY on ([A-Z]{2,3})(?:-(\d{1,2})-([\w.'\-]+))?,\s*([^,]+),\s*(\d+ yards?|declined|offsetting)", re.I)
+    # QA 0116 P1: names with suffixes / two-word surnames ([^,]+?), 2024+ kickoff "placed at" penalties.
+    r"PENALTY on ([A-Z]{2,3})(?:-(\d{1,2})-([^,]+?))?,\s*([^,]+),\s*(\d+ yards?|declined|offsetting|placed at [A-Z]{0,3} ?-?\d+)", re.I)
 _FOUL_WORDS = {"offside on free kick": "offside on kickoff"}
 
 
@@ -345,7 +367,8 @@ def penalty_clauses(r: dict[str, Any], skip_first: bool = False) -> list[tuple[s
         full = names.get(f"{team}-{num}") if num else None
         if not full and i == 0 and num:
             full = (r.get("names") or {}).get("penalty")
-        out.append((team.upper(), full, _FOUL_WORDS.get(foul, foul), res.lower()))
+        res = res if res.lower().startswith("placed at") else res.lower()
+        out.append((team.upper(), full, _FOUL_WORDS.get(foul, foul), res))
     return out
 
 
@@ -372,6 +395,8 @@ def penalty_sentences(clauses: list[tuple[str, str | None, str, str]], replayed:
             declined.setdefault(t, []).append((n, f))
         elif res == "offsetting":
             out.append(f"Penalty on {_whom(t, n)}: {f}, offsetting.")
+        elif res.startswith("placed at"):
+            out.append(f"Penalty on {_whom(t, n)}: {f}, ball {res}.")
         else:
             out.append(f"Penalty on {_whom(t, n)}: {f}, {res} against {t}.")
     for t, flags in declined.items():
@@ -421,11 +446,37 @@ def marker_text(desc: str) -> str | None:
     return None
 
 
+def _must_mention(r: dict[str, Any], s: str) -> str:
+    """QA 0116 P2 / N4 / safety residuals: never drop a lost fumble, a touchdown or a safety."""
+    low = s.lower()
+    if _t(r.get("fumble")) and "fumble" not in low and "muff" not in low:
+        f, team = _name(r, "fumbled_1"), r.get("fumble_recovery_1_team")
+        if f or team:
+            s += f" {f or 'The ball carrier'} fumbles" + (f", and {team} recovers." if team else ".")
+    elif _t(r.get("fumble_lost")) and "recover" not in low and (team := r.get("fumble_recovery_1_team")):
+        s += f" {team} recovers."
+    if _t(r.get("touchdown")) and "touchdown" not in low:
+        who = _td_name(r)
+        s += f" {who} scores a touchdown." if who else " Touchdown."
+    if _t(r.get("safety")) and "safety" not in low:
+        s += " Safety."
+    return s
+
+
 def display_text(r: dict[str, Any]) -> str:
+    s = _display_text(r)
+    return s if marker_text(r.get("desc") or "") is not None else _must_mention(r, s)
+
+
+def _display_text(r: dict[str, Any]) -> str:
     """Main sentence (<= MAX_WORDS). Penalties after a play go in penalty_text(); 'No play' rows keep theirs here."""
     if (mk := marker_text(r.get("desc") or "")) is not None:
         return mk
+    two = "Two-point try: " if "TWO-POINT CONVERSION" in (r.get("desc") or "").upper() else ""  # QA 0116
     if _is_no_play(r):
         rest = penalty_sentences(penalty_clauses(r, skip_first=True))
-        return " ".join(x for x in (_fit(no_play_text(r.get("desc") or "", r)), rest) if x)
+        return two + " ".join(x for x in (_fit(no_play_text(r.get("desc") or "", r)), rest) if x)
+    if r.get("play_type") == "no_play" and (cl := penalty_clauses(r)):  # QA 0116 N6: offsetting / declined no-plays
+        body = penalty_sentences(cl)
+        return two + body + ("" if "replayed" in body else " No play.")
     return _main_text(r)
