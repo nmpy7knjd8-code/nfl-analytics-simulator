@@ -72,7 +72,8 @@ export function WinProbabilityChart({
         <line x1={PAD.l} x2={W - PAD.r} y1={y(0.5)} y2={y(0.5)} className="wp-mid" />
         {[1, 0.5, 0].map((v) => (
           <text key={v} x={PAD.l - 6} y={y(v) + 4} textAnchor="end" className="wp-axis">
-            {series.home_team_id} {Math.round(v * 100)}%
+            <tspan className="wp-axis-team">{series.home_team_id} </tspan>
+            {Math.round(v * 100)}%
           </text>
         ))}
         {[1, 2, 3, 4].map((q) => {
@@ -165,13 +166,17 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
 }
 
 /** Overtime plays: listed like any other play, with no win-chance numbers. */
-export function OvertimePlayList({ plays }: { plays: OvertimePlay[] }) {
+export function OvertimePlayList({ plays, decided = true }: { plays: OvertimePlay[]; decided?: boolean }) {
   if (!plays.length) return null;
+  const lastId = plays.at(-1)!.play_id;
   return (
     <ol className="swing-list ot-list">
       {plays.map((p) => (
         <li key={p.play_id} className="swing-item ot-item">
-          <div className="play-meta">{clockLabel(p)}</div>
+          <div className="play-meta">
+            {decided && p.play_id === lastId ? <span className="ot-winner">Game-winning play · </span> : null}
+            {clockLabel(p)}
+          </div>
           <p className="play-desc swing-headline">
             {fanText(p as EventPoint)}
             <PenaltyText text={p.penalty_text} />

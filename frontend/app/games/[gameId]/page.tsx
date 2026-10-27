@@ -121,7 +121,7 @@ export default async function GameReplayPage({ params }: Props) {
               {swings.length ? <h3>Swing plays</h3> : null}
               <SwingPlayList swings={swings} series={wpSeries.series} />
               {overtimePlays.length ? <h3>Overtime</h3> : null}
-              <OvertimePlayList plays={overtimePlays} />
+              <OvertimePlayList plays={overtimePlays} decided={game.data.home_score !== game.data.away_score} />
             </section>
           ) : null}
 

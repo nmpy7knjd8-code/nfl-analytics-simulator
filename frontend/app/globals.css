@@ -1628,3 +1628,6 @@ body:has(.quiz-page) .app-nav-item.is-current {
 .play-penalty { display: block; margin-top: 2px; font-size: inherit; font-weight: 400; color: var(--color-penalty, var(--color-ink-muted)); }
 .quiz-page .play-penalty, [data-theme="dark"] .play-penalty { --color-penalty: #a1a1aa; }
 .swing-headline:has(.play-penalty) { display: block; -webkit-line-clamp: unset; }
+/* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
+@media (max-width: 640px) { .wp-axis-team { display: none; } }
+.ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
