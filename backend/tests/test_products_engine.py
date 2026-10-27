@@ -82,19 +82,35 @@ def test_grid_cells_equal_engine_values(engine, monkeypatch):
 
 
 def test_committed_grid_matches_real_engine():
-    import json, random
+    """grid.json parity vs the engine, runs in CI.
+
+    Uses backend/tests/fixtures/grid_engine/ (the small WP model + pickled empirics that
+    grid.json was built from; refresh with scripts/build_grid_test_fixture.py).
+    """
+    import json, pickle, random
+    from pathlib import Path
+    from nfl_sim.models.fourth_down import FourthDownAnalyzer
+    from nfl_sim.models.wp_model import WPModel
     from nfl_sim.products.meta import PRODUCTS_DIR
-    from nfl_sim.products.engine import load_engine
-    path = PRODUCTS_DIR / "fourth_down" / "grid.json"
-    doc = json.loads(path.read_text())
-    assert doc["provenance"]["source"] == "nflverse"
-    try:
-        eng = load_engine()
-    except FileNotFoundError:
-        pytest.skip("WP artifact not present (gitignored); parity checked locally")
-    rng = random.Random(7)
     import nfl_sim.products.grid as g
+
+    fx = Path(__file__).parent / "fixtures" / "grid_engine"
+    doc = json.loads((PRODUCTS_DIR / "fourth_down" / "grid.json").read_text())
+    assert doc["provenance"]["source"] == "nflverse"
+    emp = pickle.loads((fx / "empirics.pkl").read_bytes())
+    eng = FourthDownEngine(FourthDownAnalyzer(WPModel.load(fx / "wp_model.joblib"), emp))
     g._ENGINE = eng
-    for _ in range(40):
+    rng = random.Random(7)
+    for _ in range(60):
         t, s, d, yl = (rng.randrange(len(g.TIMES)), rng.randrange(len(g.SCORE)), rng.randrange(len(g.DIST)), rng.randrange(1, 100))
-        assert doc["cells"][g.cell_index(t, s, d, yl)] == g.cell(g.grid_input(t, s, d, yl))
+        assert doc["cells"][g.cell_index(t, s, d, yl)] == g.cell(g.grid_input(t, s, d, yl)), (t, s, d, yl)
+    # product rules hold across the whole committed grid
+    for t in range(len(g.TIMES)):
+        for s in range(len(g.SCORE)):
+            for d in range(len(g.DIST)):
+                for yl in range(1, 100):
+                    c = doc["cells"][g.cell_index(t, s, d, yl)]
+                    if c is None:
+                        continue
+                    assert (c[1] is None) == (yl + 18 > 64), (t, s, d, yl, c)
+                    assert (c[2] is None) == (yl < 35), (t, s, d, yl, c)
