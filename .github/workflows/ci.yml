@@ -26,6 +26,7 @@ jobs:
         env:
           GAMES_RELEASE_TAG: ${{ vars.GAMES_RELEASE_TAG || 'games-v2' }}
           GH_TOKEN: ${{ github.token }}
+        working-directory: .
         run: scripts/pages/game_files_release.sh fetch
       - name: Pytest (unit; integration tests need the ingested lake / network)
         run: python -m pytest -q -m "not integration"
