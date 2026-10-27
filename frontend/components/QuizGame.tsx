@@ -17,7 +17,7 @@ import {
   type SessionStats,
 } from "../lib/quiz";
 import { CLOSE_LABEL } from "../lib/labels";
-import { ALL_CHOICES, FG_OUT_OF_RANGE, closeCallWhy } from "../lib/closeCall";
+import { ALL_CHOICES, closeCallWhy, fgTooFarButton, fgTooFarReveal } from "../lib/closeCall";
 
 const DOING_WORD: Record<QuizChoice, string> = { go: "going for it", fg: "field goal", punt: "punting" };
 
@@ -135,7 +135,7 @@ export function QuizGame() {
                       className={`quiz-choice${active ? " is-selected" : ""}${off ? " is-off" : ""}`}
                       onClick={off ? undefined : () => pick(id)}
                     >
-                      {off ? `${CHOICE_LABELS[id]} · ${FG_OUT_OF_RANGE}` : CHOICE_LABELS[id]}
+                      {off ? fgTooFarButton(item.situation) : CHOICE_LABELS[id]}
                     </button>
                   );
                 })}
@@ -151,14 +151,18 @@ export function QuizGame() {
             <div className="quiz-card-actions quiz-reveal">
               <p className={`quiz-result is-${scored.result}`}>
                 {resultLabel(scored.result)}
+                {scored.result === "near_tie" ? (
+                  <span className="quiz-half"> · <span className="quiz-half-chip">½</span> point</span>
+                ) : null}
               </p>
               <ul className="quiz-values">
                 {ALL_CHOICES.map((id) => {
                   const v = scored.values[id];
                   const off = !availableChoices(item).includes(id);
                   const close = scored.result === "near_tie" && !off && selected !== id && closeCallWhy(item).toLowerCase().includes(DOING_WORD[id]);
+                  // P2-F: on a close call the solid outline marks only your pick, never "recommended".
                   const rec =
-                    !scored.inconclusive && scored.recommendation === id;
+                    !scored.inconclusive && scored.result !== "near_tie" && scored.recommendation === id;
                   const isPicked = selected === id;
                   return (
                     <li
@@ -166,12 +170,11 @@ export function QuizGame() {
                       className={`quiz-value${rec ? " is-rec" : ""}${isPicked ? " is-picked" : ""}${off ? " is-off" : ""}${close ? " is-close" : ""}`}
                     >
                       <span>{CHOICE_LABELS[id]}</span>
-                      <span className="quiz-value-pct">{off ? "Out of range" : `${item.situation.posteam} ${pct(v)}`}</span>
+                      {off ? <span className="quiz-value-off">{fgTooFarReveal(item.situation)}</span> : <span className="quiz-value-pct">{`${item.situation.posteam} ${pct(v)}`}</span>}
                     </li>
                   );
                 })}
               </ul>
-              {scored.result === "near_tie" ? <p className="quiz-score-note">A close call is worth ½.</p> : null}
               <p className="quiz-why">{scored.result === "near_tie" ? closeCallWhy(item) : scored.layman_why}</p>
               {item.historical_action ? (
                 <p className="quiz-hist">

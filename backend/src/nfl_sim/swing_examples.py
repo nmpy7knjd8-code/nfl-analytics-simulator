@@ -50,6 +50,7 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "home_score_after": int(r["total_home_score"]), "away_score_after": int(r["total_away_score"]),
         "home_score_before": home_b, "away_score_before": away_b,
         "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),
+        "fourth_down_failed": _int(r.get("down")) == 4 and bool(r.get("fourth_down_failed")),
         "event": event_tag(r), "display_text": display_text(r), "raw_desc": r["desc"],
     }
 
@@ -147,6 +148,9 @@ def build_export(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "game_id": gid, "home_team_id": last["home_team"], "away_team_id": last["away_team"],
             "home_score": int(last["home_score"]), "away_score": int(last["away_score"]),
             "first_home_wp": round(next(r["home_wp"] for r in g if r.get("home_wp") is not None), 4),
+            # QA H7: pre-snap home_wp of the first real play (opening kickoff), straight from nflverse.
+            "opening_home_wp": (o := round(next(r["home_wp"] for r in g if is_real_play(r) and r.get("home_wp") is not None), 4)),
+            "opening_away_wp": round(1 - o, 4),
             "swings": top_swings(g), "overtime_plays": overtime_scoring_plays(g),
             "chart": chart_rows(g),
         }
