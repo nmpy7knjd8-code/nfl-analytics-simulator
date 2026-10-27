@@ -6,6 +6,7 @@ import { QuizSituationCard } from "./QuizSituationCard";
 import {
   CHOICE_LABELS,
   QUIZ_ITEMS,
+  availableChoices,
   emptySession,
   pct,
   scoreQuizChoice,
@@ -15,12 +16,11 @@ import {
   type QuizResult,
   type SessionStats,
 } from "../lib/quiz";
-
-const CHOICES: QuizChoice[] = ["go", "fg", "punt"];
+import { CLOSE_LABEL } from "../lib/labels";
 
 function resultLabel(result: QuizResult): string {
   if (result === "correct") return "Correct";
-  if (result === "near_tie") return "Near-tie";
+  if (result === "near_tie") return CLOSE_LABEL;
   return "Incorrect";
 }
 
@@ -37,7 +37,7 @@ export function QuizGame() {
   const item = items[index] ?? items[0];
   const scored = useMemo(() => {
     if (!selected || phase !== "reveal") return null;
-    return scoreQuizChoice(selected, item.reveal);
+    return scoreQuizChoice(selected, item.reveal, item.situation);
   }, [selected, phase, item]);
 
   function pick(choice: QuizChoice) {
@@ -48,7 +48,7 @@ export function QuizGame() {
 
   function lockIn() {
     if (!selected) return;
-    const result = scoreQuizChoice(selected, item.reveal);
+    const result = scoreQuizChoice(selected, item.reveal, item.situation);
     setSession((s) => updateSession(s, result));
     setShowAssumptions(false);
     setPhase("reveal");
@@ -118,7 +118,7 @@ export function QuizGame() {
                 role="radiogroup"
                 aria-label="Choose go, field goal, or punt"
               >
-                {CHOICES.map((id) => {
+                {availableChoices(item).map((id) => {
                   const active = selected === id;
                   return (
                     <button
@@ -147,8 +147,8 @@ export function QuizGame() {
                 {resultLabel(scored.result)}
               </p>
               <ul className="quiz-values">
-                {CHOICES.map((id) => {
-                  const v = scored.values[id] ?? 0;
+                {availableChoices(item).map((id) => {
+                  const v = scored.values[id];
                   const rec =
                     !scored.inconclusive && scored.recommendation === id;
                   const picked = selected === id;

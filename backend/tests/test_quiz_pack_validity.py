@@ -18,8 +18,13 @@ PACK = json.loads(QUIZ_PACK_PATH.read_text())
 ITEMS = PACK["items"]
 
 
-def test_frontend_and_backend_packs_are_identical():
-    assert (REPO / "frontend/lib/quizPack.json").read_text() == QUIZ_PACK_PATH.read_text()
+def test_frontend_pack_is_backend_pack_minus_model_details():
+    front = json.loads((REPO / "frontend/lib/quizPack.json").read_text())
+    back = json.loads(QUIZ_PACK_PATH.read_text())
+    for it in back["items"]:
+        it["reveal"].pop("model_notes", None)
+        it["reveal"].pop("edge_wp", None)
+    assert front == back
 
 
 def test_pack_size_and_unique_ids():

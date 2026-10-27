@@ -24,6 +24,21 @@ from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS, MAX_FG_DISTANCE  
 from nfl_sim.quiz.pack import HISTORICAL_REFS, QUIZ_PACK_PATH, fanify_reveal, pack_item_from_situation_lab_payload  # noqa: E402
 
 FRONTEND_PACK = REPO / "frontend" / "lib" / "quizPack.json"
+# Hidden model details stay in the backend pack only; never ship them in the client bundle.
+BACKEND_ONLY_REVEAL_FIELDS = ("model_notes", "edge_wp")
+
+
+def frontend_pack(pack: dict) -> dict:
+    out = json.loads(json.dumps(pack))
+    for it in out["items"]:
+        for k in BACKEND_ONLY_REVEAL_FIELDS:
+            it["reveal"].pop(k, None)
+    return out
+
+
+def write_packs(pack: dict) -> None:
+    QUIZ_PACK_PATH.write_text(json.dumps(pack, indent=2) + "\n")
+    FRONTEND_PACK.write_text(json.dumps(frontend_pack(pack), indent=2) + "\n")
 ACTION = {"pass": "go", "run": "go", "punt": "punt", "field_goal": "fg"}
 # Target mix of what teams actually did, so the pack isn't 70% punts.
 MIX = {"punt": 0.4, "go": 0.3, "fg": 0.3}
@@ -105,9 +120,7 @@ def main() -> int:
         pack = json.loads(QUIZ_PACK_PATH.read_text())
         for it in pack["items"]:
             fanify_reveal(it["reveal"])
-        text = json.dumps(pack, indent=2) + "\n"
-        QUIZ_PACK_PATH.write_text(text)
-        FRONTEND_PACK.write_text(text)
+        write_packs(pack)
         print(f"rewrote text for {len(pack['items'])} items")
         return 0
     seasons = [int(s) for s in a.seasons.split(",")]
@@ -152,9 +165,7 @@ def main() -> int:
         "source": f"nflverse play-by-play REG {a.seasons}; built by backend/scripts/build_quiz_pack.py",
         "items": items,
     }
-    text = json.dumps(pack, indent=2) + "\n"
-    QUIZ_PACK_PATH.write_text(text)
-    FRONTEND_PACK.write_text(text)
+    write_packs(pack)
     print(f"{len(items)} items in {time.time() - t0:.1f}s")
     return 0
 
