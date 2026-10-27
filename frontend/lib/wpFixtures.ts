@@ -2,7 +2,7 @@
  * Win-probability series for the fixture game pages, built from REAL nflverse 2023 pbp rows
  * exported by backend/scripts/build_swing_examples.py into ./swingPlays.json (QA H5/M9).
  * Every play's quarter, clock, description and play_id is a real nflverse row; WP values are
- * nflverse's home_wp / home_wp_post (not our model). Contract shape: frontend/contracts/README.md.
+ * nflverse's published home WP (pre/post snap); our model only on rows flagged wp_fallback. Contract shape: frontend/contracts/README.md.
  */
 import swingPlays from "./swingPlays.json";
 import { GAME_SOURCE_LINE } from "./fixtures";
@@ -53,6 +53,8 @@ export interface SwingPlay {
   home_wp_post?: number;
   delta_home_wp?: number;
   swing_eligible?: boolean;
+  /** True when nflverse had no WP for this row and our model filled it. */
+  wp_fallback?: boolean;
 }
 export type SwingEvent =
   | "turnover_on_downs" | "interception" | "fumble_lost" | "touchdown" | "field_goal" | "punt" | "other";

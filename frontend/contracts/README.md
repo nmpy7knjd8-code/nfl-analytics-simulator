@@ -19,7 +19,7 @@
 - **Timing:** `home_wp_pre` is before the snap. `home_wp_post` is the next play's pre-snap value; on the last play it is the final result (1 home win, 0 home loss, 0.5 tie).
 - **Swing play:** `is_swing` when `|delta_home_wp| >= swing_threshold`. Default 0.08; per-request `?swing_threshold=`, server default `NFL_SIM_SWING_WP_THRESHOLD`. `swing_play_ids` lists them in order.
 - **Overtime:** quarter 5, `is_overtime: true`, `has_overtime` on the series. `game_seconds_elapsed` keeps counting past 3600 (regular-season OT 600 s, postseason OT 900 s), so the x-axis never rewinds. A regular-season tie ends at 0.5.
-- **Source:** nflverse/nflfastR published `home_wp` (`truth_label: "historical"`), not this project's model.
+- **Source:** nflverse's published win probability that accounts for pregame team strength (`models/past_play_wp.py`), `truth_label: "historical"`. Rows where nflverse has none (END GAME markers) use this project's model and are flagged (`wp_fallback: true` on swing exports, `wp_fallback_play_ids` in game files). Our own model is otherwise used only for what-if 4th-down states.
 
 ## Quiz pack (`frontend/lib/quizPack.json`, type `QuizReveal` in `frontend/lib/quiz.ts`)
 
@@ -39,8 +39,8 @@ CI (`backend/tests/test_swing_examples.py`) checks every play against a committe
 { source, wp_source, swing_filter, top_n,
   games: { [game_id]: {
     game_id, home_team_id, away_team_id, home_score, away_score,   // final, incl. OT
-    first_home_wp,                                                 // nflverse pre-snap home WP of the first row
-    opening_home_wp, opening_away_wp,                              // nflverse pre-snap WP at the first real play (kickoff); away = 1 - home
+    first_home_wp,                                                 // nflverse published pre-snap home WP of the first row
+    opening_home_wp, opening_away_wp,                              // nflverse published pre-snap WP at the first real play (kickoff); away = 1 - home
     swings:         SwingPlay[],  // top_n by |delta_home_wp|, shared swing filter, in game order
     overtime_plays: SwingPlay[],  // OT scoring plays, NO win-chance fields (house rule)
     chart:          SwingPlay[]   // every regulation play row with WP (+ swing_eligible), for the line
@@ -56,7 +56,8 @@ SwingPlay = { game_id, play_id /* nflverse play_id as string */, qtr /* 5 = OT *
   event /* turnover_on_downs | interception | fumble_lost | touchdown | field_goal | punt | other */,
   display_text /* fan text, <= 20 words: show this */,
   penalty_text /* string | null: flags after a play, shown after display_text; null on 'No play' rows */, raw_desc /* verbatim nflverse desc */,
-  home_wp_pre?, home_wp_post?, delta_home_wp? /* swings */, swing_eligible? /* chart */ }
+  home_wp_pre?, home_wp_post? /* chart + play lists */, delta_home_wp? /* swings */, swing_eligible? /* chart */,
+  wp_fallback? /* chart + play lists: true when nflverse had no WP and our model filled it */ }
 ```
 
 Full play lists: `frontend/lib/plays/<game_id>.json` = `{ game_id, plays: SwingPlay[] }` (type `GamePlayList`),
@@ -84,7 +85,7 @@ roles, otherwise nflverse short names as written (e.g. kickoffs, kneels); <= 20 
 `event` priority: turnover_on_downs > interception > fumble_lost > touchdown > field_goal > punt > other.
 
 Swing filter: regulation (qtr 1–4) `run` / `pass` / `field_goal` / `punt` only; kneels, spikes, no-plays, kickoffs,
-timeouts and other non-play rows never swing. WP is nflverse's `home_wp` / `home_wp_post`, not our model.
+timeouts and other non-play rows never swing. WP is nflverse's published win probability (see **Source** above); our model only on flagged fallback rows.
 
 Team colors: `frontend/lib/teamColors.json` = `{ _source, _tertiary_notes, teams: { [team_abbr]: { primary, secondary, tertiary } } }`,
 the 32 current nflverse abbreviations the repo uses (Rams = `LA`; `LAR`/`OAK`/`SD`/`STL` alias rows dropped), uppercase

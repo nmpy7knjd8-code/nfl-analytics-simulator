@@ -188,9 +188,9 @@ test("#76: chart and swing points are rows of the plays file", () => {
 });
 
 test("#88: opening win chance is per game, not the flat 56.68% home prior", () => {
-  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.away, 0.4332);
-  assert.equal(openingWinChance("2023_03_PHI_TB")!.away, 0.4537);
-  assert.equal(openingWinChance("2023_01_DET_KC")!.away, 0.4332);
+  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.away, 0.5888);
+  assert.equal(openingWinChance("2023_03_PHI_TB")!.away, 0.7246);
+  assert.equal(openingWinChance("2023_01_DET_KC")!.away, 0.3551);
   for (const id of Object.keys(WP_FIXTURES)) {
     const o = openingWinChance(id)!;
     assert.ok(Math.abs(o.home + o.away - 1) < 1e-6);
@@ -210,6 +210,14 @@ test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & 
   assert.ok(n > 0);
 });
 
+test("QA M14: 'At kickoff' home win chance is nflverse vegas_home_wp", () => {
+  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.home, 0.4112); // NYJ 41.1%
+  assert.equal(openingWinChance("2023_01_DET_KC")!.home, 0.6449); // KC 64.5%
+  assert.equal(openingWinChance("2023_03_PHI_TB")!.home, 0.2754); // TB 27.5%
+  const g = JSON.stringify(SWING_EXPORT);
+  assert.ok(!/spread|odds|vegas_|betting/i.test(g.replace(/"wp_source":"[^"]*"/g, "")));
+});
+
 test("L5: DET_KC Q3 11:04 pick-six Why names the interception return TD", () => {
   const s = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series).find((x) => clockLabel(x.point) === "Q3 11:04")!;
   assert.ok(s, "pick-six is a swing play");
@@ -223,10 +231,11 @@ test("L5: a fumble return TD says fumble", () => {
 });
 
 test("L6: BUF_NYJ Q2 13:02 Breece Hall 83 yds says the gain moved the ball from deep in its own end", () => {
-  const s = findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series).find((x) => clockLabel(x.point) === "Q2 13:02")!;
-  assert.ok(s, "Hall run is a swing play");
-  assert.equal((s.point as EventPoint).yards_gained, 83);
-  assert.match(s.why, /because an 83-yard gain moved the ball from deep in its own end/);
+  // With nflverse's published WP this run (NYJ 33.7% -> 44.8%) is no longer among the game's
+  // listed swing plays, so check its Why text on the chart point directly.
+  const p = WP_FIXTURES["2023_01_BUF_NYJ"].series.points.find((x) => clockLabel(x) === "Q2 13:02" && (x as EventPoint).yards_gained === 83) as EventPoint;
+  assert.ok(p, "Hall run is on the chart");
+  assert.match(whyText(0.111, p, "NYJ"), /because an 83-yard gain moved the ball from deep in its own end/);
 });
 
 test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", () => {

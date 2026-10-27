@@ -1,7 +1,9 @@
 """games/{season}.json indexes and games/{id}.json play files, from nflverse only.
 
 Index facts come from nflverse schedules (whitelisted columns, never odds). Play rows,
-text, and home-side win chances come from nflverse PBP (`home_wp`). Swing flags come
+text, and home-side win chances come from nflverse PBP's published spread-aware WP
+(models.past_play_wp; our model only on rows nflverse leaves empty, listed in
+`wp_fallback_play_ids`). Swing flags come
 from `build_wp_series`, which forces the final point to 1/0/0.5 by result. 4th-down
 values come from the shared engine table (products.fourth_downs).
 
@@ -14,6 +16,7 @@ import sys
 
 import pandas as pd
 
+from nfl_sim.models.past_play_wp import MODEL_INPUT_COLUMNS, NFLVERSE_WP_COLUMNS, past_play_home_wp
 from nfl_sim.models.wp_series import build_wp_series
 from nfl_sim.products import fourth_downs
 from nfl_sim.products.game_compact import compact
@@ -29,7 +32,8 @@ FACT_COLUMNS = ("game_id", "season", "game_type", "week", "gameday", "home_team"
 PLAY_COLS = ["game_id", "play_id", "qtr", "quarter_seconds_remaining", "game_seconds_remaining", "posteam",
              "down", "ydstogo", "yardline_100", "desc", "play_type", "home_wp", "total_home_score",
              "total_away_score"]
-PBP_COLS = list(dict.fromkeys(PLAY_COLS + TEXT_COLUMNS + ID_COLS))
+PBP_COLS = list(dict.fromkeys([c for c in PLAY_COLS if c != "home_wp"] + TEXT_COLUMNS + ID_COLS
+                               + NFLVERSE_WP_COLUMNS + MODEL_INPUT_COLUMNS))
 
 
 def play_texts(recs: list[dict], players: dict, roster: dict) -> list[tuple[str, str | None]]:
@@ -83,6 +87,9 @@ def _str(v):
 def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict,
              players: dict | None = None, roster: dict | None = None) -> dict:
     # nflverse row order is play order; play_id is NOT monotone (e.g. late timeouts).
+    if "vegas_wp" in plays.columns:  # raw nflverse rows (tests may pass home_wp directly)
+        wp = past_play_home_wp(plays)
+        plays = plays.assign(home_wp=wp["home_wp"], wp_fallback=wp["wp_fallback"])
     plays = plays[plays["desc"].notna()].reset_index(drop=True)
     recs = plays.to_dict("records")
     series = build_wp_series(
@@ -117,6 +124,7 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
         "wp_perspective": "home", "swing_threshold": SWING_THRESHOLD,
         "final_home_wp": None if last is None else last.home_wp_post,
         "swing_play_ids": [int(x) for x in series.swing_play_ids],
+        "wp_fallback_play_ids": [int(r["play_id"]) for r in recs if r.get("wp_fallback")],
         "plays": rows,
     }
 

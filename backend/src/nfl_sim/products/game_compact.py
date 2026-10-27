@@ -53,6 +53,7 @@ def compact(doc: dict) -> dict:
         "schema_version": "game.v2", "provenance": {k: prov[k] for k in ("source", "data_sha256", "build_date") if k in prov},
         "game": doc["game"], "wp_perspective": doc["wp_perspective"], "swing_threshold": doc["swing_threshold"],
         "final_home_wp": _r(doc["final_home_wp"]), "swing_play_ids": doc["swing_play_ids"],
+        "wp_fallback_play_ids": doc.get("wp_fallback_play_ids", []),
         "engine_version": engine_version, "fourth_cols": ["recommendation", "close_call", "gap_pts", "wp", "actual", "is_home_offense"],
         "cols": cols, "fourth": fourth,
     }
@@ -84,4 +85,5 @@ def expand(doc: dict) -> dict:
             p["fourth_down"] = None
         plays.append(p)
     return {**{k: doc[k] for k in ("provenance", "game", "wp_perspective", "swing_threshold", "final_home_wp",
-                                    "swing_play_ids")}, "schema_version": "game.v1", "plays": plays}
+                                    "swing_play_ids")}, "wp_fallback_play_ids": doc.get("wp_fallback_play_ids", []),
+            "schema_version": "game.v1", "plays": plays}

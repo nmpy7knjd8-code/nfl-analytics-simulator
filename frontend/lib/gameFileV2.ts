@@ -14,6 +14,8 @@ export type GameFileV2 = {
   swing_threshold: number;
   final_home_wp: number | null;
   swing_play_ids: number[];
+  /** Plays whose home_wp came from our model because nflverse had none (END GAME rows). */
+  wp_fallback_play_ids?: number[];
   engine_version: string | null;
   fourth_cols: string[];
   cols: {
