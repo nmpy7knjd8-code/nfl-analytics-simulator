@@ -5,7 +5,7 @@ import { CHECKER_ENABLED } from "../lib/features";
 // Branded 404 (QA2 L4). The Pages build (scripts/pages/assemble.py) injects a small
 // script into the exported 404.html that forwards old /demo/, /quiz/ and /decide/ links.
 export const metadata: Metadata = {
-  title: "Page not found · NFL Analytics Simulator",
+  title: "Page not found · Fourth & Daily",
   description: "That page doesn't exist. Head home, play today's fourth-down quiz, or open a game.",
   robots: { index: false },
 };
