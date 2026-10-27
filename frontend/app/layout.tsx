@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { AppNav, TopBar } from "../components/AppNav";
 import "./globals.css";
+import "./simple-game.css";
 import { shareMetadata } from "../lib/share";
 
 // Self-hosted (app/fonts, OFL) so builds never fetch from Google Fonts.
@@ -53,10 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Skip to content
           </a>
           <TopBar />
-          <div className="app-stage">
-            {children}
-            <footer className="site-legal">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</footer>
-          </div>
+          <div className="app-stage">{children}</div>
           <AppNav />
         </div>
       </body>

@@ -14,7 +14,14 @@ const ALL_TABS = [
 // H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
 const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
+/** The simple game ("/" and "/daily") has its own header and ☰ menu, so the old chrome is hidden there. */
+function useGameRoute(): boolean {
+  const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  return p === "/" || p === "/daily";
+}
+
 export function TopBar() {
+  if (useGameRoute()) return null;
   return (
     <header className="fd-top">
       <Link href="/" className="fd-brand">
@@ -29,7 +36,9 @@ export function TopBar() {
 }
 
 export function AppNav() {
+  const game = useGameRoute();
   const pathname = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  if (game) return null;
   return (
     <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {

@@ -17,7 +17,11 @@ export type DailyItem = {
     QuizItem["situation"],
     "posteam" | "defteam" | "home_team" | "away_team" | "posteam_score" | "defteam_score" | "qtr" |
     "quarter_seconds_remaining" | "yardline_100" | "down" | "distance"
-  >;
+  > & {
+    /** Timeouts left before the snap (nflverse posteam/defteam_timeouts_remaining); null hides the dots. */
+    posteam_timeouts?: number | null;
+    defteam_timeouts?: number | null;
+  };
   historical_action?: string | null;
   reveal: { recommendation: string; values: Partial<Record<QuizChoice, number>> };
 };

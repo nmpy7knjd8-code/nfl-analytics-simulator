@@ -7,7 +7,7 @@ import { TruthChip } from "../../components/TruthChip";
 import { FIXTURE_BANNER } from "../../lib/fixtures";
 
 export const metadata = shareMetadata({
-  title: "4th & short — NFL Analytics Simulator",
+  title: "4th-down checker · Fourth & Daily",
   description:
     "Compare go for it, kick, or punt in plain English — chance of winning, not a stats dump.",
   path: "/fourth-down/",
