@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FourthDownEmpirics, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, FourthDownEmpirics, TransitionMode
 from nfl_sim.models.wp_model import WPModel
 
 INCONCLUSIVE_EPS = 0.01
@@ -182,7 +182,7 @@ def state_punt(
 
 
 def kick_distance(sit: FourthDownSituation) -> int:
-    return int(sit.yardline_100 + 17)
+    return int(sit.yardline_100 + FG_SNAP_YARDS)
 
 
 @dataclass
@@ -401,7 +401,7 @@ class FourthDownAnalyzer:
             assumptions=[
                 "Path A uncalibrated WP only (no isotonic)",
                 clock_note,
-                f"FG distance = yardline_100 + 17; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
+                f"FG distance = yardline_100 + {FG_SNAP_YARDS}; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
                 "Go fail / FG miss → opponent at 100−yardline_100",
                 punt_note,
                 "Empirics fit REG train 2019–2021 only (never 2023+)",
