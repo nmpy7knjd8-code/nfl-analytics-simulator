@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
+import { yardArticle, clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
 import { GAME_PLAY_LISTS } from "./gamePlays";
 import { openingWinChance } from "./wpFixtures";
@@ -137,7 +137,7 @@ test("M10: a failed fourth down's Why says the ball was handed over, not the sco
   const tod = sw.filter((s) => (s.point as { event?: string }).event === "turnover_on_downs");
   assert.ok(tod.length > 0);
   for (const s of tod) {
-    assert.match(s.why, /a failed fourth down hands the ball over/);
+    assert.match(s.why, /a failed fourth down handed the ball over/);
     assert.doesNotMatch(s.why, /score picture/);
   }
 });
@@ -204,7 +204,7 @@ test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & 
       const p = s.point as EventPoint;
       if (!p.fourth_down_failed) continue;
       n++;
-      assert.match(s.why, /a failed fourth down hands the ball over/);
+      assert.match(s.why, /a failed fourth down handed the ball over/);
       assert.match(situationLine(p, series.home_team_id, series.away_team_id) ?? "", /^4th & \d+/);
     }
   assert.ok(n > 0);
@@ -222,7 +222,7 @@ test("L5: DET_KC Q3 11:04 pick-six Why names the interception return TD", () => 
   const s = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series).find((x) => clockLabel(x.point) === "Q3 11:04")!;
   assert.ok(s, "pick-six is a swing play");
   assert.equal((s.point as EventPoint).return_td, true);
-  assert.match(s.why, /because an interception returned for a touchdown put 7 points on the board/);
+  assert.match(s.why, /because an interception returned for a touchdown gave the defense a score/);
 });
 
 test("L5: a fumble return TD says fumble", () => {
@@ -230,12 +230,12 @@ test("L5: a fumble return TD says fumble", () => {
   assert.match(whyText(0.2, p, "DET"), /a fumble returned for a touchdown/);
 });
 
-test("L6: BUF_NYJ Q2 13:02 Breece Hall 83 yds says a big gain flipped field position", () => {
+test("L6: BUF_NYJ Q2 13:02 Breece Hall 83 yds says the gain moved the ball from deep in its own end", () => {
   // With nflverse's published WP this run (NYJ 33.7% -> 44.8%) is no longer among the game's
   // listed swing plays, so check its Why text on the chart point directly.
   const p = WP_FIXTURES["2023_01_BUF_NYJ"].series.points.find((x) => clockLabel(x) === "Q2 13:02" && (x as EventPoint).yards_gained === 83) as EventPoint;
   assert.ok(p, "Hall run is on the chart");
-  assert.match(whyText(0.111, p, "NYJ"), /because a big gain flipped field position/);
+  assert.match(whyText(0.111, p, "NYJ"), /because an 83-yard gain moved the ball from deep in its own end/);
 });
 
 test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", () => {
@@ -243,4 +243,41 @@ test("L5: Gipson's OT punt-return TD (return_td=false) gets no return-TD text", 
   assert.equal(ot.return_td, false);
   const p = { ...WP_FIXTURES["2023_01_BUF_NYJ"].series.points[0], event: ot.event, return_td: ot.return_td, yards_gained: ot.yards_gained, description: ot.description, is_overtime: true } as EventPoint;
   assert.doesNotMatch(whyText(0.3, p, "NYJ"), /returned for a touchdown/);
+});
+
+const base = () => ({ ...WP_FIXTURES["2023_01_DET_KC"].series.points[0] }) as EventPoint;
+
+test("P2-K: Why is past tense, including the late-game tail", () => {
+  const p = { ...base(), event: "punt", game_seconds_elapsed: 3500, is_overtime: false } as EventPoint;
+  const t = whyText(0.2, p, "DET");
+  assert.match(t, /a punt flipped field position, and with little time left there was less chance to answer\.$/);
+  assert.match(whyText(0.2, { ...base(), event: "touchdown" } as EventPoint, "DET"), /a touchdown changed the score in one snap/);
+  assert.doesNotMatch(t, /\b(hands|changes|flips|is less)\b/);
+});
+
+test("P3-K: big-gain wording depends on where the gain started or ended", () => {
+  const g = (yl: number | null, y: number) => whyText(0.2, { ...base(), event: "pass", yardline_100: yl, yards_gained: y } as EventPoint, "DET");
+  assert.match(g(85, 30), /a 30-yard gain moved the ball from deep in its own end/);
+  assert.match(g(45, 30), /a 30-yard gain moved the ball into scoring range/);
+  assert.match(g(70, 25), /a 25-yard gain flipped field position/);
+  assert.match(g(null, 25), /a 25-yard gain flipped field position/);
+});
+
+test("P3-L: return TDs do not assume 7 points", () => {
+  const t = whyText(0.2, { ...base(), event: "fumble_lost", return_td: true } as EventPoint, "DET");
+  assert.match(t, /a fumble returned for a touchdown gave the defense a score/);
+  assert.doesNotMatch(t, /7 points/);
+});
+
+test("#110 kick_return_td: punt and kickoff return TDs get their own wording; missing field is safe", () => {
+  const k = (d: string, v?: boolean) => whyText(0.3, { ...base(), event: "touchdown", return_td: false, kick_return_td: v, description: d } as EventPoint, "NYJ");
+  assert.match(k("B.Martin punts 46 yards. X.Gipson returns it 65 yards for a TOUCHDOWN", true), /a punt returned for a touchdown gave the return team a score/);
+  assert.match(k("J.Bates kicks 65 yards. returns it 100 yards for a TOUCHDOWN", true), /a kickoff returned for a touchdown/);
+  assert.match(k("punts ... TOUCHDOWN"), /a touchdown changed the score/);
+});
+
+test("article before yardage: 'an' for 8, 11, 18, 80–89; 'a' otherwise", () => {
+  for (const n of [8, 11, 18, 80, 83, 89]) assert.equal(yardArticle(n), "an", String(n));
+  for (const n of [1, 7, 10, 20, 21, 28, 38, 65, 79, 90, 99, 100, 111]) assert.equal(yardArticle(n), "a", String(n));
+  assert.match(whyText(0.2, { ...base(), event: "pass", yardline_100: 60, yards_gained: 81 } as EventPoint, "DET"), /an 81-yard gain/);
 });
