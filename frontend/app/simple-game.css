@@ -63,3 +63,8 @@
 /* Game routes hide the old chrome (☰ menu replaces bottom nav). */
 body:has(.sg-app) .app-stage{padding:0;min-height:0}
 @media (max-width:375px){.sg-rv .sg-v{font-size:15px}.sg-rv .sg-lbl{font-size:12px}.sg-rv .sg-ln{padding:3px 0}.sg-rv .sg-field svg{max-height:24vh}.sg-rv .sg-verdict{font-size:30px;margin:8px 0 6px}.sg-rv .sg-btns{padding-top:8px}}
+/* Card design (Garrett, 10-27): solid black page, the whole game on one clean rounded white card. */
+body:has(.sg-app),body:has(.sg-app) .app-shell,body:has(.sg-app) .app-stage{background:#000}
+html:has(.sg-app){background:#000}
+.sg-app{min-height:calc(100dvh - 16px);margin:8px auto;width:calc(100% - 16px);max-width:414px;border-radius:20px;padding:0 14px 8px}
+@media (max-width:375px){.sg-app{min-height:calc(100dvh - 12px);margin:6px auto;width:calc(100% - 12px);border-radius:16px;padding:0 12px 6px}}
