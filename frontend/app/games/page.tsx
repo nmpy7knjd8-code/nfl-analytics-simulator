@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExampleBanner } from "../../components/ExampleBanner";
+import { GAME_SOURCE_LINE } from "../../lib/fixtures";
 import { TruthChip } from "../../components/TruthChip";
 import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
@@ -14,7 +14,7 @@ export const metadata = shareMetadata({
 
 export default async function GamesPage() {
   const result = await fetchGames(2023);
-  const { data: games, source, banner } = result;
+  const { data: games } = result;
 
   return (
     <main className="main page" id="main">
@@ -27,10 +27,10 @@ export default async function GamesPage() {
         <p>Pick a matchup — walk the story play by play.</p>
       </header>
 
-      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
+      <p className="muted game-source">{GAME_SOURCE_LINE}</p>
 
       <p className="list-count">
-        {games.total} {source === "live" ? "from your lake" : "examples"}
+        {games.total} games
       </p>
 
       <ul className="game-list">

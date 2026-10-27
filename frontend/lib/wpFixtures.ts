@@ -5,6 +5,7 @@
  * nflverse's home_wp / home_wp_post (not our model). Contract shape: frontend/contracts/README.md.
  */
 import swingPlays from "./swingPlays.json";
+import { GAME_SOURCE_LINE } from "./fixtures";
 import {
   DEFAULT_SWING_WP_THRESHOLD,
   REGULATION_SECONDS,
@@ -33,6 +34,8 @@ export interface SwingPlay {
   distance: number | null;
   yardline_100: number | null;
   event: SwingEvent;
+  /** down == 4 and nflverse fourth_down_failed == 1 (go-for-it that failed). */
+  fourth_down_failed: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
@@ -56,6 +59,9 @@ export interface SwingGame {
   home_score: number;
   away_score: number;
   first_home_wp: number;
+  /** nflverse pre-snap home_wp of the first real play (opening kickoff); away = 1 - home. */
+  opening_home_wp: number;
+  opening_away_wp: number;
   swings: SwingPlay[];
   overtime_plays: SwingPlay[];
   chart: SwingPlay[];
@@ -67,7 +73,7 @@ function elapsedOf(q: number, left: number): number {
 }
 
 function build(g: SwingGame): ChartSeries {
-  const points: WinProbabilityPoint[] = [];
+  const points: (WinProbabilityPoint & { event?: string })[] = [];
   let pre = g.first_home_wp;
   for (const r of g.chart) {
     const post = r.home_wp_post!;
@@ -80,6 +86,7 @@ function build(g: SwingGame): ChartSeries {
       game_seconds_elapsed: elapsedOf(r.qtr, r.clock_seconds),
       possession_team_id: r.possession_team_id,
       description: r.description,
+      event: r.event,
       home_wp_pre: pre,
       home_wp_post: post,
       delta_home_wp: delta,
@@ -124,7 +131,7 @@ function build(g: SwingGame): ChartSeries {
   return {
     ...splitAtRegulation(series),
     origin: "example",
-    note: "Example game page — real plays and nflverse's win chance, not our model's output.",
+    note: GAME_SOURCE_LINE,
   };
 }
 

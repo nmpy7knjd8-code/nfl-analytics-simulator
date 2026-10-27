@@ -112,3 +112,21 @@ test("H5: every displayed swing / chart play is a real export row (verified vs p
     for (const s of g.swings) assert.ok(rows.has(s.play_id), `${id} swing ${s.play_id}`);
   }
 });
+
+test("game pages carry the one real-source line, not an example label", async () => {
+  const { WP_FIXTURES } = await import("./wpFixtures");
+  const { GAME_SOURCE_LINE } = await import("./fixtures");
+  assert.equal(GAME_SOURCE_LINE, "Real plays and win chance from nflverse (not our model).");
+  for (const s of Object.values(WP_FIXTURES)) assert.equal(s.note, GAME_SOURCE_LINE);
+});
+
+test("M10: a failed fourth down's Why says the ball was handed over, not the score", async () => {
+  const { WP_FIXTURES } = await import("./wpFixtures");
+  const sw = Object.values(WP_FIXTURES).flatMap((s) => findSwingPlays(s.series));
+  const tod = sw.filter((s) => (s.point as { event?: string }).event === "turnover_on_downs");
+  assert.ok(tod.length > 0);
+  for (const s of tod) {
+    assert.match(s.why, /a failed fourth down hands the ball over/);
+    assert.doesNotMatch(s.why, /score picture/);
+  }
+});
