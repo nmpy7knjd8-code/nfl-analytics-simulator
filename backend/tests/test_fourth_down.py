@@ -61,7 +61,7 @@ def test_kick_distance_formula():
     sit = FourthDownSituation(
         yardline_100=33, distance=3, score_differential=0, game_seconds_remaining=120, half_seconds_remaining=120
     )
-    assert kick_distance(sit) == 50
+    assert kick_distance(sit) == 51  # nflverse: yardline_100 + 18
 
 
 def test_go_convert_and_fail_states():
@@ -254,7 +254,7 @@ def test_fg_table_keeps_real_kicks_beyond_64():
     assert tbl[(70, 70)]["made"] == 1 and max(k[1] for k in tbl) == 70
 
 
-@pytest.mark.parametrize("yardline,has_fg", [(30, True), (47, True), (48, False), (60, False)])
+@pytest.mark.parametrize("yardline,has_fg", [(30, True), (46, True), (47, False), (60, False)])
 def test_analyzer_drops_fg_when_out_of_range(yardline, has_fg):
     from nfl_sim.models.fourth_down import FourthDownAnalyzer, sensitivity_example
 

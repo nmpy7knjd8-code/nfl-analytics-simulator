@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from nfl_sim.models.fourth_down_empirics import MAX_FG_DISTANCE
+from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS, MAX_FG_DISTANCE
 from nfl_sim.quiz.pack import QUIZ_PACK_PATH
 
 REPO = Path(__file__).resolve().parents[2]
@@ -52,7 +52,7 @@ def test_item_is_a_real_play(item):
 
 @pytest.mark.parametrize("item", ITEMS, ids=lambda i: i["id"])
 def test_no_field_goal_beyond_64_yards(item):
-    kick = item["situation"]["yardline_100"] + 18
+    kick = item["situation"]["yardline_100"] + FG_SNAP_YARDS
     r = item["reveal"]
     if kick > MAX_FG_DISTANCE:
         assert "fg" not in r["values"], f"{kick}-yd FG offered"

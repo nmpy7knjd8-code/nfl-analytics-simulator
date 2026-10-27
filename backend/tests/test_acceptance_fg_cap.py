@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from nfl_sim.models.fourth_down_empirics import FG_SNAP_YARDS
 from nfl_sim.models.fourth_down import FourthDownAnalyzer, FourthDownSituation, kick_distance
 
 from test_fourth_down import _toy_empirics, _toy_wp_model
@@ -76,6 +77,6 @@ DATA_FILES = sorted(
 
 @pytest.mark.parametrize("path", DATA_FILES, ids=lambda p: str(p.relative_to(REPO)))
 def test_committed_data_has_no_fg_past_64(path):
-    bad = [f"{where}: {int(yl) + 18}-yd FG" for where, yl in _fg_values(json.loads(path.read_text()))
-           if yl + 18 > MAX_FG]
+    bad = [f"{where}: {int(yl) + FG_SNAP_YARDS}-yd FG" for where, yl in _fg_values(json.loads(path.read_text()))
+           if yl + FG_SNAP_YARDS > MAX_FG]
     assert not bad, "\n".join(bad)
