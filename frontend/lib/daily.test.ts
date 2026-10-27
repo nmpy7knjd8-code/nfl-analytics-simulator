@@ -40,7 +40,7 @@ test("no play repeats inside a cycle; schedule is fixed per date", () => {
   const start = dayNumber("2026-10-26") - (dayNumber("2026-10-26") % days);
   for (let i = 0; i < days; i++) {
     const d = new Date(Date.UTC(2026, 0, 1 + start + i)).toISOString().slice(0, 10);
-    for (const it of dailySet(d)) {
+    for (const it of dailySet(d, [...DAILY_ITEMS])) { // shuffle fallback (custom list skips the schedule)
       assert.ok(!seen.has(it.id), `repeat ${it.id} on ${d}`);
       seen.add(it.id);
     }
@@ -189,3 +189,6 @@ test("0015 follow-up: CAR-NO Q3 5:11, Kick and Go tie at 91.9% so both are Best;
   assert.deepEqual(g.fg, { tag: "Best", best: true });
   assert.equal(g.punt?.tag, "About as good");
 });
+
+// P1 schedule pin tests live in their own file; imported here so npm test runs them without a package.json change.
+import "./dailySchedule.test";
