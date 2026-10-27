@@ -79,7 +79,7 @@ test("share text has no spoilers", () => {
 test("option rules: Kick hidden past 64 yd, Punt hidden inside the opponent 35", () => {
   for (const it of DAILY_ITEMS) {
     const o = Object.fromEntries(optionStates(it).map((x) => [x.id, x]));
-    if (it.situation.yardline_100 + 18 > 64) assert.ok(!o.fg.shown && o.fg.note === "Too far to kick (65+ yards).");
+    if (it.situation.yardline_100 + 18 > 64) assert.ok(!o.fg.shown && o.fg.note === "Too far to kick (65+ yards)");
     if (it.situation.yardline_100 < 35) assert.equal(o.punt.shown, false);
     // The model's pick is always something the player can choose.
     const best = scoreCall("go", it).best;
@@ -148,5 +148,5 @@ test("H4: a choice missing from reveal.values is never shown or credited", () =>
   const noFg = { ...it, reveal: { ...it.reveal, values: rest } } as typeof it;
   assert.ok(!rankedValues(noFg).some(([id]) => id === "fg"));
   assert.equal(scoreCall("fg", noFg).credit, 0);
-  assert.equal(CLOSE_LABEL, "Close call — half credit");
+  assert.equal(CLOSE_LABEL, "Close call");
 });

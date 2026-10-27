@@ -162,7 +162,7 @@ export function practiceSet(seed: string, items: DailyItem[] = DAILY_ITEMS, size
 
 export const MAX_FG_YARDS = 64;
 /** One label everywhere (QA2 M8). */
-export const CLOSE_LABEL = "Close call — half credit";
+export const CLOSE_LABEL = "Close call";
 
 /** "Close call" when the best two options are within 2 win-chance points. */
 export const CLOSE_CALL_GAP = 0.02;
@@ -172,7 +172,7 @@ export function fieldGoalYards(item: DailyItem): number {
   return Math.round(item.situation.yardline_100 + 18);
 }
 
-export const TOO_FAR_NOTE = `Too far to kick (${MAX_FG_YARDS + 1}+ yards).`;
+export const TOO_FAR_NOTE = `Too far to kick (${MAX_FG_YARDS + 1}+ yards)`;
 
 /** True when the daily game must not offer Kick (house rule: never over 64 yd). */
 export function kickTooFar(item: DailyItem): boolean {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CHECKER_ENABLED } from "../../../lib/features";
 import { notFound } from "next/navigation";
 import { DAILY_ITEMS } from "../../../lib/daily";
 import { CARD_SOURCE, cardImageUrl, cardPath, pct, SITE_URL, whatIfFor, xIntentUrl } from "../../../lib/whatIf";
@@ -50,7 +51,7 @@ export default async function CardPage({ params }: Props) {
       </section>
       <div className="fd-actions">
         <a className="fd-btn fd-btn-primary wi-btn" href={xIntentUrl(card)} target="_blank" rel="noopener noreferrer">Share on X</a>
-        <Link className="fd-btn wi-btn" href={card.checkerHref}>Check this 4th down</Link>
+        {CHECKER_ENABLED ? <Link className="fd-btn wi-btn" href={card.checkerHref}>Check this 4th down</Link> : null}
         {card.storyHref ? <Link className="fd-btn wi-btn" href={card.storyHref}>See this game at this play</Link> : null}
       </div>
       <p className="fd-muted">Sharing opens X with the text filled in. You choose whether to post. Win chance is the model&apos;s estimate from past games.</p>

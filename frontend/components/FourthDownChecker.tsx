@@ -1,5 +1,6 @@
 "use client";
 
+import { gapPoints, gapSentence } from "../lib/winFormat";
 import { useEffect, useMemo, useState } from "react";
 import type { QuizChoice } from "../lib/quiz";
 import { CLOSE_CALL_GAP, CLOSE_LABEL, DAILY_ITEMS } from "../lib/daily";
@@ -109,7 +110,7 @@ export function FourthDownChecker() {
         {result ? (
           <>
             <p className="ck-rec">{NAME[result.best]}</p>
-            {result.closeCall ? <p className="ck-close">{CLOSE_LABEL}: the top two are under {Math.round(CLOSE_CALL_GAP * 100)} pts apart.</p> : null}
+            {result.closeCall ? <p className="ck-close">{CLOSE_LABEL}: the top two are under {gapPoints(CLOSE_CALL_GAP)} of win chance apart.</p> : null}
             <ul className="fd-bars" aria-label="Chance to win by choice">
               {result.options.filter((o) => o.shown && !o.disabled && result.item.reveal.values[o.id] != null).map((o) => {
                 const v = result.item.reveal.values[o.id];
@@ -127,7 +128,7 @@ export function FourthDownChecker() {
             </ul>
             {result.ranked.length > 1 ? (
               <p className="fd-why">
-                <strong>Why:</strong> {NAME[result.best]} gives the offense a {Math.round(result.ranked[0][1] * 100)}% chance to win, {result.gap * 100 < 1 ? "less than 1 point" : `${Math.round(result.gap * 100)} ${Math.round(result.gap * 100) === 1 ? "point" : "points"}`} more than {SHORT[result.ranked[1][0]]}.
+                <strong>Why:</strong> {gapSentence(result.best, result.ranked[0][1], result.ranked[1][0], result.ranked[1][1], "the offense")}
                 {fgOff ? ` ${fgOff}` : ""}
               </p>
             ) : null}

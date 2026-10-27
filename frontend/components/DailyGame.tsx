@@ -7,10 +7,12 @@ import type { DailyItem } from "../lib/daily";
 import {
   dailyStats, dateKey, formatCountdown, formatScore, loadStreak, msUntilNextSet, optionStates,
   practiceSet, rankedValues, recordDaily, saveStreak, scoreCall, shareText, visibleStreak,
-  dailySet, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, TOO_FAR_NOTE, type CallResult, type ScoredCall, type StreakState,
+  dailySet, CLOSE_LABEL, setNumber, shiftDay, seasonMode, shareLabel, CLOSE_CALL_GAP, fieldGoalYards, MAX_FG_YARDS, type CallResult, type ScoredCall, type StreakState,
 } from "../lib/daily";
 import { CHOICE_NAME, cost, gameText, scoreboardText, whyText } from "../lib/dailyView";
 import { playIdFromItemId, storyHref } from "../lib/gameStory";
+import { gapPoints } from "../lib/winFormat";
+import { CHECKER_ENABLED } from "../lib/features";
 import { CardSkeleton, EmptyState } from "./EmptyState";
 
 const PROGRESS_KEY = "fourth-and-daily.progress.v1";
@@ -51,10 +53,13 @@ function Field({ item }: { item: DailyItem }) {
 
 function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
   const ranked = rankedValues(item);
+  const far = fieldGoalYards(item) > MAX_FG_YARDS;
+  const second = ranked[1]?.[0];
+  const closeOther = scored.result === "close" ? (scored.pick === scored.best ? second : scored.best) : null;
   return (
     <ul className="fd-bars" aria-label={`${item.situation.posteam} chance to win by choice`}>
       {ranked.map(([id, v]) => (
-        <li key={id} className={`fd-bar${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}`}>
+        <li key={id} className={`fd-bar${id === scored.best ? " is-best" : ""}${id === scored.pick ? " is-pick" : ""}${scored.result === "close" && id === scored.pick ? " is-close-pick" : ""}${id === closeOther ? " is-close-other" : ""}`}>
           <span className="fd-bar-label">
             {CHOICE_NAME[id]}
             {id === scored.pick ? <span className="fd-tag">Your pick</span> : null}
@@ -68,6 +73,13 @@ function Bars({ item, scored }: { item: DailyItem; scored: ScoredCall }) {
           </span>
         </li>
       ))}
+      {far ? (
+        <li className="fd-bar is-off">
+          <span className="fd-bar-label">{CHOICE_NAME.fg}</span>
+          <span className="fd-bar-track" />
+          <span className="fd-bar-num">Out of range</span>
+        </li>
+      ) : null}
     </ul>
   );
 }
@@ -182,6 +194,14 @@ export function DailyGame({ mode }: { mode: Mode }) {
     }
   }, [finished, mode, today, streak, scores, items.length]);
 
+  // UI recheck P1-A: hide the tab bar while a /daily/ set is in play.
+  const inPlay = mode === "daily" && items.length > 0 && !(index >= items.length && finished) && !restoredDone;
+  useEffect(() => {
+    if (!window.location.pathname.includes("/daily")) return;
+    document.body.classList.toggle("is-playing", inPlay);
+    return () => document.body.classList.remove("is-playing");
+  }, [inPlay]);
+
   if (!today || !items.length) {
     return <CardSkeleton label={mode === "daily" ? "Loading today's 5" : "Loading 5 real 4th downs"} />;
   }
@@ -261,13 +281,13 @@ export function DailyGame({ mode }: { mode: Mode }) {
         {worst && worst.c > 0 ? (
           <p>
             <strong>Toughest miss:</strong> {scoreboardText(items[worst.i])} — {CHOICE_NAME[worst.s.pick]} cost about{" "}
-            {Math.round(worst.c * 100)} points of win chance.
+            {gapPoints(worst.c)} of win chance.
           </p>
         ) : null}
         {mode === "daily" && stats ? (
           <>
             <dl className="fd-stats">
-              <div><dt>Streak</dt><dd>{stats.current_streak}</dd></div>
+              <div><dt>Current streak</dt><dd>{stats.current_streak}</dd></div>
               <div><dt>Best streak</dt><dd>{stats.best_streak}</dd></div>
               <div><dt>Days played</dt><dd>{stats.days_played}</dd></div>
             </dl>
@@ -328,7 +348,9 @@ export function DailyGame({ mode }: { mode: Mode }) {
   const scored = scores[index];
   const classic = mode !== "practice" && seasonMode(mode === "yesterday" ? shiftDay(today, -1) : today) === "classic";
   const opts = optionStates(item);
-  const choices = opts.filter((o) => o.shown);
+  // Recheck P1-D: an out-of-range FG stays as a disabled row (never pickable, never credited).
+  const fgFar = fieldGoalYards(item) > MAX_FG_YARDS;
+  const choices = opts.filter((o) => o.shown || (o.id === "fg" && fgFar)).map((o) => (o.id === "fg" && fgFar ? { ...o, disabled: true } : o));
   const enabled = choices.filter((o) => !o.disabled);
   const focusId = pending ?? enabled[0]?.id;
 
@@ -383,8 +405,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
       {!revealed || !scored ? (
         <div className="fd-pick">
           {index === 0 ? <p className="fd-hint" id="fd-hint">Pick a call, then lock it in. Arrow keys move, Enter locks it in.</p> : null}
-          {opts.find((o) => o.id === "fg" && !o.shown) ? <p className="fd-toofar">{TOO_FAR_NOTE}</p> : null}
-          <div className="fd-choices" role="radiogroup" aria-label="Your call" aria-describedby={index === 0 ? "fd-hint" : undefined}>
+          <div className="fd-choices" role="radiogroup" aria-label={`Your call: ${enabled.map((o) => CHOICE_NAME[o.id].toLowerCase()).join(" or ")}`} aria-describedby={index === 0 ? "fd-hint" : undefined}>
             {choices.map((o, i) => (
               <button
                 key={o.id}
@@ -392,11 +413,11 @@ export function DailyGame({ mode }: { mode: Mode }) {
                 type="button"
                 role="radio"
                 aria-checked={pending === o.id}
-                tabIndex={o.id === focusId ? 0 : -1}
-                className={`fd-choice${pending === o.id ? " is-picked" : ""}`}
-                disabled={o.disabled}
-                onClick={() => setPending(o.id)}
-                onKeyDown={(e) => onChoiceKey(e, o.id)}
+                tabIndex={!o.disabled && o.id === focusId ? 0 : -1}
+                className={`fd-choice${pending === o.id ? " is-picked" : ""}${o.disabled ? " is-off" : ""}`}
+                aria-disabled={o.disabled || undefined}
+                onClick={o.disabled ? undefined : () => setPending(o.id)}
+                onKeyDown={o.disabled ? undefined : (e) => onChoiceKey(e, o.id)}
               >
                 <span>{CHOICE_NAME[o.id]}</span>
                 {o.id === "fg" && o.note ? <small>{o.note}</small> : null}
@@ -423,7 +444,7 @@ export function DailyGame({ mode }: { mode: Mode }) {
             {storyHref(item.source.game_id, playIdFromItemId(item.id)) ? (
               <Link href={storyHref(item.source.game_id, playIdFromItemId(item.id))!}>See this game at this play</Link>
             ) : null}
-            <Link href={`/fourth-down/?play=${encodeURIComponent(item.id)}`}>Open in the 4th-down checker</Link>
+            {CHECKER_ENABLED ? <Link href={`/fourth-down/?play=${encodeURIComponent(item.id)}`}>Open in the 4th-down checker</Link> : null}
             <Link href={`/card/${encodeURIComponent(item.id)}/`}>Share as a what-if card</Link>
           </p>
           <div className="fd-actions">

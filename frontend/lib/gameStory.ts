@@ -1,3 +1,4 @@
+import { ptsBadge } from "./winFormat";
 /**
  * Game Story helpers for C6 games/{id}.json (game.v1, PR #52). Pure and tested.
  * Every sentence is built from the file's own numbers; nothing is invented.
@@ -140,7 +141,7 @@ export function grade(fd: FourthDownCheck): FourthDownGrade | null {
   if (fd.close_call) return { label: `${CLOSE_LABEL}: ${NAME[fd.actual]} or ${NAME[fd.recommendation]}`, tone: "close" };
   const mine = fd.wp[fd.actual];
   const best = fd.wp[fd.recommendation];
-  const cost = mine != null && best != null ? ` (−${((best - mine) * 100).toFixed(1)} pts)` : "";
+  const cost = mine != null && best != null ? ` (${ptsBadge(mine - best)})` : "";
   return { label: `Model: ${NAME[fd.recommendation]}${cost}`, tone: "miss" };
 }
 

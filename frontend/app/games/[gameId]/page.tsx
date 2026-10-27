@@ -73,7 +73,14 @@ export default async function GameStoryPage({ params }: Props) {
       <section className="fd-card" aria-labelledby="gs-chart-h">
         <h2 id="gs-chart-h" className="gs-h2">{g.home} win chance</h2>
         <p className="fd-muted gs-cap">Higher = better for {g.home}. Dashed line = 50%. Numbered dots = swing plays (win chance moved {Math.round(file.swing_threshold * 100)}+ points).</p>
-        <GameChart file={reg} swings={swings} />
+        <div className="gs-chart-wrap">
+          <GameChart file={reg} swings={swings} overtime={!!g.overtime} />
+          {g.overtime ? <span className="gs-ot-label" aria-hidden="true">OT: no win chance</span> : null}
+        </div>
+        {g.overtime ? (() => {
+          const lr = reg.plays[reg.plays.length - 1];
+          return <p className="gs-end-reg">End of regulation {g.away} {lr.away_score}–{g.home} {lr.home_score} · {wpLabel(lr.home_wp_after, g.home, g.away)}. Overtime: no win chance shown.</p>;
+        })() : null}
         <GameScrubber points={scrub} />
       </section>
 

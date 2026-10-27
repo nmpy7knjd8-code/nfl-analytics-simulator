@@ -66,7 +66,7 @@ test("every % names its team", () => {
 test("4th-down mini grade follows the engine record", () => {
   const f = load("2023_01_DET_KC");
   const p = f.plays.find((x) => x.play_id === 1986)!.fourth_down!;
-  assert.deepEqual(grade(p), { label: "Model: Punt (−5.5 pts)", tone: "miss" });
+  assert.deepEqual(grade(p), { label: "Model: Punt (-5 pts)", tone: "miss" });
   assert.ok(leadChanges(f) >= 1);
 });
 

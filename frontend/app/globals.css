@@ -135,7 +135,8 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(var(--nav-height) + var(--safe-bottom));
+  /* UI recheck P1-A: nav height + safe area + 16px, so nothing sits under the tab bar. */
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
   min-height: 100dvh;
 }
 
@@ -1780,3 +1781,30 @@ body { font-variant-numeric: tabular-nums; }
 .not-found-label { font-weight: 600; }
 .not-found-note { color: rgba(255, 255, 255, 0.6); font-size: var(--text-body-sm); }
 .not-found-links a:hover .not-found-label { color: var(--nf-accent); }
+
+/* UI recheck P1-A: no tab bar mid-game on /daily/ (the top bar keeps the way out). */
+body.is-playing .app-nav { display: none; }
+body.is-playing .app-stage { padding-bottom: calc(var(--safe-bottom) + 16px); }
+
+/* UI recheck P1-C: OT band + end-of-regulation dot (dark-theme version of #ECECEF). */
+.gs-chart-wrap { position: relative; }
+.gs-ot-band { fill: rgba(236, 236, 239, 0.12); }
+.gs-end-dot { fill: #ffffff; stroke: var(--color-blue); stroke-width: 2; }
+.gs-ot-label { position: absolute; right: 2px; top: 4px; font-size: 12px; line-height: 1.2; color: var(--color-ink-secondary); max-width: 4.5rem; text-align: right; }
+.gs-end-reg { margin: 0; font-size: 0.875rem; color: var(--color-ink-secondary); }
+
+/* UI recheck P2-B: headlines never break into 3 ragged lines at 390px. */
+.fd-head h1 { font-size: clamp(1.75rem, 7vw, 2.25rem); text-wrap: balance; }
+.fd-end-title { text-wrap: balance; }
+
+/* UI recheck P3-A: the 404 card fills the screen above the nav; full-width link rows. */
+.not-found { min-height: calc(100dvh - var(--nav-height) - var(--safe-bottom) - 2rem); display: grid; place-content: center; }
+.not-found > * { width: min(100%, 32rem); }
+.not-found-links { max-width: none; width: 100%; }
+.not-found-links a { width: 100%; min-height: 52px; align-items: center; }
+
+/* Recheck P1-D: out-of-range FG row. P2-D: neutral close-call outlines (no gold, no red). */
+.fd-choice.is-off, .fd-bar.is-off { opacity: 0.45; cursor: not-allowed; }
+.fd-bar.is-close-pick { outline: 1.5px solid #f0f0f4; outline-offset: 3px; border-radius: 6px; }
+.fd-bar.is-close-other { outline: 1px dashed rgba(240, 240, 244, 0.7); outline-offset: 3px; border-radius: 6px; }
+a.fd-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: #ffffff; }

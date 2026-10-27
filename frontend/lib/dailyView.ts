@@ -9,6 +9,7 @@ export function formatClock(seconds: number): string {
 import type { DailyItem } from "./daily";
 import { teamNickname } from "./teams";
 import { rankedValues, type ScoredCall } from "./daily";
+import { gapPoints, gapSentence } from "./winFormat";
 
 export const CHOICE_NAME: Record<QuizChoice, string> = { go: "Go", fg: "Kick", punt: "Punt" };
 
@@ -43,8 +44,9 @@ export function gameText(item: DailyItem): string {
   return parts.join(" · ");
 }
 
+/** Gap in whole points of win chance (see lib/winFormat.ts). */
 export function pts(x: number): string {
-  return `${(Math.abs(x) * 100).toFixed(1)} pts`;
+  return gapPoints(x);
 }
 
 /** One-sentence Why for the reveal, built only from the item's numbers. */
@@ -55,8 +57,8 @@ export function whyText(item: DailyItem, scored: ScoredCall): string {
   if (ranked.length < 2) return `${CHOICE_NAME[best]} is the only option the model rates here.`;
   const [second, sv] = ranked[1];
   if (scored.closeCall)
-    return `Close call: ${CHOICE_NAME[best]} and ${CHOICE_NAME[second]} are within ${pts(bv - sv)} of each other for the ${team}, so either is reasonable.`;
-  return `${CHOICE_NAME[best]} gives the ${team} the best chance to win: ${Math.round(bv * 100)}% vs ${Math.round(sv * 100)}% for ${CHOICE_NAME[second]}.`;
+    return closeWhy(best, bv, second, sv);
+  return gapSentence(best, bv, second, sv, `the ${team}`);
 }
 
 /** Points of win chance the pick cost vs the best option (0 if it was the best). */
@@ -64,4 +66,12 @@ export function cost(item: DailyItem, scored: ScoredCall): number {
   const best = rankedValues(item)[0][1];
   const mine = rankedValues(item).find(([id]) => id === scored.pick)?.[1];
   return mine == null ? 0 : best - mine;
+}
+
+const DOING: Record<QuizChoice, string> = { go: "going for it", fg: "kicking a field goal", punt: "punting" };
+
+/** Recheck P2-E: "Punting and going for it give about the same win chance (24% vs 23%)." */
+export function closeWhy(best: QuizChoice, bv: number, second: QuizChoice, sv: number): string {
+  const s = `${DOING[best]} and ${DOING[second]}`;
+  return `${s[0].toUpperCase()}${s.slice(1)} give about the same win chance (${Math.round(bv * 100)}% vs ${Math.round(sv * 100)}%).`;
 }

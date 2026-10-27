@@ -1,5 +1,7 @@
 import { shareMetadata } from "../../lib/share";
+import Link from "next/link";
 import { FourthDownChecker } from "../../components/FourthDownChecker";
+import { CHECKER_ENABLED, CHECKER_PAUSED } from "../../lib/features";
 
 export const metadata = shareMetadata({
   title: "Check a 4th down · Fourth & Daily",
@@ -10,6 +12,18 @@ export const metadata = shareMetadata({
 });
 
 export default function FourthDownPage() {
+  if (!CHECKER_ENABLED) {
+    // H6: no checker numbers render while the flag is off.
+    return (
+      <main className="fd-page" id="main">
+        <section className="fd-panel" role="status">
+          <h1>{CHECKER_PAUSED.title}</h1>
+          <p>{CHECKER_PAUSED.body}</p>
+          <Link className="fd-btn fd-btn-primary" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
+        </section>
+      </main>
+    );
+  }
   return (
     <main className="fd-page" id="main">
       <header className="fd-head">
