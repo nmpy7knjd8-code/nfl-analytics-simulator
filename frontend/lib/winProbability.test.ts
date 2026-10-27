@@ -1,7 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { clockLabel, findSwingPlays, isSwing, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
-import { fixturePlays, fixtureGame } from "./fixtures";
+import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
+import { GAME_PLAY_LISTS } from "./gamePlays";
+import { openingWinChance } from "./wpFixtures";
+import { situationLine, type EventPoint } from "./winProbability";
 import { SWING_EXPORT, WP_FIXTURES } from "./wpFixtures";
 
 test("fixtures follow the contract: home, pre-snap, post = next pre, final = result", () => {
@@ -31,14 +34,8 @@ test("DET–KC: Detroit (away) won 21–20 everywhere", () => {
   const wp = WP_FIXTURES["2023_01_DET_KC"].series;
   assert.equal(wp.result, "away_win");
   assert.equal(wp.points.at(-1)!.home_wp_post, 0);
-  const plays = fixturePlays("2023_01_DET_KC")!.items;
-  for (const p of plays) {
-    const r = p.reference;
-    if (r?.wp == null || r.home_wp == null) continue;
-    const expectHome = p.possession_team_id === g.home_team_id ? r.wp : 1 - r.wp;
-    assert.ok(Math.abs(expectHome - r.home_wp) < 1e-9, `play ${p.play_id}`);
-  }
-  assert.equal(plays.at(-1)!.reference?.home_wp, 0);
+  // QA H7: play rows carry no per-play win chance (the old opening-WP text came from fixtures).
+  for (const p of fixturePlays("2023_01_DET_KC")!.items) assert.equal(p.reference, undefined);
 });
 
 test("backend is_swing flags win; threshold is only the fallback", () => {
@@ -129,4 +126,72 @@ test("M10: a failed fourth down's Why says the ball was handed over, not the sco
     assert.match(s.why, /a failed fourth down hands the ball over/);
     assert.doesNotMatch(s.why, /score picture/);
   }
+});
+
+// QA2 H5: the old hand-made fixtures described plays that never happened.
+const MADE_UP = [
+  "Chiefs field goal.", "Lions touchdown run.", "Mahomes touchdown pass.", "Chiefs touchdown pass to retake the lead.",
+  "Montgomery touchdown run puts Detroit ahead.", "Interception returned for a touchdown by Detroit.",
+  "Jets field goal ties the game", "Fumble recovered by the Jets", "Opening kickoff.", "Opening drive sample play",
+  "Fourth-and-1 — Detroit goes for it", "Mahomes incomplete on fourth down", "Final — Lions 21, Chiefs 20.",
+];
+test("H5: no made-up fixture text anywhere in the chart, swings, OT or play list", () => {
+  for (const [id, { series, overtimePlays }] of Object.entries(WP_FIXTURES)) {
+    const texts = [
+      ...series.points.map((p) => p.description ?? ""),
+      ...overtimePlays.map((p) => p.description ?? ""),
+      ...(fixturePlays(id)?.items ?? []).map((p) => p.description ?? ""),
+    ];
+    for (const t of texts) for (const m of MADE_UP) assert.ok(!t.includes(m), `${id}: "${m}"`);
+  }
+});
+
+test("#76: every rendered play row is a real row in lib/plays/<game_id>.json, in order, with its fan text", () => {
+  for (const g of FIXTURE_GAMES.items) {
+    const file = GAME_PLAY_LISTS[g.game_id];
+    assert.ok(file, g.game_id);
+    const rows = new Map(file.plays.map((p) => [p.play_id, p]));
+    const items = fixturePlays(g.game_id)!.items;
+    assert.ok(items.length > 100, `${g.game_id} has the full list`);
+    let last = -1;
+    for (const it of items) {
+      const r = rows.get(it.play_id);
+      assert.ok(r, `${g.game_id} play ${it.play_id} not in plays file`);
+      assert.equal(it.description, r.display_text || r.raw_desc);
+      assert.equal(it.quarter, r.qtr);
+      const idx = file.plays.indexOf(r);
+      assert.ok(idx > last, "game order");
+      last = idx;
+    }
+  }
+});
+
+test("#76: chart and swing points are rows of the plays file", () => {
+  for (const [id, { series }] of Object.entries(WP_FIXTURES)) {
+    const ids = new Set(GAME_PLAY_LISTS[id].plays.map((p) => p.play_id));
+    for (const p of series.points) assert.ok(ids.has(p.play_id), `${id} ${p.play_id}`);
+  }
+});
+
+test("#88: opening win chance is per game, not the flat 56.68% home prior", () => {
+  assert.equal(openingWinChance("2023_01_BUF_NYJ")!.away, 0.4332);
+  assert.equal(openingWinChance("2023_03_PHI_TB")!.away, 0.4537);
+  assert.equal(openingWinChance("2023_01_DET_KC")!.away, 0.4332);
+  for (const id of Object.keys(WP_FIXTURES)) {
+    const o = openingWinChance(id)!;
+    assert.ok(Math.abs(o.home + o.away - 1) < 1e-6);
+  }
+});
+
+test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & distance line", () => {
+  let n = 0;
+  for (const { series } of Object.values(WP_FIXTURES))
+    for (const s of findSwingPlays(series, 99)) {
+      const p = s.point as EventPoint;
+      if (!p.fourth_down_failed) continue;
+      n++;
+      assert.match(s.why, /a failed fourth down hands the ball over/);
+      assert.match(situationLine(p, series.home_team_id, series.away_team_id) ?? "", /^4th & \d+/);
+    }
+  assert.ok(n > 0);
 });

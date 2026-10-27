@@ -13,6 +13,7 @@ import {
   splitAtRegulation,
   type ChartSeries,
   type WinProbabilityPoint,
+  type EventPoint,
   type WinProbabilitySeries,
 } from "./winProbability";
 
@@ -76,8 +77,30 @@ function elapsedOf(q: number, left: number): number {
   return q > 4 ? REGULATION_SECONDS + (600 - left) : q * 900 - left;
 }
 
+/** Fan fields from #86/#88, verbatim from the export (no rewrites here). */
+function fanFields(r: SwingPlay) {
+  return {
+    event: r.event,
+    fourth_down_failed: r.fourth_down_failed,
+    display_text: r.display_text,
+    raw_desc: r.raw_desc,
+    down: r.down,
+    distance: r.distance,
+    yardline_100: r.yardline_100,
+    home_score_before: r.home_score_before,
+    away_score_before: r.away_score_before,
+  };
+}
+
+/** Opening win chance from #88's opening_home_wp/opening_away_wp (not the flat 56.68% prior). */
+export function openingWinChance(gameId: string): { home: number; away: number } | null {
+  const g = SWING_EXPORT.games[gameId];
+  if (!g || g.opening_home_wp == null || g.opening_away_wp == null) return null;
+  return { home: g.opening_home_wp, away: g.opening_away_wp };
+}
+
 function build(g: SwingGame): ChartSeries {
-  const points: (WinProbabilityPoint & { event?: string })[] = [];
+  const points: EventPoint[] = [];
   let pre = g.first_home_wp;
   for (const r of g.chart) {
     const post = r.home_wp_post!;
@@ -90,7 +113,7 @@ function build(g: SwingGame): ChartSeries {
       game_seconds_elapsed: elapsedOf(r.qtr, r.clock_seconds),
       possession_team_id: r.possession_team_id,
       description: r.description,
-      event: r.event,
+      ...fanFields(r),
       home_wp_pre: pre,
       home_wp_post: post,
       delta_home_wp: delta,
@@ -109,6 +132,7 @@ function build(g: SwingGame): ChartSeries {
       game_seconds_elapsed: elapsedOf(r.qtr, r.clock_seconds),
       possession_team_id: r.possession_team_id,
       description: r.description,
+      ...fanFields(r),
       home_wp_pre: pre,
       home_wp_post: pre,
       delta_home_wp: 0,

@@ -6,6 +6,9 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
+import json
+from functools import lru_cache
+
 import numpy as np
 import pandas as pd
 
@@ -191,6 +194,68 @@ def state_punt(
     )
 
 
+SCORING_ZONE_FULL = 20  # post-conversion yardline at or inside which the drive mix is used alone
+SCORING_ZONE_MAX = 40  # …tapering linearly to the plain WP model by here
+_RATES_PATH = Path(__file__).with_name("scoring_zone_rates.json")
+
+
+@lru_cache(maxsize=1)
+def scoring_zone_rates() -> dict[str, Any]:
+    return json.loads(_RATES_PATH.read_text())
+
+
+def _needs_td(sit: FourthDownSituation) -> bool:
+    return sit.qtr >= 4 and sit.game_seconds_remaining <= 300 and -8 <= sit.score_differential <= -4
+
+
+def scoring_zone_weight(new_yl: int) -> float:
+    if new_yl <= SCORING_ZONE_FULL:
+        return 1.0
+    if new_yl >= SCORING_ZONE_MAX:
+        return 0.0
+    return (SCORING_ZONE_MAX - new_yl) / (SCORING_ZONE_MAX - SCORING_ZONE_FULL)
+
+
+def late_game_weight(game_seconds_remaining: int) -> float:
+    """0 in the first half, ramping to 1 across Q3, 1 in Q4.
+
+    Checked against nflverse 2022–23 (and real results) on first downs inside the 40:
+    in Q1–Q2 the plain WP model matches nflverse within ~1 pt while the drive mix runs
+    ~3–4 pts low; in Q4 the model runs 6–25 pts low for trailing teams and the drive
+    mix is within a few pts. Q3 both are close. So the mix takes over across Q3.
+    """
+    return float(np.clip((1800 - int(game_seconds_remaining)) / 900.0, 0.0, 1.0))
+
+
+def drive_outcome_states(
+    sit: FourthDownSituation, new_yl: int, *, clock_delta: int
+) -> list[tuple[float, dict[str, Any]]]:
+    """(probability, post-drive state) for a first down at ``new_yl`` (goal-line fix).
+
+    The linear WP model under-reads first downs in the scoring zone late in games
+    (down 7, 1st & goal at the 1, 0:55: model 10% vs nflverse ~42%) because it can't
+    see that the drive almost always ends in points. Instead, value that first down by
+    how such drives actually end in 2019–21 nflverse (touchdown / field goal / nothing,
+    smoothed by yardline), and let the WP model score only the post-drive kickoff or
+    turnover states, which it reads well (see test_engine_vs_nflverse post-event checks).
+    """
+    r = scoring_zone_rates()
+    i = int(np.clip(new_yl, 1, len(r["yardline_100"]))) - 1
+    p_td, p_fg = float(r["all"]["p_td"][i]), float(r["all"]["p_fg"][i])
+    secs = float(r["need_td" if _needs_td(sit) else "all"]["drive_seconds"][i])
+    d = int(clock_delta + round(secs))
+    at = replace(sit, yardline_100=int(new_yl), distance=int(new_yl))
+    td = state_go_convert(at, clock_delta=d)
+    fg = state_fg_make(at, clock_delta=d)
+    # no points: turnover on downs / missed FG near the spot; past the 20 it's a punt-like
+    # change of possession, which leaves the opponent around its own 20.
+    none = _flip_possession_state(
+        at, opp_yardline_100=max(100 - int(new_yl), 80), score_differential_for_new_posteam=-sit.score_differential,
+        clock_delta=d,
+    )
+    return [(p_td, td), (p_fg, fg), (max(0.0, 1.0 - p_td - p_fg), none)]
+
+
 def kick_distance(sit: FourthDownSituation) -> int:
     return int(sit.yardline_100 + FG_SNAP_YARDS)
 
@@ -249,6 +314,14 @@ class FourthDownAnalyzer:
             cache[key] = float(self.model.predict_wp(pd.DataFrame([row]))[0])
         return cache[key]
 
+    def scoring_zone_value(self, sit: FourthDownSituation, new_yl: int, *, clock_delta: int = 0) -> float:
+        """Win chance (for ``sit``'s offense) of a first down at ``new_yl``, by drive outcome."""
+        own = "H" if sit.is_home_possession else "A"
+        return float(sum(
+            p * (self._wp(row) if row["posteam"] == own else 1.0 - self._wp(row))
+            for p, row in drive_outcome_states(sit, new_yl, clock_delta=clock_delta)
+        ))
+
     def analyze(
         self,
         sit: FourthDownSituation,
@@ -298,6 +371,11 @@ class FourthDownAnalyzer:
         wp_miss = for_original(s_miss, self._wp(s_miss))
 
         if sit.distance < sit.yardline_100:
+            new_yl = max(1, sit.yardline_100 - sit.distance)
+            w = scoring_zone_weight(new_yl) * late_game_weight(sit.game_seconds_remaining)
+            if w > 0.0:
+                v_drive = self.scoring_zone_value(sit, new_yl, clock_delta=clk["go_convert"])
+                wp_conv = w * v_drive + (1.0 - w) * wp_conv
             # H6 dominance bound: a first down short of the goal line can't be worth
             # more than scoring the TD from here (+7, kickoff). The WP model alone
             # sometimes reads 1st-and-goal at the 1 slightly above the post-TD state.
