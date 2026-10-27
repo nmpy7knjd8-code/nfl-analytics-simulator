@@ -80,6 +80,20 @@ test("BUF@NYJ: Week 1, 2023-09-11, NYJ (home) wins 22–16 in OT", () => {
   assert.ok(!("home_wp_pre" in ot[0]) && !("home_wp_post" in ot[0]));
 });
 
+test("2240 P2-A: BUF_NYJ overtime plays carry display_text, not raw feed text", () => {
+  const ot = WP_FIXTURES["2023_01_BUF_NYJ"].overtimePlays;
+  const gipson = ot.find((p) => /Gipson/.test(p.raw_desc ?? ""))!;
+  assert.equal(gipson.display_text, "Sam Martin punts 42 yards, and Xavier Gipson returns it 65 yards for a touchdown.");
+  assert.match(gipson.raw_desc!, /^\(9:21\)/);
+});
+
+test("2240 P3-A + open item: swing meta reads as win chance; cards run in game order", () => {
+  const sw = inGameOrder(findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series));
+  for (let i = 1; i < sw.length; i++) assert.ok(sw[i - 1].point.game_seconds_elapsed <= sw[i].point.game_seconds_elapsed);
+  for (const s of sw) assert.match(swingMeta(s), /^[A-Z]{2,3} win chance \+\d+$/);
+  assert.equal(swingMeta({ delta: -0.236, favored_team_id: "DET" }), "DET win chance +24");
+});
+
 test("clock labels from game_seconds_elapsed, including OT", () => {
   assert.equal(clockLabel({ quarter: 3, is_overtime: false, game_seconds_elapsed: 2075 }), "Q3 10:25");
   assert.equal(clockLabel({ quarter: 5, is_overtime: true, game_seconds_elapsed: 3748 }), "OT 7:32");
@@ -194,18 +208,4 @@ test("#88/M10: failed fourth downs get the hands-the-ball-over Why and a down & 
       assert.match(situationLine(p, series.home_team_id, series.away_team_id) ?? "", /^4th & \d+/);
     }
   assert.ok(n > 0);
-});
-
-test("2240 P2-A: BUF_NYJ overtime plays carry display_text, not raw feed text", () => {
-  const ot = WP_FIXTURES["2023_01_BUF_NYJ"].overtimePlays;
-  const gipson = ot.find((p) => /Gipson/.test(p.raw_desc ?? ""))!;
-  assert.equal(gipson.display_text, "Sam Martin punts 42 yards, and Xavier Gipson returns it 65 yards for a touchdown.");
-  assert.match(gipson.raw_desc!, /^\(9:21\)/);
-});
-
-test("2240 P3-A + open item: swing meta reads as win chance; cards run in game order", () => {
-  const sw = inGameOrder(findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series));
-  for (let i = 1; i < sw.length; i++) assert.ok(sw[i - 1].point.game_seconds_elapsed <= sw[i].point.game_seconds_elapsed);
-  for (const s of sw) assert.match(swingMeta(s), /^[A-Z]{2,3} win chance \+\d+$/);
-  assert.equal(swingMeta({ delta: -0.236, favored_team_id: "DET" }), "DET win chance +24");
 });
