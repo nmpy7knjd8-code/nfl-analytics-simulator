@@ -155,6 +155,10 @@ export function whyText(delta: number, p: EventPoint, favored: string): string {
   else if (p.kick_return_td) cause = /kickoff|kicks/.test(d) && !/punts/.test(d)
     ? "a kickoff returned for a touchdown gave the return team a score"
     : "a punt returned for a touchdown gave the return team a score";
+  // QA 0116 N8: a safety (often on a sack) or a blocked kick is the cause, not the sack or the punt.
+  else if (p.event === "safety" || /\bsafety\b/.test(d)) cause = "a safety gave the defense 2 points and the ball back";
+  else if (/\bblocked\b/.test(d) && /punt/.test(d)) cause = "a blocked punt gave the defense the ball in great field position";
+  else if (/\bblocked\b/.test(d) && /field goal/.test(d)) cause = "a blocked field goal took points off the board";
   else if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down handed the ball over";
   else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover handed the ball and field position to the other side";
   else if (p.event === "touchdown") cause = "a touchdown changed the score in one snap";
