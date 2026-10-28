@@ -80,7 +80,10 @@ def test_committed_files():
     assert (t["two_point"]["run"]["tries"], t["two_point"]["pass"]["tries"]) == (266, 681)
     assert t["extra_point"] == {"tries": 9119, "made": 8606, "rate": 0.9437}
     assert t["two_point"]["run"]["made"] == 145 and t["two_point"]["pass"]["made"] == 301
-    assert t["per_choice_win_chance"] is None
+    w = t["per_choice_win_chance"]
+    assert w["cols"] == ["go", "kick"] and set(w["by_try"]) == {bt.wc_key(dict(zip(t["cols"], r))) for r in t["tries"]}
+    assert w["go_rate"] == t["two_point"]["rate"] and 0.9 < w["kick_rate"] < 0.97
+    assert all(v is None or (len(v) == 2 and all(0 <= x <= 1 for x in v)) for v in w["by_try"].values())
     qi = t["cols"].index("qtr")
     assert len(t["tries"]) == 957 and all(r[qi] <= 4 for r in t["tries"])
     assert all(p["wp"] is None or p["qtr"] <= 4 for p in f["plays"])
@@ -90,7 +93,7 @@ def test_committed_files():
     assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 80_000
+    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 140_000
 
 
 def test_decoys_stratified_deterministic_and_frozen():
@@ -105,3 +108,34 @@ def test_decoys_stratified_deterministic_and_frozen():
     assert len(old["real_punts"]) == 2 and old["real_punts"][0]["first_down"] is None and old["punt_count"] == 2
     gone = {**old, "real_punts": [{**old["real_punts"][0], "clock": "00:01"}]}
     assert bf.check_frozen(gone, bf.build(rows))
+
+
+def _try(**k):
+    base = {"season": 2024, "week": 1, "season_type": "REG", "game_id": "2024_01_KC_BAL", "team": "KC", "opp": "BAL",
+            "qtr": 4, "clock": "05:00", "diff": -2, "kind": "pass", "made": 1, "wp": 0.3}
+    return [{**base, **k}[c] for c in base]
+
+
+def test_fill_win_chance_expected_values_and_ot_null():
+    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made", "wp"]
+    doc = {"cols": cols, "tries": [_try(), _try(qtr=5, clock="08:00"), _try(qtr=2, clock="03:00"),
+                                   _try(clock="00:00", diff=-1)]}
+    seen = []
+
+    def wp(row):  # receiving team's win chance: a pure function of its score margin
+        seen.append(row)
+        return {-1: 0.2, 0: 0.5, 1: 0.8, 2: 0.9, 3: 0.95}[row["score_differential"]]
+
+    out = bt.fill_win_chance(doc, wp, 0.5, 0.9, {"method": "t"})
+    by = out["by_try"]
+    k = [bt.wc_key(dict(zip(cols, r))) for r in doc["tries"]]
+    # down 2 after the TD: miss -> 1-0.9=0.1, PAT -> 1-0.8=0.2, two -> 1-0.5=0.5
+    assert by[k[0]] == [round(0.5 * 0.5 + 0.5 * 0.1, 4), round(0.9 * 0.2 + 0.1 * 0.1, 4)]
+    assert by[k[1]] is None  # overtime: no win chance
+    assert by[k[3]] == [round(0.5 * 1 + 0.5 * 0, 4), round(0.9 * 0.5, 4)]  # regulation over: known result
+    first = [r for r in seen if r["qtr"] == 2]
+    assert {r["receive_2h_ko"] for r in first} == {0, 1}  # unknown 2H receiver averaged
+    r0 = seen[0]
+    assert r0["posteam"] == "H" and r0["yardline_100"] == 75 and r0["game_seconds_remaining"] == 300
+    assert out["go_rate"] == 0.5 and out["kick_rate"] == 0.9 and out["cols"] == ["go", "kick"]
+    assert doc["tries"][0] == _try()  # tries untouched
