@@ -9,25 +9,25 @@ type Entry = { recommendation: string; values: Record<string, number>; best: str
 const SNAP = (snapshot as unknown as { days: Record<string, Record<string, Entry>> }).days;
 const DAYS = (schedule as { days: Record<string, string[]> }).days;
 
-/** Published values (pre-#122 pack, ab2bc80). Hard-coded: never change these. */
+/** Published values as fans saw them: pre-#119 pack (7c8dc3a), QA 0217 D. Hard-coded: never change these. */
 const PUBLISHED: Record<string, Record<string, [Record<string, number>, string[]]>> = {
   "2026-10-26": {
-    "2022_13_DEN_BAL-2272": [{ go: 0.588102, punt: 0.561169 }, ["go"]],
-    "2023_17_MIA_BAL-1579": [{ go: 0.283885, punt: 0.256203, fg: 0.238393 }, ["go"]],
-    "2022_12_NE_MIN-625": [{ go: 0.509156, punt: 0.534686 }, ["punt"]],
-    "2022_06_SF_ATL-3503": [{ go: 0.998227, punt: 0.998134 }, ["go", "punt"]],
-    "2023_06_DET_TB-2394": [{ go: 0.225789, punt: 0.18286, fg: 0.25451 }, ["fg"]],
+    "2022_13_DEN_BAL-2272": [{ go: 0.588102, punt: 0.567079 }, ["go"]],
+    "2023_17_MIA_BAL-1579": [{ go: 0.283885, punt: 0.251221, fg: 0.238393 }, ["go"]],
+    "2022_12_NE_MIN-625": [{ go: 0.509156, punt: 0.553182 }, ["punt"]],
+    "2022_06_SF_ATL-3503": [{ go: 0.998227, punt: 0.997994 }, ["go", "punt"]],
+    "2023_06_DET_TB-2394": [{ go: 0.225789, punt: 0.186544, fg: 0.25451 }, ["fg"]],
   },
   "2026-10-27": {
-    "2022_18_NYG_PHI-3310": [{ go: 0.0279705, punt: 0.0167704 }, ["go"]],
-    "2022_03_BAL_NE-819": [{ go: 0.406666, punt: 0.341117, fg: 0.406086 }, ["go"]],
-    "2023_01_DET_KC-1986": [{ go: 0.179335, punt: 0.147245 }, ["go"]],
-    "2022_03_NO_CAR-2560": [{ go: 0.918667, punt: 0.908265, fg: 0.919462 }, ["fg", "go"]],
-    "2023_09_TB_HOU-3638": [{ go: 0.537563, punt: 0.442742, fg: 0.618018 }, ["fg"]],
+    "2022_18_NYG_PHI-3310": [{ go: 0.0279705, punt: 0.0166536 }, ["go"]],
+    "2022_03_BAL_NE-819": [{ go: 0.406666, punt: 0.346591, fg: 0.406086 }, ["go"]],
+    "2023_01_DET_KC-1986": [{ go: 0.179335, punt: 0.150314 }, ["go"]],
+    "2022_03_NO_CAR-2560": [{ go: 0.918667, punt: 0.907607, fg: 0.919462 }, ["fg", "go"]],
+    "2023_09_TB_HOU-3638": [{ go: 0.537563, punt: 0.448106, fg: 0.618018 }, ["fg"]],
   },
 };
 
-test("published days keep their snapshot values and best call (Oct 26, Oct 27 pre-#122)", () => {
+test("published days keep their snapshot values and best call (Oct 26, Oct 27 pre-#119)", () => {
   for (const [d, want] of Object.entries(PUBLISHED)) {
     assert.deepEqual(Object.keys(SNAP[d]).sort(), Object.keys(want).sort(), `${d} ids`);
     for (const [id, [values, best]] of Object.entries(want)) {

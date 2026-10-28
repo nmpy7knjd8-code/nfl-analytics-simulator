@@ -34,6 +34,7 @@ export function Header({ right }: { right: string }) {
         {open ? (
           <nav className="sg-menu-list" aria-label="Menu">
             <Link href="/practice/">Practice</Link>
+            <Link href="/endless/">Keep playing</Link>
             <Link href="/games/">Games</Link>
             <Link href="/daily/stats/">Stats</Link>
             <Link href="/about/">About</Link>
@@ -143,7 +144,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
               <b aria-label={RESULT_TITLE[picks[i].scored.result]}>{RESULT_GLYPH[picks[i].scored.result]}</b>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={teamLogo(it.situation.posteam)} alt="" width={22} height={22} />
+              <img src={teamLogo(it.situation.posteam)} alt="" width={22} height={22} className="sg-plate" />
               <span><strong>{it.situation.posteam}</strong> · 4th &amp; {isGoalToGo(it) ? "Goal" : it.situation.distance}</span>
               <span className="sg-c">You: {CHOICE_LABEL[picks[i].pick]}</span>
             </div>
