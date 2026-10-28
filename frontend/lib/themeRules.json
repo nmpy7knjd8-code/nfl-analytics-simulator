@@ -1,0 +1,9 @@
+{
+ "note": "B6/B3 themed bonus sets. weekday is the ET day of week (0 = Sunday). The daily 5 (dailySchedule.json) are untouched; a themed set is extra. Applied only to dates after the last published daily day, by scripts/extend-theme-schedule.ts.",
+ "setSize": 5,
+ "rules": [
+  { "theme": "goal-line", "weekday": 2 },
+  { "theme": "marathon", "weekday": 4 },
+  { "theme": "playoffs", "weekday": 6 }
+ ]
+}

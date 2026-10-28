@@ -1,0 +1,2078 @@
+{
+ "schema_version": "fourth_and_theme_pack.v1",
+ "theme": "playoffs",
+ "title": "Playoffs",
+ "blurb": "4th downs from postseason games.",
+ "derived_from": "fourth_down_quiz_pack.v2",
+ "source": "nflverse play-by-play REG+POST 2022,2023; built by backend/scripts/build_theme_packs.py",
+ "items": [
+  {
+   "id": "2022_19_BAL_CIN-2971",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_BAL_CIN",
+    "play_id": 2971
+   },
+   "situation": {
+    "posteam": "BAL",
+    "defteam": "CIN",
+    "home_team": "CIN",
+    "away_team": "BAL",
+    "posteam_score": 17,
+    "defteam_score": 24,
+    "qtr": 4,
+    "quarter_seconds_remaining": 608,
+    "yardline_100": 74,
+    "down": 4,
+    "distance": 9,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.173991,
+     "punt": 0.173221
+    }
+   }
+  },
+  {
+   "id": "2022_19_NYG_MIN-971",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_NYG_MIN",
+    "play_id": 971
+   },
+   "situation": {
+    "posteam": "MIN",
+    "defteam": "NYG",
+    "home_team": "MIN",
+    "away_team": "NYG",
+    "posteam_score": 7,
+    "defteam_score": 14,
+    "qtr": 2,
+    "quarter_seconds_remaining": 863,
+    "yardline_100": 53,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.152744,
+     "punt": 0.136478
+    }
+   }
+  },
+  {
+   "id": "2022_20_JAX_KC-1744",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-21",
+    "game_id": "2022_20_JAX_KC",
+    "play_id": 1744
+   },
+   "situation": {
+    "posteam": "JAX",
+    "defteam": "KC",
+    "home_team": "KC",
+    "away_team": "JAX",
+    "posteam_score": 7,
+    "defteam_score": 17,
+    "qtr": 2,
+    "quarter_seconds_remaining": 31,
+    "yardline_100": 23,
+    "down": 4,
+    "distance": 2,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.147639,
+     "punt": 0.0973713,
+     "fg": 0.134664
+    }
+   }
+  },
+  {
+   "id": "2022_19_NYG_MIN-3208",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_NYG_MIN",
+    "play_id": 3208
+   },
+   "situation": {
+    "posteam": "NYG",
+    "defteam": "MIN",
+    "home_team": "MIN",
+    "away_team": "NYG",
+    "posteam_score": 24,
+    "defteam_score": 24,
+    "qtr": 4,
+    "quarter_seconds_remaining": 518,
+    "yardline_100": 7,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.632373,
+     "punt": 0.482473,
+     "fg": 0.595723
+    }
+   }
+  },
+  {
+   "id": "2022_22_KC_PHI-3365",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 22,
+    "game_date": "2023-02-12",
+    "game_id": "2022_22_KC_PHI",
+    "play_id": 3365
+   },
+   "situation": {
+    "posteam": "PHI",
+    "defteam": "KC",
+    "home_team": "PHI",
+    "away_team": "KC",
+    "posteam_score": 27,
+    "defteam_score": 28,
+    "qtr": 4,
+    "quarter_seconds_remaining": 633,
+    "yardline_100": 68,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.408891,
+     "punt": 0.399508
+    }
+   }
+  },
+  {
+   "id": "2022_21_CIN_KC-3508",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_CIN_KC",
+    "play_id": 3508
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "CIN",
+    "home_team": "KC",
+    "away_team": "CIN",
+    "posteam_score": 20,
+    "defteam_score": 20,
+    "qtr": 4,
+    "quarter_seconds_remaining": 566,
+    "yardline_100": 60,
+    "down": 4,
+    "distance": 9,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.455496,
+     "punt": 0.459284
+    }
+   }
+  },
+  {
+   "id": "2023_20_HOU_BAL-1948",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-20",
+    "game_id": "2023_20_HOU_BAL",
+    "play_id": 1948
+   },
+   "situation": {
+    "posteam": "HOU",
+    "defteam": "BAL",
+    "home_team": "BAL",
+    "away_team": "HOU",
+    "posteam_score": 10,
+    "defteam_score": 10,
+    "qtr": 2,
+    "quarter_seconds_remaining": 37,
+    "yardline_100": 29,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.408823,
+     "punt": 0.364682,
+     "fg": 0.432203
+    }
+   }
+  },
+  {
+   "id": "2023_19_LA_DET-3409",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-14",
+    "game_id": "2023_19_LA_DET",
+    "play_id": 3409
+   },
+   "situation": {
+    "posteam": "LA",
+    "defteam": "DET",
+    "home_team": "DET",
+    "away_team": "LA",
+    "posteam_score": 23,
+    "defteam_score": 24,
+    "qtr": 4,
+    "quarter_seconds_remaining": 255,
+    "yardline_100": 44,
+    "down": 4,
+    "distance": 14,
+    "posteam_timeouts": 1,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.359005,
+     "punt": 0.374096,
+     "fg": 0.360519
+    }
+   }
+  },
+  {
+   "id": "2023_19_PIT_BUF-915",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PIT_BUF",
+    "play_id": 915
+   },
+   "situation": {
+    "posteam": "PIT",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "PIT",
+    "posteam_score": 0,
+    "defteam_score": 14,
+    "qtr": 1,
+    "quarter_seconds_remaining": 200,
+    "yardline_100": 74,
+    "down": 4,
+    "distance": 9,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0373024,
+     "punt": 0.0355729
+    }
+   }
+  },
+  {
+   "id": "2022_20_NYG_PHI-465",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-21",
+    "game_id": "2022_20_NYG_PHI",
+    "play_id": 465
+   },
+   "situation": {
+    "posteam": "NYG",
+    "defteam": "PHI",
+    "home_team": "PHI",
+    "away_team": "NYG",
+    "posteam_score": 0,
+    "defteam_score": 7,
+    "qtr": 1,
+    "quarter_seconds_remaining": 346,
+    "yardline_100": 40,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.290654,
+     "punt": 0.264751,
+     "fg": 0.282089
+    }
+   }
+  },
+  {
+   "id": "2022_21_CIN_KC-4097",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_CIN_KC",
+    "play_id": 4097
+   },
+   "situation": {
+    "posteam": "CIN",
+    "defteam": "KC",
+    "home_team": "KC",
+    "away_team": "CIN",
+    "posteam_score": 20,
+    "defteam_score": 20,
+    "qtr": 4,
+    "quarter_seconds_remaining": 41,
+    "yardline_100": 72,
+    "down": 4,
+    "distance": 15,
+    "posteam_timeouts": 1,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.404234,
+     "punt": 0.445031
+    }
+   }
+  },
+  {
+   "id": "2022_20_CIN_BUF-3674",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-22",
+    "game_id": "2022_20_CIN_BUF",
+    "play_id": 3674
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "CIN",
+    "home_team": "BUF",
+    "away_team": "CIN",
+    "posteam_score": 10,
+    "defteam_score": 27,
+    "qtr": 4,
+    "quarter_seconds_remaining": 452,
+    "yardline_100": 16,
+    "down": 4,
+    "distance": 6,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0459523,
+     "punt": 0.0296075,
+     "fg": 0.0446445
+    }
+   }
+  },
+  {
+   "id": "2023_20_GB_SF-598",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-20",
+    "game_id": "2023_20_GB_SF",
+    "play_id": 598
+   },
+   "situation": {
+    "posteam": "SF",
+    "defteam": "GB",
+    "home_team": "SF",
+    "away_team": "GB",
+    "posteam_score": 0,
+    "defteam_score": 3,
+    "qtr": 1,
+    "quarter_seconds_remaining": 260,
+    "yardline_100": 63,
+    "down": 4,
+    "distance": 13,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.372078,
+     "punt": 0.408624
+    }
+   }
+  },
+  {
+   "id": "2023_21_DET_SF-3608",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 21,
+    "game_date": "2024-01-28",
+    "game_id": "2023_21_DET_SF",
+    "play_id": 3608
+   },
+   "situation": {
+    "posteam": "DET",
+    "defteam": "SF",
+    "home_team": "SF",
+    "away_team": "DET",
+    "posteam_score": 24,
+    "defteam_score": 27,
+    "qtr": 4,
+    "quarter_seconds_remaining": 458,
+    "yardline_100": 30,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.436025,
+     "punt": 0.378621,
+     "fg": 0.444809
+    }
+   }
+  },
+  {
+   "id": "2022_20_JAX_KC-125",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-21",
+    "game_id": "2022_20_JAX_KC",
+    "play_id": 125
+   },
+   "situation": {
+    "posteam": "JAX",
+    "defteam": "KC",
+    "home_team": "KC",
+    "away_team": "JAX",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 847,
+    "yardline_100": 69,
+    "down": 4,
+    "distance": 4,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.37024,
+     "punt": 0.355819
+    }
+   }
+  },
+  {
+   "id": "2022_19_MIA_BUF-4254",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_MIA_BUF",
+    "play_id": 4254
+   },
+   "situation": {
+    "posteam": "MIA",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "MIA",
+    "posteam_score": 31,
+    "defteam_score": 34,
+    "qtr": 4,
+    "quarter_seconds_remaining": 511,
+    "yardline_100": 62,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 1,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.343409,
+     "punt": 0.324241
+    }
+   }
+  },
+  {
+   "id": "2022_20_CIN_BUF-3317",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-22",
+    "game_id": "2022_20_CIN_BUF",
+    "play_id": 3317
+   },
+   "situation": {
+    "posteam": "CIN",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "CIN",
+    "posteam_score": 24,
+    "defteam_score": 10,
+    "qtr": 4,
+    "quarter_seconds_remaining": 685,
+    "yardline_100": 2,
+    "down": 4,
+    "distance": 2,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.966448,
+     "punt": 0.93917,
+     "fg": 0.960872
+    }
+   }
+  },
+  {
+   "id": "2023_19_GB_DAL-4382",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-14",
+    "game_id": "2023_19_GB_DAL",
+    "play_id": 4382
+   },
+   "situation": {
+    "posteam": "GB",
+    "defteam": "DAL",
+    "home_team": "DAL",
+    "away_team": "GB",
+    "posteam_score": 48,
+    "defteam_score": 32,
+    "qtr": 4,
+    "quarter_seconds_remaining": 149,
+    "yardline_100": 41,
+    "down": 4,
+    "distance": 7,
+    "posteam_timeouts": 0,
+    "defteam_timeouts": 0
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.951301,
+     "punt": 0.952225,
+     "fg": 0.950994
+    }
+   }
+  },
+  {
+   "id": "2023_19_GB_DAL-4668",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-14",
+    "game_id": "2023_19_GB_DAL",
+    "play_id": 4668
+   },
+   "situation": {
+    "posteam": "DAL",
+    "defteam": "GB",
+    "home_team": "DAL",
+    "away_team": "GB",
+    "posteam_score": 32,
+    "defteam_score": 48,
+    "qtr": 4,
+    "quarter_seconds_remaining": 25,
+    "yardline_100": 27,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 0,
+    "defteam_timeouts": 0
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0554969,
+     "punt": 0.0400629,
+     "fg": 0.0547709
+    }
+   }
+  },
+  {
+   "id": "2022_22_KC_PHI-2975",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 22,
+    "game_date": "2023-02-12",
+    "game_id": "2022_22_KC_PHI",
+    "play_id": 2975
+   },
+   "situation": {
+    "posteam": "PHI",
+    "defteam": "KC",
+    "home_team": "PHI",
+    "away_team": "KC",
+    "posteam_score": 24,
+    "defteam_score": 21,
+    "qtr": 3,
+    "quarter_seconds_remaining": 108,
+    "yardline_100": 15,
+    "down": 4,
+    "distance": 6,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.675734,
+     "punt": 0.612711,
+     "fg": 0.707277
+    }
+   }
+  },
+  {
+   "id": "2023_22_SF_KC-2828",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 22,
+    "game_date": "2024-02-11",
+    "game_id": "2023_22_SF_KC",
+    "play_id": 2828
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "SF",
+    "home_team": "KC",
+    "away_team": "SF",
+    "posteam_score": 6,
+    "defteam_score": 10,
+    "qtr": 3,
+    "quarter_seconds_remaining": 162,
+    "yardline_100": 65,
+    "down": 4,
+    "distance": 2,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.285663,
+     "punt": 0.250832
+    }
+   }
+  },
+  {
+   "id": "2022_19_DAL_TB-236",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-16",
+    "game_id": "2022_19_DAL_TB",
+    "play_id": 236
+   },
+   "situation": {
+    "posteam": "TB",
+    "defteam": "DAL",
+    "home_team": "TB",
+    "away_team": "DAL",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 827,
+    "yardline_100": 67,
+    "down": 4,
+    "distance": 12,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.495591,
+     "punt": 0.540832
+    }
+   }
+  },
+  {
+   "id": "2022_20_DAL_SF-3860",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-22",
+    "game_id": "2022_20_DAL_SF",
+    "play_id": 3860
+   },
+   "situation": {
+    "posteam": "SF",
+    "defteam": "DAL",
+    "home_team": "SF",
+    "away_team": "DAL",
+    "posteam_score": 19,
+    "defteam_score": 12,
+    "qtr": 4,
+    "quarter_seconds_remaining": 51,
+    "yardline_100": 49,
+    "down": 4,
+    "distance": 15,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 0
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.79193,
+     "punt": 0.817156
+    }
+   }
+  },
+  {
+   "id": "2022_19_DAL_TB-324",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-16",
+    "game_id": "2022_19_DAL_TB",
+    "play_id": 324
+   },
+   "situation": {
+    "posteam": "DAL",
+    "defteam": "TB",
+    "home_team": "TB",
+    "away_team": "DAL",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 692,
+    "yardline_100": 76,
+    "down": 4,
+    "distance": 15,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.311363,
+     "punt": 0.344111
+    }
+   }
+  },
+  {
+   "id": "2023_19_PHI_TB-3366",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PHI_TB",
+    "play_id": 3366
+   },
+   "situation": {
+    "posteam": "PHI",
+    "defteam": "TB",
+    "home_team": "TB",
+    "away_team": "PHI",
+    "posteam_score": 9,
+    "defteam_score": 25,
+    "qtr": 4,
+    "quarter_seconds_remaining": 722,
+    "yardline_100": 17,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0679731,
+     "punt": 0.0417517,
+     "fg": 0.0620172
+    }
+   }
+  },
+  {
+   "id": "2022_20_DAL_SF-2168",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-22",
+    "game_id": "2022_20_DAL_SF",
+    "play_id": 2168
+   },
+   "situation": {
+    "posteam": "DAL",
+    "defteam": "SF",
+    "home_team": "SF",
+    "away_team": "DAL",
+    "posteam_score": 6,
+    "defteam_score": 9,
+    "qtr": 3,
+    "quarter_seconds_remaining": 711,
+    "yardline_100": 52,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.36348,
+     "punt": 0.33463
+    }
+   }
+  },
+  {
+   "id": "2022_19_NYG_MIN-2873",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_NYG_MIN",
+    "play_id": 2873
+   },
+   "situation": {
+    "posteam": "MIN",
+    "defteam": "NYG",
+    "home_team": "MIN",
+    "away_team": "NYG",
+    "posteam_score": 21,
+    "defteam_score": 24,
+    "qtr": 4,
+    "quarter_seconds_remaining": 758,
+    "yardline_100": 20,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.422396,
+     "punt": 0.338956,
+     "fg": 0.433058
+    }
+   }
+  },
+  {
+   "id": "2022_19_MIA_BUF-2020",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_MIA_BUF",
+    "play_id": 2020
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "MIA",
+    "home_team": "BUF",
+    "away_team": "MIA",
+    "posteam_score": 17,
+    "defteam_score": 6,
+    "qtr": 2,
+    "quarter_seconds_remaining": 108,
+    "yardline_100": 70,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.82005,
+     "punt": 0.83665
+    }
+   }
+  },
+  {
+   "id": "2023_20_TB_DET-1414",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_TB_DET",
+    "play_id": 1414
+   },
+   "situation": {
+    "posteam": "DET",
+    "defteam": "TB",
+    "home_team": "DET",
+    "away_team": "TB",
+    "posteam_score": 10,
+    "defteam_score": 3,
+    "qtr": 2,
+    "quarter_seconds_remaining": 411,
+    "yardline_100": 56,
+    "down": 4,
+    "distance": 10,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.685823,
+     "punt": 0.698659
+    }
+   }
+  },
+  {
+   "id": "2022_19_LAC_JAX-4266",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-14",
+    "game_id": "2022_19_LAC_JAX",
+    "play_id": 4266
+   },
+   "situation": {
+    "posteam": "JAX",
+    "defteam": "LAC",
+    "home_team": "JAX",
+    "away_team": "LAC",
+    "posteam_score": 28,
+    "defteam_score": 30,
+    "qtr": 4,
+    "quarter_seconds_remaining": 88,
+    "yardline_100": 41,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.490121,
+     "punt": 0.416966,
+     "fg": 0.42595
+    }
+   }
+  },
+  {
+   "id": "2023_19_MIA_KC-2872",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-13",
+    "game_id": "2023_19_MIA_KC",
+    "play_id": 2872
+   },
+   "situation": {
+    "posteam": "MIA",
+    "defteam": "KC",
+    "home_team": "KC",
+    "away_team": "MIA",
+    "posteam_score": 7,
+    "defteam_score": 19,
+    "qtr": 3,
+    "quarter_seconds_remaining": 358,
+    "yardline_100": 66,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.109767,
+     "punt": 0.087187
+    }
+   }
+  },
+  {
+   "id": "2022_21_CIN_KC-1237",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_CIN_KC",
+    "play_id": 1237
+   },
+   "situation": {
+    "posteam": "CIN",
+    "defteam": "KC",
+    "home_team": "KC",
+    "away_team": "CIN",
+    "posteam_score": 0,
+    "defteam_score": 6,
+    "qtr": 2,
+    "quarter_seconds_remaining": 520,
+    "yardline_100": 12,
+    "down": 4,
+    "distance": 7,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.285686,
+     "punt": 0.206799,
+     "fg": 0.288545
+    }
+   }
+  },
+  {
+   "id": "2022_19_BAL_CIN-1916",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_BAL_CIN",
+    "play_id": 1916
+   },
+   "situation": {
+    "posteam": "BAL",
+    "defteam": "CIN",
+    "home_team": "CIN",
+    "away_team": "BAL",
+    "posteam_score": 10,
+    "defteam_score": 9,
+    "qtr": 3,
+    "quarter_seconds_remaining": 737,
+    "yardline_100": 59,
+    "down": 4,
+    "distance": 4,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.525223,
+     "punt": 0.512909
+    }
+   }
+  },
+  {
+   "id": "2023_19_PIT_BUF-4028",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PIT_BUF",
+    "play_id": 4028
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "PIT",
+    "home_team": "BUF",
+    "away_team": "PIT",
+    "posteam_score": 31,
+    "defteam_score": 17,
+    "qtr": 4,
+    "quarter_seconds_remaining": 120,
+    "yardline_100": 9,
+    "down": 4,
+    "distance": 9,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 0
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.960329,
+     "punt": 0.944585,
+     "fg": 0.964022
+    }
+   }
+  },
+  {
+   "id": "2022_20_JAX_KC-894",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 20,
+    "game_date": "2023-01-21",
+    "game_id": "2022_20_JAX_KC",
+    "play_id": 894
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "JAX",
+    "home_team": "KC",
+    "away_team": "JAX",
+    "posteam_score": 7,
+    "defteam_score": 7,
+    "qtr": 2,
+    "quarter_seconds_remaining": 853,
+    "yardline_100": 32,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.621036,
+     "punt": 0.571536,
+     "fg": 0.62897
+    }
+   }
+  },
+  {
+   "id": "2023_19_MIA_KC-2175",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-13",
+    "game_id": "2023_19_MIA_KC",
+    "play_id": 2175
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "MIA",
+    "home_team": "KC",
+    "away_team": "MIA",
+    "posteam_score": 13,
+    "defteam_score": 7,
+    "qtr": 2,
+    "quarter_seconds_remaining": 22,
+    "yardline_100": 14,
+    "down": 4,
+    "distance": 7,
+    "posteam_timeouts": 0,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.670738,
+     "punt": 0.598718,
+     "fg": 0.696335
+    }
+   }
+  },
+  {
+   "id": "2023_19_PIT_BUF-2819",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PIT_BUF",
+    "play_id": 2819
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "PIT",
+    "home_team": "BUF",
+    "away_team": "PIT",
+    "posteam_score": 21,
+    "defteam_score": 10,
+    "qtr": 3,
+    "quarter_seconds_remaining": 388,
+    "yardline_100": 55,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.892469,
+     "punt": 0.878073
+    }
+   }
+  },
+  {
+   "id": "2022_19_MIA_BUF-239",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_MIA_BUF",
+    "play_id": 239
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "MIA",
+    "home_team": "BUF",
+    "away_team": "MIA",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 720,
+    "yardline_100": 32,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.441688,
+     "punt": 0.381252,
+     "fg": 0.443118
+    }
+   }
+  },
+  {
+   "id": "2023_19_LA_DET-2747",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-14",
+    "game_id": "2023_19_LA_DET",
+    "play_id": 2747
+   },
+   "situation": {
+    "posteam": "DET",
+    "defteam": "LA",
+    "home_team": "DET",
+    "away_team": "LA",
+    "posteam_score": 24,
+    "defteam_score": 20,
+    "qtr": 4,
+    "quarter_seconds_remaining": 900,
+    "yardline_100": 62,
+    "down": 4,
+    "distance": 7,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 2
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.657826,
+     "punt": 0.673256
+    }
+   }
+  },
+  {
+   "id": "2022_21_CIN_KC-1454",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_CIN_KC",
+    "play_id": 1454
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "CIN",
+    "home_team": "KC",
+    "away_team": "CIN",
+    "posteam_score": 6,
+    "defteam_score": 3,
+    "qtr": 2,
+    "quarter_seconds_remaining": 239,
+    "yardline_100": 14,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 0,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.727035,
+     "punt": 0.612918,
+     "fg": 0.708731
+    }
+   }
+  },
+  {
+   "id": "2022_19_MIA_BUF-1724",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_MIA_BUF",
+    "play_id": 1724
+   },
+   "situation": {
+    "posteam": "MIA",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "MIA",
+    "posteam_score": 3,
+    "defteam_score": 17,
+    "qtr": 2,
+    "quarter_seconds_remaining": 269,
+    "yardline_100": 46,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0849792,
+     "punt": 0.0765511,
+     "fg": 0.0728116
+    }
+   }
+  },
+  {
+   "id": "2023_20_GB_SF-966",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-20",
+    "game_id": "2023_20_GB_SF",
+    "play_id": 966
+   },
+   "situation": {
+    "posteam": "GB",
+    "defteam": "SF",
+    "home_team": "SF",
+    "away_team": "GB",
+    "posteam_score": 3,
+    "defteam_score": 0,
+    "qtr": 2,
+    "quarter_seconds_remaining": 880,
+    "yardline_100": 14,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.657204,
+     "punt": 0.530386,
+     "fg": 0.634642
+    }
+   }
+  },
+  {
+   "id": "2023_20_TB_DET-1640",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_TB_DET",
+    "play_id": 1640
+   },
+   "situation": {
+    "posteam": "TB",
+    "defteam": "DET",
+    "home_team": "DET",
+    "away_team": "TB",
+    "posteam_score": 3,
+    "defteam_score": 10,
+    "qtr": 2,
+    "quarter_seconds_remaining": 149,
+    "yardline_100": 32,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.320064,
+     "punt": 0.269775,
+     "fg": 0.325052
+    }
+   }
+  },
+  {
+   "id": "2023_20_TB_DET-4149",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_TB_DET",
+    "play_id": 4149
+   },
+   "situation": {
+    "posteam": "DET",
+    "defteam": "TB",
+    "home_team": "DET",
+    "away_team": "TB",
+    "posteam_score": 31,
+    "defteam_score": 23,
+    "qtr": 4,
+    "quarter_seconds_remaining": 126,
+    "yardline_100": 45,
+    "down": 4,
+    "distance": 11,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 1
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.827197,
+     "punt": 0.847102,
+     "fg": 0.831311
+    }
+   }
+  },
+  {
+   "id": "2023_20_TB_DET-3819",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_TB_DET",
+    "play_id": 3819
+   },
+   "situation": {
+    "posteam": "TB",
+    "defteam": "DET",
+    "home_team": "DET",
+    "away_team": "TB",
+    "posteam_score": 17,
+    "defteam_score": 31,
+    "qtr": 4,
+    "quarter_seconds_remaining": 337,
+    "yardline_100": 68,
+    "down": 4,
+    "distance": 14,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.043672,
+     "punt": 0.0477961
+    }
+   }
+  },
+  {
+   "id": "2023_20_KC_BUF-652",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_KC_BUF",
+    "play_id": 652
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "KC",
+    "posteam_score": 0,
+    "defteam_score": 3,
+    "qtr": 1,
+    "quarter_seconds_remaining": 280,
+    "yardline_100": 29,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.501126,
+     "punt": 0.43668,
+     "fg": 0.505591
+    }
+   }
+  },
+  {
+   "id": "2023_19_MIA_KC-515",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-13",
+    "game_id": "2023_19_MIA_KC",
+    "play_id": 515
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "MIA",
+    "home_team": "KC",
+    "away_team": "MIA",
+    "posteam_score": 7,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 436,
+    "yardline_100": 52,
+    "down": 4,
+    "distance": 6,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.689193,
+     "punt": 0.69612
+    }
+   }
+  },
+  {
+   "id": "2023_21_DET_SF-3428",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 21,
+    "game_date": "2024-01-28",
+    "game_id": "2023_21_DET_SF",
+    "play_id": 3428
+   },
+   "situation": {
+    "posteam": "SF",
+    "defteam": "DET",
+    "home_team": "SF",
+    "away_team": "DET",
+    "posteam_score": 24,
+    "defteam_score": 24,
+    "qtr": 4,
+    "quarter_seconds_remaining": 596,
+    "yardline_100": 15,
+    "down": 4,
+    "distance": 12,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.493408,
+     "punt": 0.442291,
+     "fg": 0.548308
+    }
+   }
+  },
+  {
+   "id": "2022_19_LAC_JAX-3658",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-14",
+    "game_id": "2022_19_LAC_JAX",
+    "play_id": 3658
+   },
+   "situation": {
+    "posteam": "LAC",
+    "defteam": "JAX",
+    "home_team": "JAX",
+    "away_team": "LAC",
+    "posteam_score": 30,
+    "defteam_score": 20,
+    "qtr": 4,
+    "quarter_seconds_remaining": 531,
+    "yardline_100": 22,
+    "down": 4,
+    "distance": 3,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.873442,
+     "punt": 0.849089,
+     "fg": 0.888973
+    }
+   }
+  },
+  {
+   "id": "2023_19_PIT_BUF-559",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PIT_BUF",
+    "play_id": 559
+   },
+   "situation": {
+    "posteam": "PIT",
+    "defteam": "BUF",
+    "home_team": "BUF",
+    "away_team": "PIT",
+    "posteam_score": 0,
+    "defteam_score": 7,
+    "qtr": 1,
+    "quarter_seconds_remaining": 333,
+    "yardline_100": 69,
+    "down": 4,
+    "distance": 4,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.138748,
+     "punt": 0.127491
+    }
+   }
+  },
+  {
+   "id": "2023_20_HOU_BAL-2758",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-20",
+    "game_id": "2023_20_HOU_BAL",
+    "play_id": 2758
+   },
+   "situation": {
+    "posteam": "BAL",
+    "defteam": "HOU",
+    "home_team": "BAL",
+    "away_team": "HOU",
+    "posteam_score": 17,
+    "defteam_score": 10,
+    "qtr": 3,
+    "quarter_seconds_remaining": 132,
+    "yardline_100": 49,
+    "down": 4,
+    "distance": 1,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "go",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.805659,
+     "punt": 0.774557
+    }
+   }
+  },
+  {
+   "id": "2023_19_PHI_TB-1018",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 19,
+    "game_date": "2024-01-15",
+    "game_id": "2023_19_PHI_TB",
+    "play_id": 1018
+   },
+   "situation": {
+    "posteam": "TB",
+    "defteam": "PHI",
+    "home_team": "TB",
+    "away_team": "PHI",
+    "posteam_score": 10,
+    "defteam_score": 0,
+    "qtr": 2,
+    "quarter_seconds_remaining": 848,
+    "yardline_100": 36,
+    "down": 4,
+    "distance": 13,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "fg",
+   "reveal": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.801155,
+     "punt": 0.810581,
+     "fg": 0.833174
+    }
+   }
+  },
+  {
+   "id": "2022_19_DAL_TB-416",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-16",
+    "game_id": "2022_19_DAL_TB",
+    "play_id": 416
+   },
+   "situation": {
+    "posteam": "TB",
+    "defteam": "DAL",
+    "home_team": "TB",
+    "away_team": "DAL",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 607,
+    "yardline_100": 54,
+    "down": 4,
+    "distance": 5,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.575442,
+     "punt": 0.560502
+    }
+   }
+  },
+  {
+   "id": "2022_19_NYG_MIN-2481",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_NYG_MIN",
+    "play_id": 2481
+   },
+   "situation": {
+    "posteam": "NYG",
+    "defteam": "MIN",
+    "home_team": "MIN",
+    "away_team": "NYG",
+    "posteam_score": 24,
+    "defteam_score": 21,
+    "qtr": 3,
+    "quarter_seconds_remaining": 261,
+    "yardline_100": 67,
+    "down": 4,
+    "distance": 12,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.550123,
+     "punt": 0.597867
+    }
+   }
+  },
+  {
+   "id": "2023_21_KC_BAL-122",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 21,
+    "game_date": "2024-01-28",
+    "game_id": "2023_21_KC_BAL",
+    "play_id": 122
+   },
+   "situation": {
+    "posteam": "BAL",
+    "defteam": "KC",
+    "home_team": "BAL",
+    "away_team": "KC",
+    "posteam_score": 0,
+    "defteam_score": 0,
+    "qtr": 1,
+    "quarter_seconds_remaining": 816,
+    "yardline_100": 72,
+    "down": 4,
+    "distance": 7,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.341599,
+     "punt": 0.343915
+    }
+   }
+  },
+  {
+   "id": "2023_21_KC_BAL-1491",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 21,
+    "game_date": "2024-01-28",
+    "game_id": "2023_21_KC_BAL",
+    "play_id": 1491
+   },
+   "situation": {
+    "posteam": "BAL",
+    "defteam": "KC",
+    "home_team": "BAL",
+    "away_team": "KC",
+    "posteam_score": 7,
+    "defteam_score": 14,
+    "qtr": 2,
+    "quarter_seconds_remaining": 240,
+    "yardline_100": 68,
+    "down": 4,
+    "distance": 9,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.129669,
+     "punt": 0.128242
+    }
+   }
+  },
+  {
+   "id": "2022_19_MIA_BUF-3155",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 19,
+    "game_date": "2023-01-15",
+    "game_id": "2022_19_MIA_BUF",
+    "play_id": 3155
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "MIA",
+    "home_team": "BUF",
+    "away_team": "MIA",
+    "posteam_score": 20,
+    "defteam_score": 24,
+    "qtr": 3,
+    "quarter_seconds_remaining": 532,
+    "yardline_100": 70,
+    "down": 4,
+    "distance": 12,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.241977,
+     "punt": 0.267274
+    }
+   }
+  },
+  {
+   "id": "2022_21_SF_PHI-1164",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_SF_PHI",
+    "play_id": 1164
+   },
+   "situation": {
+    "posteam": "PHI",
+    "defteam": "SF",
+    "home_team": "PHI",
+    "away_team": "SF",
+    "posteam_score": 7,
+    "defteam_score": 0,
+    "qtr": 2,
+    "quarter_seconds_remaining": 687,
+    "yardline_100": 98,
+    "down": 4,
+    "distance": 14,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.537198,
+     "punt": 0.593535
+    }
+   }
+  },
+  {
+   "id": "2023_20_KC_BUF-3443",
+   "kind": "historical",
+   "source": {
+    "season": 2023,
+    "week": 20,
+    "game_date": "2024-01-21",
+    "game_id": "2023_20_KC_BUF",
+    "play_id": 3443
+   },
+   "situation": {
+    "posteam": "BUF",
+    "defteam": "KC",
+    "home_team": "BUF",
+    "away_team": "KC",
+    "posteam_score": 24,
+    "defteam_score": 27,
+    "qtr": 4,
+    "quarter_seconds_remaining": 652,
+    "yardline_100": 82,
+    "down": 4,
+    "distance": 12,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.233904,
+     "punt": 0.261667
+    }
+   }
+  },
+  {
+   "id": "2022_21_CIN_KC-2166",
+   "kind": "historical",
+   "source": {
+    "season": 2022,
+    "week": 21,
+    "game_date": "2023-01-29",
+    "game_id": "2022_21_CIN_KC",
+    "play_id": 2166
+   },
+   "situation": {
+    "posteam": "KC",
+    "defteam": "CIN",
+    "home_team": "KC",
+    "away_team": "CIN",
+    "posteam_score": 13,
+    "defteam_score": 6,
+    "qtr": 3,
+    "quarter_seconds_remaining": 818,
+    "yardline_100": 77,
+    "down": 4,
+    "distance": 8,
+    "posteam_timeouts": 3,
+    "defteam_timeouts": 3
+   },
+   "historical_action": "punt",
+   "reveal": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.719642,
+     "punt": 0.73862
+    }
+   }
+  }
+ ]
+}
