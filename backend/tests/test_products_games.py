@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import os
 
 import pandas as pd
 import pytest
@@ -127,11 +126,6 @@ def _has_display_text():
     return bool(files) and "display_text" in json.loads(files[0].read_text())["cols"]
 
 
-# Text changed in lib/plays after the games-v3 release was packed (QA 0019 N3, PR "play_text: QA 0019").
-# Only for games-v3 files; games-v4 (rebuilt game files) must match exactly, so delete this when it ships.
-_PENDING_REBUILD = {"games-v3": {("2023_01_DET_KC", "2228"), ("2023_01_DET_KC", "1273")}}  # 1273: QA 0116 snap order
-
-
 @pytest.mark.skipif(not _has_display_text(), reason="game files predate games-v3 (no display_text column)")
 def test_game_files_display_text_nonempty_and_matches_lib_plays():
     from pathlib import Path
@@ -145,8 +139,6 @@ def test_game_files_display_text_nonempty_and_matches_lib_plays():
             got = dict(zip(map(str, c["play_id"]), c["display_text"]))
             pen = dict(zip(map(str, c["play_id"]), c["penalty_text"]))
             for p in json.loads(shared.read_text())["plays"]:
-                if (path.stem, p["play_id"]) in _PENDING_REBUILD.get(os.environ.get("GAMES_RELEASE_TAG", ""), ()):
-                    continue
                 assert got[p["play_id"]] == p["display_text"], (path.stem, p["play_id"])
                 assert pen[p["play_id"]] == p["penalty_text"], (path.stem, p["play_id"])
 
