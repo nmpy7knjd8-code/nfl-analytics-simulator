@@ -91,7 +91,7 @@ export type Outcome = {
 const NON_PLAY = /^(GAME|END (QUARTER \d|GAME)|Two-Minute Warning|Timeout #\d)/i;
 
 export function outcomeFromGame(doc: GameFileV2, item: DailyItem, nick: (abbr: string) => string): Outcome | null {
-  const playId = Number(item.id.split("-").pop());
+  const playId = item.source.play_id ?? Number(item.id.split("-").pop());
   const c = doc.cols;
   const i = c.play_id.indexOf(playId);
   if (i < 0) return null;
