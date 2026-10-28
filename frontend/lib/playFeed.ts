@@ -125,7 +125,8 @@ export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): stri
   const sign = lead.team === g.home ? 1 : -1;
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
   const v = d * sign;
-  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${Math.abs(v)}%`;
+  const n = Math.abs(v);
+  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${n} ${n === 1 ? "pt" : "pts"}`;
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
