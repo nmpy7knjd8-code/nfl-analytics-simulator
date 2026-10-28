@@ -65,3 +65,24 @@ test("overtime (real game, BUF @ NYJ 2023): plays listed, no win chance, no char
   assert.deepEqual(otRows.filter((p) => p.scoring).length, 1);
   assert.ok(ot.plays.filter((p) => p.scoring).every((p) => /field goal|touchdown|extra point|safety|two-point|kicks the extra|\\bgood\\b/i.test(p.text)), 'scoring tag sits on the scoring play');
 });
+
+test("scoring tag sits on the play that scores (row scores are post-play)", () => {
+  const fgs = g.plays.filter((p) => /Butker \d+ yard field goal is GOOD/.test(p.text));
+  assert.equal(fgs.length, 2);
+  for (const fg of fgs) {
+    const k = g.plays.indexOf(fg);
+    assert.ok(fg.scoring, `FG ${fg.id} tagged`);
+    assert.equal(g.plays[k - 1].scoring, false, `play before FG ${fg.id} not tagged`);
+    assert.equal(fg.homeScore - g.plays[k - 1].homeScore, 3);
+  }
+  const bell = g.plays.find((p) => /Mahomes pass short right to 81-B\.Bell .*TOUCHDOWN/.test(p.text))!;
+  assert.ok(bell.scoring);
+  assert.deepEqual([bell.homeScore, bell.awayScore], [13, 7]);
+  // The KC timeout right after the Bell TD carries no score change and is never a scoring row.
+  const c = doc.cols;
+  const r = c.play_id.findIndex((id) => String(id) === bell.id);
+  assert.match(c.text[r + 1] ?? "", /^Timeout #3 by KC/);
+  const timeout = g.plays.find((p) => p.id === String(c.play_id[r + 1]));
+  assert.ok(!timeout || !timeout.scoring);
+  assert.ok(g.plays[g.plays.indexOf(bell) + 1].scoring); // the extra point after the timeout
+});
