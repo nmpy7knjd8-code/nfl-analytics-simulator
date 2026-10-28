@@ -15,7 +15,10 @@ import {
   outcomeFromGame, plainShare, situationSentence, tappable, type Outcome,
 } from "../lib/simpleGame";
 import { teamNickname } from "../lib/teams";
+import { CardSkeletons, PlayedToday } from "./EmptyState";
+import { playedToday, streakLine } from "../lib/emptyState";
 import { FieldView } from "./FieldView";
+import { ModelLimits } from "./ModelLimits";
 import { ScoreBug, teamLogo } from "./ScoreBug";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -60,6 +63,11 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [picks, setPicks] = useState<Pick[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
+  useEffect(() => {
+    if (mode !== "daily" || key == null) return;
+    try { setAlready(playedToday(loadStreak(window.localStorage), key)); } catch { setAlready(null); }
+  }, [key, mode]);
 
   useEffect(() => {
     if (key == null || items.length === 0) return;
@@ -97,11 +105,20 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const dayNo = key ? dayNumber(key) : 0;
   const n = items.length;
 
+  if (key != null && already && picks.length === 0) {
+    return (
+      <div className="sg-app">
+        <Header right={`#${dayNo}`} />
+        <PlayedToday score={already.score} answered={already.answered} />
+        <Trademark />
+      </div>
+    );
+  }
   if (key == null || (load.state === "loading" && n > 0)) {
     return (
       <div className="sg-app">
         <Header right="" />
-        <div className="sg-status" role="status" aria-live="polite"><span className="sg-spin" aria-hidden="true" />{mode === "daily" ? "Loading today\u2019s plays…" : "Loading plays…"}</div>
+        <CardSkeletons label={mode === "daily" ? "Loading today\u2019s plays…" : "Loading plays…"} />
         <Trademark />
       </div>
     );
@@ -140,7 +157,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         <div className="sg-marks" aria-label="Your results">
           {picks.map((p, i) => <span key={i} className={p.scored.result === "wrong" ? "sg-n" : "sg-y"}>{RESULT_GLYPH[p.scored.result]}</span>)}
         </div>
-        {mode === "daily" ? <div className="sg-streak">{streak}-day streak</div> : null}
+        {mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
         <div className="sg-recap">
           {items.map((it, i) => (
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
@@ -223,6 +240,7 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>
+      <ModelLimits item={it} />
       <Trademark />
     </div>
   );
