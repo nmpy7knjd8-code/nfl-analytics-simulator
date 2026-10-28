@@ -1518,8 +1518,8 @@ body:has(.quiz-page) .app-nav-item.is-current {
 body { font-variant-numeric: tabular-nums; }
 .fd-top { display: flex; justify-content: space-between; align-items: center; padding: calc(0.75rem + var(--safe-top)) var(--page-pad-x) 0.25rem; max-width: 40rem; margin: 0 auto; width: 100%; }
 .fd-brand { font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
-.fd-top-links { display: flex; gap: 0.25rem; }
-.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.6rem; min-height: 44px; font-size: 0.9375rem; }
+.fd-top-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 0.1rem; }
+.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.45rem; min-height: 44px; font-size: 0.9375rem; }
 .fd-top-links a:hover { color: var(--color-ink); }
 .fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
 .fd-head h1 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
@@ -1808,3 +1808,6 @@ body { font-variant-numeric: tabular-nums; }
 .ck-close { margin: 0; font-weight: 700; }
 .ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
 .ck-src { font-size: 0.875rem; }
+/* —— D5 outcome histogram —— */
+.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}

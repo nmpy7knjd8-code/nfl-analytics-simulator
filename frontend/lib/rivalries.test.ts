@@ -39,3 +39,13 @@ test("strip colors: team colors, readable on white, distinct", () => {
   assert.ok(usable(lv));
   for (const k of allPairs()) { const [x, y] = stripColors(...(k.split("-") as [string, string])); assert.notEqual(x, y, k); }
 });
+
+import { teamRivals } from "./rivalries";
+test("teamRivals: records add up and match the pair pages", () => {
+  const kc = teamRivals("KC");
+  assert.equal(kc.reduce((s, r) => s + r.meetings, 0), allGames().filter((g) => g.home === "KC" || g.away === "KC").length);
+  for (const r of kc) assert.equal(r.w + r.l + r.t, r.meetings);
+  const lv = kc.find((r) => r.opp === "LV")!;
+  assert.deepEqual([lv.key, lv.meetings, lv.w, lv.l], ["KC-LV", 14, 11, 3]);
+  assert.ok(kc[0].meetings >= kc[kc.length - 1].meetings);
+});

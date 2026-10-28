@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteMenuLinks } from "./SiteMenu";
 import { CHECKER_ENABLED } from "../lib/features";
 
 const ALL_TABS = [
@@ -19,7 +20,7 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
  * "/coaches" and anything under "/team/", "/coaches/", "/card/" or "/rivalry/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
-  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration"]);
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes"]);
   const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
@@ -32,9 +33,8 @@ export function TopBar() {
       <Link href="/" className="fd-brand">
         Fourth &amp; Daily
       </Link>
-      <nav aria-label="More" className="fd-top-links">
-        <Link href="/daily/stats/">Stats</Link>
-        <Link href="/about/">About</Link>
+      <nav aria-label="Menu" className="fd-top-links">
+        <SiteMenuLinks />
       </nav>
     </header>
   );
