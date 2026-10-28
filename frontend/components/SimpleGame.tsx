@@ -17,6 +17,7 @@ import { teamNickname } from "../lib/teams";
 import { CardSkeletons, PlayedToday } from "./EmptyState";
 import { playedToday, streakLine } from "../lib/emptyState";
 import { FieldView } from "./FieldView";
+import { ModelLimits } from "./ModelLimits";
 import { ScoreBug, teamLogo } from "./ScoreBug";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -238,6 +239,7 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>
+      <ModelLimits item={it} />
       <Trademark />
     </div>
   );
