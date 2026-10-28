@@ -112,7 +112,7 @@ def test_committed_file_small_clean_and_shape():
     data = json.loads(text)
     assert SITE.stat().st_size < 6_000
     assert not BANNED.search(text)
-    assert set(data) == {"schema", "source", "builtAt", "seasons", "minYards", "maxYards",
+    assert set(data) == {"schema", "source", "builtAt", "dataThrough", "seasons", "minYards", "maxYards",
                          "fewKicksBelow", "smoothYards", "bands", "yards"}
     assert data["schema"] == "fg_rates/v2" and (data["minYards"], data["maxYards"], data["smoothYards"]) == (18, 64, 2)
     assert data["seasons"] == list(range(2019, 2026))
