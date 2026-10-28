@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import retired from "./retiredDailyIds.json";
@@ -21,4 +22,11 @@ test("scoring", () => {
   assert.equal(roundScore(99, 1), 0);
   assert.equal(clampSpot(0), 1);
   assert.equal(clampSpot(120), 99);
+});
+
+test("gorates.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("./site/gorates.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/gorates.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
 });
