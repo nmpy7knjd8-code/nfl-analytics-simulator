@@ -1732,6 +1732,7 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 0116 U4: self-hosted logos on the games list and game header. */
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
 .team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.fd-empty{display:flex;flex-direction:column;gap:12px;align-items:stretch}.fd-empty p{font-size:18px;font-weight:700;margin:8px 0}.fd-empty-btn{min-height:54px;border-radius:999px;background:#1E5BFF;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none}
 
 /* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
 .kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
@@ -1774,3 +1775,17 @@ body { font-variant-numeric: tabular-nums; }
 .ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
 .ab>ul{padding-left:20px;display:grid;gap:6px}
 .ab a{color:var(--sg-b)}
+/* —— chart pages (F4/D2), same white card as /kicks —— */
+.ch-card{padding:8px 6px}
+.ch-chips{margin:8px 0 0;justify-content:center;flex-wrap:wrap;overflow:visible}
+.ch-pick{text-align:left}
+.era-ax{font-size:11px;fill:#5f6368}
+.era-ax.is-on{fill:#000;font-weight:700}
+.era-lbl{font-size:11px;font-weight:700}
+.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
+.era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
+.era-all{border-top:1px solid #e6e6e6;padding-top:6px}
+.cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
