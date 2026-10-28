@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { dailyStats, dateKey, formatScore, loadStreak, type DailyStats } from "../lib/daily";
 
@@ -15,7 +16,14 @@ export function StatsView() {
     setS(dailyStats(st, dateKey(new Date())));
   }, []);
   if (!s) return <p className="fd-muted">Loading…</p>;
-  if (!s.days_played) return <p>No days played yet on this device. Play Today&apos;s 5 to start a streak.</p>;
+  if (!s.days_played) {
+    return (
+      <div className="fd-empty">
+        <p>Your record starts with today&apos;s five.</p>
+        <Link href="/daily/" className="fd-empty-btn">Play today&apos;s five</Link>
+      </div>
+    );
+  }
   const max = Math.max(1, ...s.score_distribution);
   return (
     <>
