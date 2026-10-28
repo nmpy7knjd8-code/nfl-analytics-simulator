@@ -38,7 +38,8 @@ def test_counts_from_nflverse_drive_results():
     assert (kc["drives"], kc["td"], kc["fg"], kc["no_score"]) == (3, 1, 1, 1)
     assert (buf["drives"], buf["td"], buf["fg"], buf["no_score"]) == (1, 0, 0, 1)
     assert out["league"] == {"drives": 4, "td": 1, "td_rate": 0.25}
-    assert out["season_type"] == "REG" and out["seasons"] == [2024, 2024]
+    assert out["season_type"] == "REG" and out["seasons"] == [2024, 2024] and out["season_list"] == [2024]
+    assert out["by_season"]["2024"]["league"] == out["league"]
 
 
 def test_ranks_ties_share_lower_rank():
@@ -51,9 +52,12 @@ def test_frozen_numbers():
     old = br.build(ROWS)
     assert br.check_frozen(old, br.build(ROWS)) == []
     changed = br.build([r for r in ROWS if r["fixed_drive"] != 3])
-    assert "KC" in br.check_frozen(old, changed) and "league" in br.check_frozen(old, changed)
+    bad = br.check_frozen(old, changed)
+    assert {"2024:KC", "2024:league", "all:KC", "all:league"} <= set(bad)
     later = br.build(ROWS + [dict(row("g3", "KC", 1, "Touchdown", 4), season=2025)])
-    assert br.check_frozen(old, later) == []  # new season may change totals
+    assert br.check_frozen(old, later) == []  # a new season may change the all-seasons total
+    regraded = br.build([r for r in ROWS if r["fixed_drive"] != 3] + [dict(row("g3", "KC", 1, "Touchdown", 4), season=2025)])
+    assert "2024:KC" in br.check_frozen(old, regraded)  # but never a published season
 
 
 def test_committed_file_invariants():
@@ -66,6 +70,19 @@ def test_committed_file_invariants():
     assert f["league"]["drives"] == sum(t["drives"] for t in f["teams"])
     assert f["league"]["td"] == sum(t["td"] for t in f["teams"])
     assert f["league"]["td_rate"] == round(f["league"]["td"] / f["league"]["drives"], 4)
-    assert SITE.stat().st_size < 8_000
+    assert f["season_list"] == list(range(2019, 2026)) and f["seasons"] == [2019, 2025]
+    assert list(f["by_season"]) == [str(y) for y in f["season_list"]]
+    for k in ("drives", "td"):
+        assert sum(s["league"][k] for s in f["by_season"].values()) == f["league"][k]
+    for s in f["by_season"].values():
+        assert len(s["teams"]) == 32
+        assert s["league"]["drives"] == sum(t["drives"] for t in s["teams"])
+        for t in s["teams"]:
+            assert t["td"] + t["fg"] + t["no_score"] == t["drives"] and 1 <= t["rank"] <= 32
+    tot = {t["team"]: t for t in f["teams"]}
+    for team, t in tot.items():
+        assert t["drives"] == sum(next(x for x in s["teams"] if x["team"] == team)["drives"] for s in f["by_season"].values())
+    assert SITE.stat().st_size < 30_000
     keys = set(f) | set(f["league"]) | {k for t in f["teams"] for k in t}
+    keys |= {k for s in f["by_season"].values() for t in s["teams"] for k in t}
     assert not [k for k in keys if BANNED_KEY.search(k)]
