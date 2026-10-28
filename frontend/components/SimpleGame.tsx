@@ -23,6 +23,21 @@ const nick = (a: string) => teamNickname(a);
 type Load = { state: "loading" } | { state: "error" } | { state: "ready"; outcomes: (Outcome | null)[] };
 export type Pick = { pick: QuizChoice; scored: ScoredCall };
 
+/**
+ * ☰ menu entries, in order. New routes slot in here (see nav-plan.md):
+ * /team/[abbr] is reached from Games/feed, not listed; Coaches goes after Kicks
+ * and is gated on CHECKER_ENABLED via lib/features.ts.
+ */
+export const MENU_ITEMS: readonly { href: string; label: string }[] = [
+  { href: "/practice/", label: "Practice" },
+  { href: "/endless/", label: "Keep playing" },
+  { href: "/feed/", label: "Play feed" },
+  { href: "/kicks/", label: "Kicks" },
+  { href: "/games/", label: "Games" },
+  { href: "/daily/stats/", label: "Stats" },
+  { href: "/about/", label: "About" },
+];
+
 export function Header({ right }: { right: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -33,12 +48,7 @@ export function Header({ right }: { right: string }) {
         <button type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>☰</button>
         {open ? (
           <nav className="sg-menu-list" aria-label="Menu">
-            <Link href="/practice/">Practice</Link>
-            <Link href="/endless/">Keep playing</Link>
-            <Link href="/feed/">Play feed</Link>
-            <Link href="/games/">Games</Link>
-            <Link href="/daily/stats/">Stats</Link>
-            <Link href="/about/">About</Link>
+            {MENU_ITEMS.map((m) => <Link key={m.href} href={m.href}>{m.label}</Link>)}
           </nav>
         ) : null}
       </div>
