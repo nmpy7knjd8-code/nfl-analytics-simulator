@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { era, goRate, type EraZoneId } from "../lib/era";
+import { Header, Trademark } from "./SimpleGame";
 
 const W = 358, H = 220, L = 30, R = 84, T = 12, B = 26, YMAX = 40;
-const SHADE: Record<EraZoneId, string> = { opp: "#4c8dff", mid: "#9cc0ff", own: "#71717a" };
+const SHADE: Record<EraZoneId, string> = { opp: "#1E5BFF", mid: "#8fb0ff", own: "#9aa0a6" };
 const fmt = (p: number | null) => (p === null ? "—" : `${Math.round(p)}%`);
 
 export function EraChart() {
@@ -15,16 +16,19 @@ export function EraChart() {
   const cur = seasons[sel];
 
   return (
-    <div className="era">
-      <section className="fd-card era-card">
+    <div className="sg-app kb">
+      <Header right="4th downs" />
+      <h1 className="kb-h1">Going for it, then and now</h1>
+      <p className="kb-lede">How often NFL teams went for it on 4th down, season by season. Tap a season.</p>
+      <section className="kb-hero ch-card">
         <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="How often teams went for it on 4th down, by season and field zone">
           {[0, 10, 20, 30, 40].map((v) => (
             <g key={v}>
-              <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke="#27272a" />
+              <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke="#e6e6e6" />
               <text x={L - 6} y={y(v) + 4} textAnchor="end" className="era-ax">{v}%</text>
             </g>
           ))}
-          <line x1={x(sel)} x2={x(sel)} y1={T} y2={H - B} stroke="#3f3f46" strokeDasharray="3 3" />
+          <line x1={x(sel)} x2={x(sel)} y1={T} y2={H - B} stroke="#9aa0a6" strokeDasharray="3 3" />
           {era.zones.map((z) => {
             const pts = seasons.map((s, i) => [x(i), y(goRate(s[z.id]) ?? 0)] as const);
             const last = pts[pts.length - 1];
@@ -43,14 +47,14 @@ export function EraChart() {
             <rect key={s.season} x={x(i) - 18} y={0} width={36} height={H} fill="transparent" style={{ cursor: "pointer" }} onClick={() => setSel(i)} aria-hidden="true" />
           ))}
         </svg>
-        <div className="era-seasons" role="group" aria-label="Season">
+        <div className="pf-chips ch-chips" role="group" aria-label="Season">
           {seasons.map((s, i) => (
-            <button key={s.season} type="button" className={`kb-pill era-pill${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{s.season}</button>
+            <button key={s.season} type="button" className={`pf-chip${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{s.season}</button>
           ))}
         </div>
       </section>
 
-      <section className="fd-card era-pick" aria-live="polite">
+      <section className="kb-hero ch-pick" aria-live="polite">
         <div className="era-pick-h">In {cur.season}, teams went for it on</div>
         <ul className="era-rows">
           {era.zones.map((z) => (
@@ -64,6 +68,7 @@ export function EraChart() {
         Went for it = a run or pass on 4th down, out of runs, passes, punts and field goals. Zones are yards from the opponent&apos;s goal line: 1–40, 41–60, 61–99. Data: nflverse play-by-play.
         {era.stub ? " Preview numbers." : ""}
       </p>
+      <Trademark />
     </div>
   );
 }

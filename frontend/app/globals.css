@@ -1733,24 +1733,39 @@ body { font-variant-numeric: tabular-nums; }
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
 .team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 
-/* —— shared chart page bits (A4/F4/D2) —— */
-.kb-h1 { font-size: 1.6rem; margin: 0; }
-.kb-lede { margin: 0; color: #a1a1aa; }
-.kb-note { margin: 0; font-size: 0.8rem; color: #71717a; }
-.kb-pill { min-height: 40px; padding: 0 1rem; border-radius: 999px; border: 1px solid #3f3f46; background: transparent; color: #e4e4e7; font: inherit; font-weight: 600; cursor: pointer; }
-.kb-pill.is-on { border-color: var(--color-blue); background: var(--color-blue); color: #fff; }
+/* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
+.kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.kb-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:#000}
+.kb-lede{margin:0;color:var(--sg-g);font-size:15px}
+.kb-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px 8px}
+.kb-q{font-size:16px;font-weight:600;color:#000}
+.kb-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:6px 0 4px}
+.kb-sub{font-size:14px;color:var(--sg-g);min-height:1.3em}
+.kb-range{width:100%;height:44px;accent-color:var(--sg-b);margin:0}
+.kb-ends{display:flex;justify-content:space-between;font-size:13px;color:var(--sg-g);margin-top:-6px}
+.kb-chips{margin:0}
+.kb-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kb-tile button{width:100%;display:grid;gap:4px;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px solid #d9d9d9;background:#fff;color:#000;font:inherit;cursor:pointer}
+.kb-tile.is-on button{border-color:var(--sg-b);box-shadow:inset 0 0 0 1px var(--sg-b)}
+.kb-tile button:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.kb-tile-yd{font-size:14px;font-weight:700;color:var(--sg-g)}
+.kb-tile-pct{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.kb-bar{height:6px;border-radius:3px;background:#e6e6e6;overflow:hidden}
+.kb-bar span{display:block;height:100%;background:var(--sg-b)}
+.kb-tile-n{font-size:13px;color:var(--sg-g)}
+.kb-note{margin:0;font-size:13px;color:var(--sg-g);line-height:1.35}
 
-/* —— F4 era chart —— */
-.era { display: grid; gap: 0.9rem; }
-.era-card { padding: 0.75rem 0.5rem; }
-.era-ax { font-size: 11px; fill: #71717a; }
-.era-ax.is-on { fill: #e4e4e7; font-weight: 700; }
-.era-lbl { font-size: 11px; font-weight: 700; }
-.era-seasons { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
-.era-pill { min-height: 36px; padding: 0 0.7rem; font-size: 0.85rem; }
-.era-pick-h { font-size: 0.95rem; color: #d4d4d8; }
-.era-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
-.era-rows li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #d4d4d8; }
-.era-rows strong { margin-left: auto; font-size: 1.15rem; color: #fff; font-variant-numeric: tabular-nums; }
-.era-dot { width: 10px; height: 10px; border-radius: 50%; background: #e4e4e7; flex: none; }
-.era-all { border-top: 1px solid #2a2a2e; padding-top: 0.5rem; }
+/* —— chart pages (F4/D2), same white card as /kicks —— */
+.ch-card{padding:8px 6px}
+.ch-chips{margin:8px 0 0;justify-content:center;flex-wrap:wrap;overflow:visible}
+.ch-pick{text-align:left}
+.era-ax{font-size:11px;fill:#5f6368}
+.era-ax.is-on{fill:#000;font-weight:700}
+.era-lbl{font-size:11px;font-weight:700}
+.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
+.era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
+.era-all{border-top:1px solid #e6e6e6;padding-top:6px}
+.cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
