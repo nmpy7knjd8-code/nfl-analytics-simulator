@@ -7,6 +7,7 @@ import {
   dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall, visibleStreak,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
+import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import type { QuizChoice } from "../lib/quiz";
 import {
@@ -59,6 +60,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [picks, setPicks] = useState<Pick[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [coach, setCoach] = useState<{ today: CoachEntry[]; season: CoachEntry[] } | null>(null);
 
   useEffect(() => {
     if (key == null || items.length === 0) return;
@@ -85,8 +87,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       const next = recordDaily(loadStreak(st), { date: key, credit, answered: picks.length, results: picks.map((p) => p.scored.result) });
       saveStreak(st, next);
       setStreak(visibleStreak(next, key));
+      const today = picks.map((p, i) => entryFor(key, items[i], p.pick)).filter((e): e is CoachEntry => e != null);
+      const season = addCoachDay(loadCoach(st), key, today);
+      saveCoach(st, season);
+      setCoach({ today, season });
     }
-  }, [done, key, mode, picks]);
+  }, [done, key, mode, picks, items]);
 
   const choose = useCallback((c: QuizChoice) => {
     const it = items[idx];
@@ -140,6 +146,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
           {picks.map((p, i) => <span key={i} className={p.scored.result === "wrong" ? "sg-n" : "sg-y"}>{RESULT_GLYPH[p.scored.result]}</span>)}
         </div>
         {mode === "daily" ? <div className="sg-streak">{streak}-day streak</div> : null}
+        {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
           {items.map((it, i) => (
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
@@ -224,5 +231,16 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
       </div>
       <Trademark />
     </div>
+  );
+}
+
+/** A2: one line on the end screen; the full record is on the stats page. */
+function CoachLine({ today, season }: { today: CoachEntry[]; season: CoachEntry[] }) {
+  const t = coachTally(today), s = coachTally(season);
+  return (
+    <Link href="/daily/stats/#coach" className="sg-coach">
+      <span>Same call as the coach: <b>{t.agreed} of {today.length}</b></span>
+      <span className="sg-c" aria-label={`All time: agreed ${s.agreed}, didn't ${s.differed}`}>{s.agreed}–{s.differed} ›</span>
+    </Link>
   );
 }

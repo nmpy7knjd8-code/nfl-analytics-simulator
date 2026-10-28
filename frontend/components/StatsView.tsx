@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CoachRecord } from "./CoachRecord";
 import { dailyStats, dateKey, formatScore, loadStreak, type DailyStats } from "../lib/daily";
 
 export function StatsView() {
@@ -15,7 +16,7 @@ export function StatsView() {
     setS(dailyStats(st, dateKey(new Date())));
   }, []);
   if (!s) return <p className="fd-muted">Loading…</p>;
-  if (!s.days_played) return <p>No days played yet on this device. Play Today&apos;s 5 to start a streak.</p>;
+  if (!s.days_played) return <><p>No days played yet on this device. Play Today&apos;s 5 to start a streak.</p><CoachRecord /></>;
   const max = Math.max(1, ...s.score_distribution);
   return (
     <>
@@ -34,6 +35,7 @@ export function StatsView() {
           </li>
         ))}
       </ol>
+      <CoachRecord />
       <p className="fd-muted">Stats live only in this browser. Nothing is sent anywhere.</p>
     </>
   );
