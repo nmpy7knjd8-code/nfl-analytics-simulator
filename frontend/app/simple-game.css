@@ -176,12 +176,11 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .st-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}
 .st-tiles div{border:2px solid #000;border-radius:14px;padding:6px 4px;text-align:center}
 .st-tiles dt{font-size:13px;font-weight:600;color:var(--sg-g)}.st-tiles dd{margin:0;font-size:22px;font-weight:800}
-.st-shield{font-size:15px;font-weight:600;margin:0 0 8px}
+.st-shield-line{font-size:15px;font-weight:600;margin:0 0 8px}
 .st-cal{display:grid;grid-template-columns:repeat(7,44px);gap:2px;justify-content:center}
 .st-dow{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
 .st-d{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid #000;background:#fff;color:#000}
 .st-played{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
-.st-shield{}
 .st-d.st-shield{background:#BCD0FF;border-color:#BCD0FF;color:#000}
 .st-future,.st-before{border-color:#e3e3e3;color:#b0b0b0}
 .st-key{display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;margin:8px 0 0}
