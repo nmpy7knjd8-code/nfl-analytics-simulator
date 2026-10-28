@@ -23,6 +23,8 @@ test("QA 0217 K/J/menu: About kick copy matches the game; every logo has a plate
   assert.match(read("../app/about/page.tsx"), /Too far to kick \(65\+ yards\)/);
   assert.match(read("../components/SimpleGame.tsx"), /Too far to kick \(65\+ yards\)/);
   assert.match(read("../components/TeamLogo.tsx"), /className="team-logo team-logo-plate"/);
-  const sg = read("../components/SimpleGame.tsx");
-  for (const href of ["/practice/", "/endless/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
+  const sg = read("../components/SiteMenu.tsx");
+  assert.match(read("../components/SimpleGame.tsx"), /<SiteMenuLinks \/>/);
+  assert.match(read("../components/AppNav.tsx"), /<SiteMenuLinks \/>/);
+  for (const href of ["/practice/", "/endless/", "/feed/", "/kicks/", "/games/", "/daily/stats/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
 });

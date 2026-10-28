@@ -30,3 +30,15 @@
 .tm .tm-stats span{font-weight:700;font-size:15px}
 .tm .tm-stats b{font-size:32px;color:var(--sg-b)}
 .tm .tm-stats small{font-size:14px;color:var(--sg-g)}
+/* Rivalry links */
+.tm .tm-rivals{margin:18px 0 6px}
+.tm .tm-rh{font-size:20px;margin:0 0 2px}
+.tm .tm-rsub{font-size:14px;color:var(--sg-g);margin:0 0 10px}
+.tm .tm-rlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tm .tm-rrow{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 14px;border:1.5px solid #000;border-radius:16px;color:#000;text-decoration:none}
+.tm .tm-rrow:focus-visible,.tm .tm-rmore summary:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.tm .tm-rname{font-weight:700;font-size:16px;flex:1;min-width:0}
+.tm .tm-rrec{font-size:14px;color:var(--sg-g);white-space:nowrap}
+.tm .tm-rmore{margin-top:8px}
+.tm .tm-rmore summary{min-height:48px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1.5px solid #000;font-weight:700;cursor:pointer;list-style:none;margin-bottom:8px}
+.tm .tm-rmore summary::-webkit-details-marker{display:none}
