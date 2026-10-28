@@ -66,7 +66,6 @@ export function EraChart() {
 
       <p className="kb-note">
         Went for it = a run or pass on 4th down, out of runs, passes, punts and field goals. Zones are yards from the opponent&apos;s goal line: 1–40, 41–60, 61–99. Data: nflverse play-by-play.
-        {era.stub ? " Preview numbers." : ""}
       </p>
       <Trademark />
     </div>
