@@ -24,7 +24,15 @@ test("QA 0217 K/J/menu: About kick copy matches the game; every logo has a plate
   assert.match(read("../components/SimpleGame.tsx"), /Too far to kick \(65\+ yards\)/);
   assert.match(read("../components/TeamLogo.tsx"), /className="team-logo team-logo-plate"/);
   const sg = read("../components/SiteMenu.tsx");
-  assert.match(read("../components/SimpleGame.tsx"), /<SiteMenuLinks \/>/);
-  assert.match(read("../components/AppNav.tsx"), /<SiteMenuLinks \/>/);
+  assert.match(sg, /<SiteMenuLinks \/>/);
+  // PR #176 regression: one ☰ menu pattern; TopBar must not render all links inline.
+  assert.match(read("../components/SimpleGame.tsx"), /<SiteMenu \/>/);
+  const appNav = read("../components/AppNav.tsx");
+  assert.match(appNav, /<SiteMenu \/>/);
+  assert.doesNotMatch(appNav, /<SiteMenuLinks \/>/);
+  assert.match(sg, /key === "Escape"/);
+  const css = read("../app/globals.css");
+  assert.match(css, /\.fd-brand \{[^}]*white-space: nowrap;[^}]*flex-shrink: 0;/);
+  assert.doesNotMatch(css, /\.fd-top-links/);
   for (const href of ["/practice/", "/endless/", "/feed/", "/kicks/", "/games/", "/daily/stats/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
 });
