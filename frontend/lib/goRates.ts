@@ -5,7 +5,7 @@ export type GoCell = [plays: number, went: number, fieldGoals: number, punts: nu
 export type GoBand = { min: number; max: number };
 /** gorates/v1: regulation 4th downs; rows = yards to go (distances), columns = yardline_100 bands. */
 export type GoRatesFile = {
-  schema: "gorates/v1"; stub?: boolean; source: string; builtAt: string; seasons: number[];
+  schema: "gorates/v1"; source: string; builtAt: string; dataThrough: string; seasons: number[];
   minPlays: number; maxFgYards: 64; distances: number[]; bands: GoBand[]; cells: GoCell[][];
 };
 

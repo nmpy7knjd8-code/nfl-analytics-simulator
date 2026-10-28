@@ -68,7 +68,7 @@ export function HeatMap() {
 
       <p className="kb-note">
         What coaches actually did on 4th down in the first four quarters, {f.seasons[0]}–{f.seasons[1]}. Blank squares have fewer than {f.minPlays} plays.
-        Data: nflverse play-by-play.{f.stub ? " Preview numbers." : ""}
+        Data: nflverse play-by-play. Data through {f.dataThrough}.
       </p>
       <Trademark />
     </div>
