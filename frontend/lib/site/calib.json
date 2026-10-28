@@ -1,0 +1,21 @@
+{
+  "schema": "calib/v1",
+  "stub": true,
+  "model": "nflverse",
+  "source": "nflverse play-by-play (CC BY 4.0): home_wp, home_score, away_score, qtr; regulation only (qtr 1-4), ties and 2022_17_BUF_CIN left out",
+  "builtAt": "2026-10-28",
+  "buckets": [
+    { "lo": 0, "hi": 5, "plays": 23201, "predicted": 1.4, "actual": 1.8 },
+    { "lo": 5, "hi": 10, "plays": 10792, "predicted": 7.5, "actual": 7.6 },
+    { "lo": 10, "hi": 20, "plays": 21515, "predicted": 15.1, "actual": 14.2 },
+    { "lo": 20, "hi": 30, "plays": 22764, "predicted": 25.1, "actual": 25.4 },
+    { "lo": 30, "hi": 40, "plays": 27704, "predicted": 35.4, "actual": 34.0 },
+    { "lo": 40, "hi": 50, "plays": 31198, "predicted": 45.0, "actual": 42.2 },
+    { "lo": 50, "hi": 60, "plays": 48434, "predicted": 55.2, "actual": 52.4 },
+    { "lo": 60, "hi": 70, "plays": 38867, "predicted": 65.1, "actual": 61.1 },
+    { "lo": 70, "hi": 80, "plays": 34745, "predicted": 74.8, "actual": 72.4 },
+    { "lo": 80, "hi": 90, "plays": 31043, "predicted": 85.0, "actual": 86.9 },
+    { "lo": 90, "hi": 95, "plays": 15879, "predicted": 92.5, "actual": 93.9 },
+    { "lo": 95, "hi": 100, "plays": 32790, "predicted": 98.6, "actual": 99.0 }
+  ]
+}

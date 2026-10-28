@@ -1732,3 +1732,23 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 0116 U4: self-hosted logos on the games list and game header. */
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
 .team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+
+/* —— shared chart page bits (A4/F4/D2) —— */
+.kb-h1 { font-size: 1.6rem; margin: 0; }
+.kb-lede { margin: 0; color: #a1a1aa; }
+.kb-note { margin: 0; font-size: 0.8rem; color: #71717a; }
+.kb-pill { min-height: 40px; padding: 0 1rem; border-radius: 999px; border: 1px solid #3f3f46; background: transparent; color: #e4e4e7; font: inherit; font-weight: 600; cursor: pointer; }
+.kb-pill.is-on { border-color: var(--color-blue); background: var(--color-blue); color: #fff; }
+.era-ax { font-size: 11px; fill: #71717a; }
+.era-pill { min-height: 36px; padding: 0 0.7rem; font-size: 0.85rem; }
+.era-pick-h { font-size: 0.95rem; color: #d4d4d8; }
+.era-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.era-rows li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #d4d4d8; }
+.era-rows strong { margin-left: auto; font-size: 1.15rem; color: #fff; font-variant-numeric: tabular-nums; }
+.era-all { border-top: 1px solid #2a2a2e; padding-top: 0.5rem; }
+
+/* —— D2 calibration —— */
+.cal { display: grid; gap: 0.9rem; }
+.cal-card { padding: 0.75rem 0.5rem; }
+.cal-axes { display: flex; justify-content: space-between; font-size: 0.75rem; color: #a1a1aa; padding: 0 0.5rem; }
+.cal-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
