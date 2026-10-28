@@ -62,7 +62,7 @@ export function OutcomeHistogram() {
             <ul className="era-rows">
               <li>Tries<strong>{cell!.tries.toLocaleString()}</strong></li>
               <li><span className="era-dot" style={{ background: "#1E5BFF" }} />Got the first down<strong>{Math.round((100 * cell!.converted) / cell!.tries)}%</strong></li>
-              <li><span className="era-dot" style={{ background: "#9aa0a6" }} />Gained exactly 0 yards<strong>{atZero.toLocaleString()}</strong></li>
+              <li><span className="era-dot" style={{ background: "#9aa0a6" }} />No gain or incomplete<strong>{atZero.toLocaleString()}</strong></li>
               {cell!.penaltyFirstDowns ? <li className="era-all">First downs from a penalty<strong>{cell!.penaltyFirstDowns.toLocaleString()}</strong></li> : null}
             </ul>
           </>
