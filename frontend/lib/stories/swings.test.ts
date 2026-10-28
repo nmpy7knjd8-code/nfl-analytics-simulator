@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { isSwingsDoc, playText, points, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
+import { finalScore, isSwingsDoc, playText, points, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
 
 const raw = readFileSync(new URL("../../public/data/stories/swings.json", import.meta.url), "utf8");
 const doc = JSON.parse(raw);
@@ -34,4 +34,16 @@ test("fan copy: no jersey numbers, no stat names", () => {
   assert.equal(beforeAfter(base), "WAS 10% → 100% to win");
   assert.equal(situation(base), "Q4 · 0:02 · 1st & 10 · WAS ball");
   for (const s of doc.top as Swing[]) assert.ok(!/\b(EPA|WPA|xpass)\b|\d{1,2}-[A-Z]/.test(playText(s.desc)), playText(s.desc));
+});
+
+test("QA weeks: 2019-w01 Lutz +42.8 NO, 2024-w19 Mayfield fumble -25.8 TB, no REVERSED, scores present", () => {
+  const d = JSON.parse(readFileSync(new URL("../../public/data/stories/swings.json", import.meta.url), "utf8"));
+  const a = d.weeks["2019-w01"], b = d.weeks["2024-w19"];
+  assert.equal(`${a.away}-${a.home}`, "HOU-NO"); assert.match(a.desc, /Lutz.*58-yard field goal/); assert.equal(a.team, "NO");
+  assert.ok(Math.abs(a.swing * 100 - 42.8) < 0.06);
+  assert.equal(`${b.away}-${b.home}`, "WAS-TB"); assert.match(b.desc, /Mayfield/); assert.match(b.desc, /fumble/i);
+  assert.ok(Math.abs(b.swing * 100 + 25.8) < 0.06, String(b.swing));
+  assert.ok(!/REVERSED/i.test(JSON.stringify(d)));
+  assert.equal(finalScore(a), "Final: HOU 28, NO 30");
+  assert.equal(playText("Pass to [79-J.Cominsky] x"), "Pass to [J.Cominsky] x");
 });

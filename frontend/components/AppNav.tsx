@@ -14,10 +14,15 @@ const ALL_TABS = [
 // H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
 const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
-/** The simple game ("/", "/daily", "/practice", "/endless", "/feed", "/kicks") has its own header and ☰ menu, so the old chrome is hidden there. */
+/** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
+ * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
+ * "/coaches" and anything under "/team/", "/coaches/" or "/card/". */
 function useGameRoute(): boolean {
+  // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/swing"]);
+  const GAME_PREFIX = ["/team/", "/coaches/", "/card/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
-  return p === "/" || p === "/daily" || p === "/practice" || p === "/endless" || p === "/feed" || p === "/kicks" || p === "/swing";
+  return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
 }
 
 export function TopBar() {

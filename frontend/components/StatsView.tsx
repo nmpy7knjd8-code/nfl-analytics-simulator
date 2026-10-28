@@ -1,40 +1,55 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { dailyStats, dateKey, formatScore, loadStreak, type DailyStats } from "../lib/daily";
+import { calendarCells, shieldStreak, type DayMark } from "../lib/shields";
+import { Header, Trademark } from "./SimpleGame";
+
+type View = { s: DailyStats; streak: number; shieldLeft: boolean; cells: { date: string; mark: DayMark }[] };
+
+const MARK_TEXT: Record<DayMark, string> = { played: "played", shield: "shield used", missed: "missed", future: "", before: "" };
 
 export function StatsView() {
-  const [s, setS] = useState<DailyStats | null>(null);
+  const [v, setV] = useState<View | null>(null);
   useEffect(() => {
     let st;
-    try {
-      st = loadStreak(window.localStorage);
-    } catch {
-      st = loadStreak(undefined);
-    }
-    setS(dailyStats(st, dateKey(new Date())));
+    try { st = loadStreak(window.localStorage); } catch { st = loadStreak(undefined); }
+    const today = dateKey(new Date());
+    const sh = shieldStreak(st.history.map((h) => h.date), today);
+    setV({ s: dailyStats(st, today), streak: sh.streak, shieldLeft: !sh.shieldUsedThisWeek, cells: calendarCells(sh, today) });
   }, []);
-  if (!s) return <p className="fd-muted">Loading…</p>;
-  if (!s.days_played) return <p>No days played yet on this device. Play Today&apos;s 5 to start a streak.</p>;
-  const max = Math.max(1, ...s.score_distribution);
   return (
-    <>
-      <dl className="fd-stats">
-        <div><dt>Days played</dt><dd>{s.days_played}</dd></div>
-        <div><dt>Streak</dt><dd>{s.current_streak}</dd></div>
-        <div><dt>Best streak</dt><dd>{s.best_streak}</dd></div>
-        <div><dt>Average</dt><dd>{s.average == null ? "—" : formatScore(Math.round(s.average * 10) / 10)}/5</dd></div>
-      </dl>
-      <h2>Scores</h2>
-      <ol className="fd-dist" aria-label="Days by score">
-        {s.score_distribution.map((n, k) => (
-          <li key={k}>
-            <span className="fd-dist-k">{k}</span>
-            <span className="fd-dist-bar" style={{ width: `${Math.max(6, (n / max) * 100)}%` }}>{n}</span>
-          </li>
-        ))}
-      </ol>
-      <p className="fd-muted">Stats live only in this browser. Nothing is sent anywhere.</p>
-    </>
+    <div className="sg-app st">
+      <Header right="Stats" />
+      <h1 className="st-h1">Your stats</h1>
+      {!v ? <p className="sg-note" role="status">Loading…</p> : !v.s.days_played ? (
+        <div className="st-empty">
+          <p>Play today to start your calendar.</p>
+          <Link href="/daily/" className="sg-next">Play today&apos;s five</Link>
+        </div>
+      ) : (
+        <>
+          <dl className="st-tiles">
+            <div><dt>Played</dt><dd>{v.s.days_played}</dd></div>
+            <div><dt>Streak</dt><dd>{v.streak}</dd></div>
+            <div><dt>Best</dt><dd>{Math.max(v.s.best_streak, v.streak)}</dd></div>
+            <div><dt>Average</dt><dd>{v.s.average == null ? "—" : formatScore(Math.round(v.s.average * 10) / 10)}</dd></div>
+          </dl>
+          <p className="st-shield">{v.shieldLeft ? "Shield ready: miss one day this week and your streak stays." : "Shield used this week. A new one comes Monday."}</p>
+          <div className="st-cal" role="grid" aria-label="Last five weeks">
+            {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => <span key={i} className="st-dow" aria-hidden="true">{d}</span>)}
+            {v.cells.map((c) => (
+              <span key={c.date} role="gridcell" className={`st-d st-${c.mark}`} aria-label={MARK_TEXT[c.mark] ? `${c.date} ${MARK_TEXT[c.mark]}` : c.date}>
+                {Number(c.date.slice(8))}
+              </span>
+            ))}
+          </div>
+          <p className="st-key"><i className="st-played" /> Played <i className="st-shield-k" /> Shield <i className="st-missed" /> Missed</p>
+          <p className="sg-note">Saved only in this browser.</p>
+        </>
+      )}
+      <Trademark />
+    </div>
   );
 }

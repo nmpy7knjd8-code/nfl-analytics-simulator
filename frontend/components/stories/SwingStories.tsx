@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Header, Trademark } from "../SimpleGame";
 import { feedHref } from "../../lib/gamePicker";
 import {
-  beforeAfter, isSwingsDoc, matchup, playText, points, situation, swingLine, top25, weekLabel, weeksNewestFirst,
+  beforeAfter, finalScore, isSwingsDoc, matchup, playText, points, situation, swingLine, top25, weekLabel, weeksNewestFirst,
   type Swing,
 } from "../../lib/stories/swings";
 import "./stories.css";
@@ -21,6 +21,7 @@ function SwingCard({ s }: { s: Swing }) {
       <p className="st-meta">{situation(s)}</p>
       <p className="st-text">{playText(s.desc)}</p>
       <p className="st-ba">{beforeAfter(s)}</p>
+      {finalScore(s) && <p className="st-meta">{finalScore(s)}</p>}
       <a className="st-oval" href={feedHref(s.game_id, BASE)}>See the game chart</a>
     </article>
   );
@@ -90,6 +91,7 @@ export function SwingStories() {
                     <p className="st-meta">{weekLabel(s)} · {matchup(s)}</p>
                     <p className="st-row-t">{playText(s.desc)}</p>
                     <p className="st-row-s"><b>{points(s)} points</b> · {beforeAfter(s)}</p>
+                    {finalScore(s) && <p className="st-meta">{finalScore(s)}</p>}
                     <a className="st-link" href={feedHref(s.game_id, BASE)}>Game chart</a>
                   </div>
                 </li>

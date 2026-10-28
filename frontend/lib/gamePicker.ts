@@ -72,3 +72,8 @@ export function seasonOf(id: string): number {
 export function feedHref(id: string, basePath = ""): string {
   return `${basePath}/feed/?game=${encodeURIComponent(id)}`;
 }
+/** URL to write so the address bar always names the game (also the default one), or null if it already does. */
+export function feedUrlToWrite(current: string, id: string, basePath = ""): string | null {
+  const href = feedHref(id, basePath);
+  return current === href ? null : href;
+}

@@ -13,6 +13,8 @@ export type Swing = {
   game_id: string;
   home: string;
   away: string;
+  home_score?: number;
+  away_score?: number;
   team: string;
   qtr: number;
   clock: string;
@@ -44,7 +46,7 @@ export function regulation(rows: Swing[]): Swing[] {
 export function playText(desc: string): string {
   return desc
     .replace(/^(\s*\([^)]*\)\s*)+/, "")
-    .replace(/(^|[\s(,-])\d{1,2}-(?=[A-Z])/g, "$1")
+    .replace(/(^|[\s([,-])\d{1,2}-(?=[A-Z])/g, "$1")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -67,6 +69,12 @@ export function situation(s: Swing): string {
 
 export function weekLabel(s: Pick<Swing, "season" | "week" | "round">): string {
   return gameWeekLabel(s.season, s.week, s.round ? "POST" : "REG");
+}
+
+/** Final score from nflverse, e.g. "Final: HOU 28, NO 30". Empty when the file has no score. */
+export function finalScore(s: Swing): string {
+  if (typeof s.home_score !== "number" || typeof s.away_score !== "number") return "";
+  return `Final: ${s.away} ${s.away_score}, ${s.home} ${s.home_score}`;
 }
 
 export const matchup = (s: Swing): string => `${s.away} @ ${s.home}`;
