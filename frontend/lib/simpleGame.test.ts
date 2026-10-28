@@ -54,7 +54,7 @@ test("tags: only offered options (N9); every tie is Best; ½ only for near, non-
 
 test("share text has no colored emoji and no teams", () => {
   const t = plainShare(299, ["right", "close", "wrong"], "1.5", 6);
-  assert.equal(t, "Fourth & Daily #299 · 1.5/3 · streak 6\n✓ ½ ✕");
+  assert.equal(t, "Fourth & Daily #299 · 1.5/3 · streak\u00a06\n✓ ½ ✕");
   assert.ok(!/\p{Extended_Pictographic}/u.test(t.replace(/[✓✕]/g, "")));
 });
 
