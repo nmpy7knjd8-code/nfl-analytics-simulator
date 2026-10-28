@@ -131,7 +131,9 @@ def swing_record(r: dict[str, Any], post_rounds: dict[tuple[int, int], str]) -> 
     season, week = int(r["season"]), int(r["week"])
     return {
         "season": season, "week": week, "round": post_rounds.get((season, week)),
-        "game_id": r["game_id"], "home": r["home_team"], "away": r["away_team"], "team": r["posteam"],
+        "game_id": r["game_id"], "home": r["home_team"], "away": r["away_team"],
+        "home_score": int(r["home_score"]), "away_score": int(r["away_score"]),  # final score (nflverse)
+        "team": r["posteam"],
         "qtr": int(r["qtr"]), "clock": r["time"],
         "down": None if _num(r.get("down")) is None else int(r["down"]),
         "togo": None if _num(r.get("ydstogo")) is None else int(r["ydstogo"]),

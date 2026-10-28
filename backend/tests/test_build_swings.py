@@ -20,7 +20,7 @@ ROWS, TEXTS = _FX["rows"], _FX["texts"]
 def text_of(game_id, play_id):
     return TEXTS[f"{game_id}:{int(float(play_id))}"]
 SITE = ROOT / "data/site/swings.json"
-RECORD_KEYS = {"season", "week", "round", "game_id", "home", "away", "team", "qtr", "clock", "down", "togo",
+RECORD_KEYS = {"season", "week", "round", "game_id", "home", "away", "home_score", "away_score", "team", "qtr", "clock", "down", "togo",
                "yardline_100", "play_type", "desc", "wp_before", "wp_after", "swing"}
 BANNED_KEY = re.compile(r"epa|xpass|play_id|wpa|vegas|spread|line|odds|total", re.I)
 
@@ -175,3 +175,53 @@ def test_committed_site_file_is_small_and_clean():
         assert re.fullmatch(r"\d{2}:\d{2}", rec["clock"])
     for key, rec in data["weeks"].items():
         assert key == f"{rec['season']}-w{rec['week']:02d}"
+
+
+def _independent_swings(rows):
+    """Re-derive every regulation swing without the builder's helpers (same house filters)."""
+    out = []
+    games = {}
+    for i, r in enumerate(rows):
+        games.setdefault(r["game_id"], []).append(i)
+    bad = set()
+    for idx in games.values():
+        for k, i in enumerate(idx):
+            if rows[i]["game_id"] == "2019_03_CIN_BUF" and (rows[i]["desc"] or "").startswith("End of half"):
+                bad |= {i, idx[k - 1]} if k else {i}
+    for idx in games.values():
+        for k, i in enumerate(idx):
+            r = rows[i]
+            if (i in bad or r["qtr"] is None or not 1 <= r["qtr"] <= 4 or r["play_type"] not in ("run", "pass", "field_goal", "punt")
+                    or r["qb_kneel"] or r["qb_spike"] or r["vegas_wp"] is None or not r["posteam"] or r["play_id"] is None
+                    or (r["play_type"] == "field_goal" and (r["kick_distance"] or 0) > 64)):
+                continue
+            nxt = next((rows[j] for j in idx[k + 1:] if rows[j]["time"] and rows[j]["play_id"] is not None
+                        and rows[j]["play_id"] > r["play_id"] and rows[j]["vegas_home_wp"] is not None
+                        and not (rows[j]["desc"] or "").upper().startswith("END GAME")), None)
+            if nxt is None:
+                hp = 1.0 if r["home_score"] > r["away_score"] else 0.0 if r["home_score"] < r["away_score"] else 0.5
+            else:
+                hp = nxt["vegas_home_wp"]
+            after = hp if r["posteam"] == r["home_team"] else 1 - hp
+            out.append((f"{r['season']}-w{r['week']:02d}", r["game_id"], r["qtr"], r["time"], after - r["vegas_wp"]))
+    return out
+
+
+def test_each_week_pick_is_largest_regulation_swing_across_all_its_games(built):
+    """QA (Analyte/Head Grokka): every week's pick = max |swing| over every play of every game that week."""
+    sw = _independent_swings(ROWS)
+    weeks = {w for w, *_ in sw}
+    assert set(built["weeks"]) == weeks
+    for w in weeks:
+        best = max((x for x in sw if x[0] == w), key=lambda x: abs(x[4]))
+        rec = built["weeks"][w]
+        assert (rec["game_id"], rec["qtr"], rec["clock"]) == best[1:4], w
+        assert abs(rec["swing"] - round(best[4], 4)) < 1e-9, w
+    top = sorted(sw, key=lambda x: -abs(x[4]))[: len(built["top"])]
+    assert [round(abs(t["swing"]), 4) for t in built["top"]] == [round(abs(x[4]), 4) for x in top]
+
+
+def test_desc_is_clean_display_text(built):
+    for r in _records(built):
+        assert not re.search(r"\b\d{1,2}-[A-Z][a-zA-Z]*\.", r["desc"]), r["desc"]  # no "14-S.Darnold" jersey tags
+        assert not r["desc"].startswith("(")  # no raw "(13:50) (Shotgun)" prefix
