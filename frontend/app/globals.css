@@ -1732,16 +1732,6 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 0116 U4: self-hosted logos on the games list and game header. */
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
 .team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
-.cv-card{border:1.5px solid currentColor;border-radius:16px;padding:12px 16px;margin:16px 0}
-.cv-card h2{margin:0 0 8px;font-size:18px}
-.cv-row{display:flex;align-items:center;gap:12px;min-height:36px}
-.cv-lbl{width:64px;font-weight:600}
-.cv-ticks{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:ui-monospace,monospace;letter-spacing:2px}
-.cv-ticks b{font-family:inherit;letter-spacing:0;color:#1E5BFF}
-.cv-bundle{padding-right:4px;border-right:1px solid #555}
-.cv-btn{min-height:48px;border-radius:999px;border:1.5px solid currentColor;background:transparent;color:inherit;font-weight:700;padding:0 20px;margin-top:8px;width:100%}
-.cv-list{list-style:none;padding:0;margin:8px 0 0}.cv-list li{padding:8px 0;border-top:1px solid #444}
-.cv-top{font-size:13px;opacity:.75}.cv-v{color:#1E5BFF;font-weight:600}
 
 /* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
 .kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}

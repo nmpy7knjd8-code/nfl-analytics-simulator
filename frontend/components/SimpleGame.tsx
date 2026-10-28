@@ -3,8 +3,9 @@
 import Link from "next/link";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { shieldStreak } from "../lib/shields";
 import {
-  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall, visibleStreak,
+  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
 import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
@@ -86,7 +87,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       const st = window.localStorage;
       const next = recordDaily(loadStreak(st), { date: key, credit, answered: picks.length, results: picks.map((p) => p.scored.result) });
       saveStreak(st, next);
-      setStreak(visibleStreak(next, key));
+      setStreak(shieldStreak(next.history.map((h) => h.date), key).streak);
       const today = picks.map((p, i) => entryFor(key, items[i], p.pick)).filter((e): e is CoachEntry => e != null);
       const season = addCoachDay(loadCoach(st), key, today);
       saveCoach(st, season);

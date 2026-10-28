@@ -7,20 +7,6 @@ import { CHOICE_LABEL, isGoalToGo } from "../lib/simpleGame";
 
 const BY_ID = new Map(DAILY_ITEMS.map((i) => [i.id, i]));
 
-/** Tick marks, five to a bundle. */
-function Ticks({ n, label }: { n: number; label: string }) {
-  const groups = Array.from({ length: Math.ceil(n / 5) }, (_, g) => Math.min(5, n - g * 5));
-  return (
-    <div className="cv-row">
-      <span className="cv-lbl">{label}</span>
-      <span className="cv-ticks" aria-label={`${label}: ${n}`}>
-        {groups.length ? groups.map((k, g) => <span key={g} className="cv-bundle">{"|".repeat(k)}</span>) : <span className="cv-zero">0</span>}
-        <b>{n}</b>
-      </span>
-    </div>
-  );
-}
-
 /** A2 Coach vs. You on the stats page: tally + your disagreements with a plain verdict. */
 export function CoachRecord() {
   const [es, setEs] = useState<CoachEntry[] | null>(null);
@@ -33,18 +19,20 @@ export function CoachRecord() {
   return (
     <section id="coach" className="cv-card" aria-labelledby="cv-h">
       <h2 id="cv-h">You vs. the coaches</h2>
-      {es == null ? <p className="fd-muted" role="status">Loading…</p> : es.length === 0 ? (
+      {es == null ? <p className="sg-note" role="status">Loading…</p> : es.length === 0 ? (
         <p>Play today&apos;s five to start your record against real coaches.</p>
       ) : (
         <>
-          <Ticks n={coachTally(es).agreed} label="Agreed" />
-          <Ticks n={coachTally(es).differed} label="Didn't" />
+          <p className="cv-tally">Same call: <b>{coachTally(es).agreed}</b> · Different: <b>{coachTally(es).differed}</b></p>
           {coachTally(es).differed ? (
             <button type="button" className="cv-btn" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-              {open ? "Hide" : "Show"} where you disagreed
+              Where you disagreed
             </button>
           ) : null}
           {open ? (
+            <div className="cv-sheet" role="dialog" aria-modal="true" aria-label="Where you disagreed">
+              <div className="cv-sheet-in">
+                <div className="cv-sheet-h"><h3>Where you disagreed</h3><button type="button" className="cv-close" onClick={() => setOpen(false)} aria-label="Close">✕</button></div>
             <ul className="cv-list">
               {es.filter((e) => e.pick !== e.coach).slice().reverse().map((e) => {
                 const it = BY_ID.get(e.id);
@@ -57,6 +45,8 @@ export function CoachRecord() {
                 );
               })}
             </ul>
+              </div>
+            </div>
           ) : null}
         </>
       )}
