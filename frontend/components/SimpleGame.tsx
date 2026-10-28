@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SiteMenuLinks } from "./SiteMenu";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -33,14 +34,7 @@ export function Header({ right }: { right: string }) {
         <button type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>☰</button>
         {open ? (
           <nav className="sg-menu-list" aria-label="Menu">
-            <Link href="/practice/">Practice</Link>
-            <Link href="/endless/">Keep playing</Link>
-            <Link href="/feed/">Play feed</Link>
-            <Link href="/kicks/">Kicks</Link>
-            {/* nav-plan.md: Coaches slots here, gated on CHECKER_ENABLED (lib/features.ts). /team/[abbr] is linked from Games, not listed. */}
-            <Link href="/games/">Games</Link>
-            <Link href="/daily/stats/">Stats</Link>
-            <Link href="/about/">About</Link>
+            <SiteMenuLinks />
           </nav>
         ) : null}
       </div>

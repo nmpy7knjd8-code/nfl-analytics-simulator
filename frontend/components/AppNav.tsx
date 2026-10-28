@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteMenuLinks } from "./SiteMenu";
 import { CHECKER_ENABLED } from "../lib/features";
 
 const ALL_TABS = [
@@ -27,9 +28,8 @@ export function TopBar() {
       <Link href="/" className="fd-brand">
         Fourth &amp; Daily
       </Link>
-      <nav aria-label="More" className="fd-top-links">
-        <Link href="/daily/stats/">Stats</Link>
-        <Link href="/about/">About</Link>
+      <nav aria-label="Menu" className="fd-top-links">
+        <SiteMenuLinks />
       </nav>
     </header>
   );
