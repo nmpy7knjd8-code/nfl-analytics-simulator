@@ -27,13 +27,13 @@ test("coaches under 20 calls are ungraded: 'Not enough calls'", () => {
   assert.equal(gradeCell({ ...quinn, grade: "A" }).kind, "not-enough");
 });
 
-test("no invented grades: everyone else waits for the calibrated model", () => {
+test("no invented grades: no letter unless the data file has one", () => {
   for (const s of SEASONS)
     for (const c of readSeason(s).coaches) {
       assert.equal(c.grade, null);
       const g = gradeCell(c);
       assert.notEqual(g.kind, "grade");
-      if (c.qualifying_calls >= 20) assert.equal(g.text, "Grade coming once the model is calibrated");
+      if (c.qualifying_calls >= 20) assert.equal(g.text, "No grade");
     }
 });
 
@@ -53,4 +53,13 @@ test("best/worst calls are 5 each and overtime calls are dropped", () => {
       for (const call of regulationOnly([...c.best, ...c.worst])) assert.ok(call.qtr <= 4);
     }
   assert.equal(regulationOnly([{ qtr: 5 } as never]).length, 0);
+});
+
+import { avgPerCall, avgText, rankCoaches, AVG_LINE } from "./coaches";
+test("average per call replaces the season sum", () => {
+  const reid = readSeason(2023).coaches.find((c) => c.team === "KC")!;
+  assert.equal(avgText(reid), "−0.4 pts"); // −58.21 over 137 calls
+  const r = rankCoaches(readSeason(2023).coaches);
+  for (let i = 1; i < r.length; i++) assert.ok(avgPerCall(r[i - 1]) >= avgPerCall(r[i]));
+  assert.doesNotMatch(AVG_LINE, /calibrat|EPA|WPA|odds|bet/i);
 });

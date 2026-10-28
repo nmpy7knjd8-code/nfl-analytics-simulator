@@ -34,7 +34,7 @@ export type Coach = {
   net_wp_pts: number;
   min_calls_for_grade: number;
   gradeable: boolean;
-  /** Always null until the calibrated model (#37) lands. */
+  /** Letter grade when the data file carries one; null otherwise. */
   grade: string | null;
   best: CoachCall[];
   worst: CoachCall[];
@@ -67,16 +67,16 @@ export function isSeason(s: string): boolean {
 
 export type GradeCell =
   | { kind: "not-enough"; text: "Not enough calls" }
-  | { kind: "pending"; text: "Grade coming once the model is calibrated" }
+  | { kind: "pending"; text: "No grade" }
   | { kind: "grade"; text: string };
 
 /**
  * Grade column. Under 20 qualifying calls never gets a grade. Everyone else waits
- * for the calibrated model (#37): a letter only shows if the data file carries one.
+ * for a letter: one only shows if the data file carries one.
  */
 export function gradeCell(c: Coach, min = MIN_CALLS): GradeCell {
   if (c.qualifying_calls < min || !c.gradeable) return { kind: "not-enough", text: "Not enough calls" };
-  if (c.grade == null) return { kind: "pending", text: "Grade coming once the model is calibrated" };
+  if (c.grade == null) return { kind: "pending", text: "No grade" };
   return { kind: "grade", text: c.grade };
 }
 
@@ -102,9 +102,20 @@ export function seasonHref(season: number): string {
   return season === LATEST_SEASON ? "/coaches/" : `/coaches/${season}/`;
 }
 
-/** Sorted by net win chance, best first. */
+/** Average win-chance points per 4th-down call vs the model's pick (net_wp_pts is the season sum over every call). */
+export function avgPerCall(c: Coach): number {
+  return c.calls ? c.net_wp_pts / c.calls : 0;
+}
+
+/** "−0.4 pts" style, one decimal. */
+export const avgText = (c: Coach) => `${signedPts(avgPerCall(c))} pts`;
+
+/** One plain line under the number. */
+export const AVG_LINE = "Average per call: the win chance given up on each 4th down by not making the model's pick. 0.0 means he always matched it.";
+
+/** Sorted by average per call, best first. */
 export function rankCoaches(cs: Coach[]): Coach[] {
-  return [...cs].sort((a, b) => b.net_wp_pts - a.net_wp_pts || a.coach.localeCompare(b.coach));
+  return [...cs].sort((a, b) => avgPerCall(b) - avgPerCall(a) || a.coach.localeCompare(b.coach));
 }
 
 const CALL: Record<CoachCall["actual"], string> = { go: "went for it", punt: "punted", fg: "kicked the field goal" };

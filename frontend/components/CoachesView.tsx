@@ -4,7 +4,7 @@ import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
 import {
   type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
-  rankCoaches, regulationOnly, seasonHref, signedPts, wentWhenShould,
+  rankCoaches, regulationOnly, avgText, AVG_LINE, avgPerCall, seasonHref, signedPts, wentWhenShould,
 } from "../lib/coaches";
 
 /** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
@@ -45,14 +45,6 @@ export function SeasonPicker({ season, hrefFor = seasonHref }: { season: number;
   );
 }
 
-export function GradesNote({ data }: { data: CoachSeason }) {
-  return (
-    <p className="co-note" role="note">
-      Grades come once the model is calibrated. Coaches with fewer than {data.min_calls_for_grade} clear calls won&apos;t get one.
-    </p>
-  );
-}
-
 function CoachRow({ c, season, rank }: { c: Coach; season: number; rank: number }) {
   return (
     <li>
@@ -60,7 +52,7 @@ function CoachRow({ c, season, rank }: { c: Coach; season: number; rank: number 
         <span className="co-rank">{rank}</span>
         <TeamLogo abbr={c.team} size={28} />
         <span className="co-who"><b>{c.coach}</b><small>{c.team} · {c.qualifying_calls} clear calls · went {pctText(wentWhenShould(c))} when he should</small></span>
-        <span className={`co-net${c.net_wp_pts < 0 ? " is-neg" : ""}`}>{signedPts(c.net_wp_pts)}</span>
+        <span className={`co-net${avgPerCall(c) < -0.05 ? " is-neg" : ""}`}>{signedPts(avgPerCall(c))}</span>
       </Link>
     </li>
   );
@@ -71,14 +63,14 @@ export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
     <GamePage right="Coaches">
       <header>
         <h1 className="co-h1">Coaches · {data.season}</h1>
-        <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: win-chance points gained or lost over the season.</p>
+        <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: average win-chance points per call.</p>
       </header>
       <SeasonPicker season={data.season} />
       <ol className="co-list">
         {rankCoaches(data.coaches).map((c, i) => <CoachRow key={c.coach + c.team} c={c} season={data.season} rank={i + 1} />)}
       </ol>
-      <GradesNote data={data} />
-      <p className="co-src">Data: nflverse ({data.provenance.license}). Model not yet calibrated. Clear call: {data.qualifying_rule}.</p>
+      <p className="co-note">{AVG_LINE}</p>
+      <p className="co-src">Data: nflverse ({data.provenance.license}). Clear call: {data.qualifying_rule}.</p>
     </GamePage>
   );
 }
@@ -113,12 +105,12 @@ export function CoachBlock({ c }: { c: Coach }) {
           <div><dt>Went when he should</dt><dd>{pctText(wentWhenShould(c))}{c.should_go ? <small> of {c.should_go}</small> : null}</dd></div>
           <div><dt>Kicked when he should&apos;ve gone</dt><dd>{c.kicked_when_should_go}</dd></div>
           <div><dt>Went when he should&apos;ve kicked</dt><dd>{c.went_when_should_kick}</dd></div>
-          <div><dt>Net win chance</dt><dd className={c.net_wp_pts < 0 ? "is-neg" : undefined}>{signedPts(c.net_wp_pts)} pts</dd></div>
-          <div><dt>Grade</dt><dd className="co-grade">{g.text}</dd></div>
+          <div><dt>Average per call</dt><dd className={avgPerCall(c) < -0.05 ? "is-neg" : undefined}>{avgText(c)}</dd></div>
+          {g.kind === "grade" ? <div><dt>Grade</dt><dd className="co-grade">{g.text}</dd></div> : null}
         </dl>
+        <p className="co-note">{AVG_LINE}</p>
       </section>
-      <CallList title="Best calls" calls={c.best} team={c.team} />
-      <CallList title="Worst calls" calls={c.worst} team={c.team} />
+      <CallList title="Costliest calls" calls={c.worst} team={c.team} />
     </>
   );
 }
