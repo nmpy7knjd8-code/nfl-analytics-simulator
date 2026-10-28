@@ -10,6 +10,7 @@ import {
   dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
+import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import type { QuizChoice } from "../lib/quiz";
 import {
@@ -17,6 +18,7 @@ import {
   outcomeFromGame, plainShare, situationSentence, tappable, type Outcome,
 } from "../lib/simpleGame";
 import { teamNickname } from "../lib/teams";
+import { agreedCount, challengeFor, encodeChallenge, SHORT, type ChallengeStatus } from "../lib/challenge";
 import { CardSkeletons, PlayedToday } from "./EmptyState";
 import { playedToday, streakLine } from "../lib/emptyState";
 import { FieldView } from "./FieldView";
@@ -61,6 +63,13 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [picks, setPicks] = useState<Pick[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [coach, setCoach] = useState<{ today: CoachEntry[]; season: CoachEntry[] } | null>(null);
+  const [dare, setDare] = useState<ChallengeStatus>({ kind: "none" });
+  const [dareCopied, setDareCopied] = useState(false);
+  useEffect(() => {
+    if (mode !== "daily" || key == null) return;
+    setDare(challengeFor(window.location.hash, dayNumber(key), items.length));
+  }, [key, mode, items.length]);
   const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
   useEffect(() => {
     if (mode !== "daily" || key == null) return;
@@ -92,8 +101,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       const next = recordDaily(loadStreak(st), { date: key, credit, answered: picks.length, results: picks.map((p) => p.scored.result) });
       saveStreak(st, next);
       setStreak(shieldStreak(next.history.map((h) => h.date), key).streak);
+      const today = picks.map((p, i) => entryFor(key, items[i], p.pick)).filter((e): e is CoachEntry => e != null);
+      const season = addCoachDay(loadCoach(st), key, today);
+      saveCoach(st, season);
+      setCoach({ today, season });
     }
-  }, [done, key, mode, picks]);
+  }, [done, key, mode, picks, items]);
 
   const choose = useCallback((c: QuizChoice) => {
     const it = items[idx];
@@ -148,34 +161,52 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     const credit = picks.reduce((a, p) => a + p.scored.credit, 0);
     const share = plainShare(dayNo, picks.map((p) => p.scored.result), formatScore(credit), streak);
     return (
-      <div className="sg-app sg-end">
+      <div className={`sg-app sg-end${dare.kind === "ok" ? " sg-vs" : ""}`}>
         <Header right={mode === "daily" ? `#${dayNo}` : "Practice"} />
         <div className="sg-lbl sg-center">{mode === "daily" ? `Fourth & Daily #${dayNo}` : "Practice"}</div>
         <div className="sg-big">{formatScore(credit)}/{n}</div>
         <div className="sg-marks" aria-label="Your results">
           {picks.map((p, i) => <span key={i} className={p.scored.result === "wrong" ? "sg-n" : "sg-y"}>{RESULT_GLYPH[p.scored.result]}</span>)}
         </div>
-        {mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
+        {mode === "daily" && dare.kind === "ok"
+          ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
+          : mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
+        {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
+          {mode === "daily" && dare.kind === "ok" ? (
+            <div className="sg-recap-key" aria-hidden="true"><span>Right call?</span><span className="sg-c">You · Friend</span></div>
+          ) : null}
           {items.map((it, i) => (
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
               <b aria-label={RESULT_TITLE[picks[i].scored.result]}>{RESULT_GLYPH[picks[i].scored.result]}</b>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={teamLogo(it.situation.posteam)} alt="" width={22} height={22} className="sg-plate" />
               <span><strong>{it.situation.posteam}</strong> · 4th &amp; {isGoalToGo(it) ? "Goal" : it.situation.distance}</span>
-              <span className="sg-c">You: {CHOICE_LABEL[picks[i].pick]}</span>
+              {dare.kind === "ok"
+                ? <span className="sg-c" aria-label={`You ${SHORT[picks[i].pick]}, friend ${SHORT[dare.picks[i]]}, ${dare.picks[i] === picks[i].pick ? "same pick" : "different pick"}`}>{SHORT[picks[i].pick]} · <span className={dare.picks[i] === picks[i].pick ? "sg-same" : "sg-diff"}>{SHORT[dare.picks[i]]}</span> <span className="sg-agree" aria-hidden="true">{dare.picks[i] === picks[i].pick ? "=" : "≠"}</span></span>
+                : <span className="sg-c">You: {CHOICE_LABEL[picks[i].pick]}</span>}
             </div>
           ))}
         </div>
         {mode === "daily" ? (
           <>
             <pre className="sg-share">{share}</pre>
-            <button type="button" className="sg-next" onClick={async () => {
-              try {
-                if (navigator.share) await navigator.share({ text: share });
-                else { await navigator.clipboard.writeText(share); setCopied(true); }
-              } catch { /* dismissed */ }
-            }}>{copied ? "Copied" : "Share"}</button>
+            <div className="sg-pair">
+              <button type="button" className="sg-next" onClick={async () => {
+                try {
+                  if (navigator.share) await navigator.share({ text: share });
+                  else { await navigator.clipboard.writeText(share); setCopied(true); }
+                } catch { /* dismissed */ }
+              }}>{copied ? "Copied" : "Share"}</button>
+              <button type="button" className="sg-keep sg-dare" onClick={async () => {
+                const url = `${window.location.origin}${BASE}/daily/#${encodeChallenge(dayNo, picks.map((x) => x.pick))}`;
+                const text = `Fourth & Daily #${dayNo}: can you match my calls?\n${url}`;
+                try {
+                  if (navigator.share) await navigator.share({ text });
+                  else { await navigator.clipboard.writeText(text); setDareCopied(true); }
+                } catch { /* dismissed */ }
+              }}>{dareCopied ? "Link copied" : "Challenge"}</button>
+            </div>
           </>
         ) : (
           <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
@@ -189,7 +220,10 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const it = items[idx];
   const p = picks[idx];
   const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
-  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} onPick={choose} />;
+  const banner = dare.kind === "bad" && idx === 0
+    ? <p className="sg-dare-bad" role="status">This challenge link doesn&apos;t work. Play today&apos;s five instead.</p>
+    : dare.kind === "ok" && idx === 0 ? <p className="sg-dare-ok" role="status">A friend challenged you. Their picks show after you finish.</p> : null;
+  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={banner} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
     return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;
   }
@@ -275,5 +309,16 @@ function RunOrPass({ header, onDone }: { header: React.ReactNode; onDone: () => 
       )}
       <Trademark />
     </div>
+  );
+}
+
+/** A2: one line on the end screen; the full record is on the stats page. */
+function CoachLine({ today, season }: { today: CoachEntry[]; season: CoachEntry[] }) {
+  const t = coachTally(today), s = coachTally(season);
+  return (
+    <Link href="/daily/stats/#coach" className="sg-coach">
+      <span>Same call as the coach: <b>{t.agreed} of {today.length}</b></span>
+      <span className="sg-c" aria-label={`All time: agreed ${s.agreed}, didn't ${s.differed}`}>{s.agreed}–{s.differed} ›</span>
+    </Link>
   );
 }

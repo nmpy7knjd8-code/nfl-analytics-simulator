@@ -5,7 +5,7 @@
  * (grid win chances ran 8-10 points high). Flip to true to bring back the nav tab,
  * the 404 link and the checker page — nothing else needs to change.
  */
-export const CHECKER_ENABLED = false;
+export const CHECKER_ENABLED = true;
 
 /** Copy for the page while the checker is off. */
 export const CHECKER_PAUSED = {

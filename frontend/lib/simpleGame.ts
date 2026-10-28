@@ -155,7 +155,7 @@ export function coachCallText(item: DailyItem): string {
 /** Spoiler-free share text, plain glyphs only (no colored emoji). */
 export function plainShare(dayNo: number, results: ScoredCall["result"][], credit: string, streak: number): string {
   const g = results.map((r) => RESULT_GLYPH[r]).join(" ");
-  return `Fourth & Daily #${dayNo} · ${credit}/${results.length} · streak ${streak}\n${g}`;
+  return `Fourth & Daily #${dayNo} · ${credit}/${results.length} · streak\u00a0${streak}\n${g}`;
 }
 
 /** Question sentence from the situation only: "The Giants trail 19–3 with 13:37 left in the 4th. 1 yard to go at midfield." */
