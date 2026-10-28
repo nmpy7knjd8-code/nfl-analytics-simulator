@@ -106,3 +106,17 @@ test("swing line says it is the win chance, in %, for the team ahead", () => {
   assert.equal(swingText(bn, flat), "No change");
   for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
 });
+
+test("last real play ends at the final result, never at the END GAME fallback row", () => {
+  const last = g.plays.at(-1)!;
+  assert.match(last.text, /Goff kneels/);
+  assert.ok(g.plays.every((p) => !/^END GAME/.test(p.text)));
+  assert.equal(last.homeWp, 0); // DET won 21-20
+  assert.equal(swingText(g, last), swingText(g, { ...last, homeWp: 0 }));
+  assert.match(swingText(g, last), /^DET's win chance up \d+/);
+  const cw = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2024_08_CHI_WAS.json", import.meta.url), "utf8")) as GameFileV2);
+  const hail = cw.plays.at(-1)!;
+  assert.match(hail.text, /Daniels/);
+  assert.equal(hail.homeWp, 1); // WAS won 18-15 on the last play; END GAME row says 0.886
+  assert.match(swingText(cw, hail), /^WAS's win chance up \d+/);
+});
