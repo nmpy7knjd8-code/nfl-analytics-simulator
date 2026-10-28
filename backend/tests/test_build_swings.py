@@ -132,10 +132,27 @@ def test_frozen_weeks_fail_on_change(built):
     assert bs.check_frozen(old, built) == []
     k = next(iter(old["weeks"]))
     old["weeks"][k]["swing"] = 0.1234
-    assert bs.check_frozen(old, built) == [f"{k} changed (not in override)"]
+    assert bs.check_frozen(old, built) == [f"{k} play/value changed (not in override)"]
     assert bs.check_frozen(old, built, [k]) == []
     other = list(old["weeks"])[-1]
-    assert bs.check_frozen(old, built, [k, other]) == [f"{other} in override but unchanged"]
+    assert bs.check_frozen(old, built, [k, other]) == [f"{other} in override but play/value unchanged"]
+
+
+def test_text_only_weeks_may_change_text_but_not_play_or_values(built):
+    """Narrowed override: non-listed weeks may change desc/home_score/away_score only."""
+    TEXT = ["desc", "home_score", "away_score"]
+    k = next(iter(built["weeks"]))
+    old = json.loads(bs.dumps(built))
+    old["weeks"][k].update(desc="raw text", home_score=0, away_score=99)
+    assert bs.check_frozen(old, built, [], TEXT) == []
+    assert bs.check_frozen(old, built) == [f"{k} changed (not in override)"]
+    for f in ("game_id", "qtr", "clock", "team", "play_type", "wp_before", "wp_after", "swing"):
+        o2 = json.loads(bs.dumps(built))
+        o2["weeks"][k][f] = "x" if isinstance(o2["weeks"][k][f], str) else 0.4321
+        assert bs.check_frozen(o2, built, [], TEXT) == [f"{k} play/value changed (not in override)"], f
+    o3 = json.loads(bs.dumps(built))
+    o3["weeks"][k]["round"] = "XX"  # a non-text, non-play field still needs the full override
+    assert bs.check_frozen(o3, built, [], TEXT) == [f"{k} changed (not in override)"]
 
 
 def test_frozen_week_change_exits_nonzero(tmp_path, built, monkeypatch):
@@ -149,14 +166,16 @@ def test_frozen_week_change_exits_nonzero(tmp_path, built, monkeypatch):
     assert bs.main(["x.parquet", "--out", str(out)]) == 1
     assert json.loads(out.read_text())["weeks"][k]["desc"] == "changed"
     ov = tmp_path / "ov.json"
-    ov.write_text(json.dumps({"reason": "test", "reviewed_in": "test", "weeks": [k]}))
+    ov.write_text(json.dumps({"reason": "test", "reviewed_in": "test", "weeks": [], "text_fields_all_weeks": ["desc"]}))
     assert bs.main(["x.parquet", "--out", str(out), "--allow-changes", str(ov)]) == 0
     assert json.loads(out.read_text())["weeks"][k]["desc"] != "changed"
 
 
 def test_committed_override_is_exact_and_reviewed():
     o = json.loads((ROOT / "mining/frozen_overrides/swings-2026-10-28-qa-q3-q4.json").read_text())
-    assert o["reason"] and o["reviewed_in"] and len(o["weeks"]) == len(set(o["weeks"]))
+    assert o["reason"] and o["reviewed_in"]
+    assert o["weeks"] == ["2019-w01", "2024-w19"]  # only these may change play/value
+    assert o["text_fields_all_weeks"] == ["desc", "home_score", "away_score"]
 
 
 def test_committed_site_file_is_small_and_clean():

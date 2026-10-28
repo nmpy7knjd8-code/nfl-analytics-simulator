@@ -193,23 +193,45 @@ def build(rows: list[dict[str, Any]], text_of, top_n: int = TOP_N) -> dict[str, 
     }
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Iterable[str] = ()) -> list[str]:
-    """Problems with published weeks: changed but not allowed, or allowed but unchanged."""
+IDENTITY_KEYS = ("season", "week", "game_id", "team", "qtr", "clock", "down", "togo", "yardline_100", "play_type")
+VALUE_KEYS = ("wp_before", "wp_after", "swing")
+
+
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Iterable[str] = (),
+                 text_fields: Iterable[str] = ()) -> list[str]:
+    """Problems with published weeks.
+
+    `allowed` weeks may change anything (and must change their play or value).
+    Every other week may change only `text_fields`; its play identity and wp_before/wp_after/swing must be identical.
+    """
     if not old:
         return []
-    changed = {k for k, v in old.get("weeks", {}).items() if new["weeks"].get(k) != v}
-    allowed = set(allowed)
-    return ([f"{k} changed (not in override)" for k in sorted(changed - allowed)]
-            + [f"{k} in override but unchanged" for k in sorted(allowed - changed)])
+    allowed, text_fields = set(allowed), set(text_fields)
+    probs = []
+    for k, v in sorted(old.get("weeks", {}).items()):
+        n = new["weeks"].get(k)
+        if n is None:
+            probs.append(f"{k} missing")
+            continue
+        play_changed = any(v.get(f) != n.get(f) for f in IDENTITY_KEYS + VALUE_KEYS)
+        if k in allowed:
+            if not play_changed:
+                probs.append(f"{k} in override but play/value unchanged")
+            continue
+        if play_changed:
+            probs.append(f"{k} play/value changed (not in override)")
+        elif any(v.get(f) != n.get(f) for f in set(v) | set(n) if f not in text_fields):
+            probs.append(f"{k} changed (not in override)")
+    return probs
 
 
-def load_override(path: str | None) -> set[str]:
+def load_override(path: str | None) -> tuple[set[str], set[str]]:
     if not path:
-        return set()
+        return set(), set()
     o = json.loads(Path(path).read_text())
     if not o.get("reason") or not o.get("reviewed_in") or not isinstance(o.get("weeks"), list):
         raise SystemExit(f"override {path} needs reason, reviewed_in and a weeks list")
-    return set(o["weeks"])
+    return set(o["weeks"]), set(o.get("text_fields_all_weeks", []))
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -238,7 +260,7 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(a.out)
     new = build(load_rows(a.pbp), display_texts(Path(a.games)))
     old = json.loads(out.read_text()) if out.exists() else None
-    problems = check_frozen(old, new, load_override(a.allow_changes))
+    problems = check_frozen(old, new, *load_override(a.allow_changes))
     if problems:
         print("FAIL: published weeks: " + "; ".join(problems), file=sys.stderr)
         return 1
