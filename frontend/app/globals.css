@@ -1788,3 +1788,7 @@ body { font-variant-numeric: tabular-nums; }
 .era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
 .era-all{border-top:1px solid #e6e6e6;padding-top:6px}
 .cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
+
+/* —— D5 outcome histogram —— */
+.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
