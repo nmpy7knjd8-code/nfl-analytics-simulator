@@ -28,6 +28,8 @@ export type FeedPlay = {
   fourth: boolean;
   homeScore: number;
   awayScore: number;
+  /** Overtime play: house rule, no win chance shown (matches winProbability.ts), no chart. */
+  ot: boolean;
 };
 
 export type FeedGame = { id: string; home: string; away: string; season: number; week: number; homeScore: number; awayScore: number; plays: FeedPlay[] };
@@ -58,16 +60,18 @@ export function buildFeed(doc: GameFileV2): FeedGame {
     if (!text) continue;
     const before = c.home_wp[i] ?? wpAt(i);
     const after = i + 1 < n ? wpAt(i + 1) : doc.final_home_wp ?? before;
-    // home_score/away_score on row i are already the score after play i.
+    // game.v2 score columns are the score after the play on that row.
     const home = c.home_score[i] ?? 0;
     const away = c.away_score[i] ?? 0;
+    const prevHome = i ? c.home_score[i - 1] ?? 0 : 0;
+    const prevAway = i ? c.away_score[i - 1] ?? 0 : 0;
     plays.push({
       id: String(c.play_id[i]), qtr: c.qtr[i], sec: c.sec[i], t: elapsed(c.qtr[i], c.sec[i]), team: c.posteam[i],
       down: c.down[i], dist: c.ydstogo[i], text, penalty: c.penalty_text?.[i] ?? null,
-      homeWp: after, homeWpBefore: before, big: swings.has(c.play_id[i]),
-      scoring: i > 0 && (home !== (c.home_score[i - 1] ?? 0) || away !== (c.away_score[i - 1] ?? 0)),
+      homeWp: after, homeWpBefore: before, big: c.qtr[i] <= 4 && swings.has(c.play_id[i]),
+      scoring: home !== prevHome || away !== prevAway,
       fourth: c.down[i] === 4 && c.play_type[i] !== "no_play",
-      homeScore: home, awayScore: away,
+      homeScore: home, awayScore: away, ot: c.qtr[i] > 4,
     });
   }
   const g = doc.game as Record<string, unknown>;
@@ -118,7 +122,14 @@ export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): stri
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
+/** Regulation only: overtime plays never appear on the chart (house rule). */
 export function chartPoints(plays: FeedPlay[]): { t: number; wp: number; id: string | null }[] {
-  if (!plays.length) return [];
-  return [{ t: 0, wp: plays[0].homeWpBefore, id: null }, ...plays.map((p) => ({ t: p.t, wp: p.homeWp, id: p.id }))];
+  const reg = plays.filter((p) => !p.ot);
+  if (!reg.length) return [];
+  return [{ t: 0, wp: reg[0].homeWpBefore, id: null }, ...reg.map((p) => ({ t: p.t, wp: p.homeWp, id: p.id }))];
+}
+
+/** Rows that can open the chart: regulation plays only. */
+export function canChart(p: FeedPlay): boolean {
+  return !p.ot;
 }

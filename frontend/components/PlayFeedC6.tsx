@@ -3,14 +3,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import {
-  KIND_LABEL, NO_FILTER, buildFeed, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
+  KIND_LABEL, NO_FILTER, buildFeed, canChart, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
   type FeedFilter, type FeedGame, type FeedPlay, type KindFilter,
 } from "../lib/playFeed";
 import { Header, Trademark } from "./SimpleGame";
 import { TeamLogo } from "./TeamLogo";
+import { GamePicker } from "./GamePicker";
+import { DEFAULT_FEED_GAME, feedHref, gameFromQuery, seasonOf } from "../lib/gamePicker";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-export const DEFAULT_FEED_GAME = "2023_01_DET_KC";
 
 type Load = { state: "loading" } | { state: "error" } | { state: "ready"; game: FeedGame };
 
@@ -41,7 +42,7 @@ function WinBar({ g, wp }: { g: FeedGame; wp: number }) {
 function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay; onClose: () => void }) {
   const W = 340, H = 170, L = 30, R = 8, T = 10, B = 22;
   const pts = chartPoints(g.plays);
-  const span = Math.max(3600, pts.at(-1)?.t ?? 3600);
+  const span = 3600;
   const x = (t: number) => L + (t / span) * (W - L - R);
   const y = (wp: number) => T + (1 - wp) * (H - T - B);
   const path = pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.wp).toFixed(1)}`).join(" ");
@@ -80,14 +81,31 @@ function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay; onClose: () 
   );
 }
 
-export function PlayFeedC6({ gameId = DEFAULT_FEED_GAME }: { gameId?: string }) {
+export function PlayFeedC6() {
+  // Static export: the chosen game lives in ?game=<id> and is read on the client (shareable, survives reload).
+  const [gameId, setGameId] = useState<string | null>(null);
+  const [picking, setPicking] = useState(false);
+  useEffect(() => {
+    const read = () => setGameId(gameFromQuery(window.location.search));
+    read();
+    window.addEventListener("popstate", read);
+    return () => window.removeEventListener("popstate", read);
+  }, []);
+  const pick = useCallback((id: string) => {
+    if (id !== gameFromQuery(window.location.search)) window.history.pushState(null, "", feedHref(id, BASE));
+    setGameId(id);
+    setPicking(false);
+  }, []);
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [filter, setFilter] = useState<FeedFilter>(NO_FILTER);
   const [open, setOpen] = useState<string | null>(null);
   useEffect(() => {
+    if (!gameId) return;
     const ctrl = new AbortController();
     setLoad({ state: "loading" });
+    setFilter(NO_FILTER);
+    setOpen(null);
     fetch(gameFileUrl(gameId, BASE), { signal: ctrl.signal })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((doc: unknown) => {
@@ -99,14 +117,14 @@ export function PlayFeedC6({ gameId = DEFAULT_FEED_GAME }: { gameId?: string }) 
   }, [gameId, attempt]);
   const g = load.state === "ready" ? load.game : null;
   const rows = useMemo(() => (g ? filterFeed(g.plays, filter) : []), [g, filter]);
-  const play = g && open ? g.plays.find((p) => p.id === open) ?? null : null;
+  const play = g && open ? g.plays.find((p) => p.id === open && canChart(p)) ?? null : null;
   const closeChart = useCallback(() => {
     const id = open;
     setOpen(null);
     if (id) requestAnimationFrame(() => document.getElementById(`pf-${id}`)?.focus());
   }, [open]);
   const set = <K extends keyof FeedFilter>(k: K, v: FeedFilter[K]) => setFilter((f) => toggle(f, k, v));
-  const active = [filter.team, filter.kind ? KIND_LABEL[filter.kind] : null, filter.qtr ? `Q${filter.qtr}` : null].filter(Boolean).join(", ");
+  const active = [filter.team, filter.kind ? KIND_LABEL[filter.kind] : null, filter.qtr ? (filter.qtr > 4 ? "OT" : `Q${filter.qtr}`) : null].filter(Boolean).join(", ");
   const any = filter.team != null || filter.qtr != null || filter.kind != null;
 
   return (
@@ -117,10 +135,18 @@ export function PlayFeedC6({ gameId = DEFAULT_FEED_GAME }: { gameId?: string }) 
           <TeamLogo abbr={g.away} size={22} /><b>{g.away} {g.awayScore}</b>
           <span className="pf-at">@</span>
           <TeamLogo abbr={g.home} size={22} /><b>{g.home} {g.homeScore}</b>
-          <span className="pf-wk">Week {g.week}, {g.season}</span>
+          <span className="pf-wk">{g.season}</span>
+          <button type="button" className="pf-change" onClick={() => setPicking(true)}>Change game</button>
         </div>
-      ) : <div className="pf-game" aria-hidden="true" />}
-      {play && g ? (
+      ) : (
+        <div className="pf-game">
+          <span className="pf-wk">{load.state === "error" ? "Game not loaded" : "Loading game…"}</span>
+          <button type="button" className="pf-change" onClick={() => setPicking(true)}>Change game</button>
+        </div>
+      )}
+      {picking ? (
+        <GamePicker currentId={gameId ?? DEFAULT_FEED_GAME} startSeason={seasonOf(gameId ?? DEFAULT_FEED_GAME)} onPick={pick} onClose={() => setPicking(false)} />
+      ) : play && g ? (
         <Chart g={g} play={play} onClose={closeChart} />
       ) : (
         <>
@@ -129,6 +155,7 @@ export function PlayFeedC6({ gameId = DEFAULT_FEED_GAME }: { gameId?: string }) 
             {g ? [g.away, g.home].map((t) => <Chip key={t} on={filter.team === t} label={t} onClick={() => set("team", t)} />) : null}
             {(Object.keys(KIND_LABEL) as KindFilter[]).map((k) => <Chip key={k} on={filter.kind === k} label={KIND_LABEL[k]} onClick={() => set("kind", k)} />)}
             {[1, 2, 3, 4].map((q) => <Chip key={q} on={filter.qtr === q} label={`Q${q}`} onClick={() => set("qtr", q)} />)}
+            {g?.plays.some((p) => p.ot) ? <Chip on={filter.qtr === 5} label="OT" onClick={() => set("qtr", 5)} /> : null}
           </div>
           <div className="pf-list" aria-busy={load.state === "loading"}>
             {load.state === "loading" ? (
@@ -148,15 +175,22 @@ export function PlayFeedC6({ gameId = DEFAULT_FEED_GAME }: { gameId?: string }) 
               </div>
             ) : (
               <>
-                <p className="pf-status" aria-live="polite">{rows.length} {rows.length === 1 ? "play" : "plays"}{any ? ` · ${active}` : ""} · tap one for the chart</p>
+                <p className="pf-status" aria-live="polite">{rows.length} {rows.length === 1 ? "play" : "plays"}{any ? ` · ${active}` : ""}{rows.some((p) => !p.ot) ? " · tap one for the chart" : ""}{rows.some((p) => p.ot) ? " · overtime shows plays only" : ""}</p>
                 <ol className="pf-rows">
                   {rows.map((p) => (
                     <li key={p.id}>
+                      {p.ot ? (
+                        <div className="pf-row pf-row-ot">
+                          <span className="pf-meta">{metaLine(p)}{p.scoring ? <em className="pf-tag">Score</em> : null}</span>
+                          <span className="pf-text">{p.text}</span>
+                        </div>
+                      ) : (
                       <button type="button" id={`pf-${p.id}`} className={`pf-row${p.big ? " is-big" : ""}`} onClick={() => setOpen(p.id)}>
                         <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}</span>
                         <span className="pf-text">{p.text}</span>
                         <WinBar g={g!} wp={p.homeWp} />
                       </button>
+                      )}
                     </li>
                   ))}
                 </ol>
