@@ -14,7 +14,7 @@ export function SiteMenuLinks() {
       <Link href="/feed/">Play feed</Link>
       <Link href="/kicks/">Kicks</Link>
       <Link href="/era/">Era chart</Link>
-      <Link href="/calibration/">Calibration chart</Link>
+      <Link href="/calibration/">Win chance check</Link>
       <Link href="/games/">Games</Link>
       <Link href="/daily/stats/">Stats</Link>
       <Link href="/about/">About</Link>
