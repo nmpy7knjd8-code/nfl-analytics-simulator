@@ -32,7 +32,7 @@ export type FeedPlay = {
   ot: boolean;
 };
 
-export type FeedGame = { id: string; home: string; away: string; season: number; week: number; homeScore: number; awayScore: number; plays: FeedPlay[] };
+export type FeedGame = { id: string; home: string; away: string; season: number; week: number; label: string; homeScore: number; awayScore: number; plays: FeedPlay[] };
 
 export type KindFilter = "big" | "fourth" | "scoring";
 export type FeedFilter = { team: string | null; qtr: number | null; kind: KindFilter | null };
@@ -77,6 +77,7 @@ export function buildFeed(doc: GameFileV2): FeedGame {
   const g = doc.game as Record<string, unknown>;
   return {
     id: doc.game.id, home: doc.game.home, away: doc.game.away, season: Number(g.season), week: Number(g.week),
+    label: gameWeekLabel(Number(g.season), Number(g.week), String(g.season_type ?? "REG")),
     homeScore: Number(g.home_score ?? 0), awayScore: Number(g.away_score ?? 0), plays,
   };
 }
@@ -112,13 +113,13 @@ export function winLine(g: Pick<FeedGame, "home" | "away">, wp: number): { team:
   return home >= 50 ? { team: g.home, pct: home } : { team: g.away, pct: 100 - home };
 }
 
-/** Change in that team's chance on this play, in whole points, with a sign. */
+/** Change in that team's win chance on this play, in whole percentage points, e.g. "NYJ's win chance down 1%". */
 export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
   const lead = winLine(g, p.homeWp);
   const sign = lead.team === g.home ? 1 : -1;
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
   const v = d * sign;
-  return v === 0 ? "No change" : `${lead.team} ${v > 0 ? "up" : "down"} ${Math.abs(v)} points on this play`;
+  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${Math.abs(v)}%`;
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
@@ -132,4 +133,13 @@ export function chartPoints(plays: FeedPlay[]): { t: number; wp: number; id: str
 /** Rows that can open the chart: regulation plays only. */
 export function canChart(p: FeedPlay): boolean {
   return !p.ot;
+}
+
+const ROUNDS = ["Wild Card", "Divisional", "Conference", "Super Bowl"];
+/** Header label: "Week 1, 2023", or the playoff round ("Divisional, 2023"), named as in the game picker.
+ * Playoff weeks start at 18 through 2020 and at 19 from 2021 (17-game seasons). */
+export function gameWeekLabel(season: number, week: number, seasonType: string): string {
+  const first = season >= 2021 ? 19 : 18;
+  const round = seasonType === "POST" || week >= first ? ROUNDS[week - first] : undefined;
+  return `${round ?? `Week ${week}`}, ${season}`;
 }

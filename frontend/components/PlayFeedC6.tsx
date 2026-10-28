@@ -132,10 +132,14 @@ export function PlayFeedC6() {
       <Header right="Play feed" />
       {g ? (
         <div className="pf-game">
-          <TeamLogo abbr={g.away} size={22} /><b>{g.away} {g.awayScore}</b>
-          <span className="pf-at">@</span>
-          <TeamLogo abbr={g.home} size={22} /><b>{g.home} {g.homeScore}</b>
-          <span className="pf-wk">{g.season}</span>
+          <div className="pf-gm">
+            <div className="pf-match">
+              <TeamLogo abbr={g.away} size={22} /><b>{g.away} {g.awayScore}</b>
+              <span className="pf-at">@</span>
+              <TeamLogo abbr={g.home} size={22} /><b>{g.home} {g.homeScore}</b>
+            </div>
+            <span className="pf-wk">{g.label}</span>
+          </div>
           <button type="button" className="pf-change" onClick={() => setPicking(true)}>Change game</button>
         </div>
       ) : (
