@@ -9,28 +9,42 @@ export type TwoPointFile = {
   per_choice_win_chance: null;
   cols: string[];
   tries: (string | number)[][];
+  kicks?: (string | number)[][];
+  kick_rule?: string;
 };
 export type Try = {
   season: number; week: number; season_type: "REG" | "POST"; game_id: string; team: string; opp: string;
-  qtr: number; clock: string; diff: number; kind: "run" | "pass"; made: boolean;
+  qtr: number; clock: string; diff: number; kind: "run" | "pass" | "extra_point"; made: boolean;
 };
 export type Call = "kick" | "run" | "pass";
 
 export const ROUND_SIZE = 5;
 
-/** Rows → objects by the cols header. Drops overtime and no_play rows (no play type to guess). */
-export function readTries(file: TwoPointFile): Try[] {
+function readRows(file: TwoPointFile, rows: (string | number)[][]): Try[] {
   const at = (n: string) => file.cols.indexOf(n);
   const ix = Object.fromEntries(["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"].map((n) => [n, at(n)]));
   if (Object.values(ix).some((i) => i < 0)) return [];
-  return file.tries
+  return rows
     .map((r) => ({
       season: Number(r[ix.season]), week: Number(r[ix.week]), season_type: r[ix.season_type] as Try["season_type"],
       game_id: String(r[ix.game_id]), team: String(r[ix.team]), opp: String(r[ix.opp]), qtr: Number(r[ix.qtr]),
       clock: String(r[ix.clock]), diff: Number(r[ix.diff]), kind: r[ix.kind] as Try["kind"], made: Number(r[ix.made]) === 1,
     }))
-    .filter((t) => t.qtr >= 1 && t.qtr <= 4 && (t.kind === "run" || t.kind === "pass"));
+    .filter((t) => t.qtr >= 1 && t.qtr <= 4);
 }
+
+/** Two-point tries by the cols header. Drops overtime and no_play rows (no play type to guess). */
+export function readTries(file: TwoPointFile): Try[] {
+  return readRows(file, file.tries).filter((t) => t.kind === "run" || t.kind === "pass");
+}
+
+/** Real extra points from file.kicks (late, close spots; see kick_rule). Own path: kind is "extra_point". */
+export function readKicks(file: TwoPointFile): Try[] {
+  return readRows(file, file.kicks ?? []).filter((t) => t.kind === "extra_point");
+}
+
+/** Kicks per round of ROUND_SIZE; the rest are two-point tries. */
+export const KICKS_PER_ROUND = 2;
 
 function hash(s: string): number {
   let h = 0x811c9dc5;
@@ -48,18 +62,26 @@ function rng(seed: number): () => number {
   };
 }
 
-/** Deterministic round for a seed, no repeats. */
-export function buildRound(tries: Try[], seed: string, size = ROUND_SIZE): Try[] {
-  const rand = rng(hash(`two-point:${seed}`));
-  const pool = [...tries].sort((a, b) => `${a.game_id}|${a.qtr}|${a.clock}`.localeCompare(`${b.game_id}|${b.qtr}|${b.clock}`));
+const key = (t: Try) => `${t.game_id}|${t.qtr}|${t.clock}|${t.kind}`;
+function draw(pool0: Try[], k: number, rand: () => number): Try[] {
+  const pool = [...pool0].sort((a, b) => key(a).localeCompare(key(b)));
   const out: Try[] = [];
-  while (out.length < size && pool.length) out.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
+  while (out.length < k && pool.length) out.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
   return out;
 }
 
-/** Every try in the file is a real two-point try, so the coach's call is go for two with that play type.
+/** Deterministic round for a seed, no repeats: KICKS_PER_ROUND real kicks + two-point tries, shuffled. */
+export function buildRound(tries: Try[], seed: string, size = ROUND_SIZE, kicks: Try[] = []): Try[] {
+  const rand = rng(hash(`two-point:${seed}`));
+  const nk = Math.min(kicks.length, size >= ROUND_SIZE ? KICKS_PER_ROUND : Math.floor((size * KICKS_PER_ROUND) / ROUND_SIZE));
+  const picked = [...draw(kicks, nk, rand), ...draw(tries, size - nk, rand)];
+  return draw(picked, picked.length, rand);
+}
+
+/** The coach's call: kick on an extra point, else go for two with that play type.
  * Scored as "same call as the coach": no model says which choice was right in that spot. */
-export const sameAsCoach = (t: Try, call: Call) => call === t.kind;
+export const coachCall = (t: Try): Call => (t.kind === "extra_point" ? "kick" : t.kind);
+export const sameAsCoach = (t: Try, call: Call) => call === coachCall(t);
 
 /** Shown rates, one decimal, from the file's counts. */
 export const pct1 = (r: { tries: number; made: number }) => (r.tries ? `${((1000 * r.made) / r.tries / 10).toFixed(1)}%` : "—");
@@ -76,6 +98,7 @@ export function situationText(t: Try): string {
 export const CALL_LABEL: Record<Call, string> = { kick: "Kick the extra point", run: "Go for two: run", pass: "Go for two: pass" };
 
 export function coachText(t: Try): string {
+  if (t.kind === "extra_point") return `Kicked the extra point. ${t.made ? "Good, 1 point." : "No good."}`;
   return `Went for two with a ${t.kind}. ${t.made ? "Good, 2 points." : "No good."}`;
 }
 

@@ -4,11 +4,12 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import raw from "./site/twopoint.json";
-import { buildRound, coachText, marginText, pct1, ratesLines, readTries, sameAsCoach, situationText, ROUND_SIZE, type TwoPointFile } from "./twoPoint";
+import { buildRound, readKicks, coachCall, KICKS_PER_ROUND, coachText, marginText, pct1, ratesLines, readTries, sameAsCoach, situationText, ROUND_SIZE, type TwoPointFile } from "./twoPoint";
 
 const file = raw as unknown as TwoPointFile;
 const HERE = dirname(fileURLToPath(import.meta.url));
 const tries = readTries(file);
+const kicks = readKicks(file);
 
 test("frontend copy matches data/site/twopoint.json byte for byte", () => {
   assert.equal(readFileSync(resolve(HERE, "site/twopoint.json"), "utf8"), readFileSync(resolve(HERE, "../../data/site/twopoint.json"), "utf8"));
@@ -34,6 +35,32 @@ test("cards: regulation run/pass tries only (no overtime, no no_play)", () => {
   assert.equal(tries.length, 944);
   assert.ok(tries.every((t) => t.qtr <= 4 && (t.kind === "run" || t.kind === "pass")));
   assert.deepEqual(readTries({ ...file, cols: ["x"] }), []);
+});
+
+test("kicks: real late, close extra points read in their own path", () => {
+  assert.equal(kicks.length, 439);
+  assert.equal(kicks.filter((k) => k.made).length, 412);
+  assert.ok(kicks.every((k) => k.kind === "extra_point" && k.qtr === 4));
+  assert.equal(file.cols.includes("wp"), false);
+});
+
+test("rounds mix real kicks and two-point tries", () => {
+  for (const d of ["2026-11-02", "2026-11-03", "2026-11-04"]) {
+    const r = buildRound(tries, d, undefined, kicks);
+    assert.equal(r.length, ROUND_SIZE);
+    assert.equal(r.filter((t) => t.kind === "extra_point").length, KICKS_PER_ROUND);
+    assert.ok(r.every((t) => t.kind !== ("no_play" as string)));
+    assert.deepEqual(r, buildRound(tries, d, undefined, kicks));
+  }
+});
+
+test("Kick can match the coach on a real extra point", () => {
+  const k = kicks[0];
+  assert.equal(coachCall(k), "kick");
+  assert.equal(sameAsCoach(k, "kick"), true);
+  assert.equal(sameAsCoach(k, "run"), false);
+  assert.equal(coachText({ ...k, made: true }), "Kicked the extra point. Good, 1 point.");
+  assert.equal(coachText({ ...k, made: false }), "Kicked the extra point. No good.");
 });
 
 test("round is deterministic per seed with no repeats; empty pool gives empty round", () => {

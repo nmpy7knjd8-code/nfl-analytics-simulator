@@ -4,13 +4,13 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { dateKey } from "../lib/daily";
 import {
-  CALL_LABEL, buildRound, coachText, pct1, ratesLines, readTries, sameAsCoach, shareText, situationText,
+  CALL_LABEL, buildRound, readKicks, coachText, pct1, ratesLines, readTries, sameAsCoach, shareText, situationText,
   type Call, type Try, type TwoPointFile,
 } from "../lib/twoPoint";
 import { teamLogo } from "./ScoreBug";
 import { Header, Trademark } from "./SimpleGame";
 
-type Load = { state: "loading" } | { state: "error" } | { state: "ready"; file: TwoPointFile; tries: Try[] };
+type Load = { state: "loading" } | { state: "error" } | { state: "ready"; file: TwoPointFile; tries: Try[]; kicks: Try[] };
 const TITLE = "Go for two?";
 
 function Status({ children, alert }: { children: React.ReactNode; alert?: boolean }) {
@@ -39,14 +39,14 @@ export function TwoPoint() {
     import("../lib/site/twopoint.json")
       .then((m) => {
         const file = (m.default ?? m) as unknown as TwoPointFile;
-        if (live) setLoad({ state: "ready", file, tries: readTries(file) });
+        if (live) setLoad({ state: "ready", file, tries: readTries(file), kicks: readKicks(file) });
       })
       .catch(() => live && setLoad({ state: "error" }));
     return () => { live = false; };
   }, [attempt]);
   useEffect(() => { setSeed(dateKey()); }, []);
   useEffect(() => {
-    if (load.state === "ready" && seed) { setCards(buildRound(load.tries, seed)); setIdx(0); setCalls([]); setGoing(false); setCopied(false); }
+    if (load.state === "ready" && seed) { setCards(buildRound(load.tries, seed, undefined, load.kicks)); setIdx(0); setCalls([]); setGoing(false); setCopied(false); }
   }, [load, seed]);
   const again = useCallback(() => setSeed(String(Date.now())), []);
   const pick = (c: Call) => { setCalls([...calls, c]); setGoing(false); };
@@ -82,7 +82,7 @@ export function TwoPoint() {
               <b aria-label={results[i] ? "Same call" : "Different call"}>{results[i] ? "=" : "≠"}</b>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={teamLogo(t.team)} alt="" width={22} height={22} className="sg-plate" />
-              <span><strong>{t.team}</strong> · {t.kind} · {t.made ? "good" : "no good"}</span>
+              <span><strong>{t.team}</strong> · {t.kind === "extra_point" ? "kick" : t.kind} · {t.made ? "good" : "no good"}</span>
               <span className="sg-c">You: {calls[i] === "kick" ? "Kick" : calls[i] === "run" ? "Run" : "Pass"}</span>
             </div>
           ))}
