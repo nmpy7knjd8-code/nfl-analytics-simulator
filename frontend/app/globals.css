@@ -1518,8 +1518,8 @@ body:has(.quiz-page) .app-nav-item.is-current {
 body { font-variant-numeric: tabular-nums; }
 .fd-top { display: flex; justify-content: space-between; align-items: center; padding: calc(0.75rem + var(--safe-top)) var(--page-pad-x) 0.25rem; max-width: 40rem; margin: 0 auto; width: 100%; }
 .fd-brand { font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
-.fd-top-links { display: flex; gap: 0.25rem; }
-.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.6rem; min-height: 44px; font-size: 0.9375rem; }
+.fd-top-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 0.1rem; }
+.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.45rem; min-height: 44px; font-size: 0.9375rem; }
 .fd-top-links a:hover { color: var(--color-ink); }
 .fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
 .fd-head h1 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
@@ -1790,6 +1790,39 @@ body { font-variant-numeric: tabular-nums; }
 .era-all{border-top:1px solid #e6e6e6;padding-top:6px}
 .cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
 
+
+/* 4th-down checker (ported from #57; shown only when CHECKER_ENABLED) */
+.fd-links a, .gs-back, .gs-swings a, .ck-src a { color: var(--color-blue); }
+.ck-h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+.ck-summary { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ck-steps { display: grid; gap: 0.5rem; }
+.ck-step { display: grid; grid-template-columns: 1fr 44px 6.5rem 44px; align-items: center; gap: 0.5rem; font-variant-numeric: tabular-nums; }
+.ck-step-label { color: var(--color-ink-secondary); }
+.ck-step-val { text-align: center; font-weight: 800; }
+.ck-fixed { grid-column: 3; }
+.ck-step-btn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid #52525b; background: #1c1c1f; color: #fff; font: inherit; font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+.ck-step-btn:hover:not(:disabled) { background: #27272a; }
+.ck-step-btn:disabled { color: #71717a; border-color: #3f3f46; cursor: not-allowed; }
+.ck-step-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
+.ck-rec { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-blue); }
+.ck-close { margin: 0; font-weight: 700; }
+.ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
+.ck-src { font-size: 0.875rem; }
+/* —— D5 outcome histogram —— */
+.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
+/* —— D6 heat map (coaches' real go-rates) —— */
+.hm-card{padding:8px 6px}
+.hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(0,1fr));gap:2px}
+.hm-row{display:contents}
+.hm-corner{font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
+.hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
+.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap}
+.hm-cell{aspect-ratio:1;min-height:28px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
+.hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
+.hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
+.hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
+.oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
 /* —— E3 match the chart —— */
 .mc-charts{display:flex;flex-direction:column;gap:10px}
 .mc-chart{margin:0;display:flex;gap:8px;align-items:flex-start}
@@ -1806,5 +1839,4 @@ body { font-variant-numeric: tabular-nums; }
 .mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
 .mc-chip.is-on{background:#1E5BFF;border-color:#1E5BFF;color:#fff}
 .mc-total{font-size:20px;font-weight:800;text-align:center;margin:12px 0 4px}
-.oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
 .mc-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}

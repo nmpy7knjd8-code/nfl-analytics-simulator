@@ -52,3 +52,15 @@ test("calendar: 35 cells, Monday first, today is open", () => {
   assert.equal(c.find((x) => x.date === "2026-10-27")!.mark, "shield");
   assert.equal(c.find((x) => x.date === "2026-10-25")!.mark, "before");
 });
+
+test("#179 fix: shield square has no stray sentence styles; calendar is a list", async () => {
+  const { readFileSync } = await import("node:fs");
+  const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
+  const css = read("../app/simple-game.css");
+  assert.doesNotMatch(css, /(^|[\s}])\.st-shield\s*\{/m, "bare .st-shield rule would also hit the calendar square");
+  assert.match(css, /\.st-shield-line\{/);
+  const tsx = read("../components/StatsView.tsx");
+  assert.match(tsx, /className="st-shield-line"/);
+  assert.match(tsx, /role="list" aria-label="Last five weeks"/);
+  assert.doesNotMatch(tsx, /role="(grid|gridcell)"/);
+});
