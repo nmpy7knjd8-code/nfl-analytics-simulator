@@ -6,7 +6,9 @@ on the site (daily quiz, 4th-down page, Game Story / games).
 
   1. Words: no "EPA", "WPA" or "xpass" on fan screens.
   2. No betting: no odds formats, lines or stakes language.
-  3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
+  3. Data filter: the bad 2019_03_CIN_BUF "End of half" row and the play right before it (the
+     (:02) A.Dalton pass carrying a fake swing) never ship in site data. Other plays from that
+     game are fine (mining/build_swings.py drops only those two rows since #174).
   4. No team logos in the built site, except the self-hosted team logos/wordmarks listed in
      teams/manifest.json (teams/<ABBR>/logo.png, wordmark.png) and <img> tags pointing at /teams/.
      Any external image (img src/srcset, SVG <image href>, CSS url() over http(s): or //) fails.
@@ -31,6 +33,8 @@ BETTING = re.compile(
     re.I,
 )
 BAD_GAME = "2019_03_CIN_BUF"
+# The two bad rows in BAD_GAME: the "End of half" row and the (:02) Dalton pass before it.
+BAD_ROW_TEXT = re.compile(r"^\s*End of half|\(:02\).*A\.Dalton pass deep right to 19-A\.Tate", re.I)
 MAX_FG = 64
 FG_SNAP_YARDS = 18  # mirrors nfl_sim.models.fourth_down_empirics.FG_SNAP_YARDS (standalone script)
 fails: list[str] = []
@@ -46,6 +50,19 @@ def strings(obj, skip=frozenset()):
         for k, v in obj.items():
             if k not in skip:
                 yield from strings(v, skip)
+
+
+def bad_rows(obj, path="$", game=None):
+    """Yield paths of BAD_GAME records (or their text) matching the bad End-of-half pattern."""
+    if isinstance(obj, dict):
+        game = obj.get("game_id", game)
+        for k, v in obj.items():
+            yield from bad_rows(v, f"{path}.{k}", game)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from bad_rows(v, f"{path}[{i}]", game)
+    elif isinstance(obj, str) and BAD_ROW_TEXT.search(obj) and (game == BAD_GAME or BAD_GAME in obj):
+        yield path
 
 
 def visible_text(page: str) -> str:
@@ -147,10 +164,9 @@ def main() -> int:
             if 'http-equiv="refresh"' not in page:
                 scan(visible_text(page), f"page /{rel}")
 
-    # Bad CIN@BUF game never ships.
-    blob = json.dumps(data)
-    if BAD_GAME in blob:
-        fails.append(f"data filter: site data contains {BAD_GAME} (bad 'End of half' row)")
+    # Bad CIN@BUF rows never ship (the rest of that game may).
+    for where in bad_rows(data):
+        fails.append(f"data filter: site data contains the bad {BAD_GAME} row at {where}")
 
     # Daily game never offers a kick over 64 yd.
     for it in data["quiz"]["items"]:
