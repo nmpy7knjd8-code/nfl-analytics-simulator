@@ -161,6 +161,26 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-game b{white-space:nowrap}
 @media (max-width:400px){.pf-change{padding:0 12px;font-size:13px}.pf-game{gap:4px}}
 .pf-row-ot{cursor:default}
+/* B5 stats + streak calendar */
+.st-h1{font-size:24px;font-weight:800;margin:4px 0 10px}
+.st-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}
+.st-tiles div{border:2px solid #000;border-radius:14px;padding:6px 4px;text-align:center}
+.st-tiles dt{font-size:13px;font-weight:600;color:var(--sg-g)}.st-tiles dd{margin:0;font-size:22px;font-weight:800}
+.st-shield{font-size:15px;font-weight:600;margin:0 0 8px}
+.st-cal{display:grid;grid-template-columns:repeat(7,44px);gap:2px;justify-content:center}
+.st-dow{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
+.st-d{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid #000;background:#fff;color:#000}
+.st-played{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
+.st-shield{}
+.st-d.st-shield{background:#BCD0FF;border-color:#BCD0FF;color:#000}
+.st-future,.st-before{border-color:#e3e3e3;color:#b0b0b0}
+.st-key{display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;margin:8px 0 0}
+.st-key i{display:inline-block;width:14px;height:14px;border-radius:4px;border:2px solid #000}
+.st-key i.st-played{border-color:var(--sg-b)}.st-key i.st-shield-k{background:#BCD0FF;border-color:#BCD0FF}
+.st-empty{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;text-align:center;font-size:18px;font-weight:600}
+.st-cal{grid-template-rows:18px;grid-auto-rows:44px;align-items:center}
+.st .sg-tm-note{margin-top:auto}
+.st-empty .sg-next{display:flex;align-items:center;justify-content:center;text-decoration:none;margin:0}
 .sg-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .sg-skel{flex:1;display:flex;flex-direction:column;gap:10px;padding:12px 0}
 .sg-skel-card{height:64px;border-radius:16px;background:#ececec}
