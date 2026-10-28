@@ -17,10 +17,10 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 
 /** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
  * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
- * "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
+ * "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
-  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball"]);
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt"]);
   const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
