@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SiteMenuLinks } from "./SiteMenu";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
@@ -38,13 +39,7 @@ export function Header({ right }: { right: string }) {
         <button type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>☰</button>
         {open ? (
           <nav className="sg-menu-list" aria-label="Menu">
-            <Link href="/practice/">Practice</Link>
-            <Link href="/endless/">Keep playing</Link>
-            <Link href="/feed/">Play feed</Link>
-            <Link href="/two-point/">Go for two?</Link>
-            <Link href="/games/">Games</Link>
-            <Link href="/daily/stats/">Stats</Link>
-            <Link href="/about/">About</Link>
+            <SiteMenuLinks />
           </nav>
         ) : null}
       </div>
