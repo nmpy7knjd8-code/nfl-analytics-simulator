@@ -3,8 +3,10 @@
 import Link from "next/link";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
+import { shieldStreak } from "../lib/shields";
 import {
-  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall, visibleStreak,
+  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
@@ -14,7 +16,10 @@ import {
   outcomeFromGame, plainShare, situationSentence, tappable, type Outcome,
 } from "../lib/simpleGame";
 import { teamNickname } from "../lib/teams";
+import { CardSkeletons, PlayedToday } from "./EmptyState";
+import { playedToday, streakLine } from "../lib/emptyState";
 import { FieldView } from "./FieldView";
+import { ModelLimits } from "./ModelLimits";
 import { ScoreBug, teamLogo } from "./ScoreBug";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -56,9 +61,15 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [idx, setIdx] = useState(0);
+  const [bonusSeen, setBonusSeen] = useState<number[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
+  useEffect(() => {
+    if (mode !== "daily" || key == null) return;
+    try { setAlready(playedToday(loadStreak(window.localStorage), key)); } catch { setAlready(null); }
+  }, [key, mode]);
 
   useEffect(() => {
     if (key == null || items.length === 0) return;
@@ -84,7 +95,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       const st = window.localStorage;
       const next = recordDaily(loadStreak(st), { date: key, credit, answered: picks.length, results: picks.map((p) => p.scored.result) });
       saveStreak(st, next);
-      setStreak(visibleStreak(next, key));
+      setStreak(shieldStreak(next.history.map((h) => h.date), key).streak);
     }
   }, [done, key, mode, picks]);
 
@@ -96,11 +107,20 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const dayNo = key ? dayNumber(key) : 0;
   const n = items.length;
 
+  if (key != null && already && picks.length === 0) {
+    return (
+      <div className="sg-app">
+        <Header right={`#${dayNo}`} />
+        <PlayedToday score={already.score} answered={already.answered} />
+        <Trademark />
+      </div>
+    );
+  }
   if (key == null || (load.state === "loading" && n > 0)) {
     return (
       <div className="sg-app">
         <Header right="" />
-        <div className="sg-status" role="status" aria-live="polite"><span className="sg-spin" aria-hidden="true" />{mode === "daily" ? "Loading today\u2019s plays…" : "Loading plays…"}</div>
+        <CardSkeletons label={mode === "daily" ? "Loading today\u2019s plays…" : "Loading plays…"} />
         <Trademark />
       </div>
     );
@@ -139,7 +159,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         <div className="sg-marks" aria-label="Your results">
           {picks.map((p, i) => <span key={i} className={p.scored.result === "wrong" ? "sg-n" : "sg-y"}>{RESULT_GLYPH[p.scored.result]}</span>)}
         </div>
-        {mode === "daily" ? <div className="sg-streak">{streak}-day streak</div> : null}
+        {mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
         <div className="sg-recap">
           {items.map((it, i) => (
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
@@ -162,7 +182,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
             }}>{copied ? "Copied" : "Share"}</button>
           </>
         ) : (
-          <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setPicks([]); }}>Practice again</button>
+          <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
         )}
         <Link href="/endless/" className="sg-keep">Keep playing</Link>
         <Trademark />
@@ -174,6 +194,9 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const p = picks[idx];
   const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
   if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} onPick={choose} />;
+  if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
+    return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;
+  }
   return (
     <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={<Header right={counter} />}
       nextLabel={idx + 1 < n ? "Next play" : "See your score"} onNext={() => setIdx(idx + 1)} />
@@ -222,6 +245,38 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>
+      <ModelLimits item={it} />
+      <Trademark />
+    </div>
+  );
+}
+
+/** A3: optional bonus after Go on 4th-and-1. Real nflverse rates; never changes the score. */
+function RunOrPass({ header, onDone }: { header: React.ReactNode; onDone: () => void }) {
+  const [g, setG] = useState<Guess | null>(null);
+  const { run, pass, seasons } = RUN_PASS_4TH_1;
+  return (
+    <div className="sg-app rp">
+      {header}
+      <p className="rp-tag">Bonus · not scored</p>
+      <h1 className="rp-q">You went for it on 4th &amp; 1. Run or pass?</h1>
+      {g == null ? (
+        <div className="sg-btns rp-btns">
+          <button type="button" className="sg-btn" onClick={() => setG("run")}>Run it</button>
+          <button type="button" className="sg-btn" onClick={() => setG("pass")}>Throw it</button>
+          <button type="button" className="sg-next rp-skip" onClick={onDone}>Skip</button>
+        </div>
+      ) : (
+        <>
+          <div className="rp-res" aria-live="polite">
+            <p className="rp-v">{runPassVerdict(g)}</p>
+            <div className="rp-row"><span>Run</span><span className="rp-bar"><i style={{ width: `${run.pct}%` }} /></span><b>{run.pct}%</b></div>
+            <div className="rp-row"><span>Pass</span><span className="rp-bar"><i style={{ width: `${pass.pct}%` }} /></span><b>{pass.pct}%</b></div>
+            <p className="rp-src">All NFL 4th-and-1 tries, {seasons}: {run.tries.toLocaleString()} runs, {pass.tries} passes.</p>
+          </div>
+          <div className="sg-btns"><button type="button" className="sg-next" onClick={onDone}>See the result</button></div>
+        </>
+      )}
       <Trademark />
     </div>
   );
