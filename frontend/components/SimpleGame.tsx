@@ -40,6 +40,7 @@ export function Header({ right }: { right: string }) {
             <Link href="/practice/">Practice</Link>
             <Link href="/endless/">Keep playing</Link>
             <Link href="/feed/">Play feed</Link>
+            <Link href="/two-point/">Go for two?</Link>
             <Link href="/games/">Games</Link>
             <Link href="/daily/stats/">Stats</Link>
             <Link href="/about/">About</Link>
