@@ -5,7 +5,7 @@ import { LETTERS, makeRound, score, type ChartGame, type ChartsFile } from "../l
 import { Header, Trademark } from "./SimpleGame";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const SEASON = 2025;
+const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 const W = 300, H = 110, OTW = 26;
 
 function Chart({ g, letter }: { g: ChartGame; letter: string }) {
@@ -36,11 +36,13 @@ export function MatchChart() {
   const [err, setErr] = useState(false);
   const [guesses, setGuesses] = useState<(number | null)[]>([null, null, null]);
   const [checked, setChecked] = useState(false);
+  const [season, setSeason] = useState(2025);
   const [seed, setSeed] = useState(() => new Date().toISOString().slice(0, 10));
 
   useEffect(() => {
-    fetch(`${BASE}/data/charts/${SEASON}.json`).then((r) => (r.ok ? r.json() : Promise.reject())).then(setFile).catch(() => setErr(true));
-  }, []);
+    setFile(null); setErr(false); setGuesses([null, null, null]); setChecked(false);
+    fetch(`${BASE}/data/charts/${season}.json`).then((r) => (r.ok ? r.json() : Promise.reject())).then(setFile).catch(() => setErr(true));
+  }, [season]);
 
   const round = useMemo(() => (file ? makeRound(file, seed) : null), [file, seed]);
   const results = round && checked ? score(round.chartOrder, guesses) : null;
@@ -58,6 +60,12 @@ export function MatchChart() {
       <h1 className="kb-h1">Match the chart</h1>
       <p className="kb-lede">Each chart shows the home team&apos;s chance to win, minute by minute. Match each final score to its chart.</p>
 
+      <div className="mc-seasons" role="radiogroup" aria-label="Season">
+        {SEASONS.map((y) => (
+          <button key={y} type="button" role="radio" aria-checked={season === y} className={`pf-chip${season === y ? " is-on" : ""}`} onClick={() => setSeason(y)}>{y}</button>
+        ))}
+      </div>
+
       {err ? <p className="oh-empty">Couldn&apos;t load the charts. Try again later.</p> : null}
       {!round ? (!err ? <p className="kb-note">Loading…</p> : null) : (
         <>
@@ -73,7 +81,7 @@ export function MatchChart() {
                 <div key={g.gameId} className={`mc-row${results ? (ok ? " is-ok" : " is-bad") : ""}`}>
                   <div className="mc-game">
                     <div><strong>{g.away}</strong> {g.awayScore} at <strong>{g.home}</strong> {g.homeScore}{g.ot ? " (OT)" : ""}</div>
-                    <div className="mc-sub">Week {g.week}, {SEASON}{results ? (ok ? " · Right" : ` · It was ${LETTERS[round.chartOrder.indexOf(gi)]}`) : ""}</div>
+                    <div className="mc-sub">{g.seasonType === "POST" ? "Playoffs" : `Week ${g.week}`}, {season}{results ? (ok ? " · Right" : ` · It was ${LETTERS[round.chartOrder.indexOf(gi)]}`) : ""}</div>
                   </div>
                   <div className="mc-chips" role="radiogroup" aria-label={`Chart for ${g.away} at ${g.home}`}>
                     {LETTERS.map((L, slot) => (
@@ -96,7 +104,7 @@ export function MatchChart() {
         </>
       )}
 
-      <p className="kb-note">Charts stop at the end of the 4th quarter. Real {SEASON} games. Data: nflverse play-by-play.{file?.stub ? " Preview numbers." : ""}</p>
+      <p className="kb-note">Charts stop at the end of the 4th quarter. Real {season} games. Data: nflverse play-by-play{file ? `, through ${file.dataThrough}` : ""}.</p>
       <Trademark />
     </div>
   );

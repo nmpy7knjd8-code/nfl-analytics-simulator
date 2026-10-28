@@ -51,7 +51,7 @@ def test_era_anchor_rates_and_shape():
     assert [rate(s25[k]) for k in ("opp", "mid", "own", "all")] == [32.7, 29.2, 8.6, 23.3]
     for s in data["seasons"]:
         assert s["all"] == [sum(s[z][j] for z in ("opp", "mid", "own")) for j in (0, 1)]
-    assert set(data) == {"schema", "source", "builtAt", "zones", "seasons"} and data["schema"] == "era/v1"
+    assert set(data) == {"schema", "source", "builtAt", "dataThrough", "zones", "seasons"} and data["schema"] == "era/v1"
     assert ERA_SITE.stat().st_size < 3_000 and not BANNED.search(ERA_SITE.read_text())
 
 
@@ -103,7 +103,7 @@ def test_calib_values_recomputed_from_nflverse_rows():
 
 def test_calib_committed_file_shape():
     data = json.loads(CALIB_SITE.read_text())
-    assert set(data) == {"schema", "model", "source", "builtAt", "buckets"}
+    assert set(data) == {"schema", "model", "source", "builtAt", "dataThrough", "buckets"}
     assert data["schema"] == "calib/v1" and data["model"] == "nflverse"
     assert [(b["lo"], b["hi"]) for b in data["buckets"]] == list(zip(bc.EDGES, bc.EDGES[1:]))
     assert sum(b["plays"] for b in data["buckets"]) == 338914

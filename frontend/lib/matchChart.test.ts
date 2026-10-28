@@ -23,3 +23,52 @@ test("scoring", () => {
   assert.deepEqual(score(order, [1, 2, 0]), [true, true, true]);
   assert.deepEqual(score(order, [0, null, 2]), [false, false, false]);
 });
+
+test("charts/2019.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2019.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2019.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2020.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2020.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2020.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2021.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2021.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2021.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2022.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2022.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2022.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2023.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2023.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2023.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2024.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2024.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2024.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});
+
+test("charts/2025.json matches data/site exactly", () => {
+  const a = readFileSync(new URL("../public/data/charts/2025.json", import.meta.url), "utf8");
+  const b = readFileSync(new URL("../../data/site/charts/2025.json", import.meta.url), "utf8");
+  assert.equal(a, b);
+  assert.equal(typeof JSON.parse(a).dataThrough, "string");
+});

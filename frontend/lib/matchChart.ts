@@ -3,7 +3,7 @@ export type ChartGame = {
   gameId: string; week: number; seasonType: string; home: string; away: string;
   homeScore: number; awayScore: number; ot: boolean; wp: number[];
 };
-export type ChartsFile = { schema: "matchcharts/v1"; stub?: boolean; season: number; builtAt: string; points: number; games: ChartGame[] };
+export type ChartsFile = { schema: "matchcharts/v1"; season: number; builtAt: string; dataThrough: string; points: number; games: ChartGame[] };
 
 export const LETTERS = ["A", "B", "C"] as const;
 
