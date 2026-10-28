@@ -34,11 +34,11 @@ export default async function TeamPage({ params }: Props) {
           <TeamLogo abbr={abbr} size={44} />
           <h1 className="tm-h1">{teamNickname(abbr)}</h1>
         </header>
-        <p className="tm-lede">How often their trips inside the opponent 20 ended in a touchdown.</p>
+        <p className="tm-lede">How their offense did: red-zone touchdowns, yards per play and third downs.</p>
         <TeamRedzone abbr={abbr} />
         <p className="tm-note">
           A red-zone trip is a drive with a snap at the opponent 20 or closer. No points includes turnovers, turnover on downs,
-          missed kicks and the clock running out. Data: nflverse play-by-play, {s0}–{s1}, regular season.
+          missed kicks and the clock running out. Yards per play counts runs and passes. Data: nflverse play-by-play, {s0}–{s1}, regular season.
         </p>
         <Trademark />
       </div>
