@@ -121,6 +121,34 @@ def test_home_view_flip_from_synthetic_rows():
     assert doc["plays"][0]["clock"] == "0:30"
 
 
+@pytest.mark.parametrize("scores,want", [((20, 21), 0.0), ((24, 21), 1.0), ((23, 23), 0.5)])
+def test_end_game_row_carries_final_result_not_fallback(scores, want):
+    """QA 2026-10-28 Q1: END GAME's fallback WP (DET_KC: 0.186) made Goff's last kneel a fake 15-pt swing."""
+    game = {"id": "t", "season": 2023, "season_type": "REG", "home": "KC", "away": "DET",
+            "home_score": scores[0], "away_score": scores[1]}
+    pre = {0.0: 0.042, 1.0: 0.97, 0.5: 0.49}[want]
+    plays = pd.DataFrame({"game_id": ["t"] * 2, "play_id": [1.0, 2.0], "qtr": [4, 4],
+                          "quarter_seconds_remaining": [37, 0], "game_seconds_remaining": [37, 0],
+                          "posteam": ["DET", None], "down": [1, None], "ydstogo": [10, None],
+                          "yardline_100": [77, None], "desc": ["kneel", "END GAME"], "play_type": ["qb_kneel", None],
+                          "home_wp": [pre, 0.186], "total_home_score": [scores[0]] * 2,
+                          "total_away_score": [scores[1]] * 2})
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    kneel, end = doc["plays"]
+    assert end["home_wp"] == want and end["home_wp_after"] == want and doc["final_home_wp"] == want
+    assert kneel["home_wp_after"] == want and not kneel["swing"] and not end["swing"]
+    assert doc["swing_play_ids"] == []
+
+
+@pytest.mark.parametrize("path", [p for p in _game_files()], ids=lambda p: p.stem)
+def test_game_file_end_game_row_is_final_result(path):
+    doc = json.loads(path.read_text())
+    c = doc["cols"]
+    for i, t in enumerate(c["text"]):
+        if t.strip().upper() == "END GAME" and c["home_wp"][i] is not None:
+            assert c["home_wp"][i] == doc["final_home_wp"], (i, c["home_wp"][i])
+
+
 def _has_display_text():
     files = _game_files()
     return bool(files) and "display_text" in json.loads(files[0].read_text())["cols"]
