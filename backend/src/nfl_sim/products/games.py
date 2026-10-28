@@ -12,6 +12,7 @@ values come from the shared engine table (products.fourth_downs).
 from __future__ import annotations
 
 import json
+import re
 import sys
 
 import pandas as pd
@@ -84,13 +85,21 @@ def _str(v):
     return v if isinstance(v, str) else None
 
 
+_END_GAME_RE = r"^(?:END GAME$|END OF GAME\b)"  # 'END GAME' and 2019 BUF-home 'End of game - 4.17 pm'
+
+
+def is_end_game_text(t) -> bool:
+    return isinstance(t, str) and re.match(_END_GAME_RE, t.strip().upper()) is not None
+
+
 def _settle_end_game(plays: pd.DataFrame, game: dict) -> pd.DataFrame:
-    """END GAME marker rows carry the final result (1 home win, 0 loss, 0.5 tie), not a model
-    fallback: otherwise the last real play shows a fake win-chance swing (QA 2026-10-28 Q1)."""
+    """END GAME / 'End of game' marker rows carry the final result (1 home win, 0 loss, 0.5 tie),
+    not a model fallback: otherwise the last real play shows a fake win-chance swing
+    (QA 2026-10-28 Q1, R1)."""
     result = game_result(game.get("home_score"), game.get("away_score"))
     if result is None or "home_wp" not in plays.columns:
         return plays
-    end = plays["desc"].astype(str).str.strip().str.upper().eq("END GAME")
+    end = plays["desc"].map(is_end_game_text).astype(bool)
     if not end.any():
         return plays
     plays = plays.copy()
@@ -113,7 +122,7 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
          "home_score": game["home_score"], "away_score": game["away_score"], "season_type": game["season_type"]},
         [{"play_id": str(int(r["play_id"])), "play_index": i, "quarter": int(r["qtr"]),
           "game_seconds_remaining": _int(r["game_seconds_remaining"]), "possession_team_id": _str(r["posteam"]),
-          "description": r["desc"],
+          "description": r["desc"], "is_play": _str(r.get("play_type")) is not None,
           "reference": {"home_wp": None if r["home_wp"] != r["home_wp"] else float(r["home_wp"])}}
          for i, r in enumerate(recs)],
         swing_threshold=SWING_THRESHOLD,
