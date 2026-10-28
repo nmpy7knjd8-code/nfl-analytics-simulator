@@ -3,6 +3,7 @@
  * Pure helpers over the live game file (/data/games/<id>.json, game.v2/games-v3); the component only renders.
  */
 import type { GameFileV2 } from "./gameFileV2";
+import { DEFAULT_SWING_WP_THRESHOLD } from "../contracts";
 
 const NON_PLAY = /^(GAME|END (QUARTER \d|GAME)|Two-Minute Warning|Timeout #\d)/i;
 const ORD = ["", "1st", "2nd", "3rd", "4th"];
@@ -74,7 +75,8 @@ export function buildFeed(doc: GameFileV2): FeedGame {
     plays.push({
       id: String(c.play_id[i]), qtr: c.qtr[i], sec: c.sec[i], t: elapsed(c.qtr[i], c.sec[i]), team: c.posteam[i],
       down: c.down[i], dist: c.ydstogo[i], text, penalty: c.penalty_text?.[i] ?? null,
-      homeWp: after, homeWpBefore: before, big: c.qtr[i] <= 4 && swings.has(c.play_id[i]),
+      homeWp: after, homeWpBefore: before, // The precomputed list can be stale (mined with the old END GAME fallback), so the tag must also agree with the swing shown.
+      big: c.qtr[i] <= 4 && swings.has(c.play_id[i]) && Math.abs(after - before) >= DEFAULT_SWING_WP_THRESHOLD,
       scoring: home !== prevHome || away !== prevAway,
       fourth: c.down[i] === 4 && c.play_type[i] !== "no_play",
       homeScore: home, awayScore: away, ot: c.qtr[i] > 4,

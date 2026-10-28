@@ -126,3 +126,29 @@ test("last real play ends at the final result, never at the END GAME fallback ro
   assert.equal(hail.homeWp, 1); // WAS won 18-15 on the last play; END GAME row says 0.886
   assert.match(swingText(cw, hail), /^WAS's win chance up \d+/);
 });
+
+test("Big play tag agrees with the computed swing (stale swing_play_ids)", () => {
+  // Live games-v3 file: the final Goff kneel goes DET 96% -> 100% (home KC 0.042 -> 0), but swing_play_ids still lists it.
+  const live = structuredClone(doc);
+  const g0 = buildFeed(live);
+  const kneel = g0.plays[g0.plays.length - 1];
+  assert.match(kneel.text, /kneel/i);
+  const row = live.cols.play_id.findIndex((id) => String(id) === kneel.id);
+  (live.cols.home_wp as (number | null)[])[row] = 0.042;
+  assert.ok(live.swing_play_ids.map(String).includes(kneel.id), "stale list still names the kneel");
+  const g = buildFeed(live);
+  const last = g.plays[g.plays.length - 1];
+  assert.equal(Math.round(Math.abs(last.homeWp - last.homeWpBefore) * 100), 4);
+  assert.equal(last.big, false);
+  // Real big swings stay tagged, and every tag meets the threshold in regulation.
+  const bigs = g.plays.filter((p) => p.big);
+  assert.ok(bigs.length > 0);
+  for (const p of bigs) assert.ok(Math.abs(p.homeWp - p.homeWpBefore) >= 0.08 && !p.ot);
+});
+
+test("Overtime rows never get the Big play tag", () => {
+  const cw = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2024_08_CHI_WAS.json", import.meta.url), "utf8")) as GameFileV2);
+  const td = cw.plays[cw.plays.length - 1];
+  assert.equal(td.big, true, "Daniels' game-winning TD (+90 pts) is still a big play");
+  assert.ok(buildFeed(doc).plays.concat(cw.plays).filter((p) => p.ot).every((p) => !p.big));
+});
