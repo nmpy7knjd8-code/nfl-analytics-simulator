@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  DEFAULT_FEED_GAME, SEASONS, feedHref, finalScore, gameFromQuery, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonOf, weeksOf,
+  DEFAULT_FEED_GAME, SEASONS, feedHref, feedUrlToWrite, finalScore, gameFromQuery, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonOf, weeksOf,
   type SeasonIndex,
 } from "./gamePicker";
 
@@ -52,4 +52,12 @@ test("?game= round-trips and bad ids fall back to the default", () => {
   assert.equal(gameFromQuery("?game=2024_10_KC_DEN"), "2024_10_KC_DEN");
   assert.equal(gameFromQuery(new URL(feedHref("2025_01_DAL_PHI"), "http://x").search), "2025_01_DAL_PHI");
   for (const bad of ["", "?game=", "?game=../etc", "?game=2024_10_kc_den", "?x=1"]) assert.equal(gameFromQuery(bad), DEFAULT_FEED_GAME);
+});
+
+test("the URL always names the game, including the default and the game already shown", () => {
+  const B = "/nfl-analytics-simulator";
+  assert.equal(feedUrlToWrite(`${B}/feed/`, DEFAULT_FEED_GAME, B), `${B}/feed/?game=${DEFAULT_FEED_GAME}`);
+  assert.equal(feedUrlToWrite(`${B}/feed/?x=1`, "2024_10_KC_DEN", B), `${B}/feed/?game=2024_10_KC_DEN`);
+  assert.equal(feedUrlToWrite(`${B}/feed/?game=2024_10_KC_DEN`, "2024_10_KC_DEN", B), null);
+  assert.equal(feedUrlToWrite(`${B}/feed/?game=2024_10_KC_DEN`, "2023_01_DET_KC", B), `${B}/feed/?game=2023_01_DET_KC`);
 });
