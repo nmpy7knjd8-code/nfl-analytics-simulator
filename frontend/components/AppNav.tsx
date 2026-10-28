@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteMenuLinks } from "./SiteMenu";
 import { CHECKER_ENABLED } from "../lib/features";
 
 const ALL_TABS = [
@@ -16,11 +17,11 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 
 /** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
  * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
- * "/coaches" and anything under "/team/", "/coaches/" or "/card/". */
+ * "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
-  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/wheres-the-ball"]);
-  const GAME_PREFIX = ["/team/", "/coaches/", "/card/"];
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball"]);
+  const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
 }
@@ -32,9 +33,8 @@ export function TopBar() {
       <Link href="/" className="fd-brand">
         Fourth &amp; Daily
       </Link>
-      <nav aria-label="More" className="fd-top-links">
-        <Link href="/daily/stats/">Stats</Link>
-        <Link href="/about/">About</Link>
+      <nav aria-label="Menu" className="fd-top-links">
+        <SiteMenuLinks />
       </nav>
     </header>
   );
