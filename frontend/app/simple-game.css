@@ -9,6 +9,8 @@
 .sg-menu-wrap{position:relative;display:flex}
 .sg-menu-list{position:absolute;right:-8px;top:48px;background:#fff;border:2px solid #000;border-radius:12px;z-index:10;display:flex;flex-direction:column;min-width:160px;overflow-x:hidden;overflow-y:auto;max-height:calc(100dvh - 64px);overscroll-behavior:contain}
 .sg-menu-list a{min-height:48px;display:flex;align-items:center;padding:0 16px;color:#000;font-weight:700;text-decoration:none;white-space:nowrap}
+.sg-menu-group{padding:10px 16px 4px;border-top:1px solid #e6e6e6;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sg-g,#5f6368)}
+.sg-menu-group:empty{padding:0}
 .sg-menu-list a+a{border-top:1px solid #e6e6e6}
 .sg-bug{height:56px;background:#000;color:#fff;border-radius:6px;overflow:hidden;display:flex;flex-direction:column;flex:none;width:100%;max-width:358px;margin:0 auto}
 .sg-r1{height:32px;display:flex}

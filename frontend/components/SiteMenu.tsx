@@ -15,15 +15,18 @@ export function SiteMenuLinks() {
       <Link href="/practice/">Practice</Link>
       <Link href="/endless/">Keep playing</Link>
       <Link href="/feed/">Play feed</Link>
+      <Link href="/games/">Games</Link>
+      <Link href="/daily/stats/">Stats</Link>
+      {/* Explore: only routes with an index page on main (/team, /rivalry, /playoffs are per-slug only, reached from Games). Integration adds /fake-punt/ and /two-point/ here. */}
+      <span className="sg-menu-group" aria-hidden="true">Explore</span>
       <Link href="/kicks/">Kicks</Link>
       <Link href="/era/">Era chart</Link>
       <Link href="/calibration/">Win chance check</Link>
       <Link href="/outcomes/">Where 4th downs land</Link>
       <Link href="/heatmap/">Where coaches go for it</Link>
       <Link href="/match-chart/">Match the chart</Link>
-      <Link href="/wheres-the-ball/">Where's the ball?</Link>
-      <Link href="/games/">Games</Link>
-      <Link href="/daily/stats/">Stats</Link>
+      <Link href="/wheres-the-ball/">Where&apos;s the ball?</Link>
+      <span className="sg-menu-group" aria-hidden="true" />
       <Link href="/about/">About</Link>
     </>
   );
