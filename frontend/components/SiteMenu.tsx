@@ -17,10 +17,11 @@ export function SiteMenuLinks() {
       <Link href="/feed/">Play feed</Link>
       <Link href="/games/">Games</Link>
       <Link href="/daily/stats/">Stats</Link>
-      {/* Explore: only routes with an index page on main (/team, /rivalry, /playoffs are per-slug only, reached from Games). Integration adds /fake-punt/ and /two-point/ here. */}
+      {/* Explore: only routes with an index page on main (/team, /rivalry, /playoffs are per-slug only, reached from Games). Includes /fake-punt/ and /two-point/. */}
       <span className="sg-menu-group" aria-hidden="true">Explore</span>
       <Link href="/kicks/">Kicks</Link>
       <Link href="/fake-punt/">Real punt or fake?</Link>
+      <Link href="/two-point/">Go for two?</Link>
       <Link href="/era/">Era chart</Link>
       <Link href="/calibration/">Win chance check</Link>
       <Link href="/outcomes/">Where 4th downs land</Link>
