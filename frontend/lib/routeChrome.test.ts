@@ -12,7 +12,7 @@ const FRONTEND = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const APP = join(FRONTEND, "app");
 
 // Pre-existing routes still on the old shell. Shrink this list; never grow it.
-const LEGACY_ROUTES = new Set(["/about", "/daily/stats", "/fourth-down", "/games", "/games/[gameId]"]);
+const LEGACY_ROUTES = new Set(["/daily/stats", "/fourth-down", "/games", "/games/[gameId]"]);
 
 // Old dark theme / old chrome markers (globals.css :root dark tokens, .fd-page, TopBar, bottom nav).
 const DARK_MARKERS: [RegExp, string][] = [

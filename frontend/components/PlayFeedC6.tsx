@@ -9,7 +9,7 @@ import {
 import { Header, Trademark } from "./SimpleGame";
 import { TeamLogo } from "./TeamLogo";
 import { GamePicker } from "./GamePicker";
-import { DEFAULT_FEED_GAME, feedHref, gameFromQuery, seasonOf } from "../lib/gamePicker";
+import { DEFAULT_FEED_GAME, feedUrlToWrite, gameFromQuery, seasonOf } from "../lib/gamePicker";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -88,11 +88,15 @@ export function PlayFeedC6() {
   useEffect(() => {
     const read = () => setGameId(gameFromQuery(window.location.search));
     read();
+    // Always carry ?game=<id> (also for the default game) so the page can be shared.
+    const first = feedUrlToWrite(window.location.pathname + window.location.search, gameFromQuery(window.location.search), BASE);
+    if (first) window.history.replaceState(null, "", first);
     window.addEventListener("popstate", read);
     return () => window.removeEventListener("popstate", read);
   }, []);
   const pick = useCallback((id: string) => {
-    if (id !== gameFromQuery(window.location.search)) window.history.pushState(null, "", feedHref(id, BASE));
+    const href = feedUrlToWrite(window.location.pathname + window.location.search, id, BASE);
+    if (href) window.history.pushState(null, "", href);
     setGameId(id);
     setPicking(false);
   }, []);

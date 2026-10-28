@@ -94,15 +94,61 @@ test("header names the week, or the playoff round", () => {
   assert.deepEqual([18, 21].map((w) => gameWeekLabel(2020, w, "POST")), ["Wild Card, 2020", "Super Bowl, 2020"]);
 });
 
-test("swing line says it is the win chance, in %, for the team ahead", () => {
+test("swing line says it is the win chance, in pts, for the team ahead", () => {
   const bn = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2);
   const fg = bn.plays.find((p) => p.qtr === 1 && p.sec === 189 && /Bass.s 40-yard field goal is good/i.test(p.text))!;
   // Pre-snap home (NYJ) chance 49.9% -> 51.1% at the next snap (NYJ receive the kickoff), per the model.
   assert.equal(winLine(bn, fg.homeWp).team, "NYJ");
-  assert.equal(swingText(bn, fg), "NYJ's win chance up 1%");
+  assert.equal(swingText(bn, fg), "NYJ's win chance up 1 pt");
   const prev = bn.plays[bn.plays.indexOf(fg) - 1];
-  assert.equal(swingText(bn, prev), "NYJ's win chance down 2%");
+  assert.equal(swingText(bn, prev), "NYJ's win chance down 2 pts");
   const flat = bn.plays.find((p) => Math.round(p.homeWp * 100) === Math.round(p.homeWpBefore * 100))!;
   assert.equal(swingText(bn, flat), "No change");
-  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
+  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) (1 pt|\d+ pts))$/);
+});
+
+test("swing wording uses pts like /games/, never %", () => {
+  const p = g.plays.find((x) => Math.abs(Math.round(x.homeWp * 100) - Math.round(x.homeWpBefore * 100)) >= 10)!;
+  assert.match(swingText(g, p), /^(DET|KC)'s win chance (up|down) \d{2,} pts$/);
+  for (const x of g.plays) assert.doesNotMatch(swingText(g, x), /%/);
+});
+
+test("last real play ends at the final result, never at the END GAME fallback row", () => {
+  const last = g.plays.at(-1)!;
+  assert.match(last.text, /Goff kneels/);
+  assert.ok(g.plays.every((p) => !/^END GAME/.test(p.text)));
+  assert.equal(last.homeWp, 0); // DET won 21-20
+  assert.equal(swingText(g, last), swingText(g, { ...last, homeWp: 0 }));
+  assert.match(swingText(g, last), /^DET's win chance up \d+/);
+  const cw = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2024_08_CHI_WAS.json", import.meta.url), "utf8")) as GameFileV2);
+  const hail = cw.plays.at(-1)!;
+  assert.match(hail.text, /Daniels/);
+  assert.equal(hail.homeWp, 1); // WAS won 18-15 on the last play; END GAME row says 0.886
+  assert.match(swingText(cw, hail), /^WAS's win chance up \d+/);
+});
+
+test("Big play tag agrees with the computed swing (stale swing_play_ids)", () => {
+  // Live games-v3 file: the final Goff kneel goes DET 96% -> 100% (home KC 0.042 -> 0), but swing_play_ids still lists it.
+  const live = structuredClone(doc);
+  const g0 = buildFeed(live);
+  const kneel = g0.plays[g0.plays.length - 1];
+  assert.match(kneel.text, /kneel/i);
+  const row = live.cols.play_id.findIndex((id) => String(id) === kneel.id);
+  (live.cols.home_wp as (number | null)[])[row] = 0.042;
+  assert.ok(live.swing_play_ids.map(String).includes(kneel.id), "stale list still names the kneel");
+  const g = buildFeed(live);
+  const last = g.plays[g.plays.length - 1];
+  assert.equal(Math.round(Math.abs(last.homeWp - last.homeWpBefore) * 100), 4);
+  assert.equal(last.big, false);
+  // Real big swings stay tagged, and every tag meets the threshold in regulation.
+  const bigs = g.plays.filter((p) => p.big);
+  assert.ok(bigs.length > 0);
+  for (const p of bigs) assert.ok(Math.abs(p.homeWp - p.homeWpBefore) >= 0.08 && !p.ot);
+});
+
+test("Overtime rows never get the Big play tag", () => {
+  const cw = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2024_08_CHI_WAS.json", import.meta.url), "utf8")) as GameFileV2);
+  const td = cw.plays[cw.plays.length - 1];
+  assert.equal(td.big, true, "Daniels' game-winning TD (+90 pts) is still a big play");
+  assert.ok(buildFeed(doc).plays.concat(cw.plays).filter((p) => p.ot).every((p) => !p.big));
 });
