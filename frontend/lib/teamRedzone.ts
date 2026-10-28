@@ -26,7 +26,7 @@ export type RedzoneFile = RedzoneSeason & {
   by_season: Record<string, RedzoneSeason>;
 };
 
-export const REDZONE = raw as RedzoneFile;
+export const REDZONE = raw as unknown as RedzoneFile;
 if (REDZONE.stub) throw new Error("teamRedzone.json is marked stub; no sample data may ship");
 
 export const ALL = "all";
