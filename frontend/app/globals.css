@@ -1808,3 +1808,6 @@ body { font-variant-numeric: tabular-nums; }
 .ck-close { margin: 0; font-weight: 700; }
 .ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
 .ck-src { font-size: 0.875rem; }
+/* —— D5 outcome histogram —— */
+.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
