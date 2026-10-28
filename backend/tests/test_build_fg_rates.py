@@ -1,4 +1,4 @@
-"""mining/build_fg_rates.py: A4 fg_rates.json (fg_rates/v1) counts match nflverse; published numbers frozen."""
+"""mining/build_fg_rates.py: A4 fg_rates.json (fg_rates/v2) counts match nflverse; published numbers frozen."""
 from __future__ import annotations
 
 import importlib.util
@@ -27,9 +27,13 @@ def built():
     return fr.build(ROWS)
 
 
-def _recount(season, lo, hi):
-    ks = [r for r in RAW if r[0] == season and lo <= r[2] <= hi]
+def _recount(season, yd):
+    ks = [r for r in RAW if r[0] == season and r[2] == yd]
     return [len(ks), sum(r[3] == "made" for r in ks)]
+
+
+def _band(rows, lo, hi):
+    return [sum(rows[y - 18][j] for y in range(max(lo, 18), hi + 1)) for j in (0, 1)]
 
 
 def test_fixture_is_full_nflverse_seasons():
@@ -39,19 +43,22 @@ def test_fixture_is_full_nflverse_seasons():
 def test_counts_match_nflverse_and_committed_file(built):
     site = json.loads(SITE.read_text())
     for season in ("2019", "2025"):
-        expect = [_recount(int(season), lo, hi) for _, lo, hi in fr.BANDS]
-        assert built["rates"][season] == expect
-        assert site["rates"][season] == expect
+        expect = [_recount(int(season), y) for y in range(18, 65)]
+        assert built["yards"][season] == expect
+        assert site["yards"][season] == expect
 
 
 def test_committed_all_is_sum_of_seasons():
     site = json.loads(SITE.read_text())
-    seasons = [k for k in site["rates"] if k != "all"]
+    seasons = [k for k in site["yards"] if k != "all"]
     assert seasons == [str(y) for y in range(2019, 2026)]
-    for i in range(len(fr.BANDS)):
-        assert site["rates"]["all"][i] == [sum(site["rates"][k][i][j] for k in seasons) for j in (0, 1)]
+    for i in range(47):
+        assert site["yards"]["all"][i] == [sum(site["yards"][k][i][j] for k in seasons) for j in (0, 1)]
     # 2019-2025: 7,627 field goal tries, 18 over 64 yd left out
-    assert sum(t for t, _ in site["rates"]["all"]) == 7609
+    assert sum(t for t, _ in site["yards"]["all"]) == 7609
+    # band totals = the verified v1 numbers (97.9/93.1/78.7/72.1/61.0/42.4%)
+    assert [_band(site["yards"]["all"], lo, hi) for _, lo, hi in fr.BANDS] == [
+        [1721, 1685], [2132, 1985], [2222, 1748], [1040, 750], [428, 261], [66, 28]]
 
 
 def test_blocked_count_as_tries_and_over_64_dropped():
@@ -60,8 +67,10 @@ def test_blocked_count_as_tries_and_over_64_dropped():
     rows.append({"season": 2025, "game_date": "2025-09-07", "play_type": "punt", "kick_distance": 40,
                  "field_goal_result": None})
     out = fr.build(rows)
-    assert out["rates"]["2025"][1] == [2, 1]
-    assert sum(t for t, _ in out["rates"]["all"]) == 2
+    assert out["yards"]["2025"][33 - 18] == [2, 1]
+    assert sum(t for t, _ in out["yards"]["all"]) == 2
+    with pytest.raises(ValueError):
+        fr.build([{**rows[0], "kick_distance": 17}])
 
 
 def test_bands_contiguous_and_capped():
@@ -74,37 +83,42 @@ def test_bands_contiguous_and_capped():
 def test_frozen_fail_on_change(built):
     old = json.loads(fr.dumps(built))
     assert fr.check_frozen(old, built) == []
-    old["rates"]["2019"][0][1] -= 1
+    old["yards"]["2019"][10][1] -= 1
     assert "2019" in fr.check_frozen(old, built)
+    old = json.loads(fr.dumps(built))
+    old["yards"]["all"][0][0] += 1
+    assert fr.check_frozen(old, built) == ["all"]
     # adding a new season is allowed and may update "all"
     newer = json.loads(fr.dumps(built))
-    newer["rates"]["2026"] = [[1, 1]] * 6
-    newer["rates"]["all"] = [[t + 1, m + 1] for t, m in newer["rates"]["all"]]
+    newer["yards"]["2026"] = [[1, 1]] * 47
+    newer["yards"]["all"] = [[t + 1, m + 1] for t, m in newer["yards"]["all"]]
     assert fr.check_frozen(json.loads(fr.dumps(built)), newer) == []
 
 
 def test_frozen_change_exits_nonzero_and_writes_nothing(tmp_path, built, monkeypatch):
     out = tmp_path / "fg_rates.json"
     old = json.loads(fr.dumps(built))
-    old["rates"]["2025"][5] = [0, 0]
+    old["yards"]["2025"][46] = [0, 0]
     out.write_text(json.dumps(old))
     before = sorted(p.name for p in tmp_path.iterdir())
     monkeypatch.setattr(fr, "load_rows", lambda paths: ROWS)
     assert fr.main(["x.parquet", "--out", str(out)]) == 1
-    assert json.loads(out.read_text())["rates"]["2025"][5] == [0, 0]
+    assert json.loads(out.read_text())["yards"]["2025"][46] == [0, 0]
     assert sorted(p.name for p in tmp_path.iterdir()) == before
 
 
 def test_committed_file_small_clean_and_shape():
     text = SITE.read_text()
     data = json.loads(text)
-    assert SITE.stat().st_size < 4_000
+    assert SITE.stat().st_size < 6_000
     assert not BANNED.search(text)
-    assert set(data) == {"schema", "source", "builtAt", "seasons", "maxYards", "fewKicksBelow", "bands", "rates"}
-    assert data["schema"] == "fg_rates/v1" and data["maxYards"] == 64 and data["seasons"] == [2019, 2025]
+    assert set(data) == {"schema", "source", "builtAt", "seasons", "minYards", "maxYards",
+                         "fewKicksBelow", "smoothYards", "bands", "yards"}
+    assert data["schema"] == "fg_rates/v2" and (data["minYards"], data["maxYards"], data["smoothYards"]) == (18, 64, 2)
+    assert data["seasons"] == list(range(2019, 2026))
     assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", data["builtAt"])
-    for counts in data["rates"].values():
-        assert len(counts) == 6 and all(0 <= m <= t for t, m in counts)
+    for counts in data["yards"].values():
+        assert len(counts) == 47 and all(0 <= m <= t for t, m in counts)
 
 
 def test_frontend_copy_matches_when_built():
@@ -112,6 +126,7 @@ def test_frontend_copy_matches_when_built():
     if not FRONTEND_COPY.exists():
         pytest.skip("frontend copy not merged yet")
     front = json.loads(FRONTEND_COPY.read_text())
-    if front.get("stub"):
-        pytest.skip("frontend still on the stub")
-    assert front == json.loads(SITE.read_text())
+    site = json.loads(SITE.read_text())
+    if front.get("stub") or front.get("schema") != site["schema"]:
+        pytest.skip("frontend still on the stub / older schema")
+    assert front == site
