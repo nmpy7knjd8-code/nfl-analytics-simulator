@@ -16,11 +16,11 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 
 /** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
  * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
- * "/fake-punt", "/coaches" and anything under "/team/", "/coaches/" or "/card/". */
+ * "/fake-punt", "/coaches" and anything under "/team/", "/coaches/", "/card/" or "/rivalry/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
   const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/fake-punt"]);
-  const GAME_PREFIX = ["/team/", "/coaches/", "/card/"];
+  const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
 }
