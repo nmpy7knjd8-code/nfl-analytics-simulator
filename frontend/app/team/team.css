@@ -19,3 +19,14 @@
 .tm-tiles span{font-size:13px;font-weight:700;color:var(--sg-g)}
 .tm-tiles b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
 .tm-note{margin:0;font-size:13px;color:var(--sg-g);line-height:1.35}
+/* F3 toggle: 48px pill pair, selected one filled blue */
+.tm .tm-toggle{display:flex;gap:8px;margin:14px 0 6px}
+.tm .tm-pill{flex:1;min-height:48px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px}
+.tm .tm-pill.is-on{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
+.tm .tm-pill:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.tm .tm-def{margin:0 0 10px;font-size:14px;color:var(--sg-g)}
+.tm .tm-stats{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px}
+.tm .tm-stats li{border:1.5px solid #000;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.tm .tm-stats span{font-weight:700;font-size:15px}
+.tm .tm-stats b{font-size:32px;color:var(--sg-b)}
+.tm .tm-stats small{font-size:14px;color:var(--sg-g)}

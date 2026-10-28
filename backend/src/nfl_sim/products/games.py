@@ -17,7 +17,7 @@ import sys
 import pandas as pd
 
 from nfl_sim.models.past_play_wp import MODEL_INPUT_COLUMNS, NFLVERSE_WP_COLUMNS, past_play_home_wp
-from nfl_sim.models.wp_series import build_wp_series
+from nfl_sim.models.wp_series import _FINAL_HOME_WP as FINAL_HOME_WP, build_wp_series, game_result
 from nfl_sim.products import fourth_downs
 from nfl_sim.products.game_compact import compact
 from nfl_sim.play_names import ID_COLS, TEXT_COLUMNS, attach_names, load_players, load_roster
@@ -84,6 +84,21 @@ def _str(v):
     return v if isinstance(v, str) else None
 
 
+def _settle_end_game(plays: pd.DataFrame, game: dict) -> pd.DataFrame:
+    """END GAME marker rows carry the final result (1 home win, 0 loss, 0.5 tie), not a model
+    fallback: otherwise the last real play shows a fake win-chance swing (QA 2026-10-28 Q1)."""
+    result = game_result(game.get("home_score"), game.get("away_score"))
+    if result is None or "home_wp" not in plays.columns:
+        return plays
+    end = plays["desc"].astype(str).str.strip().str.upper().eq("END GAME")
+    if not end.any():
+        return plays
+    plays = plays.copy()
+    plays["home_wp"] = plays["home_wp"].astype(float)
+    plays.loc[end, "home_wp"] = FINAL_HOME_WP[result]
+    return plays
+
+
 def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict,
              players: dict | None = None, roster: dict | None = None) -> dict:
     # nflverse row order is play order; play_id is NOT monotone (e.g. late timeouts).
@@ -91,6 +106,7 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
         wp = past_play_home_wp(plays)
         plays = plays.assign(home_wp=wp["home_wp"], wp_fallback=wp["wp_fallback"])
     plays = plays[plays["desc"].notna()].reset_index(drop=True)
+    plays = _settle_end_game(plays, game)
     recs = plays.to_dict("records")
     series = build_wp_series(
         {"game_id": game["id"], "home_team_id": game["home"], "away_team_id": game["away"],
