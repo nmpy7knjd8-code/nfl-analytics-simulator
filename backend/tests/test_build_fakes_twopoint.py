@@ -69,7 +69,23 @@ def test_twopoint_rates_and_ot():
     assert len(out["tries"]) == 3 and all(t[out["cols"].index("qtr")] <= 4 for t in out["tries"])
     assert out["per_choice_win_chance"] is None
     assert bt.check_frozen(out, bt.build(rows)) == []
-    assert bt.check_frozen(out, bt.build([trow(vegas_wp=0.31)] + rows[1:]))
+    assert bt.check_frozen(out, bt.build([trow(two_point_conv_result="failure")] + rows[1:]))
+    assert "wp" not in out["cols"]
+
+
+def test_kick_filter_and_frozen():
+    xp = lambda **k: trow(**{"two_point_attempt": 0, "play_type": "extra_point", "extra_point_result": "good", **k})  # noqa: E731
+    rows = [xp(time="05:00", score_differential=8), xp(time="05:01", score_differential=0),
+            xp(time="01:00", score_differential=9), xp(time="00:10", score_differential=-8, extra_point_result="failed"),
+            xp(qtr=3, time="01:00", score_differential=0), xp(qtr=5, time="01:00", score_differential=0)]
+    out = bt.build(rows)
+    k = [dict(zip(out["cols"], r)) for r in out["kicks"]]
+    assert [(r["clock"], r["diff"], r["made"], r["kind"]) for r in k] == [("05:00", 8, 1, "extra_point"),
+                                                                          ("00:10", -8, 0, "extra_point")]
+    assert bt.check_frozen(out, bt.build(rows)) == []
+    assert bt.check_frozen(out, bt.build(rows[1:]))  # a published kick may not disappear
+    legacy = {**out, "cols": out["cols"] + ["wp"], "kicks": [r + [0.5] for r in out["kicks"]]}
+    assert bt.check_frozen(legacy, out) == []  # dropping wp on purpose is allowed
 
 
 def test_committed_files():
@@ -82,9 +98,14 @@ def test_committed_files():
     assert t["two_point"]["run"]["made"] == 145 and t["two_point"]["pass"]["made"] == 301
     w = t["per_choice_win_chance"]
     assert w["cols"] == ["go", "kick"] and set(w["by_try"]) == {bt.wc_key(dict(zip(t["cols"], r))) for r in t["tries"]}
-    assert w["go_rate"] == t["two_point"]["rate"] and 0.9 < w["kick_rate"] < 0.97
+    assert w["go_rate"] == t["two_point"]["rate"] == 0.475 and 0.9 < w["kick_rate"] < 0.97
     assert all(v is None or (len(v) == 2 and all(0 <= x <= 1 for x in v)) for v in w["by_try"].values())
+    assert sum(v is None for v in w["by_try"].values()) == 146 and len(w["by_try"]) == 957
     qi = t["cols"].index("qtr")
+    assert t["schema_version"] == 2 and "wp" not in t["cols"] and "win_chance" not in t
+    k = [dict(zip(t["cols"], r)) for r in t["kicks"]]
+    assert len(k) == 439 and sum(r["made"] for r in k) == 412
+    assert all(r["qtr"] == 4 and abs(r["diff"]) <= 8 and r["kind"] == "extra_point" for r in k)
     assert len(t["tries"]) == 957 and all(r[qi] <= 4 for r in t["tries"])
     assert all(p["wp"] is None or p["qtr"] <= 4 for p in f["plays"])
     d = f["real_punts"]
@@ -93,7 +114,7 @@ def test_committed_files():
     assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 140_000
+    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 150_000
 
 
 def test_decoys_stratified_deterministic_and_frozen():
@@ -112,12 +133,12 @@ def test_decoys_stratified_deterministic_and_frozen():
 
 def _try(**k):
     base = {"season": 2024, "week": 1, "season_type": "REG", "game_id": "2024_01_KC_BAL", "team": "KC", "opp": "BAL",
-            "qtr": 4, "clock": "05:00", "diff": -2, "kind": "pass", "made": 1, "wp": 0.3}
+            "qtr": 4, "clock": "05:00", "diff": -2, "kind": "pass", "made": 1}
     return [{**base, **k}[c] for c in base]
 
 
 def test_fill_win_chance_expected_values_and_ot_null():
-    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made", "wp"]
+    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
     doc = {"cols": cols, "tries": [_try(), _try(qtr=5, clock="08:00"), _try(qtr=2, clock="03:00"),
                                    _try(clock="00:00", diff=-1)]}
     seen = []
@@ -142,7 +163,7 @@ def test_fill_win_chance_expected_values_and_ot_null():
 
 
 def test_late_q4_null_and_end_of_regulation():
-    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made", "wp"]
+    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
     late = [_try(clock="00:02", diff=1), _try(clock="00:05", diff=0), _try(clock="02:00", diff=-2)]  # up 1 TD at 0:02, tied
     ends = [_try(clock="00:00", diff=d, game_id=f"2024_0{i}_KC_BAL") for i, d in enumerate((1, 0, -1), 1)]
     doc = {"cols": cols, "tries": late + ends + [_try(clock="02:01")]}

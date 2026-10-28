@@ -5,9 +5,11 @@ Source: nflverse play-by-play 2019-2025 (REG + POST). Shown values are real nflv
   * two-point tries: two_point_attempt == 1 -> 960 tries, 456 success (47.5%); run 266, pass 681,
     13 "no_play" rows that still carry a result (counted in the overall rate only);
   * extra points: play_type == "extra_point", extra_point_result == "good" -> 9,119 tries.
-Per-try rows ("situations") are regulation only (qtr 5 dropped: 3 tries) and carry nflverse vegas_wp at
-the try (4 dp). Per-choice win chance (go for 2 vs kick the PAT) is filled by ``--fill-win-chance`` from
-the 4th-down engine's WP model (see ``fill_win_chance``); overtime tries never get one (null).
+Per-try rows ("tries") are regulation only (qtr 5 dropped: 3 tries). "kicks" are real extra points in
+the same row shape, chosen by a full filter (no sampling): Q4, 5:00 or less left, margin before the try
+within 8. No win chance in either list (B1 is a no-win-chance feature; wp dropped in schema 2). Concept 2 (behind CHECKER_ENABLED=false): per-choice
+win chance (go for 2 vs kick the PAT) for each try is filled by ``--fill-win-chance`` from the 4th-down
+engine (see ``fill_win_chance``); overtime and late-Q4 (0:01-2:00) tries stay null.
 No EPA, xpass, play ids or betting fields. Rows are arrays under "cols" to keep the file small.
 
 Frozen: every published try must stay identical; rates may change only when a season is added.
@@ -31,7 +33,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/twopoint.json"
 COLUMNS = ["game_id", "season", "week", "season_type", "posteam", "defteam", "qtr", "time", "play_type",
            "two_point_attempt", "two_point_conv_result", "extra_point_result", "score_differential", "vegas_wp"]
-COLS = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made", "wp"]
+COLS = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
+KICK_MAX_DIFF = 8     # margin before the try within one score
+KICK_MAX_CLOCK = 300  # seconds left in Q4 (5:00 or less)
 SUMMARY = ("two_point", "extra_point")
 
 
@@ -52,20 +56,20 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
     xps = [r for r in rows if r.get("play_type") == "extra_point"]
     ok = lambda r: r.get("two_point_conv_result") == "success"  # noqa: E731
     by = lambda k: [r for r in tries if r.get("play_type") == k]  # noqa: E731
-    situ = []
-    for r in tries:
-        if int(r["qtr"]) > 4:
-            continue  # no overtime situations / win chance
-        situ.append([int(r["season"]), int(r["week"]), r["season_type"], r["game_id"], r["posteam"], r["defteam"],
-                     int(r["qtr"]), r["time"], int(r["score_differential"]), r["play_type"], int(ok(r)),
-                     round(_num(r["vegas_wp"]), 4) if _num(r.get("vegas_wp")) is not None else None])
-    situ.sort(key=lambda s: (s[0], s[1], s[3], s[6], [-int(x) for x in s[7].split(":")]))
+    def row(r, kind, made):
+        return [int(r["season"]), int(r["week"]), r["season_type"], r["game_id"], r["posteam"], r["defteam"],
+                int(r["qtr"]), r["time"], int(r["score_differential"]), kind, int(made)]
+
+    order = lambda s: (s[0], s[1], s[3], s[6], [-int(x) for x in s[7].split(":")])  # noqa: E731
+    situ = sorted((row(r, r["play_type"], ok(r)) for r in tries if int(r["qtr"]) <= 4), key=order)
+    kicks = sorted((row(r, "extra_point", r.get("extra_point_result") == "good") for r in xps if is_close_late_kick(r)),
+                   key=order)
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "source": "nflverse play-by-play via mining/build_twopoint.py",
         "season_list": sorted({int(r["season"]) for r in rows}),
-        "win_chance": "nflverse win chance (adjusted for pregame expectations) for the scoring team at the try; "
-                      "regulation only",
+        "kick_rule": f"Q4, {KICK_MAX_CLOCK // 60}:00 or less left, margin before the try within "
+                     f"{KICK_MAX_DIFF} points (every such nflverse extra point, no sampling)",
         "two_point": {**_rate(sum(map(ok, tries)), len(tries)),
                       "run": _rate(sum(map(ok, by("run"))), len(by("run"))),
                       "pass": _rate(sum(map(ok, by("pass"))), len(by("pass")))},
@@ -73,6 +77,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "per_choice_win_chance": None,
         "cols": COLS,
         "tries": situ,
+        "kicks": kicks,
     }
 
 
@@ -154,12 +159,19 @@ def engine_win_chance(doc: dict[str, Any]) -> dict[str, Any]:
     return fill_win_chance(doc, az._wp, p_go, p_kick, meta)
 
 
+def is_close_late_kick(r: dict[str, Any]) -> bool:
+    if _num(r.get("qtr")) != 4 or _num(r.get("score_differential")) is None:
+        return False
+    m, sec = (int(x) for x in r["time"].split(":"))
+    return 60 * m + sec <= KICK_MAX_CLOCK and abs(_num(r["score_differential"])) <= KICK_MAX_DIFF
+
+
 def key(r: dict[str, Any]) -> tuple:
     return (r["game_id"], r["qtr"], r["clock"], r["team"])
 
 
 def check_frozen(old, new):
-    return _check(old, new, key, "tries", SUMMARY)
+    return _check(old, new, key, "tries", SUMMARY) + _check(old, new, key, "kicks")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -179,9 +191,10 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(a.out)
     if a.fill_win_chance:
         doc = json.loads(out.read_text())
-        before = json.loads(json.dumps(doc["tries"]))
+        before = json.loads(json.dumps({k: v for k, v in doc.items() if k != "per_choice_win_chance"}))
         doc["per_choice_win_chance"] = engine_win_chance(doc)
-        assert doc["tries"] == before and not check_frozen(json.loads(out.read_text()), doc)
+        # only per_choice_win_chance may change (tries, kicks, cols and summaries are byte-identical)
+        assert {k: v for k, v in doc.items() if k != "per_choice_win_chance"} == before
         out.write_text(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
         vals = doc["per_choice_win_chance"]["by_try"].values()
         print(f"filled {sum(v is not None for v in vals)}, null {sum(v is None for v in vals)}")

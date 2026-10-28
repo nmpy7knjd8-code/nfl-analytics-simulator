@@ -1811,3 +1811,15 @@ body { font-variant-numeric: tabular-nums; }
 /* —— D5 outcome histogram —— */
 .oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
 .oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
+/* —— D6 heat map (coaches' real go-rates) —— */
+.hm-card{padding:8px 6px}
+.hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(0,1fr));gap:2px}
+.hm-row{display:contents}
+.hm-corner{font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
+.hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
+.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap}
+.hm-cell{aspect-ratio:1;min-height:28px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
+.hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
+.hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
+.hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
+.oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
