@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SiteMenuLinks } from "./SiteMenu";
+import { SiteMenu } from "./SiteMenu";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
@@ -32,18 +32,12 @@ type Load = { state: "loading" } | { state: "error" } | { state: "ready"; outcom
 export type Pick = { pick: QuizChoice; scored: ScoredCall };
 
 export function Header({ right }: { right: string }) {
-  const [open, setOpen] = useState(false);
   return (
     <header className="sg-top">
       <Link href="/" className="sg-brand">Fourth <span>&amp;</span> Daily</Link>
       <div className="sg-top-r">
         <span className="sg-count">{right}</span>
-        <button type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>☰</button>
-        {open ? (
-          <nav className="sg-menu-list" aria-label="Menu">
-            <SiteMenuLinks />
-          </nav>
-        ) : null}
+        <SiteMenu />
       </div>
     </header>
   );
