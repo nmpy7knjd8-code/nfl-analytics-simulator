@@ -1,16 +1,25 @@
 """Build data/site/swings.json for C2 (Swing of the Week) and C3 (Biggest regulation swings).
 
-Source: nflverse play-by-play 2019-2025, Vegas-adjusted win chance (vegas_wp / vegas_wpa),
+Source: nflverse play-by-play 2019-2025, Vegas-adjusted win chance (vegas_wp / vegas_home_wp),
 values copied from nflverse (rounded to 4 decimals only), never recomputed.
 
 Shared swing filter (build-plan C2/C3, creative-builds.md Group C):
   * regulation only (qtr 1-4): no overtime win chance anywhere;
   * play_type in run, pass, field_goal, punt (drops kickoffs, non-play rows, timeouts);
-  * no kneels or spikes; rows without nflverse vegas_wp/vegas_wpa are skipped (no fallback model);
+  * no kneels or spikes; rows without nflverse vegas_wp are skipped (no fallback model);
   * field goals over 64 yards are skipped (house FG cap);
   * 2019_03_CIN_BUF: its bad "End of half" row and the play right before it (a Dalton pass
     carrying a fake +86.6 swing measured against the bad row) are dropped; the rest of the
     game's regulation plays count (the game has no overtime).
+
+wp_after (QA Q3): the offense's chance to win on the next nflverse row of the same game that has a
+game clock, a later play_id and win chance (END GAME rows excluded), or the final result
+(1 / 0 / 0.5 from the offense's side) when there is none. swing = wp_after - wp_before. This replaces
+nflverse vegas_wpa, which is measured against the very next row even when that row is an
+out-of-order, clock-less note (2019 Wk1 PIT at NE) or a stale value (2024 Wk19 WAS at TB).
+
+desc (QA Q4): the games-v4 display_text for the play (read-only; frontend/public/data/games), so
+reversed plays read as what counted, not the raw nflverse text.
 
 Fan-facing fields carry no EPA, xpass, play ids or betting fields. "swing" is the change in the
 offense's chance to win (0-1 scale; the UI shows x100 as "chance to win swung N points").
@@ -18,7 +27,12 @@ offense's chance to win (0-1 scale; the UI shows x100 as "chance to win swung N 
 Frozen weeks: a week already in the committed swings.json must not change; the build exits 1
 if it would (new data only adds weeks).
 
+Frozen-week overrides: a reviewed JSON file (mining/frozen_overrides/*.json) lists weeks allowed to
+change, with a reason; pass it with --allow-changes. Any changed week not listed still fails, and a
+listed week that does not change fails too (the list must be exact).
+
 Usage: python mining/build_swings.py PBP_PARQUET [PBP_PARQUET ...] [--out data/site/swings.json]
+       [--games frontend/public/data/games] [--allow-changes mining/frozen_overrides/<file>.json]
 """
 from __future__ import annotations
 
@@ -39,7 +53,8 @@ TOP_N = 25
 ROUNDS = ("WC", "DIV", "CONF", "SB")
 COLUMNS = ["game_id", "season", "week", "season_type", "home_team", "away_team", "posteam", "qtr", "time",
            "down", "ydstogo", "yardline_100", "play_type", "desc", "qb_kneel", "qb_spike", "kick_distance",
-           "vegas_wp", "vegas_wpa", "play_id"]
+           "vegas_wp", "vegas_wpa", "vegas_home_wp", "home_score", "away_score", "play_id"]
+GAMES_DIR = ROOT / "frontend/public/data/games"
 
 
 class FrozenWeekChanged(Exception):
@@ -64,7 +79,7 @@ def is_swing_candidate(r: dict[str, Any]) -> bool:
         return False
     if r.get("play_type") == "field_goal" and (_num(r.get("kick_distance")) or 0) > MAX_FG:
         return False
-    return _num(r.get("vegas_wp")) is not None and _num(r.get("vegas_wpa")) is not None and bool(r.get("posteam"))
+    return _num(r.get("vegas_wp")) is not None and _num(r.get("_wp_after")) is not None and bool(r.get("posteam"))
 
 
 def mark_bad_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -78,6 +93,31 @@ def mark_bad_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def attach_after(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Set _wp_after (offense's side) per QA Q3: next later-play_id row with a clock and win chance, else final."""
+    by_game: dict[str, list[int]] = {}
+    for i, r in enumerate(rows):
+        by_game.setdefault(r["game_id"], []).append(i)
+    for idx in by_game.values():
+        for k, i in enumerate(idx):
+            r = rows[i]
+            if not r.get("posteam") or _num(r.get("play_id")) is None:
+                continue
+            pid, home_post = float(r["play_id"]), None
+            for j in idx[k + 1:]:
+                n = rows[j]
+                if (n.get("time") and _num(n.get("play_id")) is not None and float(n["play_id"]) > pid
+                        and _num(n.get("vegas_home_wp")) is not None
+                        and not (n.get("desc") or "").upper().startswith("END GAME")):
+                    home_post = float(n["vegas_home_wp"])
+                    break
+            if home_post is None:
+                hs, as_ = float(r["home_score"]), float(r["away_score"])
+                home_post = 1.0 if hs > as_ else 0.0 if hs < as_ else 0.5
+            r["_wp_after"] = home_post if r["posteam"] == r["home_team"] else 1.0 - home_post
+    return rows
+
+
 def week_key(r: dict[str, Any]) -> str:
     return f"{int(r['season'])}-w{int(r['week']):02d}"
 
@@ -87,7 +127,7 @@ def _round4(v: float) -> float:
 
 
 def swing_record(r: dict[str, Any], post_rounds: dict[tuple[int, int], str]) -> dict[str, Any]:
-    wp, wpa = float(r["vegas_wp"]), float(r["vegas_wpa"])
+    wp, after = float(r["vegas_wp"]), float(r["_wp_after"])
     season, week = int(r["season"]), int(r["week"])
     return {
         "season": season, "week": week, "round": post_rounds.get((season, week)),
@@ -96,14 +136,14 @@ def swing_record(r: dict[str, Any], post_rounds: dict[tuple[int, int], str]) -> 
         "down": None if _num(r.get("down")) is None else int(r["down"]),
         "togo": None if _num(r.get("ydstogo")) is None else int(r["ydstogo"]),
         "yardline_100": None if _num(r.get("yardline_100")) is None else int(r["yardline_100"]),
-        "play_type": r["play_type"], "desc": r["desc"],
-        "wp_before": _round4(wp), "wp_after": _round4(min(1.0, max(0.0, wp + wpa))), "swing": _round4(wpa),
+        "play_type": r["play_type"], "desc": r["_text"],
+        "wp_before": _round4(wp), "wp_after": _round4(after), "swing": _round4(after - wp),
     }
 
 
 def _rank_key(r: dict[str, Any]) -> tuple:
     # biggest |swing| first; deterministic tie-break on game and nflverse row order (play_id not exported)
-    return (-abs(float(r["vegas_wpa"])), r["game_id"], float(r.get("play_id") or 0))
+    return (-abs(float(r["_wp_after"]) - float(r["vegas_wp"])), r["game_id"], float(r.get("play_id") or 0))
 
 
 def post_round_map(rows: Iterable[dict[str, Any]]) -> dict[tuple[int, int], str]:
@@ -114,13 +154,32 @@ def post_round_map(rows: Iterable[dict[str, Any]]) -> dict[tuple[int, int], str]
     return {(s, w): ROUNDS[i] for s, ws in weeks.items() for i, w in enumerate(sorted(ws)) if i < len(ROUNDS)}
 
 
-def build(rows: list[dict[str, Any]], top_n: int = TOP_N) -> dict[str, Any]:
-    rows = mark_bad_rows(rows)
+def display_texts(games_dir: Path):
+    """Lazy (game_id, play_id) -> games-v4 display_text lookup; files are only read."""
+    cache: dict[str, dict[int, str]] = {}
+
+    def get(game_id: str, play_id: Any) -> str:
+        if game_id not in cache:
+            c = json.loads((games_dir / f"{game_id}.json").read_text())["cols"]
+            cache[game_id] = {int(p): t for p, t in zip(c["play_id"], c["display_text"])}
+        return cache[game_id][int(float(play_id))]
+
+    return get
+
+
+def build(rows: list[dict[str, Any]], text_of, top_n: int = TOP_N) -> dict[str, Any]:
+    """text_of(game_id, play_id) -> fan display text (games-v4)."""
+    rows = attach_after(mark_bad_rows(rows))
     rounds = post_round_map(rows)
     cands = sorted((r for r in rows if is_swing_candidate(r)), key=_rank_key)
     weeks: dict[str, dict[str, Any]] = {}
-    for r in cands:  # already ranked: first seen per week is that week's biggest swing
-        weeks.setdefault(week_key(r), swing_record(r, rounds))
+    picked = {}
+    for r in cands:  # already ranked
+        picked.setdefault(week_key(r), r)
+    for r in [*picked.values(), *cands[:top_n]]:
+        r["_text"] = text_of(r["game_id"], r["play_id"])
+    for k, r in picked.items():
+        weeks[k] = swing_record(r, rounds)
     seasons = sorted({int(r["season"]) for r in rows})
     return {
         "v": SCHEMA_VERSION,
@@ -132,21 +191,35 @@ def build(rows: list[dict[str, Any]], top_n: int = TOP_N) -> dict[str, Any]:
     }
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    """Weeks already published must be identical in the new build."""
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Iterable[str] = ()) -> list[str]:
+    """Problems with published weeks: changed but not allowed, or allowed but unchanged."""
     if not old:
         return []
-    return [k for k, v in old.get("weeks", {}).items() if new["weeks"].get(k) != v]
+    changed = {k for k, v in old.get("weeks", {}).items() if new["weeks"].get(k) != v}
+    allowed = set(allowed)
+    return ([f"{k} changed (not in override)" for k in sorted(changed - allowed)]
+            + [f"{k} in override but unchanged" for k in sorted(allowed - changed)])
+
+
+def load_override(path: str | None) -> set[str]:
+    if not path:
+        return set()
+    o = json.loads(Path(path).read_text())
+    if not o.get("reason") or not o.get("reviewed_in") or not isinstance(o.get("weeks"), list):
+        raise SystemExit(f"override {path} needs reason, reviewed_in and a weeks list")
+    return set(o["weeks"])
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    frames = []
-    for p in paths:
-        frames.append(pd.read_parquet(p, columns=COLUMNS))
-    df = pd.concat(frames, ignore_index=True)
-    return json.loads(df.to_json(orient="records"))
+    rows: list[dict[str, Any]] = []
+    for p in paths:  # one season at a time keeps memory low
+        df = pd.read_parquet(p, columns=COLUMNS)
+        df = df.astype(object).where(df.notna(), None)
+        rows.extend(df.to_dict("records"))
+        del df
+    return rows
 
 
 def dumps(obj: dict[str, Any]) -> str:
@@ -157,13 +230,15 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("pbp", nargs="+")
     ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--games", default=str(GAMES_DIR))
+    ap.add_argument("--allow-changes", default=None)
     a = ap.parse_args(argv)
     out = Path(a.out)
-    new = build(load_rows(a.pbp))
+    new = build(load_rows(a.pbp), display_texts(Path(a.games)))
     old = json.loads(out.read_text()) if out.exists() else None
-    changed = check_frozen(old, new)
-    if changed:
-        print(f"FAIL: published weeks would change: {', '.join(changed)}", file=sys.stderr)
+    problems = check_frozen(old, new, load_override(a.allow_changes))
+    if problems:
+        print("FAIL: published weeks: " + "; ".join(problems), file=sys.stderr)
         return 1
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(dumps(new))
