@@ -139,3 +139,26 @@ def test_fill_win_chance_expected_values_and_ot_null():
     assert r0["posteam"] == "H" and r0["yardline_100"] == 75 and r0["game_seconds_remaining"] == 300
     assert out["go_rate"] == 0.5 and out["kick_rate"] == 0.9 and out["cols"] == ["go", "kick"]
     assert doc["tries"][0] == _try()  # tries untouched
+
+
+def test_late_q4_null_and_end_of_regulation():
+    cols = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made", "wp"]
+    late = [_try(clock="00:02", diff=1), _try(clock="00:05", diff=0), _try(clock="02:00", diff=-2)]  # up 1 TD at 0:02, tied
+    ends = [_try(clock="00:00", diff=d, game_id=f"2024_0{i}_KC_BAL") for i, d in enumerate((1, 0, -1), 1)]
+    doc = {"cols": cols, "tries": late + ends + [_try(clock="02:01")]}
+    by = bt.fill_win_chance(doc, lambda r: 0.4, 0.475, 0.93, {"method": "t"})
+    v = [by["by_try"][bt.wc_key(dict(zip(cols, r)))] for r in doc["tries"]]
+    assert v[:3] == [None, None, None] and "2:00" in by["null_reason"]
+    assert v[3][1] >= 0.95  # up 1 at the end: kick wins
+    assert v[4] == [round(0.475 + 0.525 * 0.5, 4), round(0.93 + 0.07 * 0.5, 4)]  # tied: a miss -> OT 0.5
+    assert v[5][1] == round(0.93 * 0.5, 4) and 0.4 < v[5][1] < 0.5  # down 1: PAT ties (coin-flip OT)
+    assert v[6] is not None
+
+
+def test_committed_late_q4_is_null():
+    t = json.loads(TWO.read_text())
+    by = t["per_choice_win_chance"]["by_try"]
+    for r in t["tries"]:
+        x = dict(zip(t["cols"], r))
+        s = bt._clock_secs(x["clock"])
+        assert (by[bt.wc_key(x)] is None) == (x["qtr"] == 4 and 0 < s <= 120)

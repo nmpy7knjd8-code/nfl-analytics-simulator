@@ -79,6 +79,10 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 PAT_KICK_DISTANCE = 33  # PAT snapped from the 15: 15 + 18 (engine FG_SNAP_YARDS)
 KICKOFF_TOUCHBACK_YARDLINE = 75  # engine's post-score state: opponent ball at its own 25
 WC_COLS = ["go", "kick"]
+LATE_SECS = 120
+LATE_REASON = ("Q4 tries with 0:01-2:00 left are null: the engine's win-chance model misreads the final "
+               "minutes (e.g. up 1, TD at 0:02, kick read 0.67 vs ~0.97) and its drive-outcome blending only "
+               "covers drives starting inside the 40, not a kickoff at the 25")
 
 
 def _clock_secs(clock: str) -> int:
@@ -126,10 +130,14 @@ def fill_win_chance(doc: dict[str, Any], wp: Callable[[dict[str, Any]], float], 
         if int(t["qtr"]) > 4:
             out[wc_key(t)] = None
             continue
+        if int(t["qtr"]) == 4 and 0 < _clock_secs(t["clock"]) <= LATE_SECS:
+            out[wc_key(t)] = None  # late Q4: engine WP unreliable (see LATE_REASON)
+            continue
         miss = wc(t, 0)
         go = p_go * wc(t, 2) + (1 - p_go) * miss
         kick = p_kick * wc(t, 1) + (1 - p_kick) * miss
         out[wc_key(t)] = [round(go, 4), round(kick, 4)]
+    meta = {**meta, "null_reason": "overtime tries have no win chance; " + LATE_REASON}
     return {**meta, "go_rate": round(p_go, 4), "kick_rate": round(p_kick, 4), "cols": WC_COLS, "by_try": out}
 
 
