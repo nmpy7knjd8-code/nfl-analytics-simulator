@@ -1,0 +1,3014 @@
+{
+ "generated_from": "origin/main 678cb15",
+ "days": {
+  "2026-10-26": [
+   {
+    "id": "2022_13_DEN_BAL-2272",
+    "recommendation": "go",
+    "values": {
+     "go": 0.588102,
+     "punt": 0.567079
+    }
+   },
+   {
+    "id": "2023_17_MIA_BAL-1579",
+    "recommendation": "go",
+    "values": {
+     "go": 0.283885,
+     "punt": 0.251221,
+     "fg": 0.238393
+    }
+   },
+   {
+    "id": "2022_12_NE_MIN-625",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.509156,
+     "punt": 0.553182
+    }
+   },
+   {
+    "id": "2022_06_SF_ATL-3503",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.998227,
+     "punt": 0.997994
+    }
+   },
+   {
+    "id": "2023_06_DET_TB-2394",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.225789,
+     "punt": 0.186544,
+     "fg": 0.25451
+    }
+   }
+  ],
+  "2026-10-27": [
+   {
+    "id": "2022_18_NYG_PHI-3310",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0279705,
+     "punt": 0.0166536
+    }
+   },
+   {
+    "id": "2022_03_BAL_NE-819",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.406666,
+     "punt": 0.346591,
+     "fg": 0.406086
+    }
+   },
+   {
+    "id": "2023_01_DET_KC-1986",
+    "recommendation": "go",
+    "values": {
+     "go": 0.179335,
+     "punt": 0.150314
+    }
+   },
+   {
+    "id": "2022_03_NO_CAR-2560",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.918667,
+     "punt": 0.907607,
+     "fg": 0.919462
+    }
+   },
+   {
+    "id": "2023_09_TB_HOU-3638",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.537563,
+     "punt": 0.448106,
+     "fg": 0.618018
+    }
+   }
+  ],
+  "2026-10-28": [
+   {
+    "id": "2023_14_CAR_NO-2311",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.824249,
+     "punt": 0.850651
+    }
+   },
+   {
+    "id": "2023_05_HOU_ATL-3797",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.718016,
+     "punt": 0.662556,
+     "fg": 0.804703
+    }
+   },
+   {
+    "id": "2022_02_LAC_KC-504",
+    "recommendation": "go",
+    "values": {
+     "go": 0.675683,
+     "punt": 0.58361,
+     "fg": 0.645164
+    }
+   },
+   {
+    "id": "2023_06_NE_LV-503",
+    "recommendation": "go",
+    "values": {
+     "go": 0.522846,
+     "punt": 0.424888,
+     "fg": 0.489675
+    }
+   },
+   {
+    "id": "2022_04_CHI_NYG-2900",
+    "recommendation": "go",
+    "values": {
+     "go": 0.227126,
+     "punt": 0.195941
+    }
+   }
+  ],
+  "2026-10-29": [
+   {
+    "id": "2023_06_CAR_MIA-214",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.5312,
+     "punt": 0.558755
+    }
+   },
+   {
+    "id": "2023_15_BAL_JAX-214",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.39473,
+     "punt": 0.422867
+    }
+   },
+   {
+    "id": "2023_16_LV_KC-2119",
+    "recommendation": "go",
+    "values": {
+     "go": 0.151071,
+     "punt": 0.0921098,
+     "fg": 0.126443
+    }
+   },
+   {
+    "id": "2023_02_CHI_TB-1243",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.405153,
+     "punt": 0.429477
+    }
+   },
+   {
+    "id": "2022_07_IND_TEN-2275",
+    "recommendation": "go",
+    "values": {
+     "go": 0.107015,
+     "punt": 0.0696123,
+     "fg": 0.0858995
+    }
+   }
+  ],
+  "2026-10-30": [
+   {
+    "id": "2023_14_TB_ATL-664",
+    "recommendation": "go",
+    "values": {
+     "go": 0.604657,
+     "punt": 0.470999,
+     "fg": 0.547512
+    }
+   },
+   {
+    "id": "2023_02_LV_BUF-1340",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.214287,
+     "punt": 0.203171,
+     "fg": 0.238472
+    }
+   },
+   {
+    "id": "2022_07_PIT_MIA-1961",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.465467,
+     "punt": 0.445057,
+     "fg": 0.501706
+    }
+   },
+   {
+    "id": "2023_12_LA_ARI-1608",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.621604,
+     "punt": 0.620783,
+     "fg": 0.659903
+    }
+   },
+   {
+    "id": "2022_12_HOU_MIA-119",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.365969,
+     "punt": 0.40266
+    }
+   }
+  ],
+  "2026-10-31": [
+   {
+    "id": "2023_11_PIT_CLE-3629",
+    "recommendation": "go",
+    "values": {
+     "go": 0.416876,
+     "punt": 0.388279
+    }
+   },
+   {
+    "id": "2022_17_SF_LV-1345",
+    "recommendation": "go",
+    "values": {
+     "go": 0.398449,
+     "punt": 0.249773,
+     "fg": 0.320437
+    }
+   },
+   {
+    "id": "2023_08_NYJ_NYG-3323",
+    "recommendation": "go",
+    "values": {
+     "go": 0.626994,
+     "punt": 0.604712
+    }
+   },
+   {
+    "id": "2022_03_PIT_CLE-3242",
+    "recommendation": "go",
+    "values": {
+     "go": 0.793897,
+     "punt": 0.579142,
+     "fg": 0.733315
+    }
+   },
+   {
+    "id": "2023_12_CHI_MIN-2756",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.653809,
+     "punt": 0.628341,
+     "fg": 0.671736
+    }
+   }
+  ],
+  "2026-11-01": [
+   {
+    "id": "2023_16_DAL_MIA-349",
+    "recommendation": "go",
+    "values": {
+     "go": 0.468737,
+     "punt": 0.408211,
+     "fg": 0.435585
+    }
+   },
+   {
+    "id": "2023_05_CAR_DET-1586",
+    "recommendation": "go",
+    "values": {
+     "go": 0.835529,
+     "punt": 0.781097,
+     "fg": 0.807074
+    }
+   },
+   {
+    "id": "2023_16_IND_ATL-3388",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0549484,
+     "punt": 0.0339363
+    }
+   },
+   {
+    "id": "2022_18_NYJ_MIA-3177",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.39732,
+     "punt": 0.399246
+    }
+   },
+   {
+    "id": "2022_06_WAS_CHI-801",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.50455,
+     "punt": 0.536452
+    }
+   }
+  ],
+  "2026-11-02": [
+   {
+    "id": "2023_10_ATL_ARI-2825",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.463771,
+     "punt": 0.412734,
+     "fg": 0.516707
+    }
+   },
+   {
+    "id": "2023_04_LA_IND-3746",
+    "recommendation": "go",
+    "values": {
+     "go": 0.103329,
+     "punt": 0.0314325,
+     "fg": 0.0785456
+    }
+   },
+   {
+    "id": "2023_08_NO_IND-2445",
+    "recommendation": "go",
+    "values": {
+     "go": 0.524877,
+     "punt": 0.500488
+    }
+   },
+   {
+    "id": "2022_03_DET_MIN-2682",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.321523,
+     "punt": 0.318205,
+     "fg": 0.352218
+    }
+   },
+   {
+    "id": "2022_06_TB_PIT-381",
+    "recommendation": "go",
+    "values": {
+     "go": 0.68353,
+     "punt": 0.58296,
+     "fg": 0.642378
+    }
+   }
+  ],
+  "2026-11-03": [
+   {
+    "id": "2023_16_DET_MIN-3014",
+    "recommendation": "go",
+    "values": {
+     "go": 0.390923,
+     "punt": 0.330732
+    }
+   },
+   {
+    "id": "2023_11_LV_MIA-1423",
+    "recommendation": "go",
+    "values": {
+     "go": 0.623831,
+     "punt": 0.474585,
+     "fg": 0.554598
+    }
+   },
+   {
+    "id": "2022_11_KC_LAC-2538",
+    "recommendation": "go",
+    "values": {
+     "go": 0.297556,
+     "punt": 0.180386,
+     "fg": 0.256843
+    }
+   },
+   {
+    "id": "2023_09_DAL_PHI-744",
+    "recommendation": "go",
+    "values": {
+     "go": 0.281573,
+     "punt": 0.230341,
+     "fg": 0.252763
+    }
+   },
+   {
+    "id": "2023_12_TB_IND-3850",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0862237,
+     "punt": 0.0213955,
+     "fg": 0.0546184
+    }
+   }
+  ],
+  "2026-11-04": [
+   {
+    "id": "2023_02_SEA_DET-2895",
+    "recommendation": "go",
+    "values": {
+     "go": 0.269815,
+     "punt": 0.165984,
+     "fg": 0.246486
+    }
+   },
+   {
+    "id": "2023_06_DAL_LAC-2027",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.532735,
+     "punt": 0.57166
+    }
+   },
+   {
+    "id": "2023_09_MIN_ATL-703",
+    "recommendation": "go",
+    "values": {
+     "go": 0.620438,
+     "punt": 0.482741,
+     "fg": 0.553449
+    }
+   },
+   {
+    "id": "2023_08_CLE_SEA-3408",
+    "recommendation": "go",
+    "values": {
+     "go": 0.687255,
+     "punt": 0.645732,
+     "fg": 0.669374
+    }
+   },
+   {
+    "id": "2023_09_WAS_NE-617",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.496264,
+     "punt": 0.429255,
+     "fg": 0.487335
+    }
+   }
+  ],
+  "2026-11-05": [
+   {
+    "id": "2023_16_BUF_LAC-548",
+    "recommendation": "go",
+    "values": {
+     "go": 0.692103,
+     "punt": 0.580809,
+     "fg": 0.644146
+    }
+   },
+   {
+    "id": "2023_17_ARI_PHI-3541",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.468167,
+     "punt": 0.397947,
+     "fg": 0.600815
+    }
+   },
+   {
+    "id": "2022_16_NYG_MIN-2578",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.487094,
+     "punt": 0.462306,
+     "fg": 0.547424
+    }
+   },
+   {
+    "id": "2023_16_NYG_PHI-1936",
+    "recommendation": "go",
+    "values": {
+     "go": 0.12261,
+     "punt": 0.0758576,
+     "fg": 0.0997282
+    }
+   },
+   {
+    "id": "2022_12_TB_CLE-1572",
+    "recommendation": "go",
+    "values": {
+     "go": 0.512061,
+     "punt": 0.458639
+    }
+   }
+  ],
+  "2026-11-06": [
+   {
+    "id": "2023_12_LA_ARI-1705",
+    "recommendation": "go",
+    "values": {
+     "go": 0.382937,
+     "punt": 0.3394
+    }
+   },
+   {
+    "id": "2022_06_JAX_IND-3022",
+    "recommendation": "go",
+    "values": {
+     "go": 0.66926,
+     "punt": 0.569064,
+     "fg": 0.636719
+    }
+   },
+   {
+    "id": "2023_16_DET_MIN-1071",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.371573,
+     "punt": 0.385839
+    }
+   },
+   {
+    "id": "2023_03_NYG_SF-3369",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.867057,
+     "punt": 0.832439,
+     "fg": 0.892478
+    }
+   },
+   {
+    "id": "2023_05_TEN_IND-3657",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.926972,
+     "punt": 0.848859,
+     "fg": 0.951034
+    }
+   }
+  ],
+  "2026-11-07": [
+   {
+    "id": "2022_18_CLE_PIT-653",
+    "recommendation": "go",
+    "values": {
+     "go": 0.379655,
+     "punt": 0.358928
+    }
+   },
+   {
+    "id": "2023_10_IND_NE-3112",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.535811,
+     "punt": 0.523811,
+     "fg": 0.618564
+    }
+   },
+   {
+    "id": "2022_09_BUF_NYJ-2072",
+    "recommendation": "go",
+    "values": {
+     "go": 0.371568,
+     "punt": 0.295631
+    }
+   },
+   {
+    "id": "2023_09_MIA_KC-611",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.624809,
+     "punt": 0.648841
+    }
+   },
+   {
+    "id": "2023_08_NO_IND-493",
+    "recommendation": "go",
+    "values": {
+     "go": 0.543498,
+     "punt": 0.424958,
+     "fg": 0.489169
+    }
+   }
+  ],
+  "2026-11-08": [
+   {
+    "id": "2023_15_CHI_CLE-2115",
+    "recommendation": "go",
+    "values": {
+     "go": 0.371281,
+     "punt": 0.347259
+    }
+   },
+   {
+    "id": "2022_06_JAX_IND-2163",
+    "recommendation": "go",
+    "values": {
+     "go": 0.314848,
+     "punt": 0.231348,
+     "fg": 0.283622
+    }
+   },
+   {
+    "id": "2023_04_KC_NYJ-346",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.438258,
+     "punt": 0.461683
+    }
+   },
+   {
+    "id": "2023_15_ATL_CAR-3713",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.620695,
+     "punt": 0.315581,
+     "fg": 0.681233
+    }
+   },
+   {
+    "id": "2022_02_CHI_GB-2879",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0550831,
+     "punt": 0.0127776,
+     "fg": 0.0268337
+    }
+   }
+  ],
+  "2026-11-09": [
+   {
+    "id": "2023_18_NYJ_NE-765",
+    "recommendation": "go",
+    "values": {
+     "go": 0.662806,
+     "punt": 0.564955,
+     "fg": 0.633077
+    }
+   },
+   {
+    "id": "2022_17_SF_LV-2375",
+    "recommendation": "go",
+    "values": {
+     "go": 0.642055,
+     "punt": 0.582077
+    }
+   },
+   {
+    "id": "2022_09_IND_NE-1288",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.3025,
+     "punt": 0.319391
+    }
+   },
+   {
+    "id": "2022_10_LAC_SF-2484",
+    "recommendation": "go",
+    "values": {
+     "go": 0.337348,
+     "punt": 0.235134,
+     "fg": 0.280495
+    }
+   },
+   {
+    "id": "2022_07_TB_CAR-1363",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.356584,
+     "punt": 0.398307
+    }
+   }
+  ],
+  "2026-11-10": [
+   {
+    "id": "2022_15_BAL_CLE-786",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.45486,
+     "punt": 0.424356,
+     "fg": 0.462107
+    }
+   },
+   {
+    "id": "2022_04_BUF_BAL-2373",
+    "recommendation": "go",
+    "values": {
+     "go": 0.207696,
+     "punt": 0.129342,
+     "fg": 0.167716
+    }
+   },
+   {
+    "id": "2022_08_BAL_TB-1503",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.720886,
+     "punt": 0.748998
+    }
+   },
+   {
+    "id": "2022_06_DAL_PHI-271",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.54758,
+     "punt": 0.57798
+    }
+   },
+   {
+    "id": "2023_01_CIN_CLE-1295",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.614821,
+     "punt": 0.665962
+    }
+   }
+  ],
+  "2026-11-11": [
+   {
+    "id": "2023_02_CLE_PIT-2457",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.235394,
+     "punt": 0.227543,
+     "fg": 0.250445
+    }
+   },
+   {
+    "id": "2022_13_CLE_HOU-3182",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.837137,
+     "punt": 0.807455,
+     "fg": 0.869094
+    }
+   },
+   {
+    "id": "2023_03_PIT_LV-2235",
+    "recommendation": "go",
+    "values": {
+     "go": 0.242364,
+     "punt": 0.219573
+    }
+   },
+   {
+    "id": "2023_01_GB_CHI-913",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.618456,
+     "punt": 0.648946
+    }
+   },
+   {
+    "id": "2022_17_CHI_DET-1798",
+    "recommendation": "go",
+    "values": {
+     "go": 0.9378,
+     "punt": 0.890635,
+     "fg": 0.922118
+    }
+   }
+  ],
+  "2026-11-12": [
+   {
+    "id": "2022_07_GB_WAS-942",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.492038,
+     "punt": 0.525947
+    }
+   },
+   {
+    "id": "2022_16_SEA_KC-2430",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0953527,
+     "punt": 0.0592423,
+     "fg": 0.0608329
+    }
+   },
+   {
+    "id": "2023_01_DAL_NYG-704",
+    "recommendation": "go",
+    "values": {
+     "go": 0.846439,
+     "punt": 0.773148,
+     "fg": 0.818333
+    }
+   },
+   {
+    "id": "2022_10_MIN_BUF-1110",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.675004,
+     "punt": 0.641621,
+     "fg": 0.701645
+    }
+   },
+   {
+    "id": "2023_10_NYJ_LV-2621",
+    "recommendation": "go",
+    "values": {
+     "go": 0.580954,
+     "punt": 0.562894
+    }
+   }
+  ],
+  "2026-11-13": [
+   {
+    "id": "2022_06_CAR_LA-1643",
+    "recommendation": "go",
+    "values": {
+     "go": 0.384966,
+     "punt": 0.333484
+    }
+   },
+   {
+    "id": "2022_10_SEA_TB-132",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.337825,
+     "punt": 0.370374
+    }
+   },
+   {
+    "id": "2022_02_MIA_BAL-3484",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.832322,
+     "punt": 0.860512
+    }
+   },
+   {
+    "id": "2023_08_NO_IND-125",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.378178,
+     "punt": 0.402299
+    }
+   },
+   {
+    "id": "2022_06_TB_PIT-777",
+    "recommendation": "go",
+    "values": {
+     "go": 0.283421,
+     "punt": 0.208052,
+     "fg": 0.255113
+    }
+   }
+  ],
+  "2026-11-14": [
+   {
+    "id": "2023_12_PIT_CIN-3437",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.93679,
+     "punt": 0.900969,
+     "fg": 0.958627
+    }
+   },
+   {
+    "id": "2023_03_LA_CIN-1333",
+    "recommendation": "go",
+    "values": {
+     "go": 0.68711,
+     "punt": 0.588009,
+     "fg": 0.661933
+    }
+   },
+   {
+    "id": "anchor-bal-nyj",
+    "recommendation": "go",
+    "values": {
+     "go": 0.583433,
+     "punt": 0.557109
+    }
+   },
+   {
+    "id": "2023_07_WAS_NYG-1216",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.277481,
+     "punt": 0.318586
+    }
+   },
+   {
+    "id": "2022_03_LA_ARI-375",
+    "recommendation": "go",
+    "values": {
+     "go": 0.675449,
+     "punt": 0.587913,
+     "fg": 0.648194
+    }
+   }
+  ],
+  "2026-11-15": [
+   {
+    "id": "2022_07_GB_WAS-806",
+    "recommendation": "go",
+    "values": {
+     "go": 0.454444,
+     "punt": 0.349113,
+     "fg": 0.41621
+    }
+   },
+   {
+    "id": "2023_15_CHI_CLE-4679",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.602126,
+     "punt": 0.447379,
+     "fg": 0.74291
+    }
+   },
+   {
+    "id": "2023_04_ATL_JAX-3157",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.9269,
+     "punt": 0.906713,
+     "fg": 0.93706
+    }
+   },
+   {
+    "id": "2023_01_LV_DEN-1653",
+    "recommendation": "go",
+    "values": {
+     "go": 0.603177,
+     "punt": 0.541418
+    }
+   },
+   {
+    "id": "2023_13_MIA_WAS-522",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.178715,
+     "punt": 0.208924
+    }
+   }
+  ],
+  "2026-11-16": [
+   {
+    "id": "2022_16_LAC_IND-2680",
+    "recommendation": "go",
+    "values": {
+     "go": 0.16128,
+     "punt": 0.0794012,
+     "fg": 0.128912
+    }
+   },
+   {
+    "id": "2022_13_GB_CHI-996",
+    "recommendation": "go",
+    "values": {
+     "go": 0.327402,
+     "punt": 0.231918,
+     "fg": 0.29233
+    }
+   },
+   {
+    "id": "2023_05_DAL_SF-406",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.311208,
+     "punt": 0.34092
+    }
+   },
+   {
+    "id": "2023_15_HOU_TEN-1865",
+    "recommendation": "go",
+    "values": {
+     "go": 0.109858,
+     "punt": 0.0539171,
+     "fg": 0.0769674
+    }
+   },
+   {
+    "id": "2023_03_NE_NYJ-4157",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0867196,
+     "punt": 0.0657283
+    }
+   }
+  ],
+  "2026-11-17": [
+   {
+    "id": "2023_12_CLE_DEN-2781",
+    "recommendation": "go",
+    "values": {
+     "go": 0.296362,
+     "punt": 0.155226,
+     "fg": 0.225324
+    }
+   },
+   {
+    "id": "2022_10_WAS_PHI-1984",
+    "recommendation": "go",
+    "values": {
+     "go": 0.4105,
+     "punt": 0.379685
+    }
+   },
+   {
+    "id": "2023_15_ATL_CAR-1904",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.339306,
+     "punt": 0.288136,
+     "fg": 0.363956
+    }
+   },
+   {
+    "id": "2022_13_JAX_DET-1333",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.0758031,
+     "punt": 0.0800513
+    }
+   },
+   {
+    "id": "2023_06_SEA_CIN-3308",
+    "recommendation": "go",
+    "values": {
+     "go": 0.262335,
+     "punt": 0.204357
+    }
+   }
+  ],
+  "2026-11-18": [
+   {
+    "id": "2022_11_LV_DEN-2792",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.433721,
+     "punt": 0.425747,
+     "fg": 0.496902
+    }
+   },
+   {
+    "id": "2022_06_TB_PIT-3790",
+    "recommendation": "go",
+    "values": {
+     "go": 0.175861,
+     "punt": 0.053986,
+     "fg": 0.119897
+    }
+   },
+   {
+    "id": "2023_08_MIN_GB-502",
+    "recommendation": "go",
+    "values": {
+     "go": 0.66084,
+     "punt": 0.590415,
+     "fg": 0.631521
+    }
+   },
+   {
+    "id": "2022_17_DAL_TEN-2799",
+    "recommendation": "go",
+    "values": {
+     "go": 0.1402,
+     "punt": 0.0878353,
+     "fg": 0.12014
+    }
+   },
+   {
+    "id": "2023_05_NYJ_DEN-1157",
+    "recommendation": "go",
+    "values": {
+     "go": 0.704468,
+     "punt": 0.612195,
+     "fg": 0.680928
+    }
+   }
+  ],
+  "2026-11-19": [
+   {
+    "id": "2023_02_NO_CAR-454",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.609519,
+     "punt": 0.587147,
+     "fg": 0.606995
+    }
+   },
+   {
+    "id": "2023_10_TEN_TB-825",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.368243,
+     "punt": 0.395784
+    }
+   },
+   {
+    "id": "2023_18_SEA_ARI-3274",
+    "recommendation": "go",
+    "values": {
+     "go": 0.102129,
+     "punt": 0.0886179
+    }
+   },
+   {
+    "id": "2022_04_CLE_ATL-3462",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.610593,
+     "punt": 0.481634,
+     "fg": 0.664259
+    }
+   },
+   {
+    "id": "2022_03_HOU_CHI-2357",
+    "recommendation": "go",
+    "values": {
+     "go": 0.623083,
+     "punt": 0.511273,
+     "fg": 0.593212
+    }
+   }
+  ],
+  "2026-11-20": [
+   {
+    "id": "2023_08_NE_MIA-1350",
+    "recommendation": "go",
+    "values": {
+     "go": 0.696446,
+     "punt": 0.569116,
+     "fg": 0.646365
+    }
+   },
+   {
+    "id": "2023_18_CHI_GB-567",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.501693,
+     "punt": 0.483483,
+     "fg": 0.533257
+    }
+   },
+   {
+    "id": "2023_02_SF_LA-653",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.390528,
+     "punt": 0.337792,
+     "fg": 0.380901
+    }
+   },
+   {
+    "id": "2023_18_ATL_NO-3073",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0986451,
+     "punt": 0.0381466,
+     "fg": 0.0637788
+    }
+   },
+   {
+    "id": "2022_15_ATL_NO-674",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.171654,
+     "punt": 0.192049
+    }
+   }
+  ],
+  "2026-11-21": [
+   {
+    "id": "2022_05_SF_CAR-642",
+    "recommendation": "go",
+    "values": {
+     "go": 0.417364,
+     "punt": 0.36103,
+     "fg": 0.38463
+    }
+   },
+   {
+    "id": "2023_05_BAL_PIT-2009",
+    "recommendation": "go",
+    "values": {
+     "go": 0.758301,
+     "punt": 0.663014,
+     "fg": 0.720559
+    }
+   },
+   {
+    "id": "2022_07_NO_ARI-1454",
+    "recommendation": "go",
+    "values": {
+     "go": 0.380696,
+     "punt": 0.234266,
+     "fg": 0.304184
+    }
+   },
+   {
+    "id": "2023_04_PIT_HOU-2069",
+    "recommendation": "go",
+    "values": {
+     "go": 0.163065,
+     "punt": 0.134202
+    }
+   },
+   {
+    "id": "2023_02_GB_ATL-3262",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0960674,
+     "punt": 0.0414009,
+     "fg": 0.0749974
+    }
+   }
+  ],
+  "2026-11-22": [
+   {
+    "id": "2023_12_JAX_HOU-1601",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.66205,
+     "punt": 0.659754,
+     "fg": 0.699036
+    }
+   },
+   {
+    "id": "2022_10_JAX_KC-2340",
+    "recommendation": "go",
+    "values": {
+     "go": 0.118864,
+     "punt": 0.0818154,
+     "fg": 0.087937
+    }
+   },
+   {
+    "id": "2022_03_PIT_CLE-173",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.387336,
+     "punt": 0.416511
+    }
+   },
+   {
+    "id": "2023_15_TB_GB-1515",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.51637,
+     "punt": 0.560044
+    }
+   },
+   {
+    "id": "2023_06_DAL_LAC-4318",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.563502,
+     "punt": 0.42643,
+     "fg": 0.658907
+    }
+   }
+  ],
+  "2026-11-23": [
+   {
+    "id": "2022_13_DEN_BAL-1188",
+    "recommendation": "go",
+    "values": {
+     "go": 0.547995,
+     "punt": 0.454534,
+     "fg": 0.537868
+    }
+   },
+   {
+    "id": "2022_18_DAL_WAS-1413",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.90564,
+     "punt": 0.90333,
+     "fg": 0.911903
+    }
+   },
+   {
+    "id": "2022_02_CAR_NYG-2656",
+    "recommendation": "go",
+    "values": {
+     "go": 0.513169,
+     "punt": 0.44992
+    }
+   },
+   {
+    "id": "2022_06_DEN_LAC-2075",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.587952,
+     "punt": 0.491062,
+     "fg": 0.583194
+    }
+   },
+   {
+    "id": "2022_17_NO_PHI-872",
+    "recommendation": "go",
+    "values": {
+     "go": 0.322203,
+     "punt": 0.295326
+    }
+   }
+  ],
+  "2026-11-24": [
+   {
+    "id": "2023_14_MIN_LV-3031",
+    "recommendation": "go",
+    "values": {
+     "go": 0.420193,
+     "punt": 0.387907
+    }
+   },
+   {
+    "id": "2022_16_DET_CAR-1414",
+    "recommendation": "go",
+    "values": {
+     "go": 0.745548,
+     "punt": 0.675616,
+     "fg": 0.720293
+    }
+   },
+   {
+    "id": "2022_15_BAL_CLE-438",
+    "recommendation": "go",
+    "values": {
+     "go": 0.70047,
+     "punt": 0.585563,
+     "fg": 0.647625
+    }
+   },
+   {
+    "id": "2022_16_JAX_NYJ-1580",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.164393,
+     "punt": 0.186057
+    }
+   },
+   {
+    "id": "2022_11_CLE_BUF-845",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.600941,
+     "punt": 0.561401,
+     "fg": 0.627007
+    }
+   }
+  ],
+  "2026-11-25": [
+   {
+    "id": "2022_08_DEN_JAX-1361",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.828474,
+     "punt": 0.789185,
+     "fg": 0.830392
+    }
+   },
+   {
+    "id": "2022_02_NYJ_CLE-2262",
+    "recommendation": "go",
+    "values": {
+     "go": 0.594469,
+     "punt": 0.457587,
+     "fg": 0.562509
+    }
+   },
+   {
+    "id": "2022_03_JAX_LAC-872",
+    "recommendation": "go",
+    "values": {
+     "go": 0.531851,
+     "punt": 0.423573,
+     "fg": 0.4961
+    }
+   },
+   {
+    "id": "2023_17_LAC_DEN-1738",
+    "recommendation": "go",
+    "values": {
+     "go": 0.230549,
+     "punt": 0.192704
+    }
+   },
+   {
+    "id": "2023_10_HOU_CIN-4192",
+    "recommendation": "go",
+    "values": {
+     "go": 0.767814,
+     "punt": 0.746767
+    }
+   }
+  ],
+  "2026-11-26": [
+   {
+    "id": "2023_12_MIA_NYJ-852",
+    "recommendation": "go",
+    "values": {
+     "go": 0.653074,
+     "punt": 0.554764,
+     "fg": 0.612099
+    }
+   },
+   {
+    "id": "2022_14_CLE_CIN-515",
+    "recommendation": "go",
+    "values": {
+     "go": 0.392137,
+     "punt": 0.363678
+    }
+   },
+   {
+    "id": "2022_10_DET_CHI-624",
+    "recommendation": "go",
+    "values": {
+     "go": 0.582478,
+     "punt": 0.484622,
+     "fg": 0.553491
+    }
+   },
+   {
+    "id": "2022_04_CHI_NYG-1503",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.205953,
+     "punt": 0.236232
+    }
+   },
+   {
+    "id": "2022_16_JAX_NYJ-2432",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.874178,
+     "punt": 0.852837,
+     "fg": 0.888779
+    }
+   }
+  ],
+  "2026-11-27": [
+   {
+    "id": "2022_07_CHI_NE-2815",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0751305,
+     "punt": 0.0551341
+    }
+   },
+   {
+    "id": "2022_01_NO_ATL-482",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.436624,
+     "punt": 0.4516
+    }
+   },
+   {
+    "id": "2022_06_NE_CLE-1982",
+    "recommendation": "go",
+    "values": {
+     "go": 0.255124,
+     "punt": 0.172534,
+     "fg": 0.207204
+    }
+   },
+   {
+    "id": "2022_12_LA_KC-1619",
+    "recommendation": "go",
+    "values": {
+     "go": 0.269439,
+     "punt": 0.242498
+    }
+   },
+   {
+    "id": "2022_02_TB_NO-960",
+    "recommendation": "go",
+    "values": {
+     "go": 0.607447,
+     "punt": 0.472808,
+     "fg": 0.547905
+    }
+   }
+  ],
+  "2026-11-28": [
+   {
+    "id": "2023_03_LAC_MIN-1916",
+    "recommendation": "go",
+    "values": {
+     "go": 0.696357,
+     "punt": 0.58967,
+     "fg": 0.673577
+    }
+   },
+   {
+    "id": "2022_03_LA_ARI-2398",
+    "recommendation": "go",
+    "values": {
+     "go": 0.214031,
+     "punt": 0.167238
+    }
+   },
+   {
+    "id": "2023_09_TEN_PIT-1925",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.356114,
+     "punt": 0.297568,
+     "fg": 0.377728
+    }
+   },
+   {
+    "id": "2022_16_HOU_TEN-1252",
+    "recommendation": "go",
+    "values": {
+     "go": 0.659769,
+     "punt": 0.556381,
+     "fg": 0.635611
+    }
+   },
+   {
+    "id": "2022_15_DET_NYJ-1220",
+    "recommendation": "go",
+    "values": {
+     "go": 0.431617,
+     "punt": 0.396458,
+     "fg": 0.408233
+    }
+   }
+  ],
+  "2026-11-29": [
+   {
+    "id": "2022_06_SF_ATL-1118",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.614541,
+     "punt": 0.641131
+    }
+   },
+   {
+    "id": "2023_15_MIN_CIN-4012",
+    "recommendation": "go",
+    "values": {
+     "go": 0.474208,
+     "punt": 0.441855
+    }
+   },
+   {
+    "id": "2022_11_LV_DEN-3281",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.26177,
+     "punt": 0.238447,
+     "fg": 0.299369
+    }
+   },
+   {
+    "id": "2022_10_CLE_MIA-1448",
+    "recommendation": "go",
+    "values": {
+     "go": 0.787003,
+     "punt": 0.68961,
+     "fg": 0.756284
+    }
+   },
+   {
+    "id": "2022_08_GB_BUF-360",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.603728,
+     "punt": 0.592949,
+     "fg": 0.594033
+    }
+   }
+  ],
+  "2026-11-30": [
+   {
+    "id": "2022_09_GB_DET-250",
+    "recommendation": "go",
+    "values": {
+     "go": 0.552906,
+     "punt": 0.428189,
+     "fg": 0.490106
+    }
+   },
+   {
+    "id": "2023_07_GB_DEN-1524",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.593604,
+     "punt": 0.618369
+    }
+   },
+   {
+    "id": "2023_18_LA_SF-544",
+    "recommendation": "go",
+    "values": {
+     "go": 0.41139,
+     "punt": 0.362603,
+     "fg": 0.386813
+    }
+   },
+   {
+    "id": "2023_10_GB_PIT-1355",
+    "recommendation": "go",
+    "values": {
+     "go": 0.716241,
+     "punt": 0.641816,
+     "fg": 0.690501
+    }
+   },
+   {
+    "id": "2023_18_PIT_BAL-2594",
+    "recommendation": "go",
+    "values": {
+     "go": 0.470667,
+     "punt": 0.449836
+    }
+   }
+  ],
+  "2026-12-01": [
+   {
+    "id": "2022_17_DEN_KC-128",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.363745,
+     "punt": 0.388153
+    }
+   },
+   {
+    "id": "2023_18_TB_CAR-2811",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.195208,
+     "punt": 0.178069,
+     "fg": 0.229829
+    }
+   },
+   {
+    "id": "2023_10_NYJ_LV-130",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.409211,
+     "punt": 0.409288
+    }
+   },
+   {
+    "id": "2022_10_WAS_PHI-3682",
+    "recommendation": "go",
+    "values": {
+     "go": 0.852985,
+     "punt": 0.829311
+    }
+   },
+   {
+    "id": "2023_17_LA_NYG-4400",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.31866,
+     "punt": 0.258622,
+     "fg": 0.448597
+    }
+   }
+  ],
+  "2026-12-02": [
+   {
+    "id": "2023_10_NYJ_LV-2798",
+    "recommendation": "go",
+    "values": {
+     "go": 0.415913,
+     "punt": 0.29148,
+     "fg": 0.368796
+    }
+   },
+   {
+    "id": "2023_08_NYJ_NYG-4364",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.886413,
+     "punt": 0.778117,
+     "fg": 0.920678
+    }
+   },
+   {
+    "id": "2022_14_NYJ_BUF-1188",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.435724,
+     "punt": 0.425811
+    }
+   },
+   {
+    "id": "2022_08_CAR_ATL-254",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.551559,
+     "punt": 0.583805
+    }
+   },
+   {
+    "id": "2022_06_CIN_NO-3266",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.671483,
+     "punt": 0.574236,
+     "fg": 0.71184
+    }
+   }
+  ],
+  "2026-12-03": [
+   {
+    "id": "2023_12_KC_LV-2195",
+    "recommendation": "go",
+    "values": {
+     "go": 0.192236,
+     "punt": 0.167446
+    }
+   },
+   {
+    "id": "2022_05_HOU_JAX-216",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.495215,
+     "punt": 0.536054
+    }
+   },
+   {
+    "id": "2022_06_DEN_LAC-3639",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.306181,
+     "punt": 0.210179,
+     "fg": 0.393706
+    }
+   },
+   {
+    "id": "2023_15_TB_GB-548",
+    "recommendation": "go",
+    "values": {
+     "go": 0.603194,
+     "punt": 0.47834,
+     "fg": 0.548828
+    }
+   },
+   {
+    "id": "2022_07_DET_DAL-2331",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.629134,
+     "punt": 0.652403,
+     "fg": 0.629051
+    }
+   }
+  ],
+  "2026-12-04": [
+   {
+    "id": "2023_12_CHI_MIN-1516",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.40806,
+     "punt": 0.429345
+    }
+   },
+   {
+    "id": "2022_02_LAC_KC-1452",
+    "recommendation": "go",
+    "values": {
+     "go": 0.303234,
+     "punt": 0.278895
+    }
+   },
+   {
+    "id": "2022_10_NO_PIT-3420",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0656741,
+     "punt": 0.0376693
+    }
+   },
+   {
+    "id": "2023_08_NYJ_NYG-4264",
+    "recommendation": "go",
+    "values": {
+     "go": 0.189225,
+     "punt": 0.152623
+    }
+   },
+   {
+    "id": "2023_14_HOU_NYJ-1187",
+    "recommendation": "go",
+    "values": {
+     "go": 0.545935,
+     "punt": 0.517575
+    }
+   }
+  ],
+  "2026-12-05": [
+   {
+    "id": "2022_12_DEN_CAR-1025",
+    "recommendation": "go",
+    "values": {
+     "go": 0.436479,
+     "punt": 0.331451,
+     "fg": 0.40337
+    }
+   },
+   {
+    "id": "2023_16_IND_ATL-1436",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.378038,
+     "punt": 0.398287
+    }
+   },
+   {
+    "id": "2023_03_IND_BAL-4238",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.22582,
+     "punt": 0.121764,
+     "fg": 0.262177
+    }
+   },
+   {
+    "id": "2022_17_DAL_TEN-187",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.422408,
+     "punt": 0.432348
+    }
+   },
+   {
+    "id": "2023_10_CLE_BAL-2340",
+    "recommendation": "go",
+    "values": {
+     "go": 0.177166,
+     "punt": 0.134552,
+     "fg": 0.133989
+    }
+   }
+  ],
+  "2026-12-06": [
+   {
+    "id": "2022_14_HOU_DAL-2524",
+    "recommendation": "go",
+    "values": {
+     "go": 0.520618,
+     "punt": 0.324854,
+     "fg": 0.427619
+    }
+   },
+   {
+    "id": "2022_04_DEN_LV-2530",
+    "recommendation": "go",
+    "values": {
+     "go": 0.715786,
+     "punt": 0.578722,
+     "fg": 0.696458
+    }
+   },
+   {
+    "id": "2023_02_MIA_NE-2398",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.857932,
+     "punt": 0.885361
+    }
+   },
+   {
+    "id": "2022_03_KC_IND-331",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.307053,
+     "punt": 0.338964
+    }
+   },
+   {
+    "id": "2023_17_NE_BUF-1055",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.736901,
+     "punt": 0.670619,
+     "fg": 0.729522
+    }
+   }
+  ],
+  "2026-12-07": [
+   {
+    "id": "2023_05_TEN_IND-948",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.380419,
+     "punt": 0.406921
+    }
+   },
+   {
+    "id": "2022_03_ATL_SEA-2705",
+    "recommendation": "go",
+    "values": {
+     "go": 0.586796,
+     "punt": 0.422582,
+     "fg": 0.54615
+    }
+   },
+   {
+    "id": "2022_17_ARI_ATL-3130",
+    "recommendation": "go",
+    "values": {
+     "go": 0.680847,
+     "punt": 0.586614,
+     "fg": 0.571785
+    }
+   },
+   {
+    "id": "2023_16_IND_ATL-1748",
+    "recommendation": "go",
+    "values": {
+     "go": 0.635813,
+     "punt": 0.543274,
+     "fg": 0.592805
+    }
+   },
+   {
+    "id": "2022_02_NYJ_CLE-2938",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.306094,
+     "punt": 0.299062,
+     "fg": 0.336529
+    }
+   }
+  ],
+  "2026-12-08": [
+   {
+    "id": "2022_18_TB_ATL-2075",
+    "recommendation": "go",
+    "values": {
+     "go": 0.29031,
+     "punt": 0.195442,
+     "fg": 0.269109
+    }
+   },
+   {
+    "id": "2023_06_ARI_LA-1934",
+    "recommendation": "go",
+    "values": {
+     "go": 0.652719,
+     "punt": 0.541926,
+     "fg": 0.630226
+    }
+   },
+   {
+    "id": "2022_05_HOU_JAX-1916",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.414576,
+     "punt": 0.386959,
+     "fg": 0.44796
+    }
+   },
+   {
+    "id": "2023_03_HOU_JAX-1627",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.116316,
+     "punt": 0.130019
+    }
+   },
+   {
+    "id": "2023_02_NO_CAR-1500",
+    "recommendation": "go",
+    "values": {
+     "go": 0.556298,
+     "punt": 0.444501,
+     "fg": 0.523189
+    }
+   }
+  ],
+  "2026-12-09": [
+   {
+    "id": "2022_05_TEN_WAS-1464",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.5974,
+     "punt": 0.652159
+    }
+   },
+   {
+    "id": "2023_06_DAL_LAC-3803",
+    "recommendation": "go",
+    "values": {
+     "go": 0.300859,
+     "punt": 0.0869521,
+     "fg": 0.173451
+    }
+   },
+   {
+    "id": "2023_17_LA_NYG-3271",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.321454,
+     "punt": 0.241316,
+     "fg": 0.357963
+    }
+   },
+   {
+    "id": "2022_03_HOU_CHI-1880",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.293056,
+     "punt": 0.281228,
+     "fg": 0.321125
+    }
+   },
+   {
+    "id": "2023_11_PIT_CLE-3061",
+    "recommendation": "go",
+    "values": {
+     "go": 0.282465,
+     "punt": 0.25478
+    }
+   }
+  ],
+  "2026-12-10": [
+   {
+    "id": "2022_14_CLE_CIN-121",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.360682,
+     "punt": 0.39657
+    }
+   },
+   {
+    "id": "2023_03_IND_BAL-2247",
+    "recommendation": "go",
+    "values": {
+     "go": 0.357707,
+     "punt": 0.327056
+    }
+   },
+   {
+    "id": "2023_18_MIN_DET-2485",
+    "recommendation": "go",
+    "values": {
+     "go": 0.79787,
+     "punt": 0.750802
+    }
+   },
+   {
+    "id": "2022_03_PIT_CLE-3983",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0681113,
+     "punt": 0.0116953,
+     "fg": 0.0362757
+    }
+   },
+   {
+    "id": "2022_05_SEA_NO-813",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.721682,
+     "punt": 0.719093,
+     "fg": 0.721156
+    }
+   }
+  ],
+  "2026-12-11": [
+   {
+    "id": "2023_10_DET_LAC-2114",
+    "recommendation": "go",
+    "values": {
+     "go": 0.122686,
+     "punt": 0.0606211,
+     "fg": 0.086062
+    }
+   },
+   {
+    "id": "2023_02_LAC_TEN-973",
+    "recommendation": "go",
+    "values": {
+     "go": 0.568412,
+     "punt": 0.530245,
+     "fg": 0.496539
+    }
+   },
+   {
+    "id": "2023_11_MIN_DEN-4053",
+    "recommendation": "go",
+    "values": {
+     "go": 0.421706,
+     "punt": 0.300341
+    }
+   },
+   {
+    "id": "2023_14_MIN_LV-3117",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.416426,
+     "punt": 0.408364
+    }
+   },
+   {
+    "id": "2022_05_CIN_BAL-2009",
+    "recommendation": "go",
+    "values": {
+     "go": 0.326405,
+     "punt": 0.251726,
+     "fg": 0.312078
+    }
+   }
+  ],
+  "2026-12-12": [
+   {
+    "id": "2022_09_TEN_KC-2816",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.767521,
+     "punt": 0.80364
+    }
+   },
+   {
+    "id": "2023_02_CHI_TB-2490",
+    "recommendation": "go",
+    "values": {
+     "go": 0.69587,
+     "punt": 0.603706,
+     "fg": 0.657658
+    }
+   },
+   {
+    "id": "2023_11_SEA_LA-866",
+    "recommendation": "go",
+    "values": {
+     "go": 0.330552,
+     "punt": 0.222057,
+     "fg": 0.275095
+    }
+   },
+   {
+    "id": "2023_18_KC_LAC-3291",
+    "recommendation": "go",
+    "values": {
+     "go": 0.406149,
+     "punt": 0.386429
+    }
+   },
+   {
+    "id": "2023_06_SEA_CIN-3117",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.547096,
+     "punt": 0.497468,
+     "fg": 0.577058
+    }
+   }
+  ],
+  "2026-12-13": [
+   {
+    "id": "2023_18_KC_LAC-3129",
+    "recommendation": "go",
+    "values": {
+     "go": 0.559833,
+     "punt": 0.513284,
+     "fg": 0.497252
+    }
+   },
+   {
+    "id": "2023_12_TB_IND-3503",
+    "recommendation": "go",
+    "values": {
+     "go": 0.720744,
+     "punt": 0.646554
+    }
+   },
+   {
+    "id": "2022_09_GB_DET-3614",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.923307,
+     "punt": 0.914286,
+     "fg": 0.91478
+    }
+   },
+   {
+    "id": "2023_06_DAL_LAC-3622",
+    "recommendation": "go",
+    "values": {
+     "go": 0.125033,
+     "punt": 0.100162
+    }
+   },
+   {
+    "id": "2023_09_BUF_CIN-1797",
+    "recommendation": "go",
+    "values": {
+     "go": 0.75136,
+     "punt": 0.694031,
+     "fg": 0.715498
+    }
+   }
+  ],
+  "2026-12-14": [
+   {
+    "id": "2023_11_DAL_CAR-133",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.384052,
+     "punt": 0.409199
+    }
+   },
+   {
+    "id": "2023_13_ARI_PIT-1220",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.522705,
+     "punt": 0.571604
+    }
+   },
+   {
+    "id": "2023_05_CIN_ARI-1876",
+    "recommendation": "go",
+    "values": {
+     "go": 0.615116,
+     "punt": 0.446484,
+     "fg": 0.538292
+    }
+   },
+   {
+    "id": "2022_02_CAR_NYG-148",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.632448,
+     "punt": 0.58836,
+     "fg": 0.637789
+    }
+   },
+   {
+    "id": "2022_17_MIN_GB-321",
+    "recommendation": "go",
+    "values": {
+     "go": 0.551979,
+     "punt": 0.432469,
+     "fg": 0.495337
+    }
+   }
+  ],
+  "2026-12-15": [
+   {
+    "id": "2022_01_TB_DAL-356",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.425482,
+     "punt": 0.432562,
+     "fg": 0.458342
+    }
+   },
+   {
+    "id": "2023_10_IND_NE-3792",
+    "recommendation": "go",
+    "values": {
+     "go": 0.115469,
+     "punt": 0.0672963
+    }
+   },
+   {
+    "id": "2023_05_JAX_BUF-2869",
+    "recommendation": "go",
+    "values": {
+     "go": 0.322868,
+     "punt": 0.288772,
+     "fg": 0.29012
+    }
+   },
+   {
+    "id": "2023_08_ATL_TEN-2407",
+    "recommendation": "go",
+    "values": {
+     "go": 0.175378,
+     "punt": 0.116744,
+     "fg": 0.143631
+    }
+   },
+   {
+    "id": "2023_07_JAX_NO-4203",
+    "recommendation": "go",
+    "values": {
+     "go": 0.418166,
+     "punt": 0.378838
+    }
+   }
+  ],
+  "2026-12-16": [
+   {
+    "id": "2022_07_IND_TEN-2700",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.820755,
+     "punt": 0.768956,
+     "fg": 0.843632
+    }
+   },
+   {
+    "id": "2023_14_HOU_NYJ-1085",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.346173,
+     "punt": 0.39384
+    }
+   },
+   {
+    "id": "2022_08_MIA_DET-371",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.381154,
+     "punt": 0.376667,
+     "fg": 0.345483
+    }
+   },
+   {
+    "id": "2023_11_LV_MIA-637",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.467499,
+     "punt": 0.430968,
+     "fg": 0.489832
+    }
+   },
+   {
+    "id": "2022_06_WAS_CHI-972",
+    "recommendation": "go",
+    "values": {
+     "go": 0.566821,
+     "punt": 0.416157,
+     "fg": 0.492804
+    }
+   }
+  ],
+  "2026-12-17": [
+   {
+    "id": "2023_14_TB_ATL-565",
+    "recommendation": "go",
+    "values": {
+     "go": 0.595832,
+     "punt": 0.47988,
+     "fg": 0.547673
+    }
+   },
+   {
+    "id": "2022_16_GB_MIA-2079",
+    "recommendation": "go",
+    "values": {
+     "go": 0.240721,
+     "punt": 0.190152
+    }
+   },
+   {
+    "id": "2023_04_WAS_PHI-1950",
+    "recommendation": "go",
+    "values": {
+     "go": 0.19191,
+     "punt": 0.155229
+    }
+   },
+   {
+    "id": "2022_07_DET_DAL-1449",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.65388,
+     "punt": 0.675454
+    }
+   },
+   {
+    "id": "2022_15_PHI_CHI-755",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.53073,
+     "punt": 0.562318
+    }
+   }
+  ],
+  "2026-12-18": [
+   {
+    "id": "2023_09_TEN_PIT-844",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.392313,
+     "punt": 0.357671,
+     "fg": 0.415112
+    }
+   },
+   {
+    "id": "2022_11_CIN_PIT-3156",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.485976,
+     "punt": 0.485673,
+     "fg": 0.544106
+    }
+   },
+   {
+    "id": "2022_14_HOU_DAL-1342",
+    "recommendation": "go",
+    "values": {
+     "go": 0.468676,
+     "punt": 0.440653,
+     "fg": 0.427193
+    }
+   },
+   {
+    "id": "2022_18_HOU_IND-547",
+    "recommendation": "go",
+    "values": {
+     "go": 0.366483,
+     "punt": 0.282284,
+     "fg": 0.329796
+    }
+   },
+   {
+    "id": "2023_16_SEA_TEN-847",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.408351,
+     "punt": 0.46579
+    }
+   }
+  ],
+  "2026-12-19": [
+   {
+    "id": "2023_14_DEN_LAC-345",
+    "recommendation": "go",
+    "values": {
+     "go": 0.523259,
+     "punt": 0.428147,
+     "fg": 0.490336
+    }
+   },
+   {
+    "id": "2022_18_NYJ_MIA-3629",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.553877,
+     "punt": 0.422064,
+     "fg": 0.640389
+    }
+   },
+   {
+    "id": "2023_08_NYJ_NYG-697",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.582306,
+     "punt": 0.62197
+    }
+   },
+   {
+    "id": "2023_08_MIN_GB-1720",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.839223,
+     "punt": 0.843803
+    }
+   },
+   {
+    "id": "2022_07_SEA_LAC-304",
+    "recommendation": "go",
+    "values": {
+     "go": 0.659482,
+     "punt": 0.603307,
+     "fg": 0.625026
+    }
+   }
+  ],
+  "2026-12-20": [
+   {
+    "id": "2022_12_NE_MIN-1367",
+    "recommendation": "go",
+    "values": {
+     "go": 0.654979,
+     "punt": 0.576858,
+     "fg": 0.622652
+    }
+   },
+   {
+    "id": "2023_18_BUF_MIA-866",
+    "recommendation": "go",
+    "values": {
+     "go": 0.629423,
+     "punt": 0.585964,
+     "fg": 0.606971
+    }
+   },
+   {
+    "id": "2023_01_CIN_CLE-1746",
+    "recommendation": "go",
+    "values": {
+     "go": 0.276776,
+     "punt": 0.252938
+    }
+   },
+   {
+    "id": "2022_15_MIA_BUF-4334",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.649755,
+     "punt": 0.416026,
+     "fg": 0.764483
+    }
+   },
+   {
+    "id": "2022_13_DEN_BAL-3225",
+    "recommendation": "go",
+    "values": {
+     "go": 0.110056,
+     "punt": 0.0719315
+    }
+   }
+  ],
+  "2026-12-21": [
+   {
+    "id": "2023_18_KC_LAC-123",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.382369,
+     "punt": 0.407258
+    }
+   },
+   {
+    "id": "2023_16_DET_MIN-3891",
+    "recommendation": "go",
+    "values": {
+     "go": 0.123556,
+     "punt": 0.0376949,
+     "fg": 0.0865176
+    }
+   },
+   {
+    "id": "2023_11_CIN_BAL-1045",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.390853,
+     "punt": 0.392257,
+     "fg": 0.416243
+    }
+   },
+   {
+    "id": "2022_18_TEN_JAX-276",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.527617,
+     "punt": 0.554243
+    }
+   },
+   {
+    "id": "2023_07_JAX_NO-890",
+    "recommendation": "go",
+    "values": {
+     "go": 0.450106,
+     "punt": 0.347236,
+     "fg": 0.414598
+    }
+   }
+  ],
+  "2026-12-22": [
+   {
+    "id": "2022_04_CHI_NYG-3682",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.938563,
+     "punt": 0.942936
+    }
+   },
+   {
+    "id": "2023_10_GB_PIT-4242",
+    "recommendation": "go",
+    "values": {
+     "go": 0.252042,
+     "punt": 0.0665628,
+     "fg": 0.197643
+    }
+   },
+   {
+    "id": "2022_10_CLE_MIA-1279",
+    "recommendation": "go",
+    "values": {
+     "go": 0.320709,
+     "punt": 0.290117,
+     "fg": 0.282046
+    }
+   },
+   {
+    "id": "2022_18_HOU_IND-371",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.666972,
+     "punt": 0.646899,
+     "fg": 0.693486
+    }
+   },
+   {
+    "id": "2022_15_NYG_WAS-1882",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0970779,
+     "punt": 0.0753457
+    }
+   }
+  ],
+  "2026-12-23": [
+   {
+    "id": "2023_05_CIN_ARI-1428",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.369899,
+     "punt": 0.39183
+    }
+   },
+   {
+    "id": "2022_01_PIT_CIN-1989",
+    "recommendation": "go",
+    "values": {
+     "go": 0.134542,
+     "punt": 0.106107
+    }
+   },
+   {
+    "id": "2022_07_NYG_JAX-3051",
+    "recommendation": "go",
+    "values": {
+     "go": 0.316038,
+     "punt": 0.265157,
+     "fg": 0.25247
+    }
+   },
+   {
+    "id": "2023_06_CAR_MIA-122",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.382373,
+     "punt": 0.406478
+    }
+   },
+   {
+    "id": "2022_01_BAL_NYJ-790",
+    "recommendation": "go",
+    "values": {
+     "go": 0.647694,
+     "punt": 0.553329,
+     "fg": 0.620479
+    }
+   }
+  ],
+  "2026-12-24": [
+   {
+    "id": "2022_06_BAL_NYG-876",
+    "recommendation": "go",
+    "values": {
+     "go": 0.582224,
+     "punt": 0.54851,
+     "fg": 0.507429
+    }
+   },
+   {
+    "id": "2022_02_ATL_LA-818",
+    "recommendation": "go",
+    "values": {
+     "go": 0.23898,
+     "punt": 0.217935
+    }
+   },
+   {
+    "id": "2023_14_DEN_LAC-2547",
+    "recommendation": "go",
+    "values": {
+     "go": 0.16714,
+     "punt": 0.106233,
+     "fg": 0.115337
+    }
+   },
+   {
+    "id": "2023_05_BAL_PIT-1082",
+    "recommendation": "go",
+    "values": {
+     "go": 0.746438,
+     "punt": 0.660455,
+     "fg": 0.724915
+    }
+   },
+   {
+    "id": "2022_16_GB_MIA-1318",
+    "recommendation": "go",
+    "values": {
+     "go": 0.299248,
+     "punt": 0.269932
+    }
+   }
+  ],
+  "2026-12-25": [
+   {
+    "id": "2023_09_LAC_NYJ-575",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.60178,
+     "punt": 0.62832
+    }
+   },
+   {
+    "id": "2023_16_NYG_PHI-1593",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.844548,
+     "punt": 0.876015
+    }
+   },
+   {
+    "id": "2022_11_CHI_ATL-3434",
+    "recommendation": "go",
+    "values": {
+     "go": 0.539875,
+     "punt": 0.444218,
+     "fg": 0.465641
+    }
+   },
+   {
+    "id": "2023_18_KC_LAC-3496",
+    "recommendation": "go",
+    "values": {
+     "go": 0.555026,
+     "punt": 0.47775
+    }
+   },
+   {
+    "id": "2022_03_DET_MIN-2373",
+    "recommendation": "go",
+    "values": {
+     "go": 0.536765,
+     "punt": 0.466266,
+     "fg": 0.434989
+    }
+   }
+  ],
+  "2026-12-26": [
+   {
+    "id": "2023_17_PIT_SEA-3798",
+    "recommendation": "go",
+    "values": {
+     "go": 0.0700139,
+     "punt": 0.0091695,
+     "fg": 0.029763
+    }
+   },
+   {
+    "id": "2023_04_WAS_PHI-3211",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.717514,
+     "punt": 0.684513,
+     "fg": 0.780563
+    }
+   },
+   {
+    "id": "2022_05_DET_NE-1993",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.949239,
+     "punt": 0.937496,
+     "fg": 0.954996
+    }
+   },
+   {
+    "id": "2023_04_CIN_TEN-305",
+    "recommendation": "go",
+    "values": {
+     "go": 0.502585,
+     "punt": 0.40233,
+     "fg": 0.465511
+    }
+   },
+   {
+    "id": "2022_07_GB_WAS-3285",
+    "recommendation": "go",
+    "values": {
+     "go": 0.242792,
+     "punt": 0.15619,
+     "fg": 0.202372
+    }
+   }
+  ],
+  "2026-12-27": [
+   {
+    "id": "2022_13_JAX_DET-428",
+    "recommendation": "go",
+    "values": {
+     "go": 0.289874,
+     "punt": 0.245928,
+     "fg": 0.263549
+    }
+   },
+   {
+    "id": "2022_09_BAL_NO-293",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.464179,
+     "punt": 0.528905
+    }
+   },
+   {
+    "id": "2022_10_MIN_BUF-3812",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.730413,
+     "punt": 0.766439
+    }
+   },
+   {
+    "id": "2022_01_JAX_WAS-2700",
+    "recommendation": "go",
+    "values": {
+     "go": 0.716938,
+     "punt": 0.678611
+    }
+   },
+   {
+    "id": "2022_18_CAR_NO-2350",
+    "recommendation": "go",
+    "values": {
+     "go": 0.479679,
+     "punt": 0.421079
+    }
+   }
+  ],
+  "2026-12-28": [
+   {
+    "id": "2022_02_HOU_DEN-325",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.541856,
+     "punt": 0.585567
+    }
+   },
+   {
+    "id": "2022_14_KC_DEN-3707",
+    "recommendation": "go",
+    "values": {
+     "go": 0.823482,
+     "punt": 0.780533
+    }
+   },
+   {
+    "id": "2023_01_TB_MIN-886",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.638635,
+     "punt": 0.585005,
+     "fg": 0.641366
+    }
+   },
+   {
+    "id": "2022_06_DEN_LAC-3304",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.525443,
+     "punt": 0.454083,
+     "fg": 0.567028
+    }
+   },
+   {
+    "id": "2022_17_MIN_GB-578",
+    "recommendation": "go",
+    "values": {
+     "go": 0.71717,
+     "punt": 0.677398,
+     "fg": 0.672468
+    }
+   }
+  ],
+  "2026-12-29": [
+   {
+    "id": "2022_04_BUF_BAL-2233",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.764133,
+     "punt": 0.801764
+    }
+   },
+   {
+    "id": "2023_08_TB_BUF-233",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.377157,
+     "punt": 0.427704
+    }
+   },
+   {
+    "id": "2023_03_DEN_MIA-1582",
+    "recommendation": "go",
+    "values": {
+     "go": 0.800629,
+     "punt": 0.78552
+    }
+   },
+   {
+    "id": "2023_18_NYJ_NE-2957",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.622046,
+     "punt": 0.615782
+    }
+   },
+   {
+    "id": "2023_07_SF_MIN-3845",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.91329,
+     "punt": 0.897638,
+     "fg": 0.940134
+    }
+   }
+  ],
+  "2026-12-30": [
+   {
+    "id": "2022_11_CAR_BAL-3232",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.570196,
+     "punt": 0.44666,
+     "fg": 0.604091
+    }
+   },
+   {
+    "id": "2022_04_ARI_CAR-1848",
+    "recommendation": "go",
+    "values": {
+     "go": 0.242862,
+     "punt": 0.216504
+    }
+   },
+   {
+    "id": "2023_12_CHI_MIN-1878",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.434743,
+     "punt": 0.383546,
+     "fg": 0.467263
+    }
+   },
+   {
+    "id": "2022_14_BAL_PIT-130",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.413511,
+     "punt": 0.413791
+    }
+   },
+   {
+    "id": "2022_01_CLE_CAR-3420",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.891379,
+     "punt": 0.844468,
+     "fg": 0.916045
+    }
+   }
+  ],
+  "2026-12-31": [
+   {
+    "id": "2023_09_BUF_CIN-3601",
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.969006,
+     "punt": 0.932697,
+     "fg": 0.966406
+    }
+   },
+   {
+    "id": "2022_07_GB_WAS-3056",
+    "recommendation": "fg",
+    "values": {
+     "go": 0.695679,
+     "punt": 0.616848,
+     "fg": 0.730184
+    }
+   },
+   {
+    "id": "2023_02_KC_JAX-1825",
+    "recommendation": "go",
+    "values": {
+     "go": 0.523307,
+     "punt": 0.499651,
+     "fg": 0.469351
+    }
+   },
+   {
+    "id": "2022_08_NE_NYJ-1677",
+    "recommendation": "go",
+    "values": {
+     "go": 0.406769,
+     "punt": 0.304068,
+     "fg": 0.370853
+    }
+   },
+   {
+    "id": "2022_07_CLE_BAL-897",
+    "recommendation": "punt",
+    "values": {
+     "go": 0.499381,
+     "punt": 0.555304
+    }
+   }
+  ]
+ }
+}
