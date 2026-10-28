@@ -94,15 +94,21 @@ test("header names the week, or the playoff round", () => {
   assert.deepEqual([18, 21].map((w) => gameWeekLabel(2020, w, "POST")), ["Wild Card, 2020", "Super Bowl, 2020"]);
 });
 
-test("swing line says it is the win chance, in %, for the team ahead", () => {
+test("swing line says it is the win chance, in pts, for the team ahead", () => {
   const bn = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2);
   const fg = bn.plays.find((p) => p.qtr === 1 && p.sec === 189 && /Bass.s 40-yard field goal is good/i.test(p.text))!;
   // Pre-snap home (NYJ) chance 49.9% -> 51.1% at the next snap (NYJ receive the kickoff), per the model.
   assert.equal(winLine(bn, fg.homeWp).team, "NYJ");
-  assert.equal(swingText(bn, fg), "NYJ's win chance up 1%");
+  assert.equal(swingText(bn, fg), "NYJ's win chance up 1 pt");
   const prev = bn.plays[bn.plays.indexOf(fg) - 1];
-  assert.equal(swingText(bn, prev), "NYJ's win chance down 2%");
+  assert.equal(swingText(bn, prev), "NYJ's win chance down 2 pts");
   const flat = bn.plays.find((p) => Math.round(p.homeWp * 100) === Math.round(p.homeWpBefore * 100))!;
   assert.equal(swingText(bn, flat), "No change");
-  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
+  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) (1 pt|\d+ pts))$/);
+});
+
+test("swing wording uses pts like /games/, never %", () => {
+  const p = g.plays.find((x) => Math.abs(Math.round(x.homeWp * 100) - Math.round(x.homeWpBefore * 100)) >= 10)!;
+  assert.match(swingText(g, p), /^(DET|KC)'s win chance (up|down) \d{2,} pts$/);
+  for (const x of g.plays) assert.doesNotMatch(swingText(g, x), /%/);
 });
