@@ -35,7 +35,7 @@ export default function AboutPage() {
           happens next in similar spots (learned from 2019–2021 games). A field goal try is the line of scrimmage plus 18 yards: the ball is snapped about 8 yards back, and the goalposts sit at the back of the 10-yard end zone.
         </p>
         <p>
-          These are estimates, not certainties. The win-chance model was checked against 2024 and 2025 games it never trained on, and its chances matched how often teams actually won closely; that check runs automatically on every update. Still, treat a gap of a few points as close.
+          These are estimates, not certainties. We tested the win-chance model on 2024 and 2025 games it never saw, and its chances closely matched how often teams really won. Still, treat a gap of a few points as close.
         </p>
         <h2>What the model knows and doesn&apos;t</h2>
         <div className="ml-cols">
