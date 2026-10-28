@@ -1732,3 +1732,15 @@ body { font-variant-numeric: tabular-nums; }
 /* QA 0116 U4: self-hosted logos on the games list and game header. */
 .team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
 .team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+
+/* —— F6 model limits —— */
+.ml { border: 1px solid #d4d4d8; border-radius: 12px; background: #fff; margin: 0.75rem 0; }
+.ml-sum { min-height: 44px; display: flex; align-items: center; padding: 0 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: #18181b; list-style: none; }
+.ml-sum::-webkit-details-marker { display: none; }
+.ml-sum::after { content: "▸"; margin-left: auto; color: var(--color-blue-fill); transition: transform 0.15s; }
+.ml[open] .ml-sum::after { transform: rotate(90deg); }
+.ml-list { margin: 0; padding: 0 1rem 0.9rem 2rem; display: grid; gap: 0.4rem; font-size: 0.85rem; color: #52525b; line-height: 1.45; }
+.ml-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.ml-cols > div { border: 1px solid #2a2a2e; border-radius: 12px; background: #121214; padding: 0.75rem; }
+.ml-cols h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+.ml-cols ul { margin: 0; padding-left: 1.1rem; font-size: 0.85rem; }

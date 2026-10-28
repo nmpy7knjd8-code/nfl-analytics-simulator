@@ -1,5 +1,6 @@
 import Link from "next/link";
 import pack from "../../lib/quizPack.json";
+import { MODEL_KNOWS, MODEL_DOESNT_KNOW } from "../../lib/modelLimits";
 
 export const metadata = { title: "How it works · Fourth & Daily" };
 
@@ -29,6 +30,11 @@ export default function AboutPage() {
       <p>
         These are estimates, not certainties. The win-chance model is not yet calibrated, so treat a gap of a few points as close.
       </p>
+      <h2>What the model knows and doesn&apos;t</h2>
+      <div className="ml-cols">
+        <div><h3>Knows</h3><ul>{MODEL_KNOWS.map((k) => <li key={k}>{k}</li>)}</ul></div>
+        <div><h3>Doesn&apos;t know</h3><ul>{MODEL_DOESNT_KNOW.map((k) => <li key={k}>{k}</li>)}</ul></div>
+      </div>
       <p>
         With {pack.items.length} plays and 5 a day, the set repeats every {Math.floor(pack.items.length / 5)} days.
       </p>
