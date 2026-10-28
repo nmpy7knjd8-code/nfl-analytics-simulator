@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import type { GameFileV2 } from "./gameFileV2";
-import { NO_FILTER, buildFeed, canChart, chartPoints, elapsed, filterFeed, metaLine, swingText, toggle, winLine } from "./playFeed";
+import { NO_FILTER, buildFeed, gameWeekLabel, canChart, chartPoints, elapsed, filterFeed, metaLine, swingText, toggle, winLine } from "./playFeed";
 
 const doc = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_DET_KC.json", import.meta.url), "utf8")) as GameFileV2;
 const g = buildFeed(doc);
@@ -85,4 +85,24 @@ test("scoring tag sits on the play that scores (row scores are post-play)", () =
   const timeout = g.plays.find((p) => p.id === String(c.play_id[r + 1]));
   assert.ok(!timeout || !timeout.scoring);
   assert.ok(g.plays[g.plays.indexOf(bell) + 1].scoring); // the extra point after the timeout
+});
+
+test("header names the week, or the playoff round", () => {
+  assert.equal(g.label, "Week 1, 2023");
+  assert.equal(gameWeekLabel(2023, 18, "REG"), "Week 18, 2023");
+  assert.deepEqual([19, 20, 21, 22].map((w) => gameWeekLabel(2023, w, "POST")), ["Wild Card, 2023", "Divisional, 2023", "Conference, 2023", "Super Bowl, 2023"]);
+  assert.deepEqual([18, 21].map((w) => gameWeekLabel(2020, w, "POST")), ["Wild Card, 2020", "Super Bowl, 2020"]);
+});
+
+test("swing line says it is the win chance, in %, for the team ahead", () => {
+  const bn = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2);
+  const fg = bn.plays.find((p) => p.qtr === 1 && p.sec === 189 && /Bass.s 40-yard field goal is good/i.test(p.text))!;
+  // Pre-snap home (NYJ) chance 49.9% -> 51.1% at the next snap (NYJ receive the kickoff), per the model.
+  assert.equal(winLine(bn, fg.homeWp).team, "NYJ");
+  assert.equal(swingText(bn, fg), "NYJ's win chance up 1%");
+  const prev = bn.plays[bn.plays.indexOf(fg) - 1];
+  assert.equal(swingText(bn, prev), "NYJ's win chance down 2%");
+  const flat = bn.plays.find((p) => Math.round(p.homeWp * 100) === Math.round(p.homeWpBefore * 100))!;
+  assert.equal(swingText(bn, flat), "No change");
+  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
 });

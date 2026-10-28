@@ -131,7 +131,8 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-back{margin-top:auto;min-height:54px;font-weight:700;font-size:18px;width:100%}
 /* Feed game picker: season → week → game, inside the card. */
 .pf-change{margin-left:auto;min-height:48px;padding:0 14px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:14px;white-space:nowrap;margin-right:-4px}
-.pf-game .pf-wk{margin-left:0}
+.pf-game .pf-wk{margin-left:0;white-space:nowrap;line-height:16px}
+.pf-gm{display:flex;flex-direction:column;min-width:0}.pf-match{display:flex;align-items:center;gap:inherit;gap:4px}
 .pf-game{min-height:52px}
 .gp{flex:1 1 0;min-height:0;display:flex;flex-direction:column;border-top:1px solid #e6e6e6;padding-top:4px}
 .gp-top{display:flex;align-items:center;gap:6px;min-height:52px}
@@ -156,5 +157,5 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .gp-sc{margin-left:auto;font-size:14px;font-weight:600;color:var(--sg-g);white-space:nowrap;font-variant-numeric:tabular-nums}
 .gp-skel{height:52px;border-radius:8px;background:#f0f0f0;margin:0 0 8px}
 .pf-game b{white-space:nowrap}
-@media (max-width:400px){.pf-game b+.pf-wk{display:none}.pf-change{padding:0 12px;font-size:13px}.pf-game{gap:4px}}
+@media (max-width:400px){.pf-change{padding:0 12px;font-size:13px}.pf-game{gap:4px}}
 .pf-row-ot{cursor:default}
