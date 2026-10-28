@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { CHECKER_ENABLED, CHECKER_PAUSED } from "../../lib/features";
 import { shareMetadata } from "../../lib/share";
-import { ExampleBanner } from "../../components/ExampleBanner";
-import { FourthDownLab } from "../../components/FourthDownLab";
+import { FourthDownChecker } from "../../components/FourthDownChecker";
 import { TruthChip } from "../../components/TruthChip";
-import { FIXTURE_BANNER } from "../../lib/fixtures";
 
 export const metadata = shareMetadata({
   title: "4th-down checker · Fourth & Daily",
@@ -33,15 +31,13 @@ export default function DecidePage() {
       <header className="section-head">
         <div className="overline">
           <TruthChip kind="simulated" />
-          <span className="muted">Example</span>
         </div>
         <h1>Go, kick, or punt?</h1>
         <p>See the call, then the short why — in plain English.</p>
       </header>
 
-      <ExampleBanner message={FIXTURE_BANNER} />
 
-      <FourthDownLab />
+      <FourthDownChecker />
     </main>
   );
 }
