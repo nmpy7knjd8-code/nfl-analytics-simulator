@@ -37,11 +37,11 @@ export function StatsView() {
             <div><dt>Best</dt><dd>{Math.max(v.s.best_streak, v.streak)}</dd></div>
             <div><dt>Average</dt><dd>{v.s.average == null ? "—" : formatScore(Math.round(v.s.average * 10) / 10)}</dd></div>
           </dl>
-          <p className="st-shield">{v.shieldLeft ? "Shield ready: miss one day this week and your streak stays." : "Shield used this week. A new one comes Monday."}</p>
-          <div className="st-cal" role="grid" aria-label="Last five weeks">
+          <p className="st-shield-line">{v.shieldLeft ? "Shield ready: miss one day this week and your streak stays." : "Shield used this week. A new one comes Monday."}</p>
+          <div className="st-cal" role="list" aria-label="Last five weeks">
             {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => <span key={i} className="st-dow" aria-hidden="true">{d}</span>)}
             {v.cells.map((c) => (
-              <span key={c.date} role="gridcell" className={`st-d st-${c.mark}`} aria-label={MARK_TEXT[c.mark] ? `${c.date} ${MARK_TEXT[c.mark]}` : c.date}>
+              <span key={c.date} role="listitem" className={`st-d st-${c.mark}`} aria-label={MARK_TEXT[c.mark] ? `${c.date} ${MARK_TEXT[c.mark]}` : c.date}>
                 {Number(c.date.slice(8))}
               </span>
             ))}
