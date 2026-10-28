@@ -4,7 +4,7 @@ export type OutcomeCell = { tries: number; converted: number; penaltyFirstDowns:
 export type OutcomeZone = { id: "opp" | "mid" | "own" | "all"; label: string; min: number; max: number };
 /** outcomes/v1: yards gained on 4th-down runs and passes, by yards to go (1..10, 10 = 10+) × zone. Key `${togo}-${zone}`. */
 export type OutcomesFile = {
-  schema: "outcomes/v1"; stub?: boolean; source: string; builtAt: string; seasons: number[];
+  schema: "outcomes/v1"; source: string; builtAt: string; dataThrough: string; seasons: number[];
   minTries: number; bins: number[]; zones: OutcomeZone[]; cells: Record<string, OutcomeCell>;
 };
 

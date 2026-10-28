@@ -73,7 +73,7 @@ export function OutcomeHistogram() {
 
       <p className="kb-note">
         Blue bars reached the line to gain. Bars at the edges pool everything at −5 or less and 20 or more. A penalty can give a first down
-        without the yards. Data: nflverse play-by-play, {outcomes.seasons[0]}–{outcomes.seasons[1]}.{outcomes.stub ? " Preview numbers." : ""}
+        without the yards. Data: nflverse play-by-play, {outcomes.seasons[0]}–{outcomes.seasons[1]}. Includes overtime. Data through {outcomes.dataThrough}.
       </p>
       <Trademark />
     </div>
