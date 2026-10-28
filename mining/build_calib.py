@@ -75,7 +75,8 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "model": "nflverse",
         "source": f"nflverse play-by-play {span} (CC BY 4.0), REG+POST: nflverse win chance adjusted for pregame "
                   "expectations (home team), regulation only; ties and 2022_17_BUF_CIN left out",
-        "builtAt": last[:10],
+        "builtAt": "",
+        "dataThrough": last[:10],
         "buckets": [{"lo": EDGES[i], "hi": EDGES[i + 1], "plays": n[i],
                      "predicted": round(100 * wp_sum[i] / n[i], 1) if n[i] else None,
                      "actual": round(100 * won[i] / n[i], 1) if n[i] else None} for i in range(len(n))],
@@ -101,6 +102,10 @@ def dumps(obj: dict[str, Any]) -> str:
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n"
 
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_stamp import stamp  # noqa: E402
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("pbp", nargs="+")
@@ -114,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FAIL: published calibration buckets would change: {', '.join(changed)}", file=sys.stderr)
         return 1
     out.parent.mkdir(parents=True, exist_ok=True)
+    new = stamp(new, old)
     out.write_text(dumps(new))
     print(f"wrote {out} ({out.stat().st_size} bytes, {sum(b['plays'] for b in new['buckets'])} plays)")
     return 0

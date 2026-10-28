@@ -74,7 +74,8 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "schema": SCHEMA,
         "source": f"nflverse play-by-play {span} (CC BY 4.0), REG+POST: 4th downs that ran a run, pass, punt or "
                   "field goal (field goals over 64 yd left out); went for it = run or pass",
-        "builtAt": last[:10],
+        "builtAt": "",
+        "dataThrough": last[:10],
         "zones": [{"id": z, "label": l, "short": s, "min": lo, "max": hi} for z, l, s, lo, hi in ZONES],
         "seasons": [{"season": s, **counts[s]} for s in seasons],
     }
@@ -98,12 +99,16 @@ def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     df = df[df.down == 4].copy()
     df["game_date"] = df["game_date"].astype(str)
     rows = json.loads(df.to_json(orient="records"))
-    rows.append({"season": int(df.season.max()), "game_date": last})  # keeps builtAt = last game date
+    rows.append({"season": int(df.season.max()), "game_date": last})  # keeps dataThrough = last game date
     return rows
 
 
 def dumps(obj: dict[str, Any]) -> str:
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n"
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_stamp import stamp  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -119,6 +124,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FAIL: published era numbers would change: {', '.join(changed)}", file=sys.stderr)
         return 1
     out.parent.mkdir(parents=True, exist_ok=True)
+    new = stamp(new, old)
     out.write_text(dumps(new))
     print(f"wrote {out} ({out.stat().st_size} bytes, {len(new['seasons'])} seasons)")
     return 0
