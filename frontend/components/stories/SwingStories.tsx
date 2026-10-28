@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Header, Trademark } from "../SimpleGame";
 import { feedHref } from "../../lib/gamePicker";
 import {
-  beforeAfter, isSwingsDoc, playText, scoreLine, situation, swingLine, top25, weekLabel, weeksNewestFirst,
+  beforeAfter, isSwingsDoc, matchup, playText, points, situation, swingLine, top25, weekLabel, weeksNewestFirst,
   type Swing,
 } from "../../lib/stories/swings";
 import "./stories.css";
@@ -16,10 +16,10 @@ type Load = { state: "loading" } | { state: "error" } | { state: "ready"; weeks:
 function SwingCard({ s }: { s: Swing }) {
   return (
     <article className="st-card">
-      <p className="st-kicker">{weekLabel(s)} · {scoreLine(s)}</p>
+      <p className="st-kicker">{weekLabel(s)} · {matchup(s)}</p>
       <p className="st-big">{swingLine(s)}</p>
       <p className="st-meta">{situation(s)}</p>
-      <p className="st-text">{playText(s.text)}</p>
+      <p className="st-text">{playText(s.desc)}</p>
       <p className="st-ba">{beforeAfter(s)}</p>
       <a className="st-oval" href={feedHref(s.game_id, BASE)}>See the game chart</a>
     </article>
@@ -39,7 +39,7 @@ export function SwingStories() {
       .then((d) => {
         if (!live) return;
         if (!isSwingsDoc(d)) throw new Error("shape");
-        setLoad({ state: "ready", weeks: weeksNewestFirst(d.weeks), top: top25(d.top25) });
+        setLoad({ state: "ready", weeks: weeksNewestFirst(d.weeks), top: top25(d.top) });
       })
       .catch(() => live && setLoad({ state: "error" }));
     return () => { live = false; };
@@ -47,7 +47,7 @@ export function SwingStories() {
 
   return (
     <div className="sg-app st-app">
-      <Header right="Big swings" />
+      <Header right="Swings" />
       <h1 className="st-h1">Swing of the Week</h1>
       <p className="st-sub">The one regulation play each week that moved a team&apos;s chance to win the most.</p>
 
@@ -87,9 +87,9 @@ export function SwingStories() {
                 <li key={`${s.game_id}-${n}`} className="st-row">
                   <span className="st-rank">{n + 1}</span>
                   <div className="st-row-b">
-                    <p className="st-meta">{weekLabel(s)} · {scoreLine(s)}</p>
-                    <p className="st-row-t">{playText(s.text)}</p>
-                    <p className="st-row-s"><b>{s.swing_points} points</b> · {beforeAfter(s)}</p>
+                    <p className="st-meta">{weekLabel(s)} · {matchup(s)}</p>
+                    <p className="st-row-t">{playText(s.desc)}</p>
+                    <p className="st-row-s"><b>{points(s)} points</b> · {beforeAfter(s)}</p>
                     <a className="st-link" href={feedHref(s.game_id, BASE)}>Game chart</a>
                   </div>
                 </li>
