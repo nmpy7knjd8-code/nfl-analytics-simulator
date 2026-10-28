@@ -14,10 +14,10 @@ const ALL_TABS = [
 // H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
 const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
-/** The simple game ("/", "/daily", "/practice", "/endless", "/feed", "/kicks") has its own header and ☰ menu, so the old chrome is hidden there. */
+/** The simple game ("/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about") has its own header and ☰ menu, so the old chrome is hidden there. */
 function useGameRoute(): boolean {
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
-  return p === "/" || p === "/daily" || p === "/practice" || p === "/endless" || p === "/feed" || p === "/kicks";
+  return p === "/" || p === "/daily" || p === "/practice" || p === "/endless" || p === "/feed" || p === "/kicks" || p === "/about";
 }
 
 export function TopBar() {
