@@ -10,6 +10,7 @@ import {
   dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
+import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import type { QuizChoice } from "../lib/quiz";
 import {
@@ -62,6 +63,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [picks, setPicks] = useState<Pick[]>([]);
   const [streak, setStreak] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [coach, setCoach] = useState<{ today: CoachEntry[]; season: CoachEntry[] } | null>(null);
   const [dare, setDare] = useState<ChallengeStatus>({ kind: "none" });
   const [dareCopied, setDareCopied] = useState(false);
   useEffect(() => {
@@ -99,8 +101,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       const next = recordDaily(loadStreak(st), { date: key, credit, answered: picks.length, results: picks.map((p) => p.scored.result) });
       saveStreak(st, next);
       setStreak(shieldStreak(next.history.map((h) => h.date), key).streak);
+      const today = picks.map((p, i) => entryFor(key, items[i], p.pick)).filter((e): e is CoachEntry => e != null);
+      const season = addCoachDay(loadCoach(st), key, today);
+      saveCoach(st, season);
+      setCoach({ today, season });
     }
-  }, [done, key, mode, picks]);
+  }, [done, key, mode, picks, items]);
 
   const choose = useCallback((c: QuizChoice) => {
     const it = items[idx];
@@ -165,6 +171,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         {mode === "daily" && dare.kind === "ok"
           ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
           : mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
+        {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
           {mode === "daily" && dare.kind === "ok" ? (
             <div className="sg-recap-key" aria-hidden="true"><span>Right call?</span><span className="sg-c">You · Friend</span></div>
@@ -302,5 +309,16 @@ function RunOrPass({ header, onDone }: { header: React.ReactNode; onDone: () => 
       )}
       <Trademark />
     </div>
+  );
+}
+
+/** A2: one line on the end screen; the full record is on the stats page. */
+function CoachLine({ today, season }: { today: CoachEntry[]; season: CoachEntry[] }) {
+  const t = coachTally(today), s = coachTally(season);
+  return (
+    <Link href="/daily/stats/#coach" className="sg-coach">
+      <span>Same call as the coach: <b>{t.agreed} of {today.length}</b></span>
+      <span className="sg-c" aria-label={`All time: agreed ${s.agreed}, didn't ${s.differed}`}>{s.agreed}–{s.differed} ›</span>
+    </Link>
   );
 }
