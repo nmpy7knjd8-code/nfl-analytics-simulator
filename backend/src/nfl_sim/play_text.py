@@ -183,13 +183,50 @@ def _kept_fumble(r: dict[str, Any], main: str) -> str | None:
     return f"{subj} fumbles, but {team} keeps the ball." if team else None
 
 
+def _punt_lost(r: dict[str, Any]) -> str | None:
+    p, dist, f = _name(r, "punter"), r.get("kick_distance"), _name(r, "fumbled_1")
+    team = r.get("fumble_recovery_1_team") or r.get("posteam")
+    if not p or not f or not team:
+        return None
+    head = f"{p} punts {_yds(dist)}" if dist is not None else f"{p} punts"
+    verb = "muffs the catch" if re.search(r"\bMUFFS\b", r.get("desc") or "", re.I) else "fumbles on the return"
+    tail = "and scores a touchdown" if _t(r.get("touchdown")) else ""
+    return f"{head}, and {f} {verb}. {team} recovers{' ' + tail if tail else ''}."
+
+
+_DECLINED_ONLY = re.compile(r"^Penalty on ([A-Z]{2,3})-(?:\d{1,2}-)?([^,]+), ([^,]+), declined\.?$", re.I)
+_REPORTED = re.compile(r"(?:\d{1,2}-)?[A-Z][\w.'\-]* reported in as eligible\.?\s*", re.I)
+_SPOT = re.compile(r"recovered by ([A-Z]{2,3})-\S+ at ([A-Z]{2,3}) (\d{1,2})", re.I)
+
+
+def _after_reversal(desc: str) -> str:
+    """QA 0217 A: a replay reversal means the clause after 'REVERSED.' is what happened."""
+    i = desc.rfind("REVERSED.")
+    return desc[i + len("REVERSED."):].strip() if i >= 0 else desc
+
+
+def _aborted_spot(r: dict[str, Any]) -> str | None:
+    """QA 0217 H: aborted snap the offense fell on - say where, and the real loss (DET_KC 1273: KC 17 -> KC 27)."""
+    m, yl, pos = _SPOT.search(r.get("desc") or ""), r.get("yardline_100"), r.get("posteam")
+    if not m or yl is None or not pos:
+        return None
+    side, n = m.group(2).upper(), int(m.group(3))
+    end = 100 - n if side == pos else n
+    loss = int(end - yl)
+    return f"at {side} {n}" + (f", a loss of {_yds(loss)}" if loss > 0 else "")
+
+
 def _templated(r: dict[str, Any]) -> str | None:
     s = _templated_main(r)
     if s and _t(r.get("fumble")) and not _t(r.get("fumble_lost")) and r.get("play_type") in ("run", "pass"):
         extra = _kept_fumble(r, s)
         if extra and "Aborted" in (r.get("desc") or ""):  # QA 0116: the botched snap came first (DET_KC 1273)
             extra = extra.replace("He fumbles", f"{_name(r, 'fumbled_1')} fumbles", 1)
-            s = f"Botched snap: {extra} {s}"
+            spot = _aborted_spot(r)
+            if spot and s.endswith("stopped for no gain."):  # QA 0217 H: not "no gain" when the spot moved
+                s = f"Botched snap: {extra.rstrip('.')} {spot}."
+            else:
+                s = f"Botched snap: {extra} {s}"
         elif extra:
             s = f"{s} {extra}"
     return s
@@ -222,8 +259,16 @@ def _templated_main(r: dict[str, Any]) -> str | None:
         elif ry:
             s += f" and returns it {_yds(ry)}"
         return s + "."
+    if pt == "punt" and _t(r.get("fumble_lost")) and not _t(r.get("punt_blocked")):
+        return _punt_lost(r)  # QA 0217 C: muffed / fumbled punt the kicking team recovered
     if _t(r.get("fumble_lost")):
         f, rec = _name(r, "fumbled_1"), _name(r, "fumble_recovery_1")
+        if f and not rec and pt in ("run", "pass") and re.search(r"(?i)end zone, touchback", r.get("desc") or ""):
+            # QA 0217 A: fumble through the end zone (often a TD reversed on replay): touchback, no score
+            base = _templated_main({**r, "fumble_lost": 0, "fumble": 0, "touchdown": 0})
+            if base:
+                who = 'he' if base.startswith(f) else f
+                return f"{base.rstrip('.')}, but {who} fumbles out of the end zone for a touchback."
         if not f or not rec:
             return None
         if rec == f:
@@ -411,6 +456,9 @@ def penalty_sentences(clauses: list[tuple[str, str | None, str, str]], replayed:
 
 def penalty_text(r: dict[str, Any]) -> str | None:
     """Separate penalty field for plays that happened (None on 'No play' rows: the flag is in display_text)."""
+    r = _effective(r)
+    if _DECLINED_ONLY.match(clean_desc(r.get("desc") or "")):
+        return None
     if marker_text(r.get("desc") or "") is not None or _is_no_play(r):
         return None
     if re.search(r"(?i)penalty", _main_text(r)):  # fallback text already carries it
@@ -463,7 +511,18 @@ def _must_mention(r: dict[str, Any], s: str) -> str:
     return s
 
 
+def _effective(r: dict[str, Any]) -> dict[str, Any]:
+    d = r.get("desc") or ""
+    nd = _REPORTED.sub("", _after_reversal(d))
+    return r if nd == d else {**r, "desc": nd}
+
+
 def display_text(r: dict[str, Any]) -> str:
+    r = _effective(r)
+    if m := _DECLINED_ONLY.match(clean_desc(r.get("desc") or "")):  # QA 0217 G: lone declined flag, no play
+        team, who, foul = m.groups()
+        who = ((r.get("names") or {}).get("penalty")) or who
+        return f"Flag on {who} ({team.upper()}) for {foul.strip().lower()}, declined. No play."
     s = _display_text(r)
     return s if marker_text(r.get("desc") or "") is not None else _must_mention(r, s)
 
