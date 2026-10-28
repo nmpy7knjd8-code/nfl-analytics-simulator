@@ -9,7 +9,7 @@
     "build:pages": "tsx scripts/check-daily-schedule.ts && tsx scripts/snapshot-daily.ts && NFL_SIM_STATIC_EXPORT=1 next build",
     "start": "next start",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.contracts.json --noEmit",
-    "test": "node --import tsx --test contracts/contracts.test.ts lib/quiz.test.ts lib/winProbability.test.ts lib/daily.test.ts lib/gameFacts.test.ts lib/clock.test.ts lib/fixtures.fg.test.ts lib/gameFileV2.test.ts lib/closeCall.test.ts lib/features.test.ts lib/teamColors.test.ts lib/teamLogos.test.ts lib/revealRow.test.ts lib/cssSanity.test.ts lib/penaltyText.test.ts lib/simpleGame.test.ts lib/endless.test.ts lib/resultPill.test.ts lib/dailySnapshot.test.ts lib/dailySchedule.test.ts lib/playFeed.test.ts",
+    "test": "node --import tsx --test contracts/contracts.test.ts lib/quiz.test.ts lib/winProbability.test.ts lib/daily.test.ts lib/gameFacts.test.ts lib/clock.test.ts lib/fixtures.fg.test.ts lib/gameFileV2.test.ts lib/closeCall.test.ts lib/features.test.ts lib/teamColors.test.ts lib/teamLogos.test.ts lib/revealRow.test.ts lib/cssSanity.test.ts lib/penaltyText.test.ts lib/simpleGame.test.ts lib/endless.test.ts lib/resultPill.test.ts lib/dailySnapshot.test.ts lib/dailySchedule.test.ts lib/playFeed.test.ts lib/gamePicker.test.ts",
     "test:all": "npm test && npm run typecheck"
   },
   "dependencies": {
