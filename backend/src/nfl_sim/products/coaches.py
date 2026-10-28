@@ -13,6 +13,11 @@ Per-call win chance (offense perspective, 0–1; added for #59, all fields addit
   decision_value_pts   +gap_pts when the coach chose the best option, else −wp_cost_pts
   outcome_vs_expected_pts  (wp_after_actual − wp_after_chosen) × 100: beat (+) or fell short (−)
   net_value_pts        decision_value_pts + outcome_vs_expected_pts (signed)
+  alt_cost_pts         (wp[chosen] − max wp[other options]) × 100: + when the call beat the best
+                       alternative (= gap_pts when the coach agreed), − when it missed (= −wp_cost_pts)
+v1.2: records carry no play_id (house rule); they are keyed by game_id + qtr + clock ("M:SS").
+`best` ranks qualifying calls by alt_cost_pts (cost avoided). Every call, compact, is in
+coaches/calls/{season}.json. Regulation only (qtr ≤ 4, via the shared table).
 Per coach-season: games, net_value_pts / decision_value_pts / outcome_vs_expected_pts (sums
 over qualifying calls), alongside the existing cost totals (net_wp_pts = −Σ wp_cost_pts,
 wp_cost_pts_total).
@@ -33,9 +38,16 @@ MIN_CALLS_FOR_GRADE = 20
 TOP_N = 5
 
 
+def _clock(r) -> str:
+    """Game clock at the snap, "M:SS" left in the quarter (records are keyed by game_id + qtr + clock)."""
+    s = int(r["quarter_seconds_remaining"])
+    return f"{s // 60}:{s % 60:02d}"
+
+
 def _play(r) -> dict:
-    return {"game_id": r["game_id"], "play_id": int(r["play_id"]), "week": int(r["week"]),
-            "opponent": r["defteam"], "qtr": int(r["qtr"]), "ydstogo": int(r["ydstogo"]),
+    # No play_id in published files (house rule); key = game_id + qtr + clock.
+    return {"game_id": r["game_id"], "qtr": int(r["qtr"]), "clock": _clock(r), "week": int(r["week"]),
+            "opponent": r["defteam"], "ydstogo": int(r["ydstogo"]),
             "yardline_100": int(r["yardline_100"]), "score_differential": int(r["score_differential"]),
             "actual": r["actual"], "recommendation": r["rec"], "wp_cost_pts": round(r["cost"], 2),
             "result": r["result"], "desc": r["desc"],
@@ -43,7 +55,16 @@ def _play(r) -> dict:
             "wp_after_best": _r4(r.get("wp_best")), "wp_after_actual": _r4(r.get("wp_after_actual")),
             "decision_value_pts": round(r["decision_value"], 2),
             "outcome_vs_expected_pts": _r2(r.get("outcome_vs_expected")),
-            "net_value_pts": round(r["net_value"], 2)}
+            "net_value_pts": round(r["net_value"], 2),
+            "alt_cost_pts": round(r["alt_cost"], 2)}
+
+
+def _call(r) -> dict:
+    """Compact per-call record for coaches/calls/{season}.json (every call, qualifying or not)."""
+    return {"game_id": r["game_id"], "qtr": int(r["qtr"]), "clock": _clock(r), "coach": r["coach"],
+            "team": r["posteam"], "actual": r["actual"], "recommendation": r["rec"],
+            "qualifying": bool(r["qualifying"]), "wp_cost_pts": round(r["cost"], 2),
+            "alt_cost_pts": round(r["alt_cost"], 2)}
 
 
 def _ok(x) -> bool:
@@ -69,6 +90,9 @@ def calls_frame(table: pd.DataFrame) -> pd.DataFrame:
                  for e, a in zip(eng, t["actual"])]
     t = t[t["cost"].notna()].copy()
     eng = eng[t.index]
+    # win-chance points the coach's call beat (+) or trailed (−) the best other option by
+    t["alt_cost"] = [(e["wp"][a] - max(v for o, v in e["wp"].items() if o != a)) * 100
+                     for e, a in zip(eng, t["actual"])]
     t["wp_chosen"] = [e["wp"][a] for e, a in zip(eng, t["actual"])]
     t["wp_best"] = eng.map(lambda e: e["wp"][e["recommendation"]])
     if "wp" not in t:
@@ -110,9 +134,9 @@ def coach_rows(t: pd.DataFrame) -> list[dict]:
             "min_calls_for_grade": MIN_CALLS_FOR_GRADE,
             "gradeable": len(q) >= MIN_CALLS_FOR_GRADE,
             "grade": None,
-            # best: agreed with the engine where the margin was largest; worst: biggest win-chance cost
-            "best": [_play(r) for r in q[q["cost"] == 0].sort_values(["gap", "game_id", "play_id"],
-                                                                      ascending=[False, True, True]).head(TOP_N).to_dict("records")],
+            # best: most win chance gained over the best alternative (cost avoided); worst: biggest cost
+            "best": [_play(r) for r in q[q["alt_cost"] > 0].sort_values(["alt_cost", "game_id", "play_id"],
+                                                                         ascending=[False, True, True]).head(TOP_N).to_dict("records")],
             "worst": [_play(r) for r in ranked[ranked["cost"] > 0].tail(TOP_N).iloc[::-1].to_dict("records")],
         })
     return sorted(out, key=lambda r: (r["team"], r["coach"]))
@@ -127,12 +151,18 @@ def build() -> dict[int, int]:
     for season in fourth_downs.SEASONS:
         rows = coach_rows(t[t["season"] == season])
         write_json(f"coaches/{season}.json", {
-            "schema_version": "coaches.v1.1", "engine_version": ENGINE_VERSION,
+            "schema_version": "coaches.v1.2", "engine_version": ENGINE_VERSION,
             "provenance": provenance([season]), "season": season,
             "qualifying_rule": "engine gap ≥ 2 win-chance points (not a close call)",
             "min_calls_for_grade": MIN_CALLS_FOR_GRADE,
             "grade_status": "null until calibrated WP (#37); Phase 4 grades gradeable coaches only",
             "coaches": rows,
+        })
+        calls = t[t["season"] == season].sort_values(["game_id", "play_id"])
+        write_json(f"coaches/calls/{season}.json", {
+            "schema_version": "coaches_calls.v1", "engine_version": ENGINE_VERSION,
+            "provenance": provenance([season]), "season": season,
+            "calls": [_call(r) for r in calls.to_dict("records")],
         })
         counts[season] = len(rows)
     return counts
