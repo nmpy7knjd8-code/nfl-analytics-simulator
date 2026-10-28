@@ -1823,9 +1823,25 @@ body { font-variant-numeric: tabular-nums; }
 .hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
 .hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
 .oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
+/* —— E3 match the chart —— */
+.mc-charts{display:flex;flex-direction:column;gap:10px}
+.mc-chart{margin:0;display:flex;gap:8px;align-items:flex-start}
+.mc-chart svg{flex:1;min-width:0;height:auto}
+.mc-letter{font-weight:800;font-size:20px;width:22px;padding-top:4px}
+.mc-key{margin:0;font-size:12px;color:var(--sg-g)}
+.mc-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #eee}
+.mc-row:last-child{border-bottom:0}
+.mc-row.is-ok .mc-sub{color:#0a7d32}
+.mc-row.is-bad .mc-sub{color:#c5221f}
+.mc-game{font-size:15px;min-width:0}
+.mc-sub{font-size:12px;color:var(--sg-g);margin-top:2px}
+.mc-chips{display:flex;gap:6px;flex:none}
+.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.mc-chip.is-on{background:#1E5BFF;border-color:#1E5BFF;color:#fff}
+.mc-total{font-size:20px;font-weight:800;text-align:center;margin:12px 0 4px}
+.mc-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 /* —— E5 where's the ball —— */
 .wb-sit{font-size:17px;margin:6px 0 12px}
-.mc-sub{font-size:12px;color:var(--sg-g);margin-top:2px}
 .wb-wrap{margin:4px 0}
 .wb-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--sg-g);margin-bottom:4px}
 .wb-field{position:relative;height:84px;border-radius:8px;background:#2e7d32;touch-action:none;cursor:pointer;border-left:10px solid #1b5e20;border-right:10px solid #1b5e20}
