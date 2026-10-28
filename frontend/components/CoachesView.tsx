@@ -1,0 +1,111 @@
+import Link from "next/link";
+import { TeamLogo } from "./TeamLogo";
+import { CHECKER_PAUSED } from "../lib/features";
+import {
+  type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
+  rankCoaches, regulationOnly, seasonHref, signedPts, wentWhenShould,
+} from "../lib/coaches";
+
+/** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
+export function EnginePaused() {
+  return (
+    <main className="fd-page co-page" id="main">
+      <section className="co-card" role="status">
+        <h1 className="co-h1">{CHECKER_PAUSED.title}</h1>
+        <p>{CHECKER_PAUSED.body}</p>
+        <Link className="co-btn" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
+      </section>
+    </main>
+  );
+}
+
+export const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
+
+export function SeasonPicker({ season, hrefFor = seasonHref }: { season: number; hrefFor?: (s: number) => string }) {
+  return (
+    <nav className="co-seasons" aria-label="Season">
+      {SEASONS.map((s) => (
+        <Link key={s} href={hrefFor(s)} className={`co-season${s === season ? " is-on" : ""}`} aria-current={s === season ? "page" : undefined}>{s}</Link>
+      ))}
+    </nav>
+  );
+}
+
+export function GradesNote({ data }: { data: CoachSeason }) {
+  return (
+    <p className="co-note" role="note">
+      Grades come once the model is calibrated. Coaches with fewer than {data.min_calls_for_grade} clear calls won&apos;t get one.
+    </p>
+  );
+}
+
+function CoachRow({ c, season, rank }: { c: Coach; season: number; rank: number }) {
+  return (
+    <li>
+      <Link href={coachHref(c.team, season)} className="co-row">
+        <span className="co-rank">{rank}</span>
+        <TeamLogo abbr={c.team} size={28} />
+        <span className="co-who"><b>{c.coach}</b><small>{c.team} · {c.qualifying_calls} clear calls · went {pctText(wentWhenShould(c))} when he should</small></span>
+        <span className={`co-net${c.net_wp_pts < 0 ? " is-neg" : ""}`}>{signedPts(c.net_wp_pts)}</span>
+      </Link>
+    </li>
+  );
+}
+
+export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
+  return (
+    <main className="fd-page co-page" id="main">
+      <header>
+        <h1 className="co-h1">Coaches · {data.season}</h1>
+        <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: win-chance points gained or lost over the season.</p>
+      </header>
+      <SeasonPicker season={data.season} />
+      <ol className="co-list">
+        {rankCoaches(data.coaches).map((c, i) => <CoachRow key={c.coach + c.team} c={c} season={data.season} rank={i + 1} />)}
+      </ol>
+      <GradesNote data={data} />
+      <p className="co-src">Data: nflverse ({data.provenance.license}). Model not yet calibrated. Clear call: {data.qualifying_rule}.</p>
+      <Trademark />
+    </main>
+  );
+}
+
+function CallList({ title, calls, team }: { title: string; calls: CoachCall[]; team: string }) {
+  const shown = regulationOnly(calls);
+  return (
+    <section className="co-card" aria-label={title}>
+      <h2 className="co-h2">{title}</h2>
+      {shown.length === 0 ? <p className="co-sub">No calls.</p> : (
+        <ol className="co-calls">
+          {shown.map((c) => (
+            <li key={`${c.game_id}-${c.play_id}`}>
+              <p className="co-sit">{callLine(c, team)}</p>
+              <p>{callVerdict(c, team)} <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{c.wp_cost_pts > 0 ? `Cost ${c.wp_cost_pts.toFixed(1)} win-chance pts.` : "No cost."}</span></p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
+export function CoachBlock({ c }: { c: Coach }) {
+  const g = gradeCell(c);
+  return (
+    <>
+      <section className="co-card">
+        <h2 className="co-h2">{c.coach}</h2>
+        <dl className="co-stats">
+          <div><dt>Clear calls</dt><dd>{c.qualifying_calls}<small> of {c.calls}</small></dd></div>
+          <div><dt>Went when he should</dt><dd>{pctText(wentWhenShould(c))}{c.should_go ? <small> of {c.should_go}</small> : null}</dd></div>
+          <div><dt>Kicked when he should&apos;ve gone</dt><dd>{c.kicked_when_should_go}</dd></div>
+          <div><dt>Went when he should&apos;ve kicked</dt><dd>{c.went_when_should_kick}</dd></div>
+          <div><dt>Net win chance</dt><dd className={c.net_wp_pts < 0 ? "is-neg" : undefined}>{signedPts(c.net_wp_pts)} pts</dd></div>
+          <div><dt>Grade</dt><dd className="co-grade">{g.text}</dd></div>
+        </dl>
+      </section>
+      <CallList title="Best calls" calls={c.best} team={c.team} />
+      <CallList title="Worst calls" calls={c.worst} team={c.team} />
+    </>
+  );
+}

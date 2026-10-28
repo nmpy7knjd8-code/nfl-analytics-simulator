@@ -1,0 +1,37 @@
+.co-page{gap:12px}
+.co-h1{margin:0;font-size:26px;line-height:1.15}
+.co-h2{margin:0 0 6px;font-size:18px}
+.co-sub,.co-src,.co-note{margin:4px 0 0;font-size:14px;color:var(--color-ink-muted);line-height:1.4}
+.co-note{color:var(--color-ink-secondary)}
+.co-card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:12px;padding:14px;display:grid;gap:8px}
+.co-card p{margin:0}
+.co-btn{justify-self:start;background:var(--color-ink);color:var(--color-ink-inverse);border-radius:999px;padding:10px 16px;font-weight:600;text-decoration:none}
+.co-seasons{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.co-season{flex:none;padding:6px 10px;border:1px solid var(--color-border);border-radius:999px;font-size:14px;color:var(--color-ink-secondary);text-decoration:none}
+.co-season.is-on{background:var(--color-ink);color:var(--color-ink-inverse);border-color:var(--color-ink)}
+.co-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.co-row{display:grid;grid-template-columns:1.6em 28px 1fr auto;align-items:center;gap:10px;padding:10px 12px;background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:10px;color:var(--color-ink);text-decoration:none;min-height:44px}
+.co-rank{font-size:13px;color:var(--color-ink-muted);text-align:right}
+.co-who{display:grid;min-width:0}
+.co-who b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.co-who small{font-size:12px;color:var(--color-ink-muted)}
+.co-net{font-variant-numeric:tabular-nums;font-weight:600}
+.is-neg{color:var(--color-ink-muted)}
+.co-net.is-neg::after{content:""}
+.co-stats{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.co-stats div{background:var(--color-bg-sunken);border-radius:8px;padding:8px}
+.co-stats dt{font-size:12px;color:var(--color-ink-muted)}
+.co-stats dd{margin:2px 0 0;font-size:20px;font-weight:600}
+.co-stats small{font-size:12px;font-weight:400;color:var(--color-ink-muted)}
+.co-stats .co-grade{font-size:13px;font-weight:400;color:var(--color-ink-secondary)}
+.co-calls{margin:0;padding-left:18px;display:grid;gap:10px;font-size:14px;color:var(--color-ink-secondary)}
+.co-sit{font-size:13px;color:var(--color-ink-muted)}
+.co-head{display:flex;align-items:center;gap:12px}
+.wi-card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:12px;padding:18px;display:grid;gap:8px}
+.wi-card p{margin:0}
+.wi-strip{font-size:14px;color:var(--color-ink-secondary)}
+.wi-head{font-size:22px;font-weight:700}
+.wi-nums{font-size:44px;font-weight:700;line-height:1}
+.wi-bar{display:block;width:120px;height:4px;background:var(--color-blue)}
+.wi-sub{font-size:15px;color:var(--color-ink-secondary)}
+.wi-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--color-ink-muted)}
