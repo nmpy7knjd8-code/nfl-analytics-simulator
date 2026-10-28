@@ -1,22 +1,21 @@
-.tm-head{display:flex;align-items:center;gap:12px;border-left:4px solid var(--tm-c);padding-left:12px}
-.tm-head h1{margin:0;font-size:28px;line-height:1.1}
-.tm-sub{margin:2px 0 0;color:var(--color-ink-muted);font-size:14px}
-.tm-card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:12px;padding:16px;display:grid;gap:10px}
-.tm-card h2{margin:0;font-size:18px}
-.tm-stub{margin:0;font-size:13px;color:var(--color-ink);background:var(--color-accent-soft);border:1px dashed var(--color-border-strong);border-radius:8px;padding:6px 8px}
-.tm-big{margin:0;font-size:16px;color:var(--color-ink-secondary)}
-.tm-big span{display:block;font-size:48px;font-weight:700;color:var(--color-ink);line-height:1}
-.tm-vs{margin:0;font-size:15px;color:var(--color-ink-secondary)}
-.tm-bars{display:grid;gap:6px}
-.tm-bar{height:10px;background:var(--color-bg-sunken);border-radius:5px;overflow:hidden}
-.tm-bar i{display:block;height:100%;background:var(--tm-c);outline:1px solid var(--color-border-strong);outline-offset:-1px}
-.tm-bar-lg i{background:var(--color-ink-muted);outline:none}
-.tm-split{display:flex;height:14px;border-radius:7px;overflow:hidden}
-.tm-split i{display:block;height:100%}
-.tm-s-td{background:var(--color-ink)}
-.tm-s-fg{background:var(--color-ink-muted)}
-.tm-s-no{background:var(--color-border)}
-.tm-legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--color-ink-secondary)}
-.tm-legend b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
-.tm-note{margin:0;font-size:13px;color:var(--color-ink-muted)}
-.tm-row{display:grid;grid-template-columns:3em 1fr;align-items:center;gap:8px;font-size:13px;color:var(--color-ink-muted)}
+/* Team pages: same white card as the Fourth & Daily game (.sg-app), like /kicks (#159). */
+.tm{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.tm-head{display:flex;align-items:center;gap:10px;margin-top:6px}
+.tm-h1{font-size:26px;line-height:1.15;font-weight:800;margin:0;color:#000}
+.tm-lede{margin:0;color:var(--sg-g);font-size:15px}
+.tm-chips{margin:0}
+.tm-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px;display:grid;gap:6px}
+.tm-q{font-size:16px;font-weight:600;color:#000;margin:0}
+.tm-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:4px 0 0}
+.tm-sub{font-size:14px;color:var(--sg-g)}
+.tm-vs{margin:0;font-size:15px;font-weight:600;color:#000}
+.tm-bars{display:grid;gap:6px;margin-top:4px}
+.tm-row{display:grid;grid-template-columns:3em 1fr;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sg-g);text-align:left}
+.tm-bar{height:8px;border-radius:4px;background:#e6e6e6;overflow:hidden}
+.tm-bar i{display:block;height:100%;background:var(--sg-b)}
+.tm-bar-lg i{background:#9aa0a6}
+.tm-tiles{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tm-tiles li{display:grid;gap:2px;padding:8px;border:1.5px solid #d9d9d9;border-radius:12px;text-align:left}
+.tm-tiles span{font-size:13px;font-weight:700;color:var(--sg-g)}
+.tm-tiles b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.tm-note{margin:0;font-size:13px;color:var(--sg-g);line-height:1.35}

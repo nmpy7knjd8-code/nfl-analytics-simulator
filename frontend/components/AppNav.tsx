@@ -17,7 +17,7 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 /** The simple game ("/", "/daily", "/practice", "/endless") has its own header and ☰ menu, so the old chrome is hidden there. */
 function useGameRoute(): boolean {
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
-  return p === "/" || p === "/daily" || p === "/practice" || p === "/endless" || p === "/feed";
+  return p === "/" || p === "/daily" || p === "/practice" || p === "/endless" || p === "/feed" || p.startsWith("/team/");
 }
 
 export function TopBar() {
