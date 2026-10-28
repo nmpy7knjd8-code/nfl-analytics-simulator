@@ -4,7 +4,7 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { dateKey } from "../lib/daily";
 import {
-  CALL_LABEL, buildRound, readKicks, coachText, pct1, ratesLines, readTries, sameAsCoach, shareText, situationText,
+  CALL_LABEL, buildRound, readKicks, coachText, otherTriesNote, pct1, ratesLines, readTries, sameAsCoach, shareText, situationText,
   type Call, type Try, type TwoPointFile,
 } from "../lib/twoPoint";
 import { teamLogo } from "./ScoreBug";
@@ -152,6 +152,7 @@ export function TwoPoint() {
       <ul className="tp-rates" aria-label={`Real rates, ${file.season_list[0]}–${file.season_list[file.season_list.length - 1]}`}>
         {ratesLines(file).map((l) => <li key={l}>{l}</li>)}
       </ul>
+      {otherTriesNote(file) && <p className="tp-note tp-other">{otherTriesNote(file)}</p>}
       <p className="tp-note">Real league rates since {file.season_list[0]}, not a pick for this spot.</p>
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={() => setIdx(idx + 1)}>{idx + 1 < n ? "Next try" : "See your score"}</button>

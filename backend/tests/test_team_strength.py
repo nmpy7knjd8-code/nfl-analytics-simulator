@@ -133,9 +133,9 @@ def test_real_game_rows_carry_shifts_but_no_spread_in_output(engine):
     assert not re.search(r"spread|odds|line|betting|vegas", out, re.I)
 
 
-def test_checker_stays_disabled():
+def test_checker_enabled():
     src = (Path(__file__).parents[2] / "frontend" / "lib" / "features.ts").read_text()
-    assert "export const CHECKER_ENABLED = false;" in src
+    assert "export const CHECKER_ENABLED = true;" in src
 
 
 def test_priors_are_reported_by_the_model(model):

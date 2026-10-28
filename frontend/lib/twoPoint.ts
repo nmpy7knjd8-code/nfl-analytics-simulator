@@ -1,12 +1,11 @@
 // B1 concept 1, "Kick or go for two?": a real two-point try from nflverse; the fan makes the call,
-// then sees what the coach did, how it went, and the real league rates. No per-choice win chance
-// exists (per_choice_win_chance is null), so none is shown or invented.
+// then sees what the coach did, how it went, and the real league rates. This game shows no win
+// chance: the data file's per-choice section is for a later chart behind the checker flag, and the UI never reads it.
 export type Rate = { tries: number; made: number; rate: number };
 export type TwoPointFile = {
   schema_version: number; season_list: number[];
   two_point: Rate & { run: Rate; pass: Rate };
   extra_point: Rate;
-  per_choice_win_chance: null;
   cols: string[];
   tries: (string | number)[][];
   kicks?: (string | number)[][];
@@ -109,6 +108,14 @@ export function ratesLines(file: TwoPointFile): string[] {
     `Two-point tries: good ${pct1(tp)} (${tp.made} of ${tp.tries})`,
     `Runs ${pct1(tp.run)} (${tp.run.made} of ${tp.run.tries}) · passes ${pct1(tp.pass)} (${tp.pass.made} of ${tp.pass.tries})`,
   ];
+}
+
+/** Tries in the two-point total that are neither a run nor a pass (penalties or kneels), or null if none. */
+export function otherTriesNote(file: TwoPointFile): string | null {
+  const tp = file.two_point;
+  const n = tp.tries - tp.run.tries - tp.pass.tries, good = tp.made - tp.run.made - tp.pass.made;
+  if (n <= 0) return null;
+  return `Includes ${n} ${n === 1 ? "try" : "tries"} (${good} good) wiped out by penalties or kneels.`;
 }
 
 export function shareText(results: boolean[]): string {

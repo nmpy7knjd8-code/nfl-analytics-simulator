@@ -40,7 +40,7 @@ If an existing project conflicts with these defaults, inspect it and document th
 ## Fan-site house rules (checked by scripts/acceptance)
 
 * No EPA, WPA or xpass on fan screens; no odds, lines or betting text.
-* No field goal offered over 64 yards; no overtime win chance; CHECKER_ENABLED stays false until approved.
+* No field goal offered over 64 yards; no overtime win chance; CHECKER_ENABLED is true (approved by Garrett, Oct 28 2026).
 * Team colors and logos: self-hosted nflverse team logos and wordmarks are allowed. Never hotlink external images (logo files must be self-hosted under /teams/ and listed in teams/manifest.json). The footer carries "Team names and logos are trademarks of the NFL and its teams. Not affiliated."
 
 ## Core domain invariants

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import raw from "./site/twopoint.json";
-import { buildRound, readKicks, coachCall, KICKS_PER_ROUND, coachText, marginText, pct1, ratesLines, readTries, sameAsCoach, situationText, ROUND_SIZE, type TwoPointFile } from "./twoPoint";
+import { buildRound, readKicks, coachCall, KICKS_PER_ROUND, coachText, marginText, otherTriesNote, pct1, ratesLines, readTries, sameAsCoach, situationText, ROUND_SIZE, type TwoPointFile } from "./twoPoint";
 
 const file = raw as unknown as TwoPointFile;
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -22,12 +22,21 @@ test("shown rates are the real nflverse counts", () => {
     "Runs 54.5% (145 of 266) · passes 44.2% (301 of 681)",
   ]);
   assert.equal(pct1({ tries: 0, made: 0 }), "—");
+  const tp = file.two_point;
+  assert.equal(tp.run.tries + tp.pass.tries, 947);
+  assert.equal(tp.run.made + tp.pass.made, 446);
+  assert.equal(otherTriesNote(file), "Includes 13 tries (10 good) wiped out by penalties or kneels.");
+  assert.equal(otherTriesNote({ ...file, two_point: { ...tp, tries: 947, made: 446 } }), null);
 });
 
-test("no win chance per choice is shown or invented", () => {
-  assert.equal(file.per_choice_win_chance, null);
+test("no win chance is shown, and the UI never reads per_choice_win_chance", () => {
   const src = readFileSync(resolve(HERE, "twoPoint.ts"), "utf8") + readFileSync(resolve(HERE, "../components/TwoPoint.tsx"), "utf8");
   assert.ok(!/win chance|\bwp\b|\.wp\b/i.test(src.replace(/^\s*\/\/.*$/gm, "").replace(/^\s*\*.*$/gm, "")), "TwoPoint UI must not read or show win chance");
+  assert.ok(!src.includes("per_choice_win_chance"), "TwoPoint UI must not read per_choice_win_chance");
+  const page = readFileSync(resolve(HERE, "../app/two-point/page.tsx"), "utf8");
+  assert.ok(!/win chance|per_choice/i.test(page));
+  const copy = [...ratesLines(file), otherTriesNote(file) ?? "", ...tries.slice(0, 50).map(situationText), ...kicks.slice(0, 50).map(situationText), ...tries.slice(0, 50).map(coachText)].join("\n");
+  assert.ok(!/win chance|\d+% to win/i.test(copy), "rendered copy must not show win chance");
   assert.ok(!/\b(EPA|WPA|odds|spread|vegas|bet)\b/i.test(src.replace(/^\s*\/\/.*$/gm, "")));
 });
 
