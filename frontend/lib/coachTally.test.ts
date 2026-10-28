@@ -43,3 +43,18 @@ test("tally survives reload, replaying a day doesn't double count, junk is ignor
   st.setItem("fourth-and-daily.coach.v1", JSON.stringify([{ date: 1 }]));
   assert.deepEqual(loadCoach(st), []);
 });
+
+test("two played days (10 plays) count all 10 plays when every coach call is known", () => {
+  const days = ["2026-10-27", "2026-10-28"];
+  let es: CoachEntry[] = [];
+  for (const d of days) {
+    const set = dailySet(d);
+    assert.equal(set.length, 5);
+    const rows = set.map((it, i) => entryFor(d, it, i % 2 ? "punt" : coachCall(it)!)).filter((e): e is CoachEntry => e != null);
+    es = addCoachDay(es, d, rows);
+  }
+  const known = days.flatMap((d) => dailySet(d)).filter((it) => coachCall(it)).length;
+  const t = coachTally(es);
+  assert.equal(t.agreed + t.differed, known);
+  assert.equal(known, 10);
+});

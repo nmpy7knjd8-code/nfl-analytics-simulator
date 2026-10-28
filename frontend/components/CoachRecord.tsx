@@ -24,6 +24,7 @@ export function CoachRecord() {
       ) : (
         <>
           <p className="cv-tally">Same call: <b>{coachTally(es).agreed}</b> · Different: <b>{coachTally(es).differed}</b></p>
+          <p className="sg-note cv-note">Counts plays where the coach&apos;s call is known</p>
           {coachTally(es).differed ? (
             <button type="button" className="cv-btn" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
               Where you disagreed
