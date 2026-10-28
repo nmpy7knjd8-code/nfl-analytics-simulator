@@ -47,7 +47,6 @@ def test_top_swing_is_daniels_hail_mary(built):
 def test_filter_drops_ot_kneels_bad_game_and_long_fg(built):
     for rec in _records(built):
         assert 1 <= rec["qtr"] <= 4
-        assert rec["game_id"] != bs.BAD_GAME
         assert rec["play_type"] in bs.SWING_PLAY_TYPES
     descs = " ".join(r["desc"] for r in _records(built))
     assert "kneels" not in descs
@@ -55,6 +54,18 @@ def test_filter_drops_ot_kneels_bad_game_and_long_fg(built):
     assert not bs.is_swing_candidate({**ROWS[0], "qtr": 5})
     assert not bs.is_swing_candidate({**ROWS[0], "qb_kneel": 1})
     assert not bs.is_swing_candidate({**ROWS[0], "vegas_wpa": None})
+
+
+def test_cin_buf_drops_only_bad_row_and_play_before():
+    marked = bs.mark_bad_rows(ROWS)
+    bad = [r for r in marked if r.get("_bad_row")]
+    assert [r["desc"][:13] for r in bad] == ["(:02) (Shotgu", "End of half -"]
+    assert "A.Dalton" in bad[0]["desc"] and not bs.is_swing_candidate(bad[0])
+    # any other regulation play from the game still counts (the game has no overtime)
+    dalton = next(r for r in ROWS if r["game_id"] == bs.BAD_GAME and "A.Dalton" in (r["desc"] or ""))
+    other = {**dalton, "time": "08:00", "desc": "(8:00) other play"}
+    rows = [other] + ROWS
+    assert any(r["desc"] == other["desc"] for r in bs.mark_bad_rows(rows) if bs.is_swing_candidate(r))
 
 
 def test_each_week_is_its_biggest_swing(built):
@@ -96,7 +107,9 @@ def test_committed_site_file_is_small_and_clean():
     assert SITE.stat().st_size < 100_000
     assert data["v"] == bs.SCHEMA_VERSION and len(data["top"]) == bs.TOP_N
     text = SITE.read_text()
-    assert bs.BAD_GAME not in text
+    assert "End of half" not in text and "14-A.Dalton pass deep right to 19-A.Tate" not in text
+    # rebuild after the CIN_BUF row-level filter left the published 2019 week 3 pick unchanged
+    assert data["weeks"]["2019-w03"]["game_id"] == "2019_03_NYG_TB"
     assert not re.search(r"\b(EPA|WPA|xpass)\b", text)
     for rec in _records(data):
         assert set(rec) == RECORD_KEYS

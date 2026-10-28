@@ -43,6 +43,7 @@ FG_SNAP_YARDS = 18
 TAIL_START = 60
 TAIL_FIT_FROM = 50
 FG_MAX_STEP = 0.04
+FG_SMOOTH_YARDS = 1.0  # QA 0217 E
 FG_LONG_BINS: tuple[tuple[int, int], ...] = ((60, 62), (63, 70))  # QA 0116 P3: observed-rate caps
 FG_MIN_KICK = 18  # per-yard table starts here (shortest real kicks are 18-19 yd)
 
@@ -102,8 +103,31 @@ def _logit_fit(x: np.ndarray, y: np.ndarray, iters: int = 50) -> tuple[float, fl
     return float(w[0]), float(w[1])
 
 
+def _isotonic_curve(kd: pd.Series, made: pd.Series) -> Any:
+    """QA 0217 E: decreasing isotonic fit (PAVA) on per-yard make rates, linearly interpolated
+    between pooled-block centres. A single logistic underpriced 50-55 yd and overpriced 40-49."""
+    yd = kd.round().astype(int)
+    g = pd.DataFrame({"yd": yd, "m": made.astype(float)}).groupby("yd")["m"].agg(["sum", "count"])
+    blocks: list[list[float]] = []  # [made, n, sum(yd*n)]
+    for y, row in g.iterrows():
+        blocks.append([float(row["sum"]), float(row["count"]), float(y) * float(row["count"])])
+        while len(blocks) > 1 and blocks[-2][0] / blocks[-2][1] <= blocks[-1][0] / blocks[-1][1]:
+            b = blocks.pop()
+            blocks[-1] = [blocks[-1][0] + b[0], blocks[-1][1] + b[1], blocks[-1][2] + b[2]]
+    xs = np.array([b[2] / b[1] for b in blocks])
+    ps = np.array([b[0] / b[1] for b in blocks])
+    # Gaussian smoothing over yards (FG_SMOOTH_YARDS): a monotone curve convolved with a positive
+    # kernel stays monotone, and the kinks at block centres no longer flip best calls.
+    grid = np.arange(0, 100)
+    raw = np.interp(grid, xs, ps)
+    k = np.exp(-0.5 * (np.arange(-12, 13) / FG_SMOOTH_YARDS) ** 2)
+    sm = np.convolve(np.pad(raw, 12, mode="edge"), k / k.sum(), mode="valid")
+    return lambda y: float(np.interp(y, grid, sm))
+
+
 def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dict[str, Any]]:
-    """M12: per-yard make probability from ONE logistic fit on kick distance.
+    """M12 / QA 0217 E: per-yard make probability from ONE monotone fit on kick distance
+    (isotonic, interpolated between pooled blocks; was a single logistic).
 
     The old 10-yd bins (plus a separate tail fit from 60 yd) made the FG value drop in
     steps at 30/40/50/60 yd (up to 9 WP pts between opp 41 and 42). Now every yard from
@@ -115,13 +139,12 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
     if kd.empty or made.nunique() < 2:
         return {(lo, hi): {"n": int(kd.between(lo, hi).sum()), "p_make": 0.5, "filter": "REG field_goal; no fit"}
                 for lo, hi in FG_BINS}
-    a, b = _logit_fit(kd.to_numpy(), made.to_numpy().astype(float))
     longest = int(kd.max())
     # QA 0116 P3: the single logistic is too generous past 60 yd (0.49 at 64 vs 14% observed
     # at 63+). Within each 60+ bin, scale the logistic down so its bin mean equals the observed
     # (pooled) make rate when the fit is higher; scaling keeps it strictly falling per yard.
     caps: dict[int, float] = {}
-    logit = lambda y: float(1.0 / (1.0 + np.exp(-(a + b * y))))  # noqa: E731
+    logit = _isotonic_curve(kd, made)  # QA 0217 E
     for lo, hi in FG_LONG_BINS:
         hi = max(hi, longest) if hi == FG_LONG_BINS[-1][1] else hi
         inb = kd.round().between(lo, hi)
@@ -140,24 +163,10 @@ def _build_fg_table(kd: pd.Series, made: pd.Series) -> dict[tuple[int, int], dic
             "n": int(at.sum()),
             "made": int(made[at].sum()),
             "p_make": p,
-            "filter": f"REG field_goal; logistic fit on kick_distance over {len(kd)} attempts "
+            "filter": f"REG field_goal; isotonic (interpolated) fit on kick_distance over {len(kd)} attempts "
                       f"(longest {longest} yd)",
         }
     return tbl
-
-
-# Punt outcomes are priced yard by yard (H8): a Gaussian kernel over nearby pre-punt
-# yard lines, so the punt value moves smoothly up the field instead of in flat bands.
-PUNT_KERNEL_YARDS = 4.0
-PUNT_KERNEL_MIN_N = 200.0
-PUNT_MONOTONE_FROM = 50  # widen the kernel where punts are rare (deep in opp territory)
-
-
-def _wquantile(v: np.ndarray, w: np.ndarray, q: float) -> float:
-    o = np.argsort(v)
-    v, w = v[o], w[o]
-    cw = np.cumsum(w) - 0.5 * w
-    return float(np.interp(q * w.sum(), cw, v))
 
 
 # Punt outcomes are priced yard by yard (H8): a Gaussian kernel over nearby pre-punt
@@ -200,7 +209,7 @@ def _build_punt_table(
             w = np.exp(-0.5 * ((x - y) / h) ** 2)
             if w.sum() >= PUNT_KERNEL_MIN_N or h > 60:
                 break
-            h *= 1.5
+            h *= 1.05  # QA 0217 F: fine widening steps (1.5x jumped 83.1->86.6 between yl 1 and 4)
         stats["mean"][i] = float((w * v).sum() / w.sum())
         for q, k in ((0.25, "q25"), (0.5, "q50"), (0.75, "q75")):
             stats[k][i] = _wquantile(v, w, q)
