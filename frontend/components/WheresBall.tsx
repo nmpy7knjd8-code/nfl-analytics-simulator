@@ -5,7 +5,6 @@ import { roundsFor, roundScore, clampSpot, ROUNDS_PER_GAME, type BallRound } fro
 import { goRates, cellAt, pct, spotLabel } from "../lib/goRates";
 import { Header, Trademark } from "./SimpleGame";
 
-const today = () => new Date().toISOString().slice(0, 10);
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 const ord = ["", "1st", "2nd", "3rd", "4th"];
 
@@ -41,7 +40,7 @@ function Field({ guess, actual, onMove, r }: { guess: number; actual: number | n
 }
 
 export function WheresBall() {
-  const rounds = useMemo(() => roundsFor(today()), []);
+  const rounds = useMemo(() => roundsFor(), []);
   const [i, setI] = useState(0);
   const [guess, setGuess] = useState(50);
   const [shown, setShown] = useState(false);
@@ -67,9 +66,10 @@ export function WheresBall() {
         </section>
       ) : (
         <>
-          <p className="kb-lede">A real 4th down. Drag the ball to where you think it was snapped, then lock it in.</p>
+          <p className="kb-lede">A real 4th down, not one from today's Fourth & Daily. Drag the ball to where you think it was snapped, then lock it in.</p>
           <section className="kb-hero ch-pick">
             <div className="era-pick-h">Round {i + 1} of {ROUNDS_PER_GAME}</div>
+            <p className="wb-clue">Your clue: the teams, the score, the quarter and clock, and the yards to go.</p>
             <div className="wb-sit">
               <strong>{r.posteam}</strong> {r.posScore}, <strong>{r.defteam}</strong> {r.defScore}
               <div className="mc-sub">{ord[r.qtr]} quarter, {clock(r.secs)} left · 4th-and-{r.distance}</div>

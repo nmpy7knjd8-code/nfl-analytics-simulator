@@ -1,8 +1,10 @@
 import pack from "./dailyPack.json";
 import retired from "./retiredDailyIds.json";
+import { dailySet, dateKey } from "./daily";
 
 export type BallRound = {
-  id: string; posteam: string; defteam: string; posScore: number; defScore: number;
+  /** Pack item id. */ id: string;
+  /** nflverse "game_id-play_id", the id the daily schedule and retired list use. */ playKey: string; posteam: string; defteam: string; posScore: number; defScore: number;
   qtr: number; secs: number; down: number; distance: number; yardline100: number; action: string;
 };
 
@@ -20,7 +22,7 @@ export function eligibleRounds(items: PackItem[] = (pack as { items: PackItem[] 
   return items
     .filter((it) => it.kind === "historical" && it.source && !retiredSet.has(`${it.source.game_id}-${it.source.play_id}`) && it.situation.qtr <= 4)
     .map((it) => ({
-      id: it.id, posteam: it.situation.posteam, defteam: it.situation.defteam,
+      id: it.id, playKey: `${it.source!.game_id}-${it.source!.play_id}`, posteam: it.situation.posteam, defteam: it.situation.defteam,
       posScore: it.situation.posteam_score, defScore: it.situation.defteam_score,
       qtr: it.situation.qtr, secs: it.situation.quarter_seconds_remaining,
       down: it.situation.down, distance: it.situation.distance, yardline100: it.situation.yardline_100,
@@ -34,9 +36,27 @@ function hash(s: string) {
   return h >>> 0;
 }
 
-/** Five distinct rounds, same for everyone on a given day. */
-export function roundsFor(day: string, pool = eligibleRounds()): BallRound[] {
-  return [...pool].sort((a, b) => hash(day + a.id) - hash(day + b.id)).slice(0, ROUNDS_PER_GAME);
+/** Ids of that date's Fourth & Daily plays (both id forms), so this game never repeats them. */
+export function dailyIdsFor(day: string): Set<string> {
+  const ids = new Set<string>();
+  for (const it of dailySet(day)) {
+    ids.add(it.id);
+    if (it.source.play_id !== undefined) ids.add(`${it.source.game_id}-${it.source.play_id}`);
+  }
+  return ids;
+}
+
+/**
+ * Five distinct rounds for an ET date key: the eligible pool minus that date's daily plays,
+ * ordered by a hash salted "wheres-ball:" so it is independent of the daily shuffle.
+ * Does not touch the daily schedule.
+ */
+export function roundsFor(day: string = dateKey(), pool = eligibleRounds()): BallRound[] {
+  const daily = dailyIdsFor(day);
+  return pool
+    .filter((r) => !daily.has(r.id) && !daily.has(r.playKey))
+    .sort((a, b) => hash(`wheres-ball:${day}:${a.id}`) - hash(`wheres-ball:${day}:${b.id}`) || (a.id < b.id ? -1 : 1))
+    .slice(0, ROUNDS_PER_GAME);
 }
 
 /** 100 minus 2 per yard off, floored at 0. */

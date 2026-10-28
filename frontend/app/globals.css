@@ -1806,3 +1806,4 @@ body { font-variant-numeric: tabular-nums; }
 .wb-spot{font-size:18px;font-weight:800;min-width:96px;text-align:center}
 .mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
 .mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
+.wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
