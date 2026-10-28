@@ -1754,3 +1754,37 @@ body { font-variant-numeric: tabular-nums; }
 .kb-bar span{display:block;height:100%;background:var(--sg-b)}
 .kb-tile-n{font-size:13px;color:var(--sg-g)}
 .kb-note{margin:0;font-size:13px;color:var(--sg-g);line-height:1.35}
+
+/* —— F6 model limits (reveal card + About) —— */
+.ml{border:1.5px solid #d9d9d9;border-radius:14px;background:#fff;margin:10px 0}
+.ml-sum{min-height:44px;display:flex;align-items:center;padding:0 14px;cursor:pointer;font-size:15px;font-weight:700;color:#000;list-style:none}
+.ml-sum::-webkit-details-marker{display:none}
+.ml-sum::after{content:"▸";margin-left:auto;color:var(--sg-b);transition:transform .15s}
+.ml[open] .ml-sum::after{transform:rotate(90deg)}
+.ml-list{margin:0;padding:0 14px 12px 32px;display:grid;gap:6px;font-size:14px;color:var(--sg-g);line-height:1.4}
+.ml-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ml-cols>div{border:1.5px solid #d9d9d9;border-radius:14px;background:#fff;padding:12px}
+.ml-cols h3{margin:0 0 6px;font-size:15px;color:#000}
+.ml-cols ul{margin:0;padding-left:18px;font-size:14px;color:var(--sg-g)}
+.ml{margin:6px 0 4px}
+.ml-sum{min-height:44px}
+/* About on the white game card */
+.ab{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));line-height:1.5}
+.ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:#000}
+.ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
+.ab>ul{padding-left:20px;display:grid;gap:6px}
+.ab a{color:var(--sg-b)}
+/* —— chart pages (F4/D2), same white card as /kicks —— */
+.ch-card{padding:8px 6px}
+.ch-chips{margin:8px 0 0;justify-content:center;flex-wrap:wrap;overflow:visible}
+.ch-pick{text-align:left}
+.era-ax{font-size:11px;fill:#5f6368}
+.era-ax.is-on{fill:#000;font-weight:700}
+.era-lbl{font-size:11px;font-weight:700}
+.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
+.era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
+.era-all{border-top:1px solid #e6e6e6;padding-top:6px}
+.cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
