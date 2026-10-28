@@ -121,11 +121,19 @@ export function rankCoaches(cs: Coach[]): Coach[] {
 const CALL: Record<CoachCall["actual"], string> = { go: "went for it", punt: "punted", fg: "kicked the field goal" };
 const REC: Record<CoachCall["recommendation"], string> = { go: "go for it", punt: "punt", fg: "kick the field goal" };
 
+const PLAYOFF_ROUNDS = ["Wild Card", "Divisional", "Conference Championship", "Super Bowl"];
+
+/** "Week 7" in the regular season; playoff weeks by round name (Week 19 in 2021+ / Week 18 in 2019–20 is the Wild Card). */
+export function weekLabel(season: number, week: number): string {
+  const first = season >= 2021 ? 19 : 18;
+  return week >= first ? PLAYOFF_ROUNDS[week - first] ?? `Week ${week}` : `Week ${week}`;
+}
+
 export function callLine(c: CoachCall, team: string): string {
   const side = c.yardline_100 > 50 ? `own ${100 - c.yardline_100}` : c.yardline_100 === 50 ? "midfield" : `${c.opponent} ${c.yardline_100}`;
   const m = c.score_differential;
   const score = m === 0 ? "tied" : m > 0 ? `up ${m}` : `down ${-m}`;
-  return `Week ${c.week} vs ${c.opponent} · Q${c.qtr} · 4th & ${c.ydstogo} at ${side} · ${team} ${score}`;
+  return `${weekLabel(Number(c.game_id.slice(0, 4)), c.week)} vs ${c.opponent} · Q${c.qtr} · 4th & ${c.ydstogo} at ${side} · ${team} ${score}`;
 }
 
 export function callVerdict(c: CoachCall, team: string): string {

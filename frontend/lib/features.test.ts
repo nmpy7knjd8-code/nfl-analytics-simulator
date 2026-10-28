@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { CHECKER_ENABLED, CHECKER_PAUSED } from "./features";
 
-// H6 closed by #168 (calibration gate in CI); #170 turns the checker on. The paused copy must still never render numbers.
-test("H6: checker is on after the #168 calibration gate; paused copy stays number-free", () => {
-  assert.equal(CHECKER_ENABLED, true);
+// Guard: while H6 is open the checker must stay off and the paused page must not render any numbers.
+test("H6: 4th-down checker is off on the live site", () => {
+  assert.equal(CHECKER_ENABLED, false);
   assert.doesNotMatch(CHECKER_PAUSED.title + CHECKER_PAUSED.body, /\d+\s*%|\d+\s*pts?/);
   assert.equal(CHECKER_PAUSED.cta.href, "/");
 });

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChipScroll } from "./ChipScroll";
 import { TeamLogo } from "./TeamLogo";
 import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
@@ -37,11 +38,13 @@ export function GamePage({ right, children }: { right: string; children: React.R
 
 export function SeasonPicker({ season, hrefFor = seasonHref }: { season: number; hrefFor?: (s: number) => string }) {
   return (
+    <ChipScroll>
     <nav className="pf-chips co-seasons" aria-label="Season">
       {SEASONS.map((s) => (
         <Link key={s} href={hrefFor(s)} className={`pf-chip${s === season ? " is-on" : ""}`} aria-current={s === season ? "page" : undefined}>{s}</Link>
       ))}
     </nav>
+    </ChipScroll>
   );
 }
 

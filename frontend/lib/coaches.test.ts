@@ -63,3 +63,11 @@ test("average per call replaces the season sum", () => {
   for (let i = 1; i < r.length; i++) assert.ok(avgPerCall(r[i - 1]) >= avgPerCall(r[i]));
   assert.doesNotMatch(AVG_LINE, /calibrat|EPA|WPA|odds|bet/i);
 });
+
+import { weekLabel } from "./coaches";
+test("playoff weeks show the round, not the week number", () => {
+  assert.deepEqual([18, 19, 20, 21, 22].map((w) => weekLabel(2023, w)), ["Week 18", "Wild Card", "Divisional", "Conference Championship", "Super Bowl"]);
+  assert.deepEqual([17, 18, 21].map((w) => weekLabel(2020, w)), ["Week 17", "Wild Card", "Super Bowl"]);
+  const kc = readSeason(2023).coaches.find((c) => c.team === "KC")!;
+  assert.ok(kc.worst.some((c) => c.week === 19));
+});

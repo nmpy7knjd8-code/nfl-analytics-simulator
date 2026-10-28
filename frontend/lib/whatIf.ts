@@ -6,6 +6,7 @@
 import type { QuizChoice } from "./quiz";
 import { optionStates, type DailyItem } from "./daily";
 import { gameText, scoreboardText } from "./dailyView";
+import { weekLabel } from "./coaches";
 
 export const SITE_URL = "https://nmpy7knjd8-code.github.io/nfl-analytics-simulator";
 export const CARD_SOURCE = "Data: nflverse";
@@ -50,7 +51,9 @@ export function whatIfFor(item: DailyItem): WhatIfCard | null {
     ifText: `If ${team} had ${HAD[alt]}:`,
     real: `${team} ${DID[actual]}.`,
     strip: scoreboardText(item),
-    game: gameText(item),
+    game: item.source.season && item.source.week
+      ? gameText(item).replace(`${item.source.season} Week ${item.source.week}`, `${item.source.season} ${weekLabel(item.source.season, item.source.week)}`)
+      : gameText(item),
   };
 }
 
