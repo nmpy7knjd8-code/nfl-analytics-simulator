@@ -5,6 +5,7 @@ import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
 import { Header, Trademark } from "../../../components/SimpleGame";
 import { SEASONS, bracket, type PGame } from "../../../lib/playoffs";
+import { ChipScroll } from "../../../components/ChipScroll";
 import "../playoffs.css";
 
 type Props = { params: Promise<{ season: string }> };
@@ -55,11 +56,13 @@ export default async function PlayoffsPage({ params }: Props) {
         <Header right="Playoffs" />
         <h1 className="po-h1">Road to Super Bowl {b.sbNumber}</h1>
         <p className="po-sub">{season} season · champion: {teamNickname(b.champion)}</p>
+        <ChipScroll>
         <nav className="pf-chips po-chips" aria-label="Season">
           {SEASONS.map((s) => (
             <Link key={s} href={`/playoffs/${s}/`} className={`pf-chip${s === season ? " is-on" : ""}`} aria-current={s === season ? "page" : undefined}>{s}</Link>
           ))}
         </nav>
+        </ChipScroll>
         {b.rounds.map((r) => (
           <section key={r.key} className="po-round" aria-labelledby={`po-${r.key}`}>
             <h2 id={`po-${r.key}`} className="po-h2">{r.name}</h2>
