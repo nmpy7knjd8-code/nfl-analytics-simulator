@@ -49,9 +49,15 @@ export function buildFeed(doc: GameFileV2): FeedGame {
   const c = doc.cols;
   const n = c.play_id.length;
   const swings = new Set(doc.swing_play_ids);
+  // The game's real result (1/0 for the home team, 0.5 tie). The END GAME row's home_wp is only a model fallback,
+  // so no swing is ever read from it: the last real play's after-value is the final result.
+  const result = doc.game.home_score != null && doc.game.away_score != null ? (doc.game.home_score > doc.game.away_score ? 1 : doc.game.home_score < doc.game.away_score ? 0 : 0.5) : doc.final_home_wp ?? 0.5;
   const wpAt = (i: number): number => {
-    for (let j = i; j < n; j++) if (c.home_wp[j] != null) return c.home_wp[j] as number;
-    return doc.final_home_wp ?? 0.5;
+    for (let j = i; j < n; j++) {
+      if (/^END GAME/i.test(c.text[j] ?? "")) break;
+      if (c.home_wp[j] != null) return c.home_wp[j] as number;
+    }
+    return result;
   };
   const plays: FeedPlay[] = [];
   for (let i = 0; i < n; i++) {
@@ -59,7 +65,7 @@ export function buildFeed(doc: GameFileV2): FeedGame {
     const text = (c.display_text?.[i] || c.text[i] || "").trim();
     if (!text) continue;
     const before = c.home_wp[i] ?? wpAt(i);
-    const after = i + 1 < n ? wpAt(i + 1) : doc.final_home_wp ?? before;
+    const after = wpAt(i + 1);
     // game.v2 score columns are the score after the play on that row.
     const home = c.home_score[i] ?? 0;
     const away = c.away_score[i] ?? 0;
@@ -119,7 +125,8 @@ export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): stri
   const sign = lead.team === g.home ? 1 : -1;
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
   const v = d * sign;
-  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${Math.abs(v)}%`;
+  const n = Math.abs(v);
+  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${n} ${n === 1 ? "pt" : "pts"}`;
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
