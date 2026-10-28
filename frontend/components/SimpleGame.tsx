@@ -147,9 +147,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
           {picks.map((p, i) => <span key={i} className={p.scored.result === "wrong" ? "sg-n" : "sg-y"}>{RESULT_GLYPH[p.scored.result]}</span>)}
         </div>
         {mode === "daily" && dare.kind === "ok"
-          ? <div className="sg-streak">You agreed on {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}<small className="sg-dare-key">Your call · friend&apos;s call</small></div>
+          ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
           : mode === "daily" ? <div className="sg-streak">{streak}-day streak</div> : null}
         <div className="sg-recap">
+          {mode === "daily" && dare.kind === "ok" ? (
+            <div className="sg-recap-key" aria-hidden="true"><span>Right call?</span><span className="sg-c">You · Friend</span></div>
+          ) : null}
           {items.map((it, i) => (
             <div key={it.id} className={picks[i].scored.result === "wrong" ? "sg-n" : "sg-y"}>
               <b aria-label={RESULT_TITLE[picks[i].scored.result]}>{RESULT_GLYPH[picks[i].scored.result]}</b>
@@ -157,7 +160,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
               <img src={teamLogo(it.situation.posteam)} alt="" width={22} height={22} className="sg-plate" />
               <span><strong>{it.situation.posteam}</strong> · 4th &amp; {isGoalToGo(it) ? "Goal" : it.situation.distance}</span>
               {dare.kind === "ok"
-                ? <span className="sg-c" aria-label={`You ${SHORT[picks[i].pick]}, friend ${SHORT[dare.picks[i]]}`}>{SHORT[picks[i].pick]} · <span className={dare.picks[i] === picks[i].pick ? "sg-same" : "sg-diff"}>{SHORT[dare.picks[i]]}</span></span>
+                ? <span className="sg-c" aria-label={`You ${SHORT[picks[i].pick]}, friend ${SHORT[dare.picks[i]]}, ${dare.picks[i] === picks[i].pick ? "same pick" : "different pick"}`}>{SHORT[picks[i].pick]} · <span className={dare.picks[i] === picks[i].pick ? "sg-same" : "sg-diff"}>{SHORT[dare.picks[i]]}</span> <span className="sg-agree" aria-hidden="true">{dare.picks[i] === picks[i].pick ? "=" : "≠"}</span></span>
                 : <span className="sg-c">You: {CHOICE_LABEL[picks[i].pick]}</span>}
             </div>
           ))}
