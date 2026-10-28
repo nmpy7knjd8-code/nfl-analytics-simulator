@@ -220,6 +220,62 @@
      "go"
     ]
    }
+  },
+  "2026-10-30": {
+   "2023_14_TB_ATL-664": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.604657,
+     "punt": 0.470999,
+     "fg": 0.547512
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_02_LV_BUF-1340": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.214287,
+     "punt": 0.203171,
+     "fg": 0.238472
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_07_PIT_MIA-1961": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.465467,
+     "punt": 0.445057,
+     "fg": 0.501706
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_12_LA_ARI-1608": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.621604,
+     "punt": 0.620783,
+     "fg": 0.659903
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_12_HOU_MIA-119": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.365969,
+     "punt": 0.40266
+    },
+    "best": [
+     "punt"
+    ]
+   }
   }
  }
 }
