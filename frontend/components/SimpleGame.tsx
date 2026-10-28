@@ -219,11 +219,11 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
         <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
       </div>
-      <ModelLimits item={it} />
       <FieldView item={it} outcome={out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null }} />
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>
+      <ModelLimits item={it} />
       <Trademark />
     </div>
   );

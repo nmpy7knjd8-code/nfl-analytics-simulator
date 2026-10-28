@@ -12,7 +12,7 @@ export function limitsFor(item: DailyItem, facts: LimitFacts = {}): ModelLimit[]
   const out: ModelLimit[] = [];
   const indoors = facts.roof === "dome" || facts.roof === "closed";
   if (!indoors) out.push({ id: "weather", text: "Weather and wind. A strong wind or rain changes kicks and passes; the numbers assume a normal day." });
-  if (optionStates(item).some((o) => o.id === "fg" && !o.disabled)) out.push({ id: "kicker", text: "Who the kicker is. The numbers use an average NFL kicker, not this team's." });
+  if (optionStates(item).some((o) => o.id === "fg" && !o.disabled)) out.push({ id: "kicker", text: "Who the kicker is. These numbers use a league-average kicker, not this team's." });
   out.push({ id: "people", text: "Injuries and tired players. The numbers don't know who is hurt or worn out." });
   return out;
 }

@@ -1763,6 +1763,14 @@ body { font-variant-numeric: tabular-nums; }
 .ml[open] .ml-sum::after{transform:rotate(90deg)}
 .ml-list{margin:0;padding:0 14px 12px 32px;display:grid;gap:6px;font-size:14px;color:var(--sg-g);line-height:1.4}
 .ml-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ml-cols>div{border:1px solid #2a2a2e;border-radius:12px;background:#121214;padding:12px}
-.ml-cols h3{margin:0 0 6px;font-size:15px}
-.ml-cols ul{margin:0;padding-left:18px;font-size:14px}
+.ml-cols>div{border:1.5px solid #d9d9d9;border-radius:14px;background:#fff;padding:12px}
+.ml-cols h3{margin:0 0 6px;font-size:15px;color:#000}
+.ml-cols ul{margin:0;padding-left:18px;font-size:14px;color:var(--sg-g)}
+.ml{margin:6px 0 4px}
+.ml-sum{min-height:44px}
+/* About on the white game card */
+.ab{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));line-height:1.5}
+.ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:#000}
+.ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
+.ab>ul{padding-left:20px;display:grid;gap:6px}
+.ab a{color:var(--sg-b)}
