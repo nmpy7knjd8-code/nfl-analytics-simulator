@@ -6,10 +6,13 @@ values copied from nflverse and rounded to 3 dp, never recomputed).
 Per game: 60 home win-chance points evenly spaced over the 3,600 s of regulation (t = i*3600/59, i = 0..59).
 Point i is vegas_home_wp on the last regulation row (qtr 1-4, win chance not null, nflverse row order) at or
 before regulation time t. Overtime rows are never used: an overtime game keeps its regulation chart plus
-ot: true. Game 2022_17_BUF_CIN (not finished) is left out. Scores are nflverse finals.
+ot: true. In a game with no overtime and no tie, the last point is set to 1.0 (home won) or 0.0 (home
+lost) from the final score, so the chart always ends on the winner's side. Game 2022_17_BUF_CIN (not finished) is left out. Scores are nflverse finals.
 No play ids, EPA or betting fields.
 
 Frozen data: a game already in a committed season file must not change; the build exits 1 if it would.
+The only allowed change is the one listed in mining/frozen_overrides/charts-2026-10-28-final-point.json: the last
+wp point of the games named there.
 
 Usage: python mining/build_match_charts.py PBP_PARQUET [...] [--out-dir data/site/charts]
 """
@@ -31,6 +34,7 @@ SCHEMA = "matchcharts/v1"
 POINTS = 60
 REG_SECONDS = 3600
 BAD_GAME = "2022_17_BUF_CIN"
+OVERRIDE = ROOT / "mining/frozen_overrides/charts-2026-10-28-final-point.json"
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "home_score",
            "away_score", "qtr", "game_seconds_remaining", "vegas_home_wp", "play_id"]
 
@@ -80,21 +84,37 @@ def build(rows: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
         wp = game_chart(rs)
         if wp is None:
             continue
+        hs, as_ = int(f["home_score"]), int(f["away_score"])
+        ot = any(_num(r.get("qtr")) == 5 for r in rs)
+        if not ot and hs != as_:
+            wp[-1] = 1.0 if hs > as_ else 0.0  # regulation final: the chart ends on the winner's side
         by_season.setdefault(s, []).append({
             "gameId": gid, "week": int(f["week"]), "seasonType": f["season_type"],
             "home": f["home_team"], "away": f["away_team"],
-            "homeScore": int(f["home_score"]), "awayScore": int(f["away_score"]),
-            "ot": any(_num(r.get("qtr")) == 5 for r in rs), "wp": wp,
+            "homeScore": hs, "awayScore": as_, "ot": ot, "wp": wp,
         })
     return {s: {"schema": SCHEMA, "season": s, "builtAt": "", "dataThrough": last[s][:10], "points": POINTS,
                 "games": sorted(g, key=lambda x: (x["week"], x["gameId"]))} for s, g in sorted(by_season.items())}
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
+def _final_point_ok(old_g: dict[str, Any], new_g: dict[str, Any] | None, allowed: set[str]) -> bool:
+    """Override: a listed game may change only its last wp point."""
+    if new_g is None or old_g["gameId"] not in allowed:
+        return False
+    strip = lambda g: {**g, "wp": g["wp"][:-1]}
+    return strip(old_g) == strip(new_g)
+
+
+def load_override() -> set[str]:
+    return set(json.loads(OVERRIDE.read_text())["games"]) if OVERRIDE.exists() else set()
+
+
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset()) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
     by = {g["gameId"]: g for g in new["games"]}
-    changed = [g["gameId"] for g in old.get("games", []) if by.get(g["gameId"]) != g]
+    changed = [g["gameId"] for g in old.get("games", []) if by.get(g["gameId"]) != g
+               and not _final_point_ok(g, by.get(g["gameId"]), allowed)]
     return changed + (["points"] if old.get("points") != new["points"] else [])
 
 
@@ -119,10 +139,11 @@ def main(argv: list[str] | None = None) -> int:
     built = build(load_rows(a.pbp))
     olds = {}
     fails = []
+    allowed = load_override()
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
-        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new)]
+        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed)]
     if fails:
         print(f"FAIL: published chart games would change: {', '.join(fails)}", file=sys.stderr)
         return 1
