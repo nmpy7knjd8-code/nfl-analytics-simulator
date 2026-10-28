@@ -161,6 +161,16 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-game b{white-space:nowrap}
 @media (max-width:400px){.pf-change{padding:0 12px;font-size:13px}.pf-game{gap:4px}}
 .pf-row-ot{cursor:default}
+/* A3 run-or-pass bonus */
+.rp-tag{margin:8px 0 0;font-size:14px;font-weight:700;color:var(--sg-b);text-transform:uppercase;letter-spacing:.04em}
+.rp-q{font-size:24px;font-weight:800;line-height:1.25;margin:8px 0 16px}
+.rp-btns{margin-top:auto}.rp-skip{background:#fff;color:#000;border:2px solid #000}
+.rp-res{border:2px solid #000;border-radius:16px;padding:14px}
+.rp-v{font-size:18px;font-weight:700;margin:0 0 12px}
+.rp-row{display:grid;grid-template-columns:44px 1fr 56px;align-items:center;gap:8px;font-weight:700;margin:6px 0}
+.rp-row b{text-align:right}.rp-bar{height:14px;border-radius:7px;background:#e8e8e8;overflow:hidden}.rp-bar i{display:block;height:100%;background:var(--sg-b)}
+.rp-src{font-size:14px;color:var(--sg-g);margin:10px 0 0}
+.rp .sg-btns:last-of-type{margin-top:auto}
 /* B5 stats + streak calendar */
 .st-h1{font-size:24px;font-weight:800;margin:4px 0 10px}
 .st-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}
