@@ -8,8 +8,9 @@ Shared swing filter (build-plan C2/C3, creative-builds.md Group C):
   * play_type in run, pass, field_goal, punt (drops kickoffs, non-play rows, timeouts);
   * no kneels or spikes; rows without nflverse vegas_wp/vegas_wpa are skipped (no fallback model);
   * field goals over 64 yards are skipped (house FG cap);
-  * the whole 2019_03_CIN_BUF game is left out (bad "End of half" row + the play before it carry
-    fake swings; scripts/acceptance/house_rules.py bans the game id from site data).
+  * 2019_03_CIN_BUF: its bad "End of half" row and the play right before it (a Dalton pass
+    carrying a fake +86.6 swing measured against the bad row) are dropped; the rest of the
+    game's regulation plays count (the game has no overtime).
 
 Fan-facing fields carry no EPA, xpass, play ids or betting fields. "swing" is the change in the
 offense's chance to win (0-1 scale; the UI shows x100 as "chance to win swung N points").
@@ -57,13 +58,24 @@ def _num(v: Any) -> float | None:
 
 def is_swing_candidate(r: dict[str, Any]) -> bool:
     qtr = _num(r.get("qtr"))
-    if r.get("game_id") == BAD_GAME or qtr is None or not 1 <= qtr <= 4:
+    if r.get("_bad_row") or qtr is None or not 1 <= qtr <= 4:
         return False
     if r.get("play_type") not in SWING_PLAY_TYPES or _num(r.get("qb_kneel")) or _num(r.get("qb_spike")):
         return False
     if r.get("play_type") == "field_goal" and (_num(r.get("kick_distance")) or 0) > MAX_FG:
         return False
     return _num(r.get("vegas_wp")) is not None and _num(r.get("vegas_wpa")) is not None and bool(r.get("posteam"))
+
+
+def mark_bad_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Flag the bad 2019_03_CIN_BUF "End of half" row and the row right before it (nflverse order)."""
+    out = [dict(r) for r in rows]
+    for i, r in enumerate(out):
+        if r.get("game_id") == BAD_GAME and (r.get("desc") or "").startswith("End of half"):
+            r["_bad_row"] = True
+            if i > 0 and out[i - 1].get("game_id") == BAD_GAME:
+                out[i - 1]["_bad_row"] = True
+    return out
 
 
 def week_key(r: dict[str, Any]) -> str:
@@ -103,6 +115,7 @@ def post_round_map(rows: Iterable[dict[str, Any]]) -> dict[tuple[int, int], str]
 
 
 def build(rows: list[dict[str, Any]], top_n: int = TOP_N) -> dict[str, Any]:
+    rows = mark_bad_rows(rows)
     rounds = post_round_map(rows)
     cands = sorted((r for r in rows if is_swing_candidate(r)), key=_rank_key)
     weeks: dict[str, dict[str, Any]] = {}
