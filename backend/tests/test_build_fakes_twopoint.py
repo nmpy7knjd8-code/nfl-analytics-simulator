@@ -69,7 +69,23 @@ def test_twopoint_rates_and_ot():
     assert len(out["tries"]) == 3 and all(t[out["cols"].index("qtr")] <= 4 for t in out["tries"])
     assert out["per_choice_win_chance"] is None
     assert bt.check_frozen(out, bt.build(rows)) == []
-    assert bt.check_frozen(out, bt.build([trow(vegas_wp=0.31)] + rows[1:]))
+    assert bt.check_frozen(out, bt.build([trow(two_point_conv_result="failure")] + rows[1:]))
+    assert "wp" not in out["cols"]
+
+
+def test_kick_filter_and_frozen():
+    xp = lambda **k: trow(**{"two_point_attempt": 0, "play_type": "extra_point", "extra_point_result": "good", **k})  # noqa: E731
+    rows = [xp(time="05:00", score_differential=8), xp(time="05:01", score_differential=0),
+            xp(time="01:00", score_differential=9), xp(time="00:10", score_differential=-8, extra_point_result="failed"),
+            xp(qtr=3, time="01:00", score_differential=0), xp(qtr=5, time="01:00", score_differential=0)]
+    out = bt.build(rows)
+    k = [dict(zip(out["cols"], r)) for r in out["kicks"]]
+    assert [(r["clock"], r["diff"], r["made"], r["kind"]) for r in k] == [("05:00", 8, 1, "extra_point"),
+                                                                          ("00:10", -8, 0, "extra_point")]
+    assert bt.check_frozen(out, bt.build(rows)) == []
+    assert bt.check_frozen(out, bt.build(rows[1:]))  # a published kick may not disappear
+    legacy = {**out, "cols": out["cols"] + ["wp"], "kicks": [r + [0.5] for r in out["kicks"]]}
+    assert bt.check_frozen(legacy, out) == []  # dropping wp on purpose is allowed
 
 
 def test_committed_files():
@@ -82,6 +98,10 @@ def test_committed_files():
     assert t["two_point"]["run"]["made"] == 145 and t["two_point"]["pass"]["made"] == 301
     assert t["per_choice_win_chance"] is None
     qi = t["cols"].index("qtr")
+    assert t["schema_version"] == 2 and "wp" not in t["cols"] and "win_chance" not in t
+    k = [dict(zip(t["cols"], r)) for r in t["kicks"]]
+    assert len(k) == 439 and sum(r["made"] for r in k) == 412
+    assert all(r["qtr"] == 4 and abs(r["diff"]) <= 8 and r["kind"] == "extra_point" for r in k)
     assert len(t["tries"]) == 957 and all(r[qi] <= 4 for r in t["tries"])
     assert all(p["wp"] is None or p["qtr"] <= 4 for p in f["plays"])
     d = f["real_punts"]
@@ -90,7 +110,7 @@ def test_committed_files():
     assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 80_000
+    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 100_000
 
 
 def test_decoys_stratified_deterministic_and_frozen():
