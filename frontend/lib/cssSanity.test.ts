@@ -34,5 +34,6 @@ test("QA 0217 K/J/menu: About kick copy matches the game; every logo has a plate
   const css = read("../app/globals.css");
   assert.match(css, /\.fd-brand \{[^}]*white-space: nowrap;[^}]*flex-shrink: 0;/);
   assert.doesNotMatch(css, /\.fd-top-links/);
+  assert.match(read("../app/simple-game.css"), /\.sg-menu-list\{[^}]*overflow-y:auto;max-height:/);
   for (const href of ["/practice/", "/endless/", "/feed/", "/kicks/", "/games/", "/daily/stats/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
 });
