@@ -116,8 +116,11 @@ export function GamePicker({ currentId, startSeason, onPick, onClose }: {
         <button type="button" className="gp-close" onClick={onClose}>Close</button>
       </div>
       {step !== "season" ? (
-        <input className="gp-search" type="search" inputMode="search" autoComplete="off" placeholder={`Find a team in ${season} (KC, Chiefs)`}
-          aria-label={`Find a team's ${season} games`} value={q} onChange={(e) => setQ(e.target.value)} />
+        <>
+          <label htmlFor="gp-team-search" className="sr-only">{`Find a team's ${season} games`}</label>
+          <input id="gp-team-search" name="team" className="gp-search" type="search" inputMode="search" autoComplete="off" placeholder={`Find a team in ${season} (KC, Chiefs)`}
+            value={q} onChange={(e) => setQ(e.target.value)} />
+        </>
       ) : null}
       <div className="gp-body">{body()}</div>
     </section>

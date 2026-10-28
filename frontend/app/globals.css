@@ -1518,8 +1518,8 @@ body:has(.quiz-page) .app-nav-item.is-current {
 body { font-variant-numeric: tabular-nums; }
 .fd-top { display: flex; justify-content: space-between; align-items: center; padding: calc(0.75rem + var(--safe-top)) var(--page-pad-x) 0.25rem; max-width: 40rem; margin: 0 auto; width: 100%; }
 .fd-brand { font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
-.fd-top-links { display: flex; gap: 0.25rem; }
-.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.6rem; min-height: 44px; font-size: 0.9375rem; }
+.fd-top-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 0.1rem; }
+.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.45rem; min-height: 44px; font-size: 0.9375rem; }
 .fd-top-links a:hover { color: var(--color-ink); }
 .fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
 .fd-head h1 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
@@ -1789,3 +1789,22 @@ body { font-variant-numeric: tabular-nums; }
 .era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
 .era-all{border-top:1px solid #e6e6e6;padding-top:6px}
 .cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
+
+
+/* 4th-down checker (ported from #57; shown only when CHECKER_ENABLED) */
+.fd-links a, .gs-back, .gs-swings a, .ck-src a { color: var(--color-blue); }
+.ck-h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+.ck-summary { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ck-steps { display: grid; gap: 0.5rem; }
+.ck-step { display: grid; grid-template-columns: 1fr 44px 6.5rem 44px; align-items: center; gap: 0.5rem; font-variant-numeric: tabular-nums; }
+.ck-step-label { color: var(--color-ink-secondary); }
+.ck-step-val { text-align: center; font-weight: 800; }
+.ck-fixed { grid-column: 3; }
+.ck-step-btn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid #52525b; background: #1c1c1f; color: #fff; font: inherit; font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+.ck-step-btn:hover:not(:disabled) { background: #27272a; }
+.ck-step-btn:disabled { color: #71717a; border-color: #3f3f46; cursor: not-allowed; }
+.ck-step-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
+.ck-rec { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-blue); }
+.ck-close { margin: 0; font-weight: 700; }
+.ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
+.ck-src { font-size: 0.875rem; }
