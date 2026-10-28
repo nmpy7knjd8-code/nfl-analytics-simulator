@@ -7,8 +7,8 @@
 .rv .rv-strip{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
 .rv .rv-strip i,.rv .rv-key i{display:inline-block;width:18px;height:28px;border-radius:6px}
 .rv .rv-key i{width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-left:6px}
-.rv .is-a{background:var(--sg-b)}
-.rv .is-b{background:#000}
+.rv .is-a{background:var(--rv-a,var(--sg-b))}
+.rv .is-b{background:var(--rv-b,#000)}
 .rv .is-t{background:#c4c7cc}
 .rv .rv-key{text-align:center;font-size:14px;color:var(--sg-g);margin:8px 0 14px}
 .rv .rv-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
@@ -23,3 +23,5 @@
 .rv .rv-note{font-size:14px;color:var(--sg-g);margin:14px 0 6px}
 .rv .rv-more{font-size:15px;margin:0 0 10px}
 .rv .rv-more a{color:var(--sg-b);font-weight:700}
+.rv .rv-nb{white-space:nowrap;display:inline-block}
+.rv .rv-pts{margin-top:-10px}

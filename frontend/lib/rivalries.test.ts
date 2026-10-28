@@ -30,3 +30,12 @@ test("BUF-KC includes the playoff meetings with round names", () => {
   assert.match(seriesLine(r, (t) => t), /^(BUF|KC) lead \d+–\d+$|^Series tied/);
   assert.equal(rivalry("BUF-XXX"), null);
 });
+
+import { stripColors, usable } from "./rivalries";
+test("strip colors: team colors, readable on white, distinct", () => {
+  assert.deepEqual(stripColors("BUF", "KC"), ["#00338D", "#E31837"]);
+  const [, lv] = stripColors("KC", "LV");
+  assert.notEqual(lv, "#000000");
+  assert.ok(usable(lv));
+  for (const k of allPairs()) { const [x, y] = stripColors(...(k.split("-") as [string, string])); assert.notEqual(x, y, k); }
+});

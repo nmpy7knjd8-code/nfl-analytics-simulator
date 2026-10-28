@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
 import { Header, Trademark } from "../../../components/SimpleGame";
-import { SEASONS, allPairs, rivalry, seriesLine } from "../../../lib/rivalries";
+import { SEASONS, allPairs, rivalry, seriesLine, stripColors } from "../../../lib/rivalries";
 import "../rivalry.css";
 
 type Props = { params: Promise<{ pair: string }> };
@@ -27,9 +27,10 @@ export default async function RivalryPage({ params }: Props) {
   const r = rivalry(pair);
   if (!r) notFound();
   const name = teamNickname;
+  const [ca, cb] = stripColors(r.a, r.b);
   return (
     <main id="main">
-      <div className="sg-app rv">
+      <div className="sg-app rv" style={{ "--rv-a": ca, "--rv-b": cb } as React.CSSProperties}>
         <Header right={pair} />
         <header className="rv-head">
           <span className="rv-team"><TeamLogo abbr={r.a} size={44} /><b>{name(r.a)}</b></span>
@@ -38,7 +39,10 @@ export default async function RivalryPage({ params }: Props) {
         </header>
         <h1 className="rv-h1">{seriesLine(r, name)}</h1>
         <p className="rv-sub">
-          {r.meetings.length} {r.meetings.length === 1 ? "meeting" : "meetings"}, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]} · points {name(r.a)} {r.aPts}, {name(r.b)} {r.bPts}
+          <span className="rv-nb">{r.meetings.length} {r.meetings.length === 1 ? "meeting" : "meetings"}, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]}</span>
+        </p>
+        <p className="rv-sub rv-pts">
+          Points: <span className="rv-nb">{name(r.a)} {r.aPts}</span> · <span className="rv-nb">{name(r.b)} {r.bPts}</span>
         </p>
         <div className="rv-strip" aria-hidden="true">
           {r.meetings.map((m) => (

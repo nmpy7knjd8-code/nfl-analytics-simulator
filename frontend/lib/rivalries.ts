@@ -6,6 +6,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import facts from "./gameFacts.json";
+import colorsJson from "./teamColors.json";
 
 export const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
 const ALIAS: Record<string, string> = { OAK: "LV" };
@@ -68,4 +69,26 @@ export function seriesLine(r: Rivalry, name: (t: string) => string): string {
   if (r.aWins === r.bWins) return `Series tied ${r.aWins}–${r.bWins}${t}`;
   const [lead, w, l] = r.aWins > r.bWins ? [r.a, r.aWins, r.bWins] : [r.b, r.bWins, r.aWins];
   return `${name(lead)} lead ${w}–${l}${t}`;
+}
+
+// ---- Strip colors: each team's own color, readable on white ----
+type TC = { primary: string; secondary: string; tertiary?: string };
+const TEAM_COLORS = (colorsJson as { teams: Record<string, TC> }).teams;
+export const FALLBACK = "#5f6368";
+
+const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+function lum(h: string): number {
+  const [r, g, b] = rgb(h).map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+/** Visible on the white card: not near-black (blends with the black text/borders) and not too pale (contrast >= 1.5). */
+export const usable = (h: string) => lum(h) > 0.01 && 1.05 / (lum(h) + 0.05) >= 1.5;
+const far = (x: string, y: string) => Math.hypot(...rgb(x).map((v, i) => v - rgb(y)[i])) >= 90;
+
+/** Primary unless it is too dark (or pale) to see on white; then secondary, tertiary, then grey. B also avoids A's color. */
+export function stripColors(a: string, b: string): [string, string] {
+  const opts = (t: string) => { const c = TEAM_COLORS[t]; return c ? [c.primary, c.secondary, c.tertiary ?? ""].filter((h) => /^#[0-9a-f]{6}$/i.test(h) && usable(h)) : []; };
+  const ca = opts(a)[0] ?? FALLBACK;
+  const cb = opts(b).find((h) => far(h, ca)) ?? (far(FALLBACK, ca) ? FALLBACK : "#000000");
+  return [ca, cb];
 }
