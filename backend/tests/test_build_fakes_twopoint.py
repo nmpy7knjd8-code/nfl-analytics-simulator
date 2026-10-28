@@ -78,10 +78,30 @@ def test_committed_files():
     assert sum(f["by_season"].values()) == 162 and f["by_season"]["2019"] == 28 and f["by_season"]["2025"] == 12
     assert t["two_point"]["tries"] == 960 and t["two_point"]["made"] == 456
     assert (t["two_point"]["run"]["tries"], t["two_point"]["pass"]["tries"]) == (266, 681)
-    assert t["extra_point"]["tries"] == 9119
+    assert t["extra_point"] == {"tries": 9119, "made": 8606, "rate": 0.9437}
+    assert t["two_point"]["run"]["made"] == 145 and t["two_point"]["pass"]["made"] == 301
+    assert t["per_choice_win_chance"] is None
     qi = t["cols"].index("qtr")
     assert len(t["tries"]) == 957 and all(r[qi] <= 4 for r in t["tries"])
     assert all(p["wp"] is None or p["qtr"] <= 4 for p in f["plays"])
+    d = f["real_punts"]
+    assert 290 <= len(d) <= 300 and all(p["first_down"] is None and p["qtr"] <= 4 and p["kind"] == "punt" for p in d)
+    assert set(d[0]) == set(f["plays"][0]) and f["punt_count"] > len(d)
+    assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 64_000 and TWO.stat().st_size < 80_000
+    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 80_000
+
+
+def test_decoys_stratified_deterministic_and_frozen():
+    fakes = [bf.record(prow(time=f"0{i}:00", ydstogo=1 + i % 2)) for i in range(4)]
+    punts = [{**bf.record(prow(time=f"{10 + i}:00", ydstogo=1 + i % 2, play_type="punt")), "first_down": None}
+             for i in range(40)]
+    a, b = bf.sample_decoys(fakes, punts, n=10), bf.sample_decoys(fakes, list(reversed(punts)), n=10)
+    assert a == b and len(a) == 10
+    assert sum(p["togo"] == 1 for p in a) == 5
+    rows = [prow(), prow(time="09:00", play_type="punt", desc="X punts"), prow(time="08:00", play_type="punt", desc="Y punts")]
+    old = bf.build(rows)
+    assert len(old["real_punts"]) == 2 and old["real_punts"][0]["first_down"] is None and old["punt_count"] == 2
+    gone = {**old, "real_punts": [{**old["real_punts"][0], "clock": "00:01"}]}
+    assert bf.check_frozen(gone, bf.build(rows))
