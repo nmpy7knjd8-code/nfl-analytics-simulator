@@ -141,6 +141,47 @@ def test_end_game_row_carries_final_result_not_fallback(scores, want):
     assert doc["swing_play_ids"] == []
 
 
+def _rows(descs, types, wps, scores):
+    n = len(descs)
+    return pd.DataFrame({"game_id": ["t"] * n, "play_id": [float(i + 1) for i in range(n)], "qtr": [4] * n,
+                         "quarter_seconds_remaining": [300 - 10 * i for i in range(n)],
+                         "game_seconds_remaining": [300 - 10 * i for i in range(n)],
+                         "posteam": ["BUF"] * n, "down": [1] * n, "ydstogo": [10] * n, "yardline_100": [50] * n,
+                         "desc": descs, "play_type": types, "home_wp": wps,
+                         "total_home_score": [scores[0]] * n, "total_away_score": [scores[1]] * n})
+
+
+def test_end_of_game_text_row_carries_final_result():
+    """QA 2026-10-28 R1: 2019 BUF-home 'End of game - 4.17 pm' rows (CIN_BUF 4766: 0.585 -> 1.0)."""
+    game = {"id": "t", "season": 2019, "season_type": "REG", "home": "BUF", "away": "CIN",
+            "home_score": 21, "away_score": 17}
+    plays = _rows(["kneel", "End of game - 4.17 pm"], ["qb_kneel", None], [0.97, 0.585], (21, 17))
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    kneel, end = doc["plays"]
+    assert end["home_wp"] == 1.0 and doc["final_home_wp"] == 1.0
+    assert kneel["home_wp_after"] == 1.0 and not kneel["swing"] and not end["swing"]
+    assert doc["swing_play_ids"] == []
+
+
+def test_rows_without_play_type_are_never_swings():
+    """QA 2026-10-28 R1: delay/notes rows with stand-in WPs ('The game has resumed.') were flagged."""
+    game = {"id": "t", "season": 2019, "season_type": "REG", "home": "CAR", "away": "TB",
+            "home_score": 20, "away_score": 14}
+    plays = _rows(["pass", "The game has resumed.", "run", "pass", "END GAME"],
+                  ["pass", None, "run", "pass", None], [0.5, 0.32, 0.68, 0.70, 0.3], (20, 14))
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    flagged = {r["play_id"] for r in doc["plays"] if r["swing"]}
+    assert 2 not in doc["swing_play_ids"] and 2 not in flagged
+    assert set(doc["swing_play_ids"]) == flagged == {1, 4}  # real plays: 0.5->0.32, 0.70->1.0 (result)
+    assert doc["plays"][3]["home_wp_after"] == 1.0
+
+
+def test_is_end_game_text():
+    assert games.is_end_game_text("END GAME") and games.is_end_game_text("End of game - 4.17 pm")
+    assert not games.is_end_game_text("End of half - 2.43 pm") and not games.is_end_game_text("END QUARTER 4")
+    assert not games.is_end_game_text(None)
+
+
 _PRE_Q1_RELEASES = {"games-v2", "games-v3", "games-v4"}  # built before the END GAME fix
 
 
@@ -151,8 +192,11 @@ def test_game_file_end_game_row_is_final_result(path):
     doc = json.loads(path.read_text())
     c = doc["cols"]
     for i, t in enumerate(c["text"]):
-        if t.strip().upper() == "END GAME" and c["home_wp"][i] is not None:
+        if games.is_end_game_text(t) and c["home_wp"][i] is not None:
             assert c["home_wp"][i] == doc["final_home_wp"], (i, c["home_wp"][i])
+    # QA 2026-10-28 R1: rows with no play type are never swings.
+    no_type = {c["play_id"][i] for i, pt in enumerate(c["play_type"]) if pt is None}
+    assert not no_type & set(doc["swing_play_ids"]), sorted(no_type & set(doc["swing_play_ids"]))
 
 
 def _has_display_text():
@@ -191,3 +235,17 @@ def test_compact_round_trips_display_text():
            "provenance": {"source": "nflverse"}, "game": {}, "wp_perspective": "home", "swing_threshold": 0.08,
            "final_home_wp": 0.5, "swing_play_ids": []}
     assert expand(compact(doc))["plays"][0]["display_text"] == "Start of game."
+
+
+_DET_KC = next((p for p in _game_files() if p.stem == "2023_01_DET_KC"), None)
+
+
+@pytest.mark.skipif(_DET_KC is None or os.environ.get("GAMES_RELEASE_TAG") in _PRE_Q1_RELEASES,
+                    reason="needs games-v5+ game files")
+def test_det_kc_final_kneel_is_not_a_swing():
+    """QA 2026-10-28 Q1: Goff's Q4 0:37 kneel (4204) read 'DET's win chance down 15%' though DET won."""
+    doc = json.loads(_DET_KC.read_text())
+    c = doc["cols"]
+    i = c["play_id"].index(4204)
+    assert c["play_type"][i] == "qb_kneel" and c["qtr"][i] == 4 and c["sec"][i] == 37
+    assert doc["final_home_wp"] == 0.0 and 4204 not in doc["swing_play_ids"]

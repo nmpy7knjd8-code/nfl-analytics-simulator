@@ -92,3 +92,17 @@ export function stripColors(a: string, b: string): [string, string] {
   const cb = opts(b).find((h) => far(h, ca)) ?? (far(FALLBACK, ca) ? FALLBACK : "#000000");
   return [ca, cb];
 }
+
+export type Rival = { opp: string; key: string; meetings: number; w: number; l: number; t: number };
+/** Every opponent a team met 2019–2025, most meetings first; record from the team's side. */
+export function teamRivals(team: string): Rival[] {
+  const t = franchise(team);
+  return allPairs()
+    .filter((k) => k.split("-").includes(t))
+    .map((k) => {
+      const r = rivalry(k)!;
+      const mine = r.a === t;
+      return { opp: mine ? r.b : r.a, key: k, meetings: r.meetings.length, w: mine ? r.aWins : r.bWins, l: mine ? r.bWins : r.aWins, t: r.ties };
+    })
+    .sort((x, y) => y.meetings - x.meetings || x.opp.localeCompare(y.opp));
+}
