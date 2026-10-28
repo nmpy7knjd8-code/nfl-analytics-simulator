@@ -35,6 +35,7 @@ export function Header({ right }: { right: string }) {
           <nav className="sg-menu-list" aria-label="Menu">
             <Link href="/practice/">Practice</Link>
             <Link href="/endless/">Keep playing</Link>
+            <Link href="/feed/">Play feed</Link>
             <Link href="/games/">Games</Link>
             <Link href="/daily/stats/">Stats</Link>
             <Link href="/about/">About</Link>
