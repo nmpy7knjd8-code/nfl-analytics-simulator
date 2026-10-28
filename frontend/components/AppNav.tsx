@@ -20,7 +20,7 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
  * "/coaches" and anything under "/team/", "/coaches/", "/card/" or "/rivalry/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
-  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap"]);
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/swing"]);
   const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/"];
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
   return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
