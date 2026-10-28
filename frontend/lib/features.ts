@@ -1,11 +1,11 @@
 /**
  * Feature flags for the static site.
  *
- * CHECKER_ENABLED: the 4th-down checker (/fourth-down/). Off while Data & Models fix H6
- * (grid win chances ran 8-10 points high). Flip to true to bring back the nav tab,
+ * CHECKER_ENABLED: the 4th-down checker (/fourth-down/). On since H6 was fixed
+ * (grid win chances had run 8-10 points high). Flip to false to bring back the nav tab,
  * the 404 link and the checker page — nothing else needs to change.
  */
-export const CHECKER_ENABLED = false;
+export const CHECKER_ENABLED = true;
 
 /** Copy for the page while the checker is off. */
 export const CHECKER_PAUSED = {
