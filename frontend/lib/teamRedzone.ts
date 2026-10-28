@@ -12,18 +12,18 @@ export type RedzoneTeamRow = {
   rank: number; // 1 = best TD rate in the league
 };
 
-export type RedzoneLeague = { drives: number; td: number; td_rate: number };
-export type RedzoneSlice = { league: RedzoneLeague; teams: RedzoneTeamRow[] };
+export type RedzoneSeason = { league: { drives: number; td: number; td_rate: number }; teams: RedzoneTeamRow[] };
 
-export type RedzoneFile = RedzoneSlice & {
+export type RedzoneFile = RedzoneSeason & {
   schema_version: number;
   stub: boolean;
   source: string;
   seasons: [number, number]; // first, last (inclusive)
   season_type: "REG" | "ALL";
   red_zone_def: string;
-  /** Per-season slices keyed by season ("2019"…), coming from Data Builders. Season chips show only when present. */
-  by_season?: Record<string, RedzoneSlice>;
+  season_list: number[];
+  /** Per-season data keyed "2019"…, each ranked within its season (#173). Top-level league/teams are the all-seasons totals. */
+  by_season: Record<string, RedzoneSeason>;
 };
 
 export const REDZONE = raw as RedzoneFile;
@@ -31,16 +31,16 @@ if (REDZONE.stub) throw new Error("teamRedzone.json is marked stub; no sample da
 
 export const ALL = "all";
 
-/** Season keys with real per-season data, oldest first. Empty until by_season lands. */
+/** Season chip keys, oldest first; only seasons present in by_season. */
 export function seasonKeys(f: RedzoneFile = REDZONE): string[] {
-  return Object.keys(f.by_season ?? {}).sort();
+  return f.season_list.map(String).filter((k) => f.by_season[k]);
 }
 
-export function sliceFor(season: string, f: RedzoneFile = REDZONE): RedzoneSlice {
-  return season === ALL ? f : f.by_season?.[season] ?? f;
+export function sliceFor(season: string, f: RedzoneFile = REDZONE): RedzoneSeason {
+  return season === ALL ? f : f.by_season[season] ?? f;
 }
 
-export function rowFor(abbr: string, slice: RedzoneSlice): RedzoneTeamRow | undefined {
+export function rowFor(abbr: string, slice: RedzoneSeason): RedzoneTeamRow | undefined {
   return slice.teams.find((t) => t.team === abbr);
 }
 

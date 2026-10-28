@@ -11,7 +11,10 @@ is modelled:
     "Opp touchdown": a defensive TD is a trip worth 0 points).
 No EPA, xpass, play ids or betting fields are read or written.
 
-Frozen data: if the committed file covers the same seasons, every count must be identical (a silent
+Also writes by_season ("2019".."2025"): the same league + ranked team rows for each regular season.
+
+Frozen data: every season already in the committed by_season, and the all-seasons total when the
+season list is unchanged, must be identical (a silent
 nflverse regrade fails the build, exit 1). Adding a season is allowed.
 
 Usage: python mining/build_team_redzone.py PBP_PARQUET [...] [--out frontend/lib/teamRedzone.json]
@@ -67,10 +70,10 @@ def rz_drives(rows: Iterable[dict[str, Any]]) -> dict[tuple, tuple[str, str | No
     return out
 
 
-def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
-    seasons = sorted({int(r["season"]) for r in rows if r.get("season_type") == "REG"})
+def table(drives: Iterable[tuple[str, str | None]]) -> dict[str, Any]:
+    """League totals + 32 ranked team rows for one set of red-zone drives."""
     counts = {t: {"drives": 0, "td": 0, "fg": 0} for t in TEAMS}
-    for team, res in rz_drives(rows).values():
+    for team, res in drives:
         if team not in counts:
             raise ValueError(f"unknown nflverse team {team!r}")
         c = counts[team]
@@ -85,6 +88,15 @@ def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
                       "no_score": c["drives"] - c["td"] - c["fg"], "td_rate": round(float(rate[t]), 4),
                       "rank": 1 + sum(1 for u in counts if rate[u] > rate[t])})
     ld, ltd = sum(c["drives"] for c in counts.values()), sum(c["td"] for c in counts.values())
+    return {"league": {"drives": ld, "td": ltd, "td_rate": round(ltd / ld, 4) if ld else 0.0}, "teams": teams}
+
+
+def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
+    reg = [r for r in rows if r.get("season_type") == "REG"]
+    seasons = sorted({int(r["season"]) for r in reg})
+    drives = rz_drives(reg)
+    season_of = {r["game_id"]: int(r["season"]) for r in reg}
+    allt = table(drives.values())
     return {
         "schema_version": SCHEMA_VERSION,
         "stub": False,
@@ -92,18 +104,32 @@ def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
         "seasons": [seasons[0], seasons[-1]] if seasons else [],
         "season_type": "REG",
         "red_zone_def": RED_ZONE_DEF,
-        "league": {"drives": ld, "td": ltd, "td_rate": round(ltd / ld, 4) if ld else 0.0},
-        "teams": teams,
+        "season_list": seasons,
+        "league": allt["league"],
+        "teams": allt["teams"],
+        "by_season": {str(y): table(v for k, v in drives.items() if season_of[k[0]] == y) for y in seasons},
     }
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    """Same seasons -> identical numbers; return the teams/fields that would change."""
-    if not old or old.get("stub") or old.get("seasons") != new["seasons"]:
+    """Every season already published must keep identical numbers; the all-seasons total must too
+    when the season list is unchanged. Returns labels like "2023:KC" or "all:league"."""
+    if not old or old.get("stub"):
         return []
-    bad = ["league"] if old.get("league") != new["league"] else []
-    newt = {t["team"]: t for t in new["teams"]}
-    return bad + [t["team"] for t in old.get("teams", []) if newt.get(t["team"]) != t]
+
+    def diff(label: str, o: dict[str, Any], n: dict[str, Any] | None) -> list[str]:
+        if n is None:
+            return [f"{label}:missing"]
+        bad = [f"{label}:league"] if o.get("league") != n.get("league") else []
+        nt = {t["team"]: t for t in n.get("teams", [])}
+        return bad + [f"{label}:{t['team']}" for t in o.get("teams", []) if nt.get(t["team"]) != t]
+
+    out: list[str] = []
+    for y, o in old.get("by_season", {}).items():
+        out += diff(y, o, new["by_season"].get(y))
+    if old.get("seasons") == new["seasons"]:
+        out += diff("all", old, new)
+    return out
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
