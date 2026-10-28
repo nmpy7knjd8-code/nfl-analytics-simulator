@@ -1,37 +1,39 @@
-.co-page{gap:12px}
-.co-h1{margin:0;font-size:26px;line-height:1.15}
-.co-h2{margin:0 0 6px;font-size:18px}
-.co-sub,.co-src,.co-note{margin:4px 0 0;font-size:14px;color:var(--color-ink-muted);line-height:1.4}
-.co-note{color:var(--color-ink-secondary)}
-.co-card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:12px;padding:14px;display:grid;gap:8px}
+/* Coaches + what-if cards: game-style white card (.sg-app), like /kicks (#159). */
+.co{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.co-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:#000}
+.co-h2{margin:0 0 4px;font-size:18px;font-weight:800}
+.co-sub,.co-src,.co-note{margin:4px 0 0;font-size:14px;color:var(--sg-g);line-height:1.4}
+.co-src{font-size:13px}
+.co-note{color:#000}
+.co-src a{color:var(--sg-b)}
+.co-card{border:1.5px solid #000;border-radius:16px;padding:12px 14px;display:grid;gap:8px}
 .co-card p{margin:0}
-.co-btn{justify-self:start;background:var(--color-ink);color:var(--color-ink-inverse);border-radius:999px;padding:10px 16px;font-weight:600;text-decoration:none}
-.co-seasons{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
-.co-season{flex:none;padding:6px 10px;border:1px solid var(--color-border);border-radius:999px;font-size:14px;color:var(--color-ink-secondary);text-decoration:none}
-.co-season.is-on{background:var(--color-ink);color:var(--color-ink-inverse);border-color:var(--color-ink)}
-.co-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.co-row{display:grid;grid-template-columns:1.6em 28px 1fr auto;align-items:center;gap:10px;padding:10px 12px;background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:10px;color:var(--color-ink);text-decoration:none;min-height:44px}
-.co-rank{font-size:13px;color:var(--color-ink-muted);text-align:right}
+.co-btn{display:flex;align-items:center;justify-content:center;text-decoration:none}
+.co-seasons{margin:0;flex-wrap:nowrap;overflow-x:auto}
+.co-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.co-row{display:grid;grid-template-columns:1.4em 28px 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid #d9d9d9;border-radius:14px;color:#000;text-decoration:none;min-height:44px}
+.co-row:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.co-rank{font-size:13px;font-weight:700;color:var(--sg-g);text-align:right}
 .co-who{display:grid;min-width:0}
 .co-who b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.co-who small{font-size:12px;color:var(--color-ink-muted)}
-.co-net{font-variant-numeric:tabular-nums;font-weight:600}
-.is-neg{color:var(--color-ink-muted)}
-.co-net.is-neg::after{content:""}
-.co-stats{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.co-stats div{background:var(--color-bg-sunken);border-radius:8px;padding:8px}
-.co-stats dt{font-size:12px;color:var(--color-ink-muted)}
-.co-stats dd{margin:2px 0 0;font-size:20px;font-weight:600}
-.co-stats small{font-size:12px;font-weight:400;color:var(--color-ink-muted)}
-.co-stats .co-grade{font-size:13px;font-weight:400;color:var(--color-ink-secondary)}
-.co-calls{margin:0;padding-left:18px;display:grid;gap:10px;font-size:14px;color:var(--color-ink-secondary)}
-.co-sit{font-size:13px;color:var(--color-ink-muted)}
-.co-head{display:flex;align-items:center;gap:12px}
-.wi-card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:12px;padding:18px;display:grid;gap:8px}
+.co-who small{font-size:12px;color:var(--sg-g)}
+.co-net{font-variant-numeric:tabular-nums;font-weight:800;font-size:17px;color:var(--sg-b)}
+.is-neg{color:var(--sg-g)}
+.co-stats{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.co-stats div{border:1.5px solid #d9d9d9;border-radius:12px;padding:8px 10px}
+.co-stats dt{font-size:13px;font-weight:700;color:var(--sg-g)}
+.co-stats dd{margin:2px 0 0;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.co-stats small{font-size:12px;font-weight:400;color:var(--sg-g)}
+.co-stats .co-grade{font-size:13px;font-weight:600;color:#000}
+.co-calls{margin:0;padding-left:18px;display:grid;gap:10px;font-size:14px}
+.co-sit{font-size:13px;color:var(--sg-g)}
+.co-head{display:flex;align-items:center;gap:10px;margin-top:6px}
+.co-head .co-h1{margin:0}
+.wi-card{text-align:center;border:1.5px solid #000;border-radius:16px;padding:14px;display:grid;gap:6px}
 .wi-card p{margin:0}
-.wi-strip{font-size:14px;color:var(--color-ink-secondary)}
-.wi-head{font-size:22px;font-weight:700}
-.wi-nums{font-size:44px;font-weight:700;line-height:1}
-.wi-bar{display:block;width:120px;height:4px;background:var(--color-blue)}
-.wi-sub{font-size:15px;color:var(--color-ink-secondary)}
-.wi-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--color-ink-muted)}
+.wi-strip{font-size:14px;color:var(--sg-g)}
+.wi-head{font-size:20px;font-weight:800}
+.wi-nums{font-size:48px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums}
+.wi-bar{display:none}
+.wi-sub{font-size:15px}
+.wi-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--sg-g)}

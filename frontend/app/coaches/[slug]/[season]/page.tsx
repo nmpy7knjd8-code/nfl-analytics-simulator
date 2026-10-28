@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CoachBlock, EnginePaused, GradesNote, SeasonPicker, Trademark } from "../../../../components/CoachesView";
+import { CoachBlock, EnginePaused, GamePage, GradesNote, SeasonPicker } from "../../../../components/CoachesView";
 import { TeamLogo } from "../../../../components/TeamLogo";
 import { SEASONS, coachHref, readSeason, seasonHref } from "../../../../lib/coaches";
 import { CHECKER_ENABLED } from "../../../../lib/features";
@@ -30,7 +30,7 @@ export default async function CoachDetail({ params }: Props) {
   if (!CHECKER_ENABLED) return <EnginePaused />;
   const teamSeasons: number[] = SEASONS.filter((y) => readSeason(y).coaches.some((c) => c.team === team));
   return (
-    <main className="fd-page co-page" id="main">
+    <GamePage right="Coaches">
       <header className="co-head">
         <TeamLogo abbr={team} size={44} />
         <div>
@@ -42,7 +42,6 @@ export default async function CoachDetail({ params }: Props) {
       {coaches.map((c) => <CoachBlock key={c.coach} c={c} />)}
       <GradesNote data={data} />
       <p className="co-src"><Link href={seasonHref(season)}>All {season} coaches</Link> · Data: nflverse. Model not yet calibrated.</p>
-      <Trademark />
-    </main>
+    </GamePage>
   );
 }

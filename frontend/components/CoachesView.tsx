@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TeamLogo } from "./TeamLogo";
+import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
 import {
   type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
@@ -9,23 +10,36 @@ import {
 /** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
 export function EnginePaused() {
   return (
-    <main className="fd-page co-page" id="main">
+    <GamePage right="">
       <section className="co-card" role="status">
         <h1 className="co-h1">{CHECKER_PAUSED.title}</h1>
         <p>{CHECKER_PAUSED.body}</p>
-        <Link className="co-btn" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
+        <Link className="sg-next co-btn" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
       </section>
+    </GamePage>
+  );
+}
+
+export { Trademark };
+
+/** Game-style page: white .sg-app card, Fourth & Daily header + ☰ menu, trademark footer (like /kicks, #159). */
+export function GamePage({ right, children }: { right: string; children: React.ReactNode }) {
+  return (
+    <main id="main">
+      <div className="sg-app co">
+        <Header right={right} />
+        {children}
+        <Trademark />
+      </div>
     </main>
   );
 }
 
-export const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
-
 export function SeasonPicker({ season, hrefFor = seasonHref }: { season: number; hrefFor?: (s: number) => string }) {
   return (
-    <nav className="co-seasons" aria-label="Season">
+    <nav className="pf-chips co-seasons" aria-label="Season">
       {SEASONS.map((s) => (
-        <Link key={s} href={hrefFor(s)} className={`co-season${s === season ? " is-on" : ""}`} aria-current={s === season ? "page" : undefined}>{s}</Link>
+        <Link key={s} href={hrefFor(s)} className={`pf-chip${s === season ? " is-on" : ""}`} aria-current={s === season ? "page" : undefined}>{s}</Link>
       ))}
     </nav>
   );
@@ -54,7 +68,7 @@ function CoachRow({ c, season, rank }: { c: Coach; season: number; rank: number 
 
 export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
   return (
-    <main className="fd-page co-page" id="main">
+    <GamePage right="Coaches">
       <header>
         <h1 className="co-h1">Coaches · {data.season}</h1>
         <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: win-chance points gained or lost over the season.</p>
@@ -65,8 +79,7 @@ export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
       </ol>
       <GradesNote data={data} />
       <p className="co-src">Data: nflverse ({data.provenance.license}). Model not yet calibrated. Clear call: {data.qualifying_rule}.</p>
-      <Trademark />
-    </main>
+    </GamePage>
   );
 }
 

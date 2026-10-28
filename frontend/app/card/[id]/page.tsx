@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { EnginePaused } from "../../../components/CoachesView";
+import { EnginePaused, GamePage } from "../../../components/CoachesView";
 import { DAILY_ITEMS } from "../../../lib/daily";
 import { CHECKER_ENABLED } from "../../../lib/features";
 import { CARD_SOURCE, pct, whatIfFor, xIntentUrl } from "../../../lib/whatIf";
@@ -28,7 +28,7 @@ export default async function CardPage({ params }: Props) {
   if (!card) notFound();
   if (!CHECKER_ENABLED) return <EnginePaused />;
   return (
-    <main className="fd-page co-page" id="main">
+    <GamePage right="What if?">
       <header>
         <h1 className="co-h1">What if?</h1>
         <p className="co-sub">A real 4th down, with the other call run through the same model as the Daily.</p>
@@ -41,8 +41,8 @@ export default async function CardPage({ params }: Props) {
         <p className="wi-sub">{card.team} win chance. {card.real}</p>
         <p className="wi-foot"><span>{card.game}</span><span>{CARD_SOURCE}</span></p>
       </section>
-      <a className="co-btn" href={xIntentUrl(card)} target="_blank" rel="noopener noreferrer">Share on X</a>
+      <a className="sg-next co-btn" href={xIntentUrl(card)} target="_blank" rel="noopener noreferrer">Share on X</a>
       <p className="co-src">Sharing opens X with the text filled in. You choose whether to post. Win chance is the model&apos;s estimate from past games.</p>
-    </main>
+    </GamePage>
   );
 }
