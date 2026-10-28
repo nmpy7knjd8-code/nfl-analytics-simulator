@@ -170,7 +170,7 @@
         "values": {
           "go": 0.5822235022629254,
           "punt": 0.5485096775527336,
-          "fg": 0.5066612800353504
+          "fg": 0.507428933859423
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (58.2% vs 54.9%).",
         "transition_mode": "improved",
@@ -356,13 +356,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02833111239096564,
+        "margin": 0.022452576160938542,
         "values": {
           "go": 0.6294234476686432,
           "punt": 0.585964338535,
-          "fg": 0.6010923352776776
+          "fg": 0.6069708715077047
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (62.9% vs 60.1%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (62.9% vs 60.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -383,7 +383,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02833111239096564
+        "edge_wp": 0.022452576160938542
       }
     },
     {
@@ -420,11 +420,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.005479472744309932,
+        "margin": 0.004757802663474919,
         "values": {
           "go": 0.5879517584097392,
           "punt": 0.49106165654816103,
-          "fg": 0.5824722856654293
+          "fg": 0.5831939557462643
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 59%); punting is lower (49%).",
         "transition_mode": "improved",
@@ -447,7 +447,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.005479472744309932
+        "edge_wp": 0.004757802663474919
       }
     },
     {
@@ -488,7 +488,7 @@
         "values": {
           "go": 0.6808466398347448,
           "punt": 0.5866135053068302,
-          "fg": 0.5731842344475448
+          "fg": 0.5717846219251407
         },
         "layman_why": "Going for it added about 9% win chance over the next-best option (68.1% vs 58.7%).",
         "transition_mode": "improved",
@@ -548,13 +548,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024257727989198674,
+        "margin": 0.026479471222857764,
         "values": {
           "go": 0.8506853486575576,
           "punt": 0.7975902208489261,
-          "fg": 0.826427620668359
+          "fg": 0.8242058774346999
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (85.1% vs 82.6%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (85.1% vs 82.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -575,7 +575,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024257727989198674
+        "edge_wp": 0.026479471222857764
       }
     },
     {
@@ -675,11 +675,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.027835934761506698,
+        "margin": 0.027214573565428335,
         "values": {
           "go": 0.6476939873695993,
           "punt": 0.5533287100132285,
-          "fg": 0.6198580526080926
+          "fg": 0.6204794138041709
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (64.8% vs 62.0%).",
         "transition_mode": "improved",
@@ -702,7 +702,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.027835934761506698
+        "edge_wp": 0.027214573565428335
       }
     },
     {
@@ -802,13 +802,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.11035190887038515,
+        "margin": 0.12993698550236932,
         "values": {
           "go": 0.31866029256236517,
           "punt": 0.258621964799732,
-          "fg": 0.4290122014327503
+          "fg": 0.4485972780647345
         },
-        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (42.9% vs 31.9%).",
+        "layman_why": "Kicking the field goal added about 13% win chance over the next-best option (44.9% vs 31.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -829,7 +829,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.11035190887038515
+        "edge_wp": 0.12993698550236932
       }
     },
     {
@@ -866,13 +866,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0734379016402194,
+        "margin": 0.07446963256258354,
         "values": {
           "go": 0.3777973611214729,
           "punt": 0.2965728649952886,
-          "fg": 0.3043594594812535
+          "fg": 0.30332772855888934
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (37.8% vs 30.4%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (37.8% vs 30.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -893,7 +893,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0734379016402194
+        "edge_wp": 0.07446963256258354
       }
     },
     {
@@ -930,13 +930,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.022701825672306275,
+        "margin": 0.02573961538960845,
         "values": {
           "go": 0.716240777665904,
-          "punt": 0.6390358993702621,
-          "fg": 0.6935389519935977
+          "punt": 0.6418155834803255,
+          "fg": 0.6905011622762955
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (71.6% vs 69.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -957,7 +957,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.022701825672306275
+        "edge_wp": 0.02573961538960845
       }
     },
     {
@@ -994,13 +994,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.1110671482577762,
+        "margin": 0.11472805812663789,
         "values": {
           "go": 0.6497552075563713,
           "punt": 0.41602554507482614,
-          "fg": 0.7608223558141475
+          "fg": 0.7644832656830092
         },
-        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (76.1% vs 65.0%).",
+        "layman_why": "Kicking the field goal added about 11% win chance over the next-best option (76.4% vs 65.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1021,7 +1021,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.1110671482577762
+        "edge_wp": 0.11472805812663789
       }
     },
     {
@@ -1121,13 +1121,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.037064211820870496,
+        "margin": 0.0333839226639423,
         "values": {
           "go": 0.4145763577971041,
-          "punt": 0.3829764794949717,
-          "fg": 0.4516405696179746
+          "punt": 0.38695882427625805,
+          "fg": 0.4479602804610464
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (45.2% vs 41.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (44.8% vs 41.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1148,7 +1148,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.037064211820870496
+        "edge_wp": 0.0333839226639423
       }
     },
     {
@@ -1185,13 +1185,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.05384009626147601,
+        "margin": 0.05293650187442733,
         "values": {
           "go": 0.46377057792964727,
-          "punt": 0.4080768188002903,
-          "fg": 0.5176106741911233
+          "punt": 0.41273435843690376,
+          "fg": 0.5167070798040746
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (51.8% vs 46.4%).",
+        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (51.7% vs 46.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1212,7 +1212,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05384009626147601
+        "edge_wp": 0.05293650187442733
       }
     },
     {
@@ -1312,11 +1312,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.024782815156571436,
+        "margin": 0.024649559518811037,
         "values": {
           "go": 0.3393061406138562,
-          "punt": 0.28518003654443114,
-          "fg": 0.36408895577042766
+          "punt": 0.2881363563913527,
+          "fg": 0.36395570013266726
         },
         "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (36.4% vs 33.9%).",
         "transition_mode": "improved",
@@ -1339,7 +1339,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024782815156571436
+        "edge_wp": 0.024649559518811037
       }
     },
     {
@@ -1376,11 +1376,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00523624021678315,
+        "margin": 0.004418064302774027,
         "values": {
           "go": 0.9791104838979416,
           "punt": 0.9711309314507107,
-          "fg": 0.9738742436811585
+          "fg": 0.9746924195951676
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 98%).",
         "transition_mode": "improved",
@@ -1403,7 +1403,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.00523624021678315
+        "edge_wp": 0.004418064302774027
       }
     },
     {
@@ -1440,13 +1440,13 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.005844133604661739,
+        "margin": 0.005757383083990653,
         "values": {
           "go": 0.9492390027288115,
           "punt": 0.9374961950677969,
-          "fg": 0.9550831363334732
+          "fg": 0.9549963858128021
         },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 96%).",
+        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 95%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1467,7 +1467,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.005844133604661739
+        "edge_wp": 0.005757383083990653
       }
     },
     {
@@ -1630,13 +1630,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04627630837024296,
+        "margin": 0.04792060980148416,
         "values": {
           "go": 0.2551241684023895,
-          "punt": 0.1718510919271147,
-          "fg": 0.20884786003214653
+          "punt": 0.17253395109689623,
+          "fg": 0.20720355860090534
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (25.5% vs 20.9%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (25.5% vs 20.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1657,7 +1657,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04627630837024296
+        "edge_wp": 0.04792060980148416
       }
     },
     {
@@ -1694,13 +1694,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05641432546616901,
+        "margin": 0.05596448922388497,
         "values": {
           "go": 0.1758614698890578,
-          "punt": 0.05337816957451355,
-          "fg": 0.11944714442288878
+          "punt": 0.053986029268676905,
+          "fg": 0.11989698066517282
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (17.6% vs 11.9%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (17.6% vs 12.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -1721,7 +1721,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05641432546616901
+        "edge_wp": 0.05596448922388497
       }
     },
     {
@@ -2010,13 +2010,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.026762522662425736,
+        "margin": 0.026513886910775164,
         "values": {
           "go": 0.6669719072668506,
           "punt": 0.6468989000889516,
-          "fg": 0.6937344299292764
+          "fg": 0.6934857941776258
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (69.4% vs 66.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (69.3% vs 66.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2037,7 +2037,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.026762522662425736
+        "edge_wp": 0.026513886910775164
       }
     },
     {
@@ -2074,11 +2074,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.033663323737920414,
+        "margin": 0.03310892802351406,
         "values": {
           "go": 0.43647885312053236,
           "punt": 0.3314505424780376,
-          "fg": 0.40281552938261195
+          "fg": 0.4033699250970183
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (43.6% vs 40.3%).",
         "transition_mode": "improved",
@@ -2101,7 +2101,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.033663323737920414
+        "edge_wp": 0.03310892802351406
       }
     },
     {
@@ -2138,11 +2138,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0638262382821998,
+        "margin": 0.06304880251061873,
         "values": {
           "go": 0.7175144509619181,
-          "punt": 0.6808563808809356,
-          "fg": 0.7813406892441179
+          "punt": 0.6845130917680312,
+          "fg": 0.7805632534725369
         },
         "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (78.1% vs 71.8%).",
         "transition_mode": "improved",
@@ -2165,7 +2165,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0638262382821998
+        "edge_wp": 0.06304880251061873
       }
     },
     {
@@ -2265,13 +2265,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.027392008590838346,
+        "margin": 0.03043451835640959,
         "values": {
           "go": 0.3060943222791843,
           "punt": 0.29906230322721883,
-          "fg": 0.33348633087002266
+          "fg": 0.3365288406355939
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (33.3% vs 30.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (33.7% vs 30.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2292,7 +2292,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.027392008590838346
+        "edge_wp": 0.03043451835640959
       }
     },
     {
@@ -2392,13 +2392,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.023652735796148572,
+        "margin": 0.022780201324513083,
         "values": {
           "go": 0.6963567853128493,
           "punt": 0.5896701075970986,
-          "fg": 0.6727040495167007
+          "fg": 0.6735765839883362
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (69.6% vs 67.3%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (69.6% vs 67.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2419,7 +2419,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.023652735796148572
+        "edge_wp": 0.022780201324513083
       }
     },
     {
@@ -2456,11 +2456,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.007922482991234658,
+        "margin": 0.007379220016921151,
         "values": {
           "go": 0.7369013621411955,
           "punt": 0.6706186058356746,
-          "fg": 0.7289788791499608
+          "fg": 0.7295221421242744
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 74%); punting is lower (67%).",
         "transition_mode": "improved",
@@ -2483,7 +2483,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.007922482991234658
+        "edge_wp": 0.007379220016921151
       }
     },
     {
@@ -2772,13 +2772,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06209104905905516,
+        "margin": 0.06058213446708882,
         "values": {
           "go": 0.7938970481459406,
-          "punt": 0.5738617436294012,
-          "fg": 0.7318059990868855
+          "punt": 0.5791424811628081,
+          "fg": 0.7333149136788518
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (79.4% vs 73.2%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (79.4% vs 73.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2799,7 +2799,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06209104905905516
+        "edge_wp": 0.06058213446708882
       }
     },
     {
@@ -2899,13 +2899,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.028357436108751577,
+        "margin": 0.031225516563318068,
         "values": {
           "go": 0.3148479572098689,
-          "punt": 0.22922975266999523,
-          "fg": 0.28649052110111733
+          "punt": 0.23134824732597212,
+          "fg": 0.28362244064655084
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (31.5% vs 28.6%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (31.5% vs 28.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -2926,7 +2926,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.028357436108751577
+        "edge_wp": 0.031225516563318068
       }
     },
     {
@@ -2963,11 +2963,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.029582367900175544,
+        "margin": 0.028987709886228452,
         "values": {
           "go": 0.5824782348732671,
           "punt": 0.48462185672351493,
-          "fg": 0.5528958669730916
+          "fg": 0.5534905249870387
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (58.2% vs 55.3%).",
         "transition_mode": "improved",
@@ -2990,7 +2990,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.029582367900175544
+        "edge_wp": 0.028987709886228452
       }
     },
     {
@@ -3027,13 +3027,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.038298606228184706,
+        "margin": 0.03870353271836413,
         "values": {
           "go": 0.6216042492313596,
-          "punt": 0.62078288273604,
-          "fg": 0.6599028554595443
+          "punt": 0.621916826758355,
+          "fg": 0.6606203594767192
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (66.0% vs 62.2%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (66.1% vs 62.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3054,7 +3054,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.038298606228184706
+        "edge_wp": 0.03870353271836413
       }
     },
     {
@@ -3154,11 +3154,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.007934241568158473,
+        "margin": 0.008526344150056264,
         "values": {
           "go": 0.923306792070846,
           "punt": 0.9142864443100347,
-          "fg": 0.9153725505026875
+          "fg": 0.9147804479207897
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
@@ -3181,7 +3181,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.007934241568158473
+        "edge_wp": 0.008526344150056264
       }
     },
     {
@@ -3218,11 +3218,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.035770085177829425,
+        "margin": 0.035915809697652956,
         "values": {
           "go": 0.4067690138345146,
-          "punt": 0.3025297776020396,
-          "fg": 0.37099892865668516
+          "punt": 0.3040675520743683,
+          "fg": 0.3708532041368616
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (40.7% vs 37.1%).",
         "transition_mode": "improved",
@@ -3245,7 +3245,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.035770085177829425
+        "edge_wp": 0.035915809697652956
       }
     },
     {
@@ -3412,7 +3412,7 @@
         "values": {
           "go": 0.2838853669399327,
           "punt": 0.2562032843600087,
-          "fg": 0.23612199308558368
+          "fg": 0.23781450585659983
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (28.4% vs 25.6%).",
         "transition_mode": "improved",
@@ -3535,13 +3535,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.026076289796019114,
+        "margin": 0.030694767807744328,
         "values": {
           "go": 0.32152321538449574,
           "punt": 0.3182047277591288,
-          "fg": 0.34759950518051486
+          "fg": 0.35221798319224007
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (34.8% vs 32.2%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (35.2% vs 32.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3562,7 +3562,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.026076289796019114
+        "edge_wp": 0.030694767807744328
       }
     },
     {
@@ -3662,13 +3662,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": true,
-        "margin": 0.010604949546535097,
+        "margin": 0.01505071362027538,
         "values": {
           "go": 0.23539443902499568,
           "punt": 0.22754277200140777,
-          "fg": 0.24599938857153078
+          "fg": 0.25044515264527106
         },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 25%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 25%); punting is lower (23%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3689,7 +3689,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.010604949546535097
+        "edge_wp": 0.01505071362027538
       }
     },
     {
@@ -3726,13 +3726,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.055058761818478796,
+        "margin": 0.05436583840972198,
         "values": {
           "go": 0.6031938558051888,
           "punt": 0.47833970361887046,
-          "fg": 0.54813509398671
+          "fg": 0.5488280173954668
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (60.3% vs 54.8%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (60.3% vs 54.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -3753,7 +3753,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.055058761818478796
+        "edge_wp": 0.05436583840972198
       }
     },
     {
@@ -3853,11 +3853,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04938297339160924,
+        "margin": 0.04881008148362975,
         "values": {
           "go": 0.7979251773927203,
-          "punt": 0.6715382139616555,
-          "fg": 0.748542204001111
+          "punt": 0.6762837615454804,
+          "fg": 0.7491150959090905
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (79.8% vs 74.9%).",
         "transition_mode": "improved",
@@ -3880,7 +3880,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04938297339160924
+        "edge_wp": 0.04881008148362975
       }
     },
     {
@@ -3980,13 +3980,13 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0032332271376964705,
+        "margin": 0.0027311129865246198,
         "values": {
           "go": 0.6386351083258863,
-          "punt": 0.5809063694992015,
-          "fg": 0.6418683354635828
+          "punt": 0.5850052457220756,
+          "fg": 0.641366221312411
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (58%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (59%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4007,7 +4007,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0032332271376964705
+        "edge_wp": 0.0027311129865246198
       }
     },
     {
@@ -4107,13 +4107,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04876166141731009,
+        "margin": 0.048159205944565464,
         "values": {
           "go": 0.5958319607949362,
-          "punt": 0.4786787256500196,
-          "fg": 0.5470702993776261
+          "punt": 0.4798804425441237,
+          "fg": 0.5476727548503707
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (59.6% vs 54.7%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (59.6% vs 54.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4134,7 +4134,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04876166141731009
+        "edge_wp": 0.048159205944565464
       }
     },
     {
@@ -4175,7 +4175,7 @@
         "values": {
           "go": 0.5598326605069012,
           "punt": 0.5132843344954905,
-          "fg": 0.4943941448177547
+          "fg": 0.49725197632146867
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (56.0% vs 51.3%).",
         "transition_mode": "improved",
@@ -4424,13 +4424,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02512019155200551,
+        "margin": 0.026843938840468096,
         "values": {
           "go": 0.9132900749755525,
-          "punt": 0.8971926549377897,
-          "fg": 0.938410266527558
+          "punt": 0.8976384217230402,
+          "fg": 0.9401340138160206
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (93.8% vs 91.3%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (94.0% vs 91.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4451,7 +4451,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02512019155200551
+        "edge_wp": 0.026843938840468096
       }
     },
     {
@@ -4488,13 +4488,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0361694656114282,
+        "margin": 0.03550735089948903,
         "values": {
           "go": 0.45010563104653784,
           "punt": 0.3472364171116732,
-          "fg": 0.41393616543510964
+          "fg": 0.4145982801470488
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (45.0% vs 41.4%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (45.0% vs 41.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4515,7 +4515,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0361694656114282
+        "edge_wp": 0.03550735089948903
       }
     },
     {
@@ -4552,11 +4552,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0484318076145428,
+        "margin": 0.047957627947268655,
         "values": {
           "go": 0.6921032409595614,
-          "punt": 0.5755335074010635,
-          "fg": 0.6436714333450186
+          "punt": 0.5808085174398578,
+          "fg": 0.6441456130122928
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (69.2% vs 64.4%).",
         "transition_mode": "improved",
@@ -4579,7 +4579,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0484318076145428
+        "edge_wp": 0.047957627947268655
       }
     },
     {
@@ -4679,13 +4679,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.021947120891681937,
+        "margin": 0.029962808735777724,
         "values": {
           "go": 0.5470956742644675,
           "punt": 0.49746788270859726,
-          "fg": 0.5690427951561494
+          "fg": 0.5770584830002452
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (56.9% vs 54.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (57.7% vs 54.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4706,7 +4706,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.021947120891681937
+        "edge_wp": 0.029962808735777724
       }
     },
     {
@@ -4743,13 +4743,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0259165025988638,
+        "margin": 0.02517765169375319,
         "values": {
           "go": 0.6871104249339912,
           "punt": 0.588009323772,
-          "fg": 0.6611939223351274
+          "fg": 0.661932773240238
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (68.7% vs 66.1%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (68.7% vs 66.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4770,7 +4770,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0259165025988638
+        "edge_wp": 0.02517765169375319
       }
     },
     {
@@ -4870,13 +4870,13 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0057934040521046,
+        "margin": 0.005340979572825644,
         "values": {
           "go": 0.6324483821254283,
-          "punt": 0.5842708394684506,
-          "fg": 0.6382417861775329
+          "punt": 0.5883602949471666,
+          "fg": 0.637789361698254
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (58%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 64%); punting is lower (59%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -4897,7 +4897,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0057934040521046
+        "edge_wp": 0.005340979572825644
       }
     },
     {
@@ -4997,11 +4997,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.036443891857805444,
+        "margin": 0.03668694010563356,
         "values": {
           "go": 0.36648272680382693,
           "punt": 0.28228427399005973,
-          "fg": 0.3300388349460215
+          "fg": 0.32979578669819337
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (36.6% vs 33.0%).",
         "transition_mode": "improved",
@@ -5024,7 +5024,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.036443891857805444
+        "edge_wp": 0.03668694010563356
       }
     },
     {
@@ -5061,11 +5061,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.031201378210147332,
+        "margin": 0.03092726534629557,
         "values": {
           "go": 0.1188642796956041,
           "punt": 0.08181539550301775,
-          "fg": 0.08766290148545677
+          "fg": 0.08793701434930853
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (11.9% vs 8.8%).",
         "transition_mode": "improved",
@@ -5088,7 +5088,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.031201378210147332
+        "edge_wp": 0.03092726534629557
       }
     },
     {
@@ -5125,11 +5125,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04708343373975393,
+        "margin": 0.04721248655105015,
         "values": {
           "go": 0.1954541454040771,
-          "punt": 0.07001615088933763,
-          "fg": 0.14837071166432317
+          "punt": 0.07096473822673566,
+          "fg": 0.14824165885302695
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (19.5% vs 14.8%).",
         "transition_mode": "improved",
@@ -5152,7 +5152,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04708343373975393
+        "edge_wp": 0.04721248655105015
       }
     },
     {
@@ -5189,13 +5189,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.025237993384894408,
+        "margin": 0.024665888044402506,
         "values": {
           "go": 0.8913788759207788,
-          "punt": 0.8422333901633853,
-          "fg": 0.9166168693056732
+          "punt": 0.8444679560949679,
+          "fg": 0.9160447639651813
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (91.7% vs 89.1%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (91.6% vs 89.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5216,7 +5216,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.025237993384894408
+        "edge_wp": 0.024665888044402506
       }
     },
     {
@@ -5253,13 +5253,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03199164180383457,
+        "margin": 0.03160520188761953,
         "values": {
           "go": 0.0862236507566052,
           "punt": 0.02139545836599091,
-          "fg": 0.054232008952770624
+          "fg": 0.05461844886898566
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (8.6% vs 5.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (8.6% vs 5.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5280,7 +5280,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03199164180383457
+        "edge_wp": 0.03160520188761953
       }
     },
     {
@@ -5380,11 +5380,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024628066340994376,
+        "margin": 0.024894391128363558,
         "values": {
           "go": 0.1510711717721015,
-          "punt": 0.09210982406708035,
-          "fg": 0.12644310543110712
+          "punt": 0.09352130373880185,
+          "fg": 0.12617678064373794
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (15.1% vs 12.6%).",
         "transition_mode": "improved",
@@ -5407,7 +5407,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024628066340994376
+        "edge_wp": 0.024894391128363558
       }
     },
     {
@@ -5444,13 +5444,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04300396853177735,
+        "margin": 0.04711699875484082,
         "values": {
           "go": 0.415912821195835,
-          "punt": 0.28901441313603293,
-          "fg": 0.37290885266405766
+          "punt": 0.2914799384796081,
+          "fg": 0.3687958224409942
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (41.6% vs 37.3%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (41.6% vs 36.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5471,7 +5471,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04300396853177735
+        "edge_wp": 0.04711699875484082
       }
     },
     {
@@ -5571,13 +5571,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03940160001813042,
+        "margin": 0.04035693617774372,
         "values": {
           "go": 0.6714834113240311,
-          "punt": 0.5712887696717124,
-          "fg": 0.7108850113421615
+          "punt": 0.5742355692944794,
+          "fg": 0.7118403475017748
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (71.1% vs 67.1%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (71.2% vs 67.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5598,7 +5598,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03940160001813042
+        "edge_wp": 0.04035693617774372
       }
     },
     {
@@ -5635,13 +5635,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03513493501187569,
+        "margin": 0.03486637825075481,
         "values": {
           "go": 0.09864513946911561,
-          "punt": 0.037354081692779845,
-          "fg": 0.06351020445723993
+          "punt": 0.03814663865820134,
+          "fg": 0.0637787612183608
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (9.9% vs 6.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (9.9% vs 6.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5662,7 +5662,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03513493501187569
+        "edge_wp": 0.03486637825075481
       }
     },
     {
@@ -5762,13 +5762,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02354030155598419,
+        "margin": 0.02254345647796796,
         "values": {
           "go": 0.7161504308237898,
-          "punt": 0.5912361722284785,
-          "fg": 0.6926101292678056
+          "punt": 0.596451532123762,
+          "fg": 0.6936069743458219
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.3%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5789,7 +5789,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02354030155598419
+        "edge_wp": 0.02254345647796796
       }
     },
     {
@@ -5826,11 +5826,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.010810325670503329,
+        "margin": 0.01012669589296733,
         "values": {
           "go": 0.5479951179686489,
           "punt": 0.454533876481513,
-          "fg": 0.5371847922981455
+          "fg": 0.5378684220756815
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 55%); punting is lower (45%).",
         "transition_mode": "improved",
@@ -5842,7 +5842,7 @@
           "Punts use where real punts from this spot usually ended up.",
           "The clock runs about as long as it really did after each kind of play."
         ],
-        "recommendation_changed_legacy_to_improved": false,
+        "recommendation_changed_legacy_to_improved": true,
         "model_notes": [
           "Path A uncalibrated WP only (no isotonic)",
           "Outcome-dependent clock = REG train median \u0394game_seconds to next play (go_convert=29s, go_fail=5s, fg_make=4s, fg_miss=5s, punt=9s)",
@@ -5853,7 +5853,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.010810325670503329
+        "edge_wp": 0.01012669589296733
       }
     },
     {
@@ -5890,13 +5890,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.04320497173608284,
+        "margin": 0.04158538763193731,
         "values": {
           "go": 0.5254426114193886,
-          "punt": 0.45289153558924844,
-          "fg": 0.5686475831554715
+          "punt": 0.4540830685353601,
+          "fg": 0.567027999051326
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (56.9% vs 52.5%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (56.7% vs 52.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5917,7 +5917,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04320497173608284
+        "edge_wp": 0.04158538763193731
       }
     },
     {
@@ -5954,13 +5954,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.048119335037914435,
+        "margin": 0.05813016119439329,
         "values": {
           "go": 0.4859757477317467,
           "punt": 0.48567260019437397,
-          "fg": 0.5340950827696611
+          "fg": 0.54410590892614
         },
-        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (53.4% vs 48.6%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (54.4% vs 48.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -5981,7 +5981,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.048119335037914435
+        "edge_wp": 0.05813016119439329
       }
     },
     {
@@ -6144,11 +6144,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07757411197866793,
+        "margin": 0.07682396234638911,
         "values": {
           "go": 0.6151163500708676,
-          "punt": 0.44113367167437323,
-          "fg": 0.5375422380921997
+          "punt": 0.4464842828634481,
+          "fg": 0.5382923877244785
         },
         "layman_why": "Going for it added about 8% win chance over the next-best option (61.5% vs 53.8%).",
         "transition_mode": "improved",
@@ -6171,7 +6171,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07757411197866793
+        "edge_wp": 0.07682396234638911
       }
     },
     {
@@ -6271,13 +6271,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02486866383687769,
+        "margin": 0.024157672943876052,
         "values": {
           "go": 0.6597687560388674,
           "punt": 0.5563810029047975,
-          "fg": 0.6349000922019897
+          "fg": 0.6356110830949914
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (66.0% vs 63.5%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (66.0% vs 63.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6298,7 +6298,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02486866383687769
+        "edge_wp": 0.024157672943876052
       }
     },
     {
@@ -6402,7 +6402,7 @@
         "values": {
           "go": 0.17716603138427833,
           "punt": 0.13455228285855456,
-          "fg": 0.13453374732305695
+          "fg": 0.13398903937501772
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (17.7% vs 13.5%).",
         "transition_mode": "improved",
@@ -6462,13 +6462,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02197174774788091,
+        "margin": 0.02120050255313849,
         "values": {
           "go": 0.2903099652848016,
           "punt": 0.19544154048845688,
-          "fg": 0.26833821753692066
+          "fg": 0.2691094627316631
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (29.0% vs 26.8%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (29.0% vs 26.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6489,7 +6489,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02197174774788091
+        "edge_wp": 0.02120050255313849
       }
     },
     {
@@ -6593,7 +6593,7 @@
         "values": {
           "go": 0.2501201684620082,
           "punt": 0.2202024065086905,
-          "fg": 0.2036304055697608
+          "fg": 0.20292349270427962
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (25.0% vs 22.0%).",
         "transition_mode": "improved",
@@ -6716,13 +6716,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.037088061294455854,
+        "margin": 0.032734104556346066,
         "values": {
           "go": 0.4173644836338426,
           "punt": 0.361029564962567,
-          "fg": 0.38027642233938674
+          "fg": 0.38463037907749653
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (41.7% vs 38.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (41.7% vs 38.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6743,7 +6743,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.037088061294455854
+        "edge_wp": 0.032734104556346066
       }
     },
     {
@@ -6780,11 +6780,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.036863454053773004,
+        "margin": 0.03662440602921367,
         "values": {
           "go": 0.12268643392279893,
-          "punt": 0.059390829104875614,
-          "fg": 0.08582297986902593
+          "punt": 0.06062106128802475,
+          "fg": 0.08606202789358526
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (12.3% vs 8.6%).",
         "transition_mode": "improved",
@@ -6807,7 +6807,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.036863454053773004
+        "edge_wp": 0.03662440602921367
       }
     },
     {
@@ -6844,13 +6844,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.026532851502095278,
+        "margin": 0.029319526343792868,
         "values": {
           "go": 0.660840127760655,
-          "punt": 0.5874964346713742,
-          "fg": 0.6343072762585598
+          "punt": 0.5904148584421953,
+          "fg": 0.6315206014168622
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (66.1% vs 63.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (66.1% vs 63.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -6871,7 +6871,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.026532851502095278
+        "edge_wp": 0.029319526343792868
       }
     },
     {
@@ -6908,11 +6908,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03314200104038802,
+        "margin": 0.03289027809068061,
         "values": {
           "go": 0.10985771790181299,
           "punt": 0.053917113418278984,
-          "fg": 0.07671571686142498
+          "fg": 0.07696743981113238
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (11.0% vs 7.7%).",
         "transition_mode": "improved",
@@ -6935,7 +6935,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03314200104038802
+        "edge_wp": 0.03289027809068061
       }
     },
     {
@@ -7224,13 +7224,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02683482272399823,
+        "margin": 0.03635653415165879,
         "values": {
           "go": 0.22581997256574976,
           "punt": 0.12176417616057622,
-          "fg": 0.252654795289748
+          "fg": 0.26217650671740855
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.3% vs 22.6%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (26.2% vs 22.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7251,7 +7251,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02683482272399823
+        "edge_wp": 0.03635653415165879
       }
     },
     {
@@ -7288,11 +7288,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02144632493933074,
+        "margin": 0.021070002136393637,
         "values": {
           "go": 0.0960673629324413,
           "punt": 0.04140091055416223,
-          "fg": 0.07462103799311055
+          "fg": 0.07499736079604766
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (9.6% vs 7.5%).",
         "transition_mode": "improved",
@@ -7315,7 +7315,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02144632493933074
+        "edge_wp": 0.021070002136393637
       }
     },
     {
@@ -7352,13 +7352,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03760858740888812,
+        "margin": 0.03707424030377332,
         "values": {
           "go": 0.5025852300613833,
-          "punt": 0.39712512033066744,
-          "fg": 0.4649766426524952
+          "punt": 0.40232995523515047,
+          "fg": 0.46551098975761
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (50.3% vs 46.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (50.3% vs 46.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7379,7 +7379,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03760858740888812
+        "edge_wp": 0.03707424030377332
       }
     },
     {
@@ -7605,13 +7605,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.07942420245850867,
+        "margin": 0.08651181698567612,
         "values": {
           "go": 0.5538767095944681,
-          "punt": 0.4208923222386624,
-          "fg": 0.6333009120529768
+          "punt": 0.42206409379781096,
+          "fg": 0.6403885265801442
         },
-        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (63.3% vs 55.4%).",
+        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (64.0% vs 55.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7632,7 +7632,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07942420245850867
+        "edge_wp": 0.08651181698567612
       }
     },
     {
@@ -7732,13 +7732,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.044674057078944535,
+        "margin": 0.0441957568432029,
         "values": {
           "go": 0.2909096058763802,
           "punt": 0.1861902946003806,
-          "fg": 0.24623554879743567
+          "fg": 0.2467138490331773
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (29.1% vs 24.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (29.1% vs 24.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7759,7 +7759,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.044674057078944535
+        "edge_wp": 0.0441957568432029
       }
     },
     {
@@ -7859,13 +7859,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0296893523399257,
+        "margin": 0.026325088122679086,
         "values": {
           "go": 0.2898739175103478,
           "punt": 0.24592781929189544,
-          "fg": 0.2601845651704221
+          "fg": 0.2635488293876687
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (29.0% vs 26.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (29.0% vs 26.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -7886,7 +7886,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0296893523399257
+        "edge_wp": 0.026325088122679086
       }
     },
     {
@@ -7923,11 +7923,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02675021830212443,
+        "margin": 0.026641314292817575,
         "values": {
           "go": 0.6750036287309793,
-          "punt": 0.6382977456356393,
-          "fg": 0.7017538470331037
+          "punt": 0.6416213254039966,
+          "fg": 0.7016449430237969
         },
         "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (70.2% vs 67.5%).",
         "transition_mode": "improved",
@@ -7950,7 +7950,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02675021830212443
+        "edge_wp": 0.026641314292817575
       }
     },
     {
@@ -7987,13 +7987,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03636396019087518,
+        "margin": 0.03445659585159744,
         "values": {
           "go": 0.6594821487369934,
-          "punt": 0.6021528757264563,
-          "fg": 0.6231181885461182
+          "punt": 0.6033065972686414,
+          "fg": 0.625025552885396
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (65.9% vs 62.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (65.9% vs 62.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8014,7 +8014,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03636396019087518
+        "edge_wp": 0.03445659585159744
       }
     },
     {
@@ -8492,11 +8492,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.006767231696887699,
+        "margin": 0.009626660340808557,
         "values": {
           "go": 0.39052797226874764,
-          "punt": 0.33511735036198903,
-          "fg": 0.38376074057185994
+          "punt": 0.3377922360622248,
+          "fg": 0.3809013119279391
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 39%); punting is lower (34%).",
         "transition_mode": "improved",
@@ -8519,7 +8519,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.006767231696887699
+        "edge_wp": 0.009626660340808557
       }
     },
     {
@@ -8682,13 +8682,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.023169795380372227,
+        "margin": 0.024061873569718784,
         "values": {
           "go": 0.9269724749863628,
           "punt": 0.8488589898664498,
-          "fg": 0.950142270366735
+          "fg": 0.9510343485560816
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.0% vs 92.7%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.1% vs 92.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8709,7 +8709,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.023169795380372227
+        "edge_wp": 0.024061873569718784
       }
     },
     {
@@ -8809,11 +8809,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.029692110018388562,
+        "margin": 0.0298705502940515,
         "values": {
           "go": 0.6230827561908903,
-          "punt": 0.5094695152561561,
-          "fg": 0.5933906461725017
+          "punt": 0.5112728627242544,
+          "fg": 0.5932122058968388
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (62.3% vs 59.3%).",
         "transition_mode": "improved",
@@ -8836,7 +8836,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.029692110018388562
+        "edge_wp": 0.0298705502940515
       }
     },
     {
@@ -8872,14 +8872,14 @@
       "historical_action": "fg",
       "reveal": {
         "recommendation": "fg",
-        "inconclusive": true,
-        "margin": 0.018151258088710542,
+        "inconclusive": false,
+        "margin": 0.02398570122890814,
         "values": {
           "go": 0.3908530526043873,
           "punt": 0.3922571470304377,
-          "fg": 0.4104084051191482
+          "fg": 0.4162428482593458
         },
-        "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 41%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.6% vs 39.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -8900,7 +8900,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.018151258088710542
+        "edge_wp": 0.02398570122890814
       }
     },
     {
@@ -8937,11 +8937,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.004475749529657791,
+        "margin": 0.006262542032754226,
         "values": {
           "go": 0.905640493414869,
           "punt": 0.9033302900861775,
-          "fg": 0.9101162429445268
+          "fg": 0.9119030354476232
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 91%).",
         "transition_mode": "improved",
@@ -8964,7 +8964,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.004475749529657791
+        "edge_wp": 0.006262542032754226
       }
     },
     {
@@ -9068,7 +9068,7 @@
         "values": {
           "go": 0.536765437336789,
           "punt": 0.46626645890927676,
-          "fg": 0.4340741161323346
+          "fg": 0.43498908810064996
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (53.7% vs 46.6%).",
         "transition_mode": "improved",
@@ -9191,13 +9191,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02591224083401189,
+        "margin": 0.025421630998466838,
         "values": {
           "go": 0.8670565892064177,
-          "punt": 0.8300670012799441,
-          "fg": 0.8929688300404296
+          "punt": 0.8324392411869634,
+          "fg": 0.8924782202048845
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (89.3% vs 86.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (89.2% vs 86.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9218,7 +9218,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02591224083401189
+        "edge_wp": 0.025421630998466838
       }
     },
     {
@@ -9318,13 +9318,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.08901173879703456,
+        "margin": 0.0875251301076434,
         "values": {
           "go": 0.30618059931875585,
-          "punt": 0.2070012876294608,
-          "fg": 0.3951923381157904
+          "punt": 0.21017912306814585,
+          "fg": 0.39370572942639925
         },
-        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (39.5% vs 30.6%).",
+        "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (39.4% vs 30.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9345,7 +9345,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.08901173879703456
+        "edge_wp": 0.0875251301076434
       }
     },
     {
@@ -9382,11 +9382,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05216607390678246,
+        "margin": 0.05180284055687445,
         "values": {
           "go": 0.16713969144534774,
           "punt": 0.1062326451917836,
-          "fg": 0.11497361753856528
+          "fg": 0.11533685088847329
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (16.7% vs 11.5%).",
         "transition_mode": "improved",
@@ -9409,7 +9409,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05216607390678246
+        "edge_wp": 0.05180284055687445
       }
     },
     {
@@ -9508,14 +9508,14 @@
       "historical_action": "go",
       "reveal": {
         "recommendation": "go",
-        "inconclusive": true,
-        "margin": 0.018386137033260655,
+        "inconclusive": false,
+        "margin": 0.020060538774821654,
         "values": {
           "go": 0.14020048320960124,
-          "punt": 0.08650155997345971,
-          "fg": 0.12181434617634058
+          "punt": 0.08783532918281758,
+          "fg": 0.12013994443477959
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 14%); punting is lower (9%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (14.0% vs 12.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9536,7 +9536,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.018386137033260655
+        "edge_wp": 0.020060538774821654
       }
     },
     {
@@ -9577,7 +9577,7 @@
         "values": {
           "go": 0.6993455511523308,
           "punt": 0.6512886457177872,
-          "fg": 0.6435181542469415
+          "fg": 0.6441784572386293
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (69.9% vs 65.1%).",
         "transition_mode": "improved",
@@ -9637,13 +9637,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03304550045117538,
+        "margin": 0.032520028109278065,
         "values": {
           "go": 0.4347428810178731,
-          "punt": 0.38013525798145015,
-          "fg": 0.4677883814690485
+          "punt": 0.38354566187505607,
+          "fg": 0.4672629091271512
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (46.8% vs 43.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (46.7% vs 43.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -9664,7 +9664,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03304550045117538
+        "edge_wp": 0.032520028109278065
       }
     },
     {
@@ -9701,11 +9701,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04051246062405304,
+        "margin": 0.04025084837266328,
         "values": {
           "go": 0.07001388058734836,
           "punt": 0.009169500727231189,
-          "fg": 0.029501419963295326
+          "fg": 0.029763032214685084
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (7.0% vs 3.0%).",
         "transition_mode": "improved",
@@ -9728,7 +9728,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04051246062405304
+        "edge_wp": 0.04025084837266328
       }
     },
     {
@@ -10080,13 +10080,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.09391416496762522,
+        "margin": 0.09299867337984119,
         "values": {
           "go": 0.5206176392961204,
-          "punt": 0.32010824948571825,
-          "fg": 0.42670347432849515
+          "punt": 0.3248535473357832,
+          "fg": 0.4276189659162792
         },
-        "layman_why": "Going for it added about 9% win chance over the next-best option (52.1% vs 42.7%).",
+        "layman_why": "Going for it added about 9% win chance over the next-best option (52.1% vs 42.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10107,7 +10107,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.09391416496762522
+        "edge_wp": 0.09299867337984119
       }
     },
     {
@@ -10207,13 +10207,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03458787328815849,
+        "margin": 0.033895672834932444,
         "values": {
           "go": 0.5701957346431162,
           "punt": 0.44665986179575456,
-          "fg": 0.6047836079312747
+          "fg": 0.6040914074780487
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (60.5% vs 57.0%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (60.4% vs 57.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10234,7 +10234,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03458787328815849
+        "edge_wp": 0.033895672834932444
       }
     },
     {
@@ -10271,11 +10271,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02411811254494839,
+        "margin": 0.023329051122036426,
         "values": {
           "go": 0.2698154536895721,
           "punt": 0.1659838403454628,
-          "fg": 0.24569734114462372
+          "fg": 0.24648640256753568
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (27.0% vs 24.6%).",
         "transition_mode": "improved",
@@ -10298,7 +10298,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02411811254494839
+        "edge_wp": 0.023329051122036426
       }
     },
     {
@@ -10524,11 +10524,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0002881149486008705,
+        "margin": 0.0006859802120324221,
         "values": {
           "go": 0.4066659833468219,
-          "punt": 0.34111710188048894,
-          "fg": 0.40637786839822104
+          "punt": 0.34437275084254626,
+          "fg": 0.4059800031347895
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 41%); punting is lower (34%).",
         "transition_mode": "improved",
@@ -10551,7 +10551,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0002881149486008705
+        "edge_wp": 0.0006859802120324221
       }
     },
     {
@@ -10588,13 +10588,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.07666829757883564,
+        "margin": 0.07826961676765687,
         "values": {
           "go": 0.5375631975048564,
-          "punt": 0.44274209357594757,
-          "fg": 0.614231495083692
+          "punt": 0.44393102338487156,
+          "fg": 0.6158328142725132
         },
-        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.4% vs 53.8%).",
+        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.6% vs 53.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10615,7 +10615,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07666829757883564
+        "edge_wp": 0.07826961676765687
       }
     },
     {
@@ -10652,13 +10652,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03376808845436863,
+        "margin": 0.033152048983169036,
         "values": {
           "go": 0.4687369381412373,
-          "punt": 0.4070507578600728,
-          "fg": 0.43496884968686866
+          "punt": 0.4082109383021357,
+          "fg": 0.43558488915806826
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 43.5%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 43.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -10679,7 +10679,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03376808845436863
+        "edge_wp": 0.033152048983169036
       }
     },
     {
@@ -10779,11 +10779,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04098106695912973,
+        "margin": 0.04097482077023873,
         "values": {
           "go": 0.6530738241792771,
           "punt": 0.5547638029185169,
-          "fg": 0.6120927572201473
+          "fg": 0.6120990034090383
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (65.3% vs 61.2%).",
         "transition_mode": "improved",
@@ -10806,7 +10806,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04098106695912973
+        "edge_wp": 0.04097482077023873
       }
     },
     {
@@ -10847,7 +10847,7 @@
         "values": {
           "go": 0.32070899123198965,
           "punt": 0.2901169218255528,
-          "fg": 0.2829303788798012
+          "fg": 0.2820461688789371
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (32.1% vs 29.0%).",
         "transition_mode": "improved",
@@ -10907,11 +10907,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024699865628922263,
+        "margin": 0.024783457426860472,
         "values": {
           "go": 0.10332904912279162,
-          "punt": 0.031209304447190417,
-          "fg": 0.07862918349386935
+          "punt": 0.03143249797073128,
+          "fg": 0.07854559169593114
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (10.3% vs 7.9%).",
         "transition_mode": "improved",
@@ -10934,7 +10934,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024699865628922263
+        "edge_wp": 0.024783457426860472
       }
     },
     {
@@ -11034,13 +11034,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.020885090673987583,
+        "margin": 0.021613772566132006,
         "values": {
           "go": 0.3561138561016353,
-          "punt": 0.29656044422947925,
-          "fg": 0.3769989467756229
+          "punt": 0.2975684379475434,
+          "fg": 0.3777276286677673
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (37.7% vs 35.6%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (37.8% vs 35.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11061,7 +11061,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.020885090673987583
+        "edge_wp": 0.021613772566132006
       }
     },
     {
@@ -11098,13 +11098,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": true,
-        "margin": 0.01069804341984093,
+        "margin": 0.017926754816380952,
         "values": {
           "go": 0.653809093835557,
           "punt": 0.6283408283643643,
-          "fg": 0.6645071372553979
+          "fg": 0.6717358486519379
         },
-        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 66%); punting is lower (63%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 67%); punting is lower (63%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11125,7 +11125,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.01069804341984093
+        "edge_wp": 0.017926754816380952
       }
     },
     {
@@ -11162,13 +11162,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.06500278482161914,
+        "margin": 0.06033006202493496,
         "values": {
           "go": 0.4870941563040937,
-          "punt": 0.4593204295476125,
-          "fg": 0.5520969411257128
+          "punt": 0.4623062904162505,
+          "fg": 0.5474242183290287
         },
-        "layman_why": "Kicking the field goal added about 7% win chance over the next-best option (55.2% vs 48.7%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (54.7% vs 48.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11189,7 +11189,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06500278482161914
+        "edge_wp": 0.06033006202493496
       }
     },
     {
@@ -11226,11 +11226,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.022719272100189092,
+        "margin": 0.022332262044579554,
         "values": {
           "go": 0.46749936286193794,
-          "punt": 0.4274292465772145,
-          "fg": 0.49021863496212703
+          "punt": 0.4309678690209038,
+          "fg": 0.4898316249065175
         },
         "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (49.0% vs 46.7%).",
         "transition_mode": "improved",
@@ -11253,7 +11253,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.022719272100189092
+        "edge_wp": 0.022332262044579554
       }
     },
     {
@@ -11290,13 +11290,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02224815717069628,
+        "margin": 0.025254610562371438,
         "values": {
           "go": 0.745547893614453,
-          "punt": 0.6719058122374658,
-          "fg": 0.7232997364437567
+          "punt": 0.6756158073454378,
+          "fg": 0.7202932830520815
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (74.6% vs 72.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (74.6% vs 72.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11317,7 +11317,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02224815717069628
+        "edge_wp": 0.025254610562371438
       }
     },
     {
@@ -11354,13 +11354,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.058731032744913536,
+        "margin": 0.05432799646754605,
         "values": {
           "go": 0.338742211417296,
           "punt": 0.24944417440625388,
-          "fg": 0.28001117867238245
+          "fg": 0.28441421494974994
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (33.9% vs 28.0%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (33.9% vs 28.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11381,7 +11381,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.058731032744913536
+        "edge_wp": 0.05432799646754605
       }
     },
     {
@@ -11422,7 +11422,7 @@
         "values": {
           "go": 0.4686756659160724,
           "punt": 0.4406534979891671,
-          "fg": 0.4282366331231694
+          "fg": 0.42719287460644895
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (46.9% vs 44.1%).",
         "transition_mode": "improved",
@@ -11482,13 +11482,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.024215495009239363,
+        "margin": 0.0235400491033253,
         "values": {
           "go": 0.7044679494462007,
           "punt": 0.6121953062276622,
-          "fg": 0.6802524544369614
+          "fg": 0.6809279003428754
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (70.4% vs 68.0%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (70.4% vs 68.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11509,7 +11509,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024215495009239363
+        "edge_wp": 0.0235400491033253
       }
     },
     {
@@ -11609,11 +11609,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.007447779263400178,
+        "margin": 0.007722590969688609,
         "values": {
           "go": 0.1592455281556472,
-          "punt": 0.12612734196417585,
-          "fg": 0.16669330741904737
+          "punt": 0.1274533379091195,
+          "fg": 0.1669681191253358
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 17%); punting is lower (13%).",
         "transition_mode": "improved",
@@ -11636,7 +11636,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.007447779263400178
+        "edge_wp": 0.007722590969688609
       }
     },
     {
@@ -11799,13 +11799,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03282630531610711,
+        "margin": 0.032368646165200354,
         "values": {
           "go": 0.16128033419949223,
-          "punt": 0.07853069464946141,
-          "fg": 0.1284540288833851
+          "punt": 0.07940124005333468,
+          "fg": 0.12891168803429187
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (16.1% vs 12.8%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (16.1% vs 12.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11826,7 +11826,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03282630531610711
+        "edge_wp": 0.032368646165200354
       }
     },
     {
@@ -11863,13 +11863,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02495720445081312,
+        "margin": 0.02578070196014487,
         "values": {
           "go": 0.42548212138668334,
-          "punt": 0.43138246274870096,
-          "fg": 0.4563396671995141
+          "punt": 0.432561794954039,
+          "fg": 0.4583424969141839
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (45.6% vs 43.1%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (45.8% vs 43.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -11890,7 +11890,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02495720445081312
+        "edge_wp": 0.02578070196014487
       }
     },
     {
@@ -11990,11 +11990,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00894645774371719,
+        "margin": 0.008604887495282237,
         "values": {
           "go": 0.14490275809102326,
-          "punt": 0.11252841930079974,
-          "fg": 0.15384921583474045
+          "punt": 0.1144654580799461,
+          "fg": 0.1535076455863055
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 15%); punting is lower (11%).",
         "transition_mode": "improved",
@@ -12017,7 +12017,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.00894645774371719
+        "edge_wp": 0.008604887495282237
       }
     },
     {
@@ -12054,11 +12054,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.030920919747895903,
+        "margin": 0.030719338478246372,
         "values": {
           "go": 0.7870028738980048,
-          "punt": 0.6865150552119288,
-          "fg": 0.7560819541501089
+          "punt": 0.6896100760037059,
+          "fg": 0.7562835354197585
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (78.7% vs 75.6%).",
         "transition_mode": "improved",
@@ -12081,7 +12081,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.030920919747895903
+        "edge_wp": 0.030719338478246372
       }
     },
     {
@@ -12181,13 +12181,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.029774575073575865,
+        "margin": 0.034620814709071634,
         "values": {
           "go": 0.19520771749051144,
           "punt": 0.17806875796250218,
-          "fg": 0.2249822925640873
+          "fg": 0.22982853219958307
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (22.5% vs 19.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (23.0% vs 19.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12208,7 +12208,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.029774575073575865
+        "edge_wp": 0.034620814709071634
       }
     },
     {
@@ -12308,13 +12308,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02897365884412373,
+        "margin": 0.02457741729238838,
         "values": {
           "go": 0.41138993673289276,
           "punt": 0.36260256672001034,
-          "fg": 0.38241627788876903
+          "fg": 0.3868125194405044
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (41.1% vs 38.2%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (41.1% vs 38.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12335,7 +12335,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02897365884412373
+        "edge_wp": 0.02457741729238838
       }
     },
     {
@@ -12376,7 +12376,7 @@
         "values": {
           "go": 0.6291341627174559,
           "punt": 0.6524030126160976,
-          "fg": 0.6266894635556008
+          "fg": 0.6290513501747261
         },
         "layman_why": "Punting added about 2% win chance over the next-best option (65.2% vs 62.9%).",
         "transition_mode": "improved",
@@ -12562,13 +12562,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03570364011831073,
+        "margin": 0.03650878455114975,
         "values": {
           "go": 0.32145376618897514,
-          "punt": 0.2391272687859749,
-          "fg": 0.3571574063072859
+          "punt": 0.24131629687529146,
+          "fg": 0.3579625507401249
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (35.7% vs 32.1%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (35.8% vs 32.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12589,7 +12589,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03570364011831073
+        "edge_wp": 0.03650878455114975
       }
     },
     {
@@ -12626,13 +12626,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03527721578403331,
+        "margin": 0.03195724147327028,
         "values": {
           "go": 0.8371370067038029,
-          "punt": 0.8055636129000253,
-          "fg": 0.8724142224878362
+          "punt": 0.8074553336824734,
+          "fg": 0.8690942481770731
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (87.2% vs 83.7%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (86.9% vs 83.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12653,7 +12653,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03527721578403331
+        "edge_wp": 0.03195724147327028
       }
     },
     {
@@ -12753,11 +12753,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0674862501899659,
+        "margin": 0.0669888736101697,
         "values": {
           "go": 0.6204378940131388,
-          "punt": 0.47733388230959906,
-          "fg": 0.5529516438231729
+          "punt": 0.4827411052659241,
+          "fg": 0.5534490204029691
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (62.0% vs 55.3%).",
         "transition_mode": "improved",
@@ -12780,7 +12780,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0674862501899659
+        "edge_wp": 0.0669888736101697
       }
     },
     {
@@ -12817,13 +12817,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.035266219863737014,
+        "margin": 0.03774183094365413,
         "values": {
           "go": 0.7583011541719862,
-          "punt": 0.6603101399415634,
-          "fg": 0.7230349343082492
+          "punt": 0.6630138380443505,
+          "fg": 0.720559323228332
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (75.8% vs 72.3%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (75.8% vs 72.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12844,7 +12844,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.035266219863737014
+        "edge_wp": 0.03774183094365413
       }
     },
     {
@@ -12881,13 +12881,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.037485089163432836,
+        "margin": 0.037037980155262426,
         "values": {
           "go": 0.12355557742310132,
           "punt": 0.03769494251904859,
-          "fg": 0.08607048825966848
+          "fg": 0.08651759726783889
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (12.4% vs 8.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (12.4% vs 8.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -12908,7 +12908,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.037485089163432836
+        "edge_wp": 0.037037980155262426
       }
     },
     {
@@ -13134,13 +13134,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06998207548077251,
+        "margin": 0.06923278154947798,
         "values": {
           "go": 0.6238306073618575,
-          "punt": 0.46918543612037455,
-          "fg": 0.553848531881085
+          "punt": 0.4745848856323103,
+          "fg": 0.5545978258123795
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (62.4% vs 55.4%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (62.4% vs 55.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13161,7 +13161,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06998207548077251
+        "edge_wp": 0.06923278154947798
       }
     },
     {
@@ -13202,7 +13202,7 @@
         "values": {
           "go": 0.5233069991279213,
           "punt": 0.49965059455716976,
-          "fg": 0.4671408754129035
+          "fg": 0.46935113395882694
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (52.3% vs 50.0%).",
         "transition_mode": "improved",
@@ -13325,13 +13325,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03387471010673049,
+        "margin": 0.03156343629177627,
         "values": {
           "go": 0.5016932133287628,
-          "punt": 0.4804807691216785,
-          "fg": 0.5355679234354933
+          "punt": 0.48348273109263595,
+          "fg": 0.5332566496205391
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (53.6% vs 50.2%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (53.3% vs 50.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13352,7 +13352,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03387471010673049
+        "edge_wp": 0.03156343629177627
       }
     },
     {
@@ -13389,11 +13389,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05070850369898805,
+        "margin": 0.050080899129432144,
         "values": {
           "go": 0.6964460231823513,
           "punt": 0.5691155476803375,
-          "fg": 0.6457375194833632
+          "fg": 0.6463651240529191
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (69.6% vs 64.6%).",
         "transition_mode": "improved",
@@ -13416,7 +13416,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05070850369898805
+        "edge_wp": 0.050080899129432144
       }
     },
     {
@@ -13453,13 +13453,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03404866392691058,
+        "margin": 0.037599557497831004,
         "values": {
           "go": 0.2617699374356761,
           "punt": 0.23844688803136074,
-          "fg": 0.2958186013625867
+          "fg": 0.2993694949335071
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (29.6% vs 26.2%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (29.9% vs 26.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -13480,7 +13480,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03404866392691058
+        "edge_wp": 0.037599557497831004
       }
     },
     {
@@ -13580,11 +13580,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02193745258347135,
+        "margin": 0.021836718370527364,
         "values": {
           "go": 0.9367901500642423,
-          "punt": 0.8996771048424883,
-          "fg": 0.9587276026477136
+          "punt": 0.9009694250783896,
+          "fg": 0.9586268684347696
         },
         "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (95.9% vs 93.7%).",
         "transition_mode": "improved",
@@ -13607,7 +13607,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02193745258347135
+        "edge_wp": 0.021836718370527364
       }
     },
     {
@@ -13770,11 +13770,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05483592030311796,
+        "margin": 0.054328872914869486,
         "values": {
           "go": 0.5434975766547294,
           "punt": 0.42495774952208987,
-          "fg": 0.48866165635161146
+          "fg": 0.48916870373985993
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (54.3% vs 48.9%).",
         "transition_mode": "improved",
@@ -13797,7 +13797,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05483592030311796
+        "edge_wp": 0.054328872914869486
       }
     },
     {
@@ -14149,13 +14149,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.033905286771881205,
+        "margin": 0.033109561345215366,
         "values": {
           "go": 0.5562984360848943,
           "punt": 0.4445007510360216,
-          "fg": 0.5223931493130131
+          "fg": 0.5231888747396789
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (55.6% vs 52.2%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (55.6% vs 52.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14176,7 +14176,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.033905286771881205
+        "edge_wp": 0.033109561345215366
       }
     },
     {
@@ -14276,13 +14276,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03134309890589021,
+        "margin": 0.028809608991904767,
         "values": {
           "go": 0.28157276480548005,
           "punt": 0.23034093599239225,
-          "fg": 0.25022966589958984
+          "fg": 0.2527631558135753
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (28.2% vs 25.0%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (28.2% vs 25.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14303,7 +14303,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03134309890589021
+        "edge_wp": 0.028809608991904767
       }
     },
     {
@@ -14403,11 +14403,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.1283177302341114,
+        "margin": 0.12740793996869082,
         "values": {
           "go": 0.30085858249012776,
-          "punt": 0.08523669720075924,
-          "fg": 0.17254085225601637
+          "punt": 0.08695208856019071,
+          "fg": 0.17345064252143694
         },
         "layman_why": "Going for it added about 13% win chance over the next-best option (30.1% vs 17.3%).",
         "transition_mode": "improved",
@@ -14430,7 +14430,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.1283177302341114
+        "edge_wp": 0.12740793996869082
       }
     },
     {
@@ -14593,13 +14593,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04569676966217531,
+        "margin": 0.04041960116133356,
         "values": {
           "go": 0.2427919442915593,
           "punt": 0.15618954309202837,
-          "fg": 0.19709517462938397
+          "fg": 0.20237234313022573
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (24.3% vs 19.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (24.3% vs 20.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14620,7 +14620,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04569676966217531
+        "edge_wp": 0.04041960116133356
       }
     },
     {
@@ -14657,11 +14657,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00863190733252639,
+        "margin": 0.008929523665151207,
         "values": {
           "go": 0.49626414568137234,
           "punt": 0.429254712443208,
-          "fg": 0.48763223834884595
+          "fg": 0.48733462201622113
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 50%); punting is lower (43%).",
         "transition_mode": "improved",
@@ -14684,7 +14684,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.00863190733252639
+        "edge_wp": 0.008929523665151207
       }
     },
     {
@@ -14910,13 +14910,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04097784831315254,
+        "margin": 0.03821247323581611,
         "values": {
           "go": 0.6958702510512605,
-          "punt": 0.6025521957350324,
-          "fg": 0.654892402738108
+          "punt": 0.6037055284653365,
+          "fg": 0.6576577778154444
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (69.6% vs 65.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (69.6% vs 65.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -14937,7 +14937,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04097784831315254
+        "edge_wp": 0.03821247323581611
       }
     },
     {
@@ -14974,11 +14974,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02781450867387003,
+        "margin": 0.02725464010836587,
         "values": {
           "go": 0.6754486094922628,
           "punt": 0.5879134943448481,
-          "fg": 0.6476341008183928
+          "fg": 0.648193969383897
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (67.5% vs 64.8%).",
         "transition_mode": "improved",
@@ -15001,7 +15001,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02781450867387003
+        "edge_wp": 0.02725464010836587
       }
     },
     {
@@ -15038,13 +15038,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0418440039202268,
+        "margin": 0.04064639491953137,
         "values": {
           "go": 0.5867963821585405,
           "punt": 0.4225816395574563,
-          "fg": 0.5449523782383137
+          "fg": 0.5461499872390091
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (58.7% vs 54.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (58.7% vs 54.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15065,7 +15065,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0418440039202268
+        "edge_wp": 0.04064639491953137
       }
     },
     {
@@ -15165,11 +15165,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.023184756853478095,
+        "margin": 0.022493127039681426,
         "values": {
           "go": 0.6527187991394064,
           "punt": 0.5419258176993125,
-          "fg": 0.6295340422859284
+          "fg": 0.630225672099725
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (65.3% vs 63.0%).",
         "transition_mode": "improved",
@@ -15192,7 +15192,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.023184756853478095
+        "edge_wp": 0.022493127039681426
       }
     },
     {
@@ -15229,13 +15229,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0414153011742181,
+        "margin": 0.040712337163211265,
         "values": {
           "go": 0.29755562199465857,
-          "punt": 0.17967284015934645,
-          "fg": 0.25614032082044047
+          "punt": 0.1803864787107269,
+          "fg": 0.2568432848314473
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (29.8% vs 25.6%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (29.8% vs 25.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15256,7 +15256,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0414153011742181
+        "edge_wp": 0.040712337163211265
       }
     },
     {
@@ -15293,11 +15293,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.013213634731626955,
+        "margin": 0.014326215433585199,
         "values": {
           "go": 0.32640451399140535,
-          "punt": 0.24991731786708737,
-          "fg": 0.3131908792597784
+          "punt": 0.2517260066893574,
+          "fg": 0.31207829855782016
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 33%); punting is lower (25%).",
         "transition_mode": "improved",
@@ -15320,7 +15320,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.013213634731626955
+        "edge_wp": 0.014326215433585199
       }
     },
     {
@@ -15357,11 +15357,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.002588647101348873,
+        "margin": 0.0005257955188691099,
         "values": {
           "go": 0.7216820297215756,
           "punt": 0.7190933826202267,
-          "fg": 0.7180996630954177
+          "fg": 0.7211562342027065
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 72%).",
         "transition_mode": "improved",
@@ -15384,7 +15384,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.002588647101348873
+        "edge_wp": 0.0005257955188691099
       }
     },
     {
@@ -15484,13 +15484,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.06304630085856167,
+        "margin": 0.05366626011639519,
         "values": {
           "go": 0.6105932369098697,
-          "punt": 0.47743130828732516,
-          "fg": 0.6736395377684313
+          "punt": 0.4816338898890282,
+          "fg": 0.6642594970262649
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (67.4% vs 61.1%).",
+        "layman_why": "Kicking the field goal added about 5% win chance over the next-best option (66.4% vs 61.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15511,7 +15511,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06304630085856167
+        "edge_wp": 0.05366626011639519
       }
     },
     {
@@ -15611,13 +15611,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05337082843848895,
+        "margin": 0.0528450403784545,
         "values": {
           "go": 0.7004699440847104,
           "punt": 0.5855627588516175,
-          "fg": 0.6470991156462215
+          "fg": 0.6476249037062559
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (70.0% vs 64.7%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (70.0% vs 64.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15638,7 +15638,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05337082843848895
+        "edge_wp": 0.0528450403784545
       }
     },
     {
@@ -15675,11 +15675,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.031642265191384425,
+        "margin": 0.03183564923590104,
         "values": {
           "go": 0.06811134025727397,
-          "punt": 0.011474845864250266,
-          "fg": 0.03646907506588955
+          "punt": 0.01169532335364118,
+          "fg": 0.03627569102137293
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (6.8% vs 3.6%).",
         "transition_mode": "improved",
@@ -15702,7 +15702,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.031642265191384425
+        "edge_wp": 0.03183564923590104
       }
     },
     {
@@ -15802,13 +15802,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02595982750287229,
+        "margin": 0.028068576085864605,
         "values": {
           "go": 0.2930562582985332,
-          "punt": 0.28025951609971256,
-          "fg": 0.3190160858014055
+          "punt": 0.2812281140220083,
+          "fg": 0.3211248343843978
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (31.9% vs 29.3%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (32.1% vs 29.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -15829,7 +15829,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02595982750287229
+        "edge_wp": 0.028068576085864605
       }
     },
     {
@@ -15929,11 +15929,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.028396627056935655,
+        "margin": 0.028249392887405984,
         "values": {
           "go": 0.05508311474641016,
-          "punt": 0.012505169018105944,
-          "fg": 0.026686487689474504
+          "punt": 0.012777605158888455,
+          "fg": 0.026833721859004175
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (5.5% vs 2.7%).",
         "transition_mode": "improved",
@@ -15956,7 +15956,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.028396627056935655
+        "edge_wp": 0.028249392887405984
       }
     },
     {
@@ -15993,13 +15993,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.055794323576283555,
+        "margin": 0.06318113190202806,
         "values": {
           "go": 0.4337210399238438,
           "punt": 0.42574654589819216,
-          "fg": 0.48951536350012737
+          "fg": 0.4969021718258719
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (49.0% vs 43.4%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (49.7% vs 43.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16020,7 +16020,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.055794323576283555
+        "edge_wp": 0.06318113190202806
       }
     },
     {
@@ -16057,13 +16057,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03142313546001774,
+        "margin": 0.028136292825792553,
         "values": {
           "go": 0.6376128427890504,
           "punt": 0.5868309754295267,
-          "fg": 0.6061897073290327
+          "fg": 0.6094765499632578
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (63.8% vs 60.6%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (63.8% vs 60.9%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16084,7 +16084,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03142313546001774
+        "edge_wp": 0.028136292825792553
       }
     },
     {
@@ -16184,13 +16184,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.14252458197973916,
+        "margin": 0.14078357641045647,
         "values": {
           "go": 0.6021259441597291,
-          "punt": 0.4438110636300189,
-          "fg": 0.7446505261394682
+          "punt": 0.4473789624746121,
+          "fg": 0.7429095205701856
         },
-        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (74.5% vs 60.2%).",
+        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (74.3% vs 60.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16211,7 +16211,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.14252458197973916
+        "edge_wp": 0.14078357641045647
       }
     },
     {
@@ -16311,11 +16311,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0558854391538684,
+        "margin": 0.05545614544484534,
         "values": {
           "go": 0.33055163905473817,
-          "punt": 0.21832156164104408,
-          "fg": 0.27466619990086977
+          "punt": 0.2220569822682619,
+          "fg": 0.2750954936098928
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (33.1% vs 27.5%).",
         "transition_mode": "improved",
@@ -16338,7 +16338,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0558854391538684
+        "edge_wp": 0.05545614544484534
       }
     },
     {
@@ -16375,11 +16375,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.028743139294062692,
+        "margin": 0.028308381460805943,
         "values": {
           "go": 0.2834208974984239,
-          "punt": 0.20608333575120893,
-          "fg": 0.2546777582043612
+          "punt": 0.20805177307913927,
+          "fg": 0.255112516037618
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (28.3% vs 25.5%).",
         "transition_mode": "improved",
@@ -16402,7 +16402,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.028743139294062692
+        "edge_wp": 0.028308381460805943
       }
     },
     {
@@ -16506,7 +16506,7 @@
         "values": {
           "go": 0.36298821417582383,
           "punt": 0.33602948937940824,
-          "fg": 0.3060479522435273
+          "fg": 0.30780490789990766
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (36.3% vs 33.6%).",
         "transition_mode": "improved",
@@ -16566,11 +16566,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.01888602177346843,
+        "margin": 0.017881135320387487,
         "values": {
           "go": 0.6872552246945495,
           "punt": 0.6457321481975807,
-          "fg": 0.668369202921081
+          "fg": 0.669374089374162
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 69%); punting is lower (65%).",
         "transition_mode": "improved",
@@ -16593,7 +16593,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.01888602177346843
+        "edge_wp": 0.017881135320387487
       }
     },
     {
@@ -16693,13 +16693,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03371625347715601,
+        "margin": 0.03450499748450386,
         "values": {
           "go": 0.6956789144226383,
-          "punt": 0.6139966151725749,
-          "fg": 0.7293951678997943
+          "punt": 0.616848185420234,
+          "fg": 0.7301839119071422
         },
-        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (72.9% vs 69.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (73.0% vs 69.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -16720,7 +16720,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03371625347715601
+        "edge_wp": 0.03450499748450386
       }
     },
     {
@@ -16757,11 +16757,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0061131944416210615,
+        "margin": 0.004503609190285696,
         "values": {
           "go": 0.9186665209589288,
           "punt": 0.9082646630682416,
-          "fg": 0.9125533265173077
+          "fg": 0.9141629117686431
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 92%).",
         "transition_mode": "improved",
@@ -16784,7 +16784,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0061131944416210615
+        "edge_wp": 0.004503609190285696
       }
     },
     {
@@ -16821,11 +16821,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.022869297753097317,
+        "margin": 0.022876561975709753,
         "values": {
           "go": 0.8207552832866258,
           "punt": 0.768956078690662,
-          "fg": 0.8436245810397232
+          "fg": 0.8436318452623356
         },
         "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (84.4% vs 82.1%).",
         "transition_mode": "improved",
@@ -16848,7 +16848,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.022869297753097317
+        "edge_wp": 0.022876561975709753
       }
     },
     {
@@ -16885,11 +16885,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.025865283221735424,
+        "margin": 0.02606542620146668,
         "values": {
           "go": 0.6009411439066306,
-          "punt": 0.5578444130836431,
-          "fg": 0.626806427128366
+          "punt": 0.5614011090283224,
+          "fg": 0.6270065701080972
         },
         "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (62.7% vs 60.1%).",
         "transition_mode": "improved",
@@ -16912,7 +16912,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.025865283221735424
+        "edge_wp": 0.02606542620146668
       }
     },
     {
@@ -16949,11 +16949,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03423219847539011,
+        "margin": 0.034519835235118916,
         "values": {
           "go": 0.0953527082303833,
           "punt": 0.05924234685957935,
-          "fg": 0.061120509754993196
+          "fg": 0.06083287299526439
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (9.5% vs 6.1%).",
         "transition_mode": "improved",
@@ -16976,7 +16976,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03423219847539011
+        "edge_wp": 0.034519835235118916
       }
     },
     {
@@ -17013,13 +17013,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05606590958051616,
+        "margin": 0.05685331411204558,
         "values": {
           "go": 0.33734805443038474,
-          "punt": 0.2342728348196595,
-          "fg": 0.2812821448498686
+          "punt": 0.23513393708709499,
+          "fg": 0.28049474031833915
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (33.7% vs 28.1%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (33.7% vs 28.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17040,7 +17040,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05606590958051616
+        "edge_wp": 0.05685331411204558
       }
     },
     {
@@ -17077,13 +17077,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.037827403548732264,
+        "margin": 0.036985480590688735,
         "values": {
           "go": 0.6620503935783378,
-          "punt": 0.658670211864574,
-          "fg": 0.6998777971270701
+          "punt": 0.6597536025747497,
+          "fg": 0.6990358741690266
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (70.0% vs 66.2%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (69.9% vs 66.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17104,7 +17104,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.037827403548732264
+        "edge_wp": 0.036985480590688735
       }
     },
     {
@@ -17141,11 +17141,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.09583750656391643,
+        "margin": 0.0954053667594349,
         "values": {
           "go": 0.563501516744402,
-          "punt": 0.42465933708594344,
-          "fg": 0.6593390233083184
+          "punt": 0.4264295711969981,
+          "fg": 0.6589068835038369
         },
         "layman_why": "Kicking the field goal added about 10% win chance over the next-best option (65.9% vs 56.4%).",
         "transition_mode": "improved",
@@ -17168,7 +17168,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.09583750656391643
+        "edge_wp": 0.0954053667594349
       }
     },
     {
@@ -17268,13 +17268,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03212589267734406,
+        "margin": 0.03174658728950758,
         "values": {
           "go": 0.17537766083028314,
-          "punt": 0.11625129388369948,
-          "fg": 0.14325176815293908
+          "punt": 0.11674406140962998,
+          "fg": 0.14363107354077556
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (17.5% vs 14.3%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (17.5% vs 14.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17295,7 +17295,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03212589267734406
+        "edge_wp": 0.03174658728950758
       }
     },
     {
@@ -17332,13 +17332,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.04493314301418394,
+        "margin": 0.04084740870168391,
         "values": {
           "go": 0.4840402930279385,
-          "punt": 0.44765972071260063,
-          "fg": 0.5289734360421224
+          "punt": 0.45063211405103454,
+          "fg": 0.5248877017296224
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (52.9% vs 48.4%).",
+        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (52.5% vs 48.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17359,7 +17359,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04493314301418394
+        "edge_wp": 0.04084740870168391
       }
     },
     {
@@ -17396,11 +17396,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07173536703512501,
+        "margin": 0.07103801414434363,
         "values": {
           "go": 0.2963618648178097,
-          "punt": 0.15239130916169008,
-          "fg": 0.22462649778268468
+          "punt": 0.155225739931678,
+          "fg": 0.22532385067346605
         },
         "layman_why": "Going for it added about 7% win chance over the next-best option (29.6% vs 22.5%).",
         "transition_mode": "improved",
@@ -17423,7 +17423,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07173536703512501
+        "edge_wp": 0.07103801414434363
       }
     },
     {
@@ -17460,11 +17460,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": true,
-        "margin": 0.011855035015534532,
+        "margin": 0.010160283201220421,
         "values": {
           "go": 0.9268997724163541,
-          "punt": 0.9056801917322845,
-          "fg": 0.9387548074318887
+          "punt": 0.9067133519586832,
+          "fg": 0.9370600556175745
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 94%); punting is lower (91%).",
         "transition_mode": "improved",
@@ -17487,7 +17487,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.011855035015534532
+        "edge_wp": 0.010160283201220421
       }
     },
     {
@@ -17650,13 +17650,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03927688790310779,
+        "margin": 0.0430086419059551,
         "values": {
           "go": 0.6358131902833888,
-          "punt": 0.5390895791652797,
-          "fg": 0.596536302380281
+          "punt": 0.543273761587738,
+          "fg": 0.5928045483774337
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (63.6% vs 59.7%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (63.6% vs 59.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -17677,7 +17677,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03927688790310779
+        "edge_wp": 0.0430086419059551
       }
     },
     {
@@ -18033,7 +18033,7 @@
         "values": {
           "go": 0.7171701130605544,
           "punt": 0.6773976082339381,
-          "fg": 0.6705486466975725
+          "fg": 0.6724677969859814
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (71.7% vs 67.7%).",
         "transition_mode": "improved",
@@ -18093,11 +18093,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.02766340852004623,
+        "margin": 0.027122053482735275,
         "values": {
           "go": 0.2257893611698203,
-          "punt": 0.18285950692352435,
-          "fg": 0.2534527696898665
+          "punt": 0.18538027750524905,
+          "fg": 0.25291141465255557
         },
         "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (25.3% vs 22.6%).",
         "transition_mode": "improved",
@@ -18120,7 +18120,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02766340852004623
+        "edge_wp": 0.027122053482735275
       }
     },
     {
@@ -18157,13 +18157,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.023302046158213352,
+        "margin": 0.02279936161449636,
         "values": {
           "go": 0.3923126357776523,
-          "punt": 0.3538173220888543,
-          "fg": 0.41561468193586565
+          "punt": 0.3576708952300426,
+          "fg": 0.41511199739214866
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.6% vs 39.2%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (41.5% vs 39.2%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18184,7 +18184,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.023302046158213352
+        "edge_wp": 0.02279936161449636
       }
     },
     {
@@ -18221,13 +18221,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07209152707030053,
+        "margin": 0.07423470140353916,
         "values": {
           "go": 0.5398752237063564,
           "punt": 0.4442184460000126,
-          "fg": 0.4677836966360559
+          "fg": 0.4656405223028173
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (54.0% vs 46.8%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (54.0% vs 46.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18248,7 +18248,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07209152707030053
+        "edge_wp": 0.07423470140353916
       }
     },
     {
@@ -18348,13 +18348,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.055877336406649714,
+        "margin": 0.06053754808251166,
         "values": {
           "go": 0.6206949968979678,
           "punt": 0.31558108917886846,
-          "fg": 0.6765723333046175
+          "fg": 0.6812325449804795
         },
-        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (67.7% vs 62.1%).",
+        "layman_why": "Kicking the field goal added about 6% win chance over the next-best option (68.1% vs 62.1%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18375,7 +18375,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.055877336406649714
+        "edge_wp": 0.06053754808251166
       }
     },
     {
@@ -18412,11 +18412,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07864350410783383,
+        "margin": 0.0780118657114347,
         "values": {
           "go": 0.3984487594055795,
-          "punt": 0.24572065628665024,
-          "fg": 0.31980525529774567
+          "punt": 0.24977325753045618,
+          "fg": 0.3204368936941448
         },
         "layman_why": "Going for it added about 8% win chance over the next-best option (39.8% vs 32.0%).",
         "transition_mode": "improved",
@@ -18439,7 +18439,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07864350410783383
+        "edge_wp": 0.0780118657114347
       }
     },
     {
@@ -18539,13 +18539,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03790195347079864,
+        "margin": 0.039979292824899926,
         "values": {
           "go": 0.20769566735245026,
-          "punt": 0.12800525721031322,
-          "fg": 0.16979371388165163
+          "punt": 0.12934211185711172,
+          "fg": 0.16771637452755034
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (20.8% vs 17.0%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (20.8% vs 16.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18566,7 +18566,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03790195347079864
+        "edge_wp": 0.039979292824899926
       }
     },
     {
@@ -18666,13 +18666,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03032717272887364,
+        "margin": 0.029729405856394053,
         "values": {
           "go": 0.6628060174478243,
-          "punt": 0.5596305332896581,
-          "fg": 0.6324788447189507
+          "punt": 0.5649551665123791,
+          "fg": 0.6330766115914302
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (66.3% vs 63.2%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (66.3% vs 63.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18693,7 +18693,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03032717272887364
+        "edge_wp": 0.029729405856394053
       }
     },
     {
@@ -18730,13 +18730,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.030518545588427926,
+        "margin": 0.03010303874222564,
         "values": {
           "go": 0.6756827678353413,
-          "punt": 0.5836104544007488,
-          "fg": 0.6451642222469134
+          "punt": 0.5865342848057735,
+          "fg": 0.6455797290931157
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (67.6% vs 64.5%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (67.6% vs 64.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18757,7 +18757,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.030518545588427926
+        "edge_wp": 0.03010303874222564
       }
     },
     {
@@ -18794,13 +18794,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.07629913503436014,
+        "margin": 0.0827526736377977,
         "values": {
           "go": 0.5358113953695148,
           "punt": 0.523810665074173,
-          "fg": 0.612110530403875
+          "fg": 0.6185640690073125
         },
-        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.2% vs 53.6%).",
+        "layman_why": "Kicking the field goal added about 8% win chance over the next-best option (61.9% vs 53.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18821,7 +18821,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07629913503436014
+        "edge_wp": 0.0827526736377977
       }
     },
     {
@@ -18858,13 +18858,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.033144690606337845,
+        "margin": 0.03195991587611047,
         "values": {
           "go": 0.5944689426391023,
           "punt": 0.45758717462698584,
-          "fg": 0.5613242520327645
+          "fg": 0.5625090267629919
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (59.4% vs 56.1%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (59.4% vs 56.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -18885,7 +18885,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.033144690606337845
+        "edge_wp": 0.03195991587611047
       }
     },
     {
@@ -18922,11 +18922,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03883419970036095,
+        "margin": 0.038233297699694024,
         "values": {
           "go": 0.4544436386168006,
-          "punt": 0.3441963563053959,
-          "fg": 0.41560943891643964
+          "punt": 0.3491134454818049,
+          "fg": 0.41621034091710657
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (45.4% vs 41.6%).",
         "transition_mode": "improved",
@@ -18949,7 +18949,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03883419970036095
+        "edge_wp": 0.038233297699694024
       }
     },
     {
@@ -19049,11 +19049,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0029499451901762175,
+        "margin": 0.0025996855015888443,
         "values": {
           "go": 0.9690057981841982,
-          "punt": 0.9313345825296847,
-          "fg": 0.966055852994022
+          "punt": 0.9326970354322011,
+          "fg": 0.9664061126826093
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 97%); punting is lower (93%).",
         "transition_mode": "improved",
@@ -19076,7 +19076,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0029499451901762175
+        "edge_wp": 0.0025996855015888443
       }
     },
     {
@@ -19176,11 +19176,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02283038588364665,
+        "margin": 0.022881323552536276,
         "values": {
           "go": 0.12260950561177841,
-          "punt": 0.0753443367019879,
-          "fg": 0.09977911972813176
+          "punt": 0.07585755005636685,
+          "fg": 0.09972818205924214
         },
         "layman_why": "Going for it added about 2% win chance over the next-best option (12.3% vs 10.0%).",
         "transition_mode": "improved",
@@ -19203,7 +19203,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02283038588364665
+        "edge_wp": 0.022881323552536276
       }
     },
     {
@@ -19366,13 +19366,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02682536795955026,
+        "margin": 0.028455487860601814,
         "values": {
           "go": 0.8355293366813392,
-          "punt": 0.780269775567469,
-          "fg": 0.808703968721789
+          "punt": 0.7810971261776309,
+          "fg": 0.8070738488207374
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (83.6% vs 80.9%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (83.6% vs 80.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19393,7 +19393,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02682536795955026
+        "edge_wp": 0.028455487860601814
       }
     },
     {
@@ -19429,14 +19429,14 @@
       "historical_action": "go",
       "reveal": {
         "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.021115907633440942,
+        "inconclusive": true,
+        "margin": 0.01927228000541492,
         "values": {
           "go": 0.10701536647158641,
           "punt": 0.06961227959075234,
-          "fg": 0.08589945883814547
+          "fg": 0.08774308646617149
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (10.7% vs 8.6%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 11%); punting is lower (7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19457,7 +19457,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.021115907633440942
+        "edge_wp": 0.01927228000541492
       }
     },
     {
@@ -19494,11 +19494,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.00697375551212831,
+        "margin": 0.0025244584617141186,
         "values": {
           "go": 0.6095190141750009,
           "punt": 0.5871471448576063,
-          "fg": 0.6025452586628726
+          "fg": 0.6069945557132868
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 61%); punting is lower (59%).",
         "transition_mode": "improved",
@@ -19521,7 +19521,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.00697375551212831
+        "edge_wp": 0.0025244584617141186
       }
     },
     {
@@ -19684,11 +19684,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04167608815447754,
+        "margin": 0.041152372213320465,
         "values": {
           "go": 0.6835304940278236,
-          "punt": 0.581790942192368,
-          "fg": 0.6418544058733461
+          "punt": 0.5829602845814384,
+          "fg": 0.6423781218145032
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (68.4% vs 64.2%).",
         "transition_mode": "improved",
@@ -19711,7 +19711,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04167608815447754
+        "edge_wp": 0.041152372213320465
       }
     },
     {
@@ -19811,13 +19811,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04850410484404177,
+        "margin": 0.05439923869744964,
         "values": {
           "go": 0.2520417719884697,
-          "punt": 0.06552906503954209,
-          "fg": 0.20353766714442795
+          "punt": 0.06656277739080202,
+          "fg": 0.19764253329102008
         },
-        "layman_why": "Going for it added about 5% win chance over the next-best option (25.2% vs 20.4%).",
+        "layman_why": "Going for it added about 5% win chance over the next-best option (25.2% vs 19.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19838,7 +19838,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04850410484404177
+        "edge_wp": 0.05439923869744964
       }
     },
     {
@@ -19875,13 +19875,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03647955557356214,
+        "margin": 0.03575114210640801,
         "values": {
           "go": 0.5318509614315691,
           "punt": 0.42357266876870475,
-          "fg": 0.49537140585800693
+          "fg": 0.49609981932516106
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (53.2% vs 49.5%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (53.2% vs 49.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -19902,7 +19902,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03647955557356214
+        "edge_wp": 0.03575114210640801
       }
     },
     {
@@ -19943,7 +19943,7 @@
         "values": {
           "go": 0.5684119007319087,
           "punt": 0.5302451277706535,
-          "fg": 0.4975371276090455
+          "fg": 0.496539424650397
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (56.8% vs 53.0%).",
         "transition_mode": "improved",
@@ -20003,11 +20003,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02844670715198494,
+        "margin": 0.02810567889017579,
         "values": {
           "go": 0.8464390677170688,
-          "punt": 0.7693443563789206,
-          "fg": 0.8179923605650838
+          "punt": 0.7731481002629482,
+          "fg": 0.818333388826893
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (84.6% vs 81.8%).",
         "transition_mode": "improved",
@@ -20030,7 +20030,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02844670715198494
+        "edge_wp": 0.02810567889017579
       }
     },
     {
@@ -20067,13 +20067,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04224550833835117,
+        "margin": 0.03586237514790436,
         "values": {
           "go": 0.7513603329513405,
           "punt": 0.694031301587338,
-          "fg": 0.7091148246129894
+          "fg": 0.7154979578034362
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (75.1% vs 70.9%).",
+        "layman_why": "Going for it added about 4% win chance over the next-best option (75.1% vs 71.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20094,7 +20094,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04224550833835117
+        "edge_wp": 0.03586237514790436
       }
     },
     {
@@ -20131,13 +20131,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.1419119968874446,
+        "margin": 0.13264815995607693,
         "values": {
           "go": 0.468167060976437,
-          "punt": 0.3950757480882747,
-          "fg": 0.6100790578638816
+          "punt": 0.39794689308582687,
+          "fg": 0.6008152209325139
         },
-        "layman_why": "Kicking the field goal added about 14% win chance over the next-best option (61.0% vs 46.8%).",
+        "layman_why": "Kicking the field goal added about 13% win chance over the next-best option (60.1% vs 46.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20158,7 +20158,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.1419119968874446
+        "edge_wp": 0.13264815995607693
       }
     },
     {
@@ -20195,13 +20195,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06014619239693386,
+        "margin": 0.0595420057774404,
         "values": {
           "go": 0.6074471625520578,
           "punt": 0.4728075578065795,
-          "fg": 0.5473009701551239
+          "fg": 0.5479051567746174
         },
-        "layman_why": "Going for it added about 6% win chance over the next-best option (60.7% vs 54.7%).",
+        "layman_why": "Going for it added about 6% win chance over the next-best option (60.7% vs 54.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20222,7 +20222,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06014619239693386
+        "edge_wp": 0.0595420057774404
       }
     },
     {
@@ -20511,11 +20511,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.035662707146427775,
+        "margin": 0.03507155363596598,
         "values": {
           "go": 0.327401510023427,
           "punt": 0.23191764096208206,
-          "fg": 0.2917388028769992
+          "fg": 0.292329956387461
         },
         "layman_why": "Going for it added about 4% win chance over the next-best option (32.7% vs 29.2%).",
         "transition_mode": "improved",
@@ -20538,7 +20538,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.035662707146427775
+        "edge_wp": 0.03507155363596598
       }
     },
     {
@@ -20574,14 +20574,14 @@
       "historical_action": "fg",
       "reveal": {
         "recommendation": "go",
-        "inconclusive": false,
-        "margin": 0.02059784860729308,
+        "inconclusive": true,
+        "margin": 0.019327990273226847,
         "values": {
           "go": 0.7157858702828812,
-          "punt": 0.5734397786381585,
-          "fg": 0.6951880216755881
+          "punt": 0.5787219428668682,
+          "fg": 0.6964578800096544
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (71.6% vs 69.5%).",
+        "layman_why": "Close call: a field goal and going for it give about the same win chance (around 72%); punting is lower (58%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20602,7 +20602,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02059784860729308
+        "edge_wp": 0.019327990273226847
       }
     },
     {
@@ -20702,13 +20702,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02720362671569776,
+        "margin": 0.02338362647643699,
         "values": {
           "go": 0.4316166409572688,
           "punt": 0.39645842206114695,
-          "fg": 0.40441301424157106
+          "fg": 0.4082330144808318
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (43.2% vs 40.4%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (43.2% vs 40.8%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -20729,7 +20729,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02720362671569776
+        "edge_wp": 0.02338362647643699
       }
     },
     {
@@ -20833,7 +20833,7 @@
         "values": {
           "go": 0.31603782408064895,
           "punt": 0.26515656777194174,
-          "fg": 0.25161198843682303
+          "fg": 0.2524701241053473
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (31.6% vs 26.5%).",
         "transition_mode": "improved",
@@ -21019,11 +21019,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03348453692514197,
+        "margin": 0.032923390867364954,
         "values": {
           "go": 0.5232590351095989,
           "punt": 0.42814731335591505,
-          "fg": 0.48977449818445695
+          "fg": 0.49033564424223397
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (52.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -21046,7 +21046,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03348453692514197
+        "edge_wp": 0.032923390867364954
       }
     },
     {
@@ -21083,13 +21083,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.0772775553007804,
+        "margin": 0.07651190616819187,
         "values": {
           "go": 0.38069561500342197,
           "punt": 0.23426641185754346,
-          "fg": 0.3034180597026416
+          "fg": 0.3041837088352301
         },
-        "layman_why": "Going for it added about 8% win chance over the next-best option (38.1% vs 30.3%).",
+        "layman_why": "Going for it added about 8% win chance over the next-best option (38.1% vs 30.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21110,7 +21110,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0772775553007804
+        "edge_wp": 0.07651190616819187
       }
     },
     {
@@ -21147,11 +21147,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.04636600642675559,
+        "margin": 0.04647010688744435,
         "values": {
           "go": 0.658477868936546,
-          "punt": 0.551632123646364,
-          "fg": 0.6121118625097904
+          "punt": 0.5551990881194167,
+          "fg": 0.6120077620491017
         },
         "layman_why": "Going for it added about 5% win chance over the next-best option (65.8% vs 61.2%).",
         "transition_mode": "improved",
@@ -21174,7 +21174,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.04636600642675559
+        "edge_wp": 0.04647010688744435
       }
     },
     {
@@ -21400,13 +21400,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03170185309717527,
+        "margin": 0.03274852899782632,
         "values": {
           "go": 0.3228684446251821,
           "punt": 0.28877199149554456,
-          "fg": 0.29116659152800684
+          "fg": 0.2901199156273558
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (32.3% vs 29.1%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (32.3% vs 29.0%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21427,7 +21427,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03170185309717527
+        "edge_wp": 0.03274852899782632
       }
     },
     {
@@ -21464,11 +21464,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03317061217630124,
+        "margin": 0.032569715473916405,
         "values": {
           "go": 0.5228458436011306,
           "punt": 0.424888479486876,
-          "fg": 0.4896752314248294
+          "fg": 0.4902761281272142
         },
         "layman_why": "Going for it added about 3% win chance over the next-best option (52.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -21491,7 +21491,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03317061217630124
+        "edge_wp": 0.032569715473916405
       }
     },
     {
@@ -21528,13 +21528,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.02881835845059666,
+        "margin": 0.03232677697902464,
         "values": {
           "go": 0.6549785565770441,
           "punt": 0.5768575854664797,
-          "fg": 0.6261601981264474
+          "fg": 0.6226517795980194
         },
-        "layman_why": "Going for it added about 3% win chance over the next-best option (65.5% vs 62.6%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (65.5% vs 62.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21555,7 +21555,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.02881835845059666
+        "edge_wp": 0.03232677697902464
       }
     },
     {
@@ -21655,11 +21655,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.057145638266243415,
+        "margin": 0.056578441795070655,
         "values": {
           "go": 0.6046572888167531,
-          "punt": 0.47099913628190204,
-          "fg": 0.5475116505505097
+          "punt": 0.47640056553128207,
+          "fg": 0.5480788470216824
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (60.5% vs 54.8%).",
         "transition_mode": "improved",
@@ -21682,7 +21682,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.057145638266243415
+        "edge_wp": 0.056578441795070655
       }
     },
     {
@@ -21719,13 +21719,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.022168015697053067,
+        "margin": 0.02152299593188378,
         "values": {
           "go": 0.7464381075867166,
           "punt": 0.6604552556670327,
-          "fg": 0.7242700918896635
+          "fg": 0.7249151116548328
         },
-        "layman_why": "Going for it added about 2% win chance over the next-best option (74.6% vs 72.4%).",
+        "layman_why": "Going for it added about 2% win chance over the next-best option (74.6% vs 72.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21746,7 +21746,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.022168015697053067
+        "edge_wp": 0.02152299593188378
       }
     },
     {
@@ -21783,13 +21783,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.03569219150391956,
+        "margin": 0.032540659975233144,
         "values": {
           "go": 0.6692597922435124,
-          "punt": 0.5678826226765756,
-          "fg": 0.6335676007395928
+          "punt": 0.5690639868076877,
+          "fg": 0.6367191322682793
         },
-        "layman_why": "Going for it added about 4% win chance over the next-best option (66.9% vs 63.4%).",
+        "layman_why": "Going for it added about 3% win chance over the next-best option (66.9% vs 63.7%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21810,7 +21810,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03569219150391956
+        "edge_wp": 0.032540659975233144
       }
     },
     {
@@ -21847,13 +21847,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.024185158425784087,
+        "margin": 0.022495527949439792,
         "values": {
           "go": 0.2142872012956107,
-          "punt": 0.20317073592321422,
-          "fg": 0.2384723597213948
+          "punt": 0.2039476794171387,
+          "fg": 0.2367827292450505
         },
-        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (23.8% vs 21.4%).",
+        "layman_why": "Kicking the field goal added about 2% win chance over the next-best option (23.7% vs 21.4%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21874,7 +21874,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.024185158425784087
+        "edge_wp": 0.022495527949439792
       }
     },
     {
@@ -21911,13 +21911,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.0362385251164713,
+        "margin": 0.03353458212838101,
         "values": {
           "go": 0.4654673616675178,
-          "punt": 0.4450571573520393,
-          "fg": 0.5017058867839891
+          "punt": 0.4462447603744902,
+          "fg": 0.4990019437958988
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (50.2% vs 46.5%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (49.9% vs 46.5%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -21938,7 +21938,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0362385251164713
+        "edge_wp": 0.03353458212838101
       }
     },
     {
@@ -21975,11 +21975,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.06332228935332573,
+        "margin": 0.06280013603283907,
         "values": {
           "go": 0.552906081752026,
           "punt": 0.4281889564213033,
-          "fg": 0.4895837923987003
+          "fg": 0.490105945719187
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (55.3% vs 49.0%).",
         "transition_mode": "improved",
@@ -22002,7 +22002,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.06332228935332573
+        "edge_wp": 0.06280013603283907
       }
     },
     {
@@ -22039,13 +22039,13 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.03546486348030109,
+        "margin": 0.034265233081101965,
         "values": {
           "go": 0.8864125484196466,
-          "punt": 0.7747761136944575,
-          "fg": 0.9218774118999477
+          "punt": 0.778117457248436,
+          "fg": 0.9206777815007485
         },
-        "layman_why": "Kicking the field goal added about 4% win chance over the next-best option (92.2% vs 88.6%).",
+        "layman_why": "Kicking the field goal added about 3% win chance over the next-best option (92.1% vs 88.6%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -22066,7 +22066,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.03546486348030109
+        "edge_wp": 0.034265233081101965
       }
     },
     {
@@ -22103,11 +22103,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": false,
-        "margin": 0.08668689818850228,
+        "margin": 0.08709903863736668,
         "values": {
           "go": 0.7180159809089339,
-          "punt": 0.6625561357287912,
-          "fg": 0.8047028790974362
+          "punt": 0.665773031408126,
+          "fg": 0.8051150195463006
         },
         "layman_why": "Kicking the field goal added about 9% win chance over the next-best option (80.5% vs 71.8%).",
         "transition_mode": "improved",
@@ -22130,7 +22130,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.08668689818850228
+        "edge_wp": 0.08709903863736668
       }
     },
     {
@@ -22167,13 +22167,13 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.07459298021192856,
+        "margin": 0.07401696608974379,
         "values": {
           "go": 0.56682055631487,
-          "punt": 0.4108977965907712,
-          "fg": 0.4922275761029415
+          "punt": 0.41615735419972993,
+          "fg": 0.49280359022512626
         },
-        "layman_why": "Going for it added about 7% win chance over the next-best option (56.7% vs 49.2%).",
+        "layman_why": "Going for it added about 7% win chance over the next-best option (56.7% vs 49.3%).",
         "transition_mode": "improved",
         "empirics_mode": "pooled",
         "assumptions": [
@@ -22194,7 +22194,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.07459298021192856
+        "edge_wp": 0.07401696608974379
       }
     },
     {
@@ -22357,11 +22357,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": false,
-        "margin": 0.05710325602293809,
+        "margin": 0.05664192296774595,
         "values": {
           "go": 0.5519790865657006,
-          "punt": 0.42715589635057544,
-          "fg": 0.4948758305427625
+          "punt": 0.4324693753715957,
+          "fg": 0.49533716359795466
         },
         "layman_why": "Going for it added about 6% win chance over the next-best option (55.2% vs 49.5%).",
         "transition_mode": "improved",
@@ -22384,7 +22384,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.05710325602293809
+        "edge_wp": 0.05664192296774595
       }
     },
     {
@@ -22614,7 +22614,7 @@
         "values": {
           "go": 0.38115364992721484,
           "punt": 0.37666706299529773,
-          "fg": 0.3463569863046426
+          "fg": 0.3454831584925732
         },
         "layman_why": "Close call: going for it and punting give about the same win chance (around 38%); a field goal is lower (35%).",
         "transition_mode": "improved",
@@ -22674,11 +22674,11 @@
       "reveal": {
         "recommendation": "fg",
         "inconclusive": true,
-        "margin": 0.016113046183492186,
+        "margin": 0.014601124205725902,
         "values": {
           "go": 0.8741776305372023,
-          "punt": 0.8513067146633129,
-          "fg": 0.8902906767206945
+          "punt": 0.8528365108022316,
+          "fg": 0.8887787547429282
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 89%); punting is lower (85%).",
         "transition_mode": "improved",
@@ -22701,7 +22701,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.016113046183492186
+        "edge_wp": 0.014601124205725902
       }
     },
     {
@@ -22801,11 +22801,11 @@
       "reveal": {
         "recommendation": "go",
         "inconclusive": true,
-        "margin": 0.016014880528726017,
+        "margin": 0.015681976153897437,
         "values": {
           "go": 0.9378003002391775,
           "punt": 0.8906347202791525,
-          "fg": 0.9217854197104515
+          "fg": 0.92211832408528
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 94%); punting is lower (89%).",
         "transition_mode": "improved",
@@ -22828,7 +22828,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.016014880528726017
+        "edge_wp": 0.015681976153897437
       }
     },
     {
@@ -22863,13 +22863,13 @@
       },
       "historical_action": "go",
       "reveal": {
-        "recommendation": "go",
+        "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.010779502325954038,
+        "margin": 0.009695601916247076,
         "values": {
           "go": 0.6037281134471977,
           "punt": 0.5929486111212436,
-          "fg": 0.5905753034321753
+          "fg": 0.5940325115309506
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 60%).",
         "transition_mode": "improved",
@@ -22892,7 +22892,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.010779502325954038
+        "edge_wp": 0.009695601916247076
       }
     },
     {
@@ -22992,11 +22992,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.009510642411106385,
+        "margin": 0.007247253186333735,
         "values": {
           "go": 0.4548600774998849,
-          "punt": 0.42318225289999745,
-          "fg": 0.46437071991099127
+          "punt": 0.42435576495573796,
+          "fg": 0.4621073306862186
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 46%); punting is lower (42%).",
         "transition_mode": "improved",
@@ -23019,7 +23019,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.009510642411106385
+        "edge_wp": 0.007247253186333735
       }
     },
     {
@@ -23056,11 +23056,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0007290818746462507,
+        "margin": 0.0008580480442041752,
         "values": {
           "go": 0.03453574407530646,
-          "punt": 0.023859629678329608,
-          "fg": 0.03526482594995271
+          "punt": 0.02397128019568978,
+          "fg": 0.03539379211951064
         },
         "layman_why": "Close call: a field goal, going for it, and punting give about the same win chance (around 4%).",
         "transition_mode": "improved",
@@ -23083,7 +23083,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0007290818746462507
+        "edge_wp": 0.0008580480442041752
       }
     },
     {
@@ -23183,11 +23183,11 @@
       "reveal": {
         "recommendation": "inconclusive",
         "inconclusive": true,
-        "margin": 0.0021286614924541647,
+        "margin": 0.0019181690657695816,
         "values": {
           "go": 0.8284737439690059,
           "punt": 0.7891849114434735,
-          "fg": 0.83060240546146
+          "fg": 0.8303919130347754
         },
         "layman_why": "Close call: a field goal and going for it give about the same win chance (around 83%); punting is lower (79%).",
         "transition_mode": "improved",
@@ -23210,7 +23210,7 @@
           "Empirics mode=pooled; Pooled REG train empirics",
           "Transition mode=improved"
         ],
-        "edge_wp": 0.0021286614924541647
+        "edge_wp": 0.0019181690657695816
       }
     }
   ]
