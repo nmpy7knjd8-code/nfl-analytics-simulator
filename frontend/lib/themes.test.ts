@@ -6,7 +6,9 @@ import snapshot from "./dailySnapshot.json";
 import schedule from "./dailySchedule.json";
 import rules from "./themeRules.json";
 import themeSchedule from "./themeSchedule.json";
-import { extendThemeSchedule, firstThemeDate } from "./themes";
+import { extendThemeSchedule, firstThemeDate, snapshotThemes, themeScheduleIssues } from "./themes";
+import themeSnapshot from "./themeSnapshot.json";
+import { bestCalls, dateKey, type DailyItem } from "./daily";
 import type { MarathonPack, ThemeDay, ThemeId, ThemePack, ThemeRules } from "../contracts/themePacks";
 
 const THEMES: ThemeId[] = ["goal-line", "playoffs", "marathon"];
@@ -24,13 +26,13 @@ test("theme packs: daily item fields (+ driveId/playOrder on Marathon), unique i
     assert.equal(p.theme, t);
     assert.ok(p.items.length >= 30, `${t}: ${p.items.length} items`);
     assert.equal(new Set(ids(t)).size, p.items.length, `${t} duplicate ids`);
-    const extra = t === "marathon" ? ["driveId", "playOrder"] : [];
+    const extra = t === "marathon" ? ["drivePlays", "driveId", "playOrder"] : [];
     for (const it of p.items) {
       assert.deepEqual(Object.keys(it).sort(), [...DAILY_KEYS, ...extra].sort(), `${t} ${it.id} fields`);
       assert.deepEqual(Object.keys(it.situation).sort(), Object.keys(daily.items[0].situation).sort());
       assert.equal(it.id, `${it.source.game_id}-${it.source.play_id}`);
       const d = DAILY_BY_ID.get(it.id);
-      if (d) assert.deepEqual({ ...it, driveId: undefined, playOrder: undefined }, { ...d, driveId: undefined, playOrder: undefined }, `${it.id} differs from dailyPack`);
+      if (d) assert.deepEqual({ ...it, driveId: undefined, playOrder: undefined, drivePlays: undefined }, { ...d, driveId: undefined, playOrder: undefined, drivePlays: undefined }, `${it.id} differs from dailyPack`);
     }
     assert.doesNotMatch(JSON.stringify(p.items.map((i) => Object.keys(i))), /epa|xpass/i);
   }
@@ -42,6 +44,7 @@ test("theme rules hold: goal line <= 5 yards, playoffs are postseason weeks, mar
   for (const it of (pack("marathon") as MarathonPack).items) {
     assert.match(it.driveId, new RegExp(`^${it.source.game_id}-d\\d+$`));
     assert.ok(Number.isInteger(it.playOrder) && it.playOrder >= 1, it.id);
+    assert.ok(Number.isInteger(it.drivePlays) && it.drivePlays >= 12 && it.playOrder <= it.drivePlays, it.id);
   }
 });
 
@@ -76,4 +79,37 @@ test("themes leave the daily schedule and snapshot alone (frozen days intact)", 
   const days = (schedule as { days: Record<string, string[]> }).days;
   for (const d of SNAP_DAYS) assert.ok(days[d], d);
   for (const id of Object.values(TDAYS).flatMap((t) => t.ids)) assert.ok(typeof id === "string");
+});
+
+const packIdsAll = () => Object.fromEntries(THEMES.map((t) => [t, ids(t)])) as Record<ThemeId, string[]>;
+const packItems = () => Object.fromEntries(THEMES.map((t) => [t, pack(t).items])) as never;
+const best = (it: unknown) => bestCalls(it as DailyItem);
+const SNAP = (themeSnapshot as { days: Record<string, never> }).days;
+
+test("committed theme schedule passes the build check (ids resolve, frozen days unchanged, published days frozen)", () => {
+  assert.deepEqual(themeScheduleIssues(TDAYS, packIdsAll(), SNAP, dateKey()), []);
+});
+
+test("snapshotThemes freezes through until only, append-only; frozen values survive a pack change", () => {
+  const { days, added } = snapshotThemes(TDAYS, packItems(), {}, "2026-11-05", best);
+  assert.deepEqual(added, ["2026-10-31", "2026-11-03", "2026-11-05"]);
+  for (const d of added) assert.deepEqual(Object.keys(days[d].items), TDAYS[d].ids);
+  const changed = JSON.parse(JSON.stringify(packItems())) as Record<ThemeId, { reveal: { values: Record<string, number> } }[]>;
+  for (const t of THEMES) for (const it of changed[t]) for (const k of Object.keys(it.reveal.values)) it.reveal.values[k] = 0.5;
+  const again = snapshotThemes(TDAYS, changed as never, days, "2026-11-10", best);
+  for (const d of added) assert.deepEqual(again.days[d], days[d], `${d} refrozen`);
+  assert.deepEqual(again.added, Object.keys(TDAYS).filter((d) => d > "2026-11-05" && d <= "2026-11-10").sort());
+});
+
+test("build check fails on a missing id, a changed or removed frozen day, and an unfrozen published day", () => {
+  const { days: snap } = snapshotThemes(TDAYS, packItems(), {}, "2026-11-03", best);
+  const ok = themeScheduleIssues(TDAYS, packIdsAll(), snap, "2026-11-03");
+  assert.deepEqual(ok, []);
+  const missing = { ...TDAYS, "2026-11-05": { ...TDAYS["2026-11-05"], ids: ["nope-1", ...TDAYS["2026-11-05"].ids.slice(1)] } };
+  assert.match(themeScheduleIssues(missing, packIdsAll(), snap, "2026-11-03").join(), /nope-1 missing from marathon/);
+  const swapped = { ...TDAYS, "2026-10-31": { ...TDAYS["2026-10-31"], ids: [...TDAYS["2026-10-31"].ids].reverse() } };
+  assert.match(themeScheduleIssues(swapped, packIdsAll(), snap, "2026-11-03").join(), /2026-10-31: frozen themed day changed/);
+  const { ["2026-11-03"]: _gone, ...removed } = TDAYS;
+  assert.match(themeScheduleIssues(removed, packIdsAll(), snap, "2026-11-03").join(), /2026-11-03: frozen themed day was removed/);
+  assert.match(themeScheduleIssues(TDAYS, packIdsAll(), {}, "2026-11-03").join(), /2026-10-31: published themed day is not frozen/);
 });

@@ -1,0 +1,4 @@
+{
+ "note": "Append-only. Never edit or remove a date. Reveal values + best call(s) per themed ET day, frozen 2 days ahead by scripts/snapshot-themes.ts (same rule as dailySnapshot.json).",
+ "days": {}
+}

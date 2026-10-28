@@ -35,9 +35,10 @@ def test_play_order_counts_snaps_in_drive():
         "play_id": [1, 5, 9, 12, 15], "play_type": ["kickoff", None, "run", "pass", "punt"],
     })
     order = btp.compute_play_order(raw)
-    assert order == {("G", 1): 1, ("G", 9): 2, ("G", 12): 1, ("G", 15): 2}
+    assert order[("G", 1)] == 1 and order[("G", 9)] == 2 and order[("G", 12)] == 1 and order[("G", 15)] == 2
+    assert order[("G", "drive", 1)] == 2 and btp.drive_fields(SimpleNamespace(game_id="G", fixed_drive=1.0, play_id=9.0), order)["drivePlays"] == 2
     r = SimpleNamespace(game_id="G", fixed_drive=2.0, play_id=15.0)
-    assert btp.drive_fields(r, order) == {"driveId": "G-d2", "playOrder": 2}
+    assert btp.drive_fields(r, order) == {"driveId": "G-d2", "playOrder": 2, "drivePlays": 2}
 
 
 def test_qualifies_rules():
@@ -58,7 +59,7 @@ def test_committed_packs_shape():
     for theme in btp.THEMES:
         pack = json.loads((btp.PACK_DIR / f"{theme}.json").read_text())
         assert pack["schema_version"] == btp.SCHEMA and pack["theme"] == theme
-        extra = {"driveId", "playOrder"} if theme == "marathon" else set()
+        extra = {"driveId", "playOrder", "drivePlays"} if theme == "marathon" else set()
         for it in pack["items"]:
             assert set(it) == daily_keys | extra
             assert "epa" not in json.dumps(list(it)).lower() and "xpass" not in json.dumps(list(it)).lower()

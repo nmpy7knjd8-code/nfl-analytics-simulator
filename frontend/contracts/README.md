@@ -108,7 +108,8 @@ Pillow); checked by `frontend/lib/teamLogos.test.ts`.
 
 - **Packs** `/data/packs/goal-line.json`, `playoffs.json`, `marathon.json` (`ThemePack`, schema `fourth_and_theme_pack.v1`):
   `{ schema_version, theme, title, blurb, derived_from, source, items }`. Each item has exactly the fields of a daily item
-  (`lib/dailyPack.json`); Marathon items add `driveId` (`"<game_id>-d<fixed_drive>"`) and `playOrder` (1-based snap number in that drive).
+  (`lib/dailyPack.json`); Marathon items add `driveId` (`"<game_id>-d<fixed_drive>"`), `playOrder` (1-based snap number in that drive) and `drivePlays`
+  (snaps in the whole drive, same count, so `playOrder <= drivePlays`).
   Goal Line = 4th downs at the 5 or closer; Playoffs = postseason games; Marathon = drives of 12+ plays. Decided games and retired daily ids are left out.
 - **Ids** are `"<game_id>-<play_id>"`, the same id (and values) as the daily pack when a play is in both. Rebuilds
   (`python backend/scripts/build_theme_packs.py`) keep every existing id that still qualifies and only fill gaps; dropped ids are printed for Product UI.
@@ -116,3 +117,8 @@ Pillow); checked by `frontend/lib/teamLogos.test.ts`.
 - **Schedule** `lib/themeSchedule.json` (`ThemeSchedule`): ET date → `{ theme, ids }`, append-only, a bonus set next to the daily 5.
   `scripts/extend-theme-schedule.ts` only adds dates after the last `dailySnapshot.json` day and after today + 2; it never edits
   `dailySchedule.json`, `dailySnapshot.json` or any existing date.
+- **Freeze** `lib/themeSnapshot.json` (`ThemeSnapshot`): ET date → `{ theme, items: { id: { recommendation, values, best } } }`, written
+  2 days ahead by `scripts/snapshot-themes.ts` (run by `build:pages` and the daily-snapshot workflow, next to `snapshot-daily.ts`).
+  Show a themed day's values from here, not the live pack. A frozen date never changes.
+- **Build check** `scripts/check-theme-schedule.ts` (in `build` / `build:pages`, and `lib/themes.test.ts`) fails if a scheduled id is
+  missing from its pack, a frozen day's theme/ids changed or was removed, or a published day (<= today ET) isn't frozen.

@@ -5,7 +5,7 @@ Usage: python backend/scripts/build_theme_packs.py [--n 60] [--seasons 2022,2023
 
 Writes frontend/public/data/packs/{goal-line,playoffs,marathon}.json. Every item has exactly the
 fields of a daily item (frontend/lib/dailyPack.json, scripts/build-daily-pack.mjs); Marathon items
-add driveId and playOrder. Ids are "<game_id>-<play_id>", like the daily pack, and stay stable:
+add driveId, playOrder and drivePlays. Ids are "<game_id>-<play_id>", like the daily pack, and stay stable:
 a rebuild keeps every existing item that still qualifies, under its old id, and only fills gaps.
 A play that is also in dailyPack.json is copied from there, so the same id never shows two values.
 """
@@ -68,15 +68,23 @@ def slim(item: dict) -> dict:
 
 
 def drive_fields(r, play_order: dict) -> dict:
-    return {"driveId": f"{r.game_id}-d{int(r.fixed_drive)}", "playOrder": play_order[(r.game_id, int(r.play_id))]}
+    return {"driveId": f"{r.game_id}-d{int(r.fixed_drive)}", "playOrder": play_order[(r.game_id, int(r.play_id))],
+            "drivePlays": play_order[(r.game_id, "drive", int(r.fixed_drive))]}
 
 
 def compute_play_order(raw) -> dict:
-    """1-based position of each snap within its drive (nflverse rows with a play_type, no markers)."""
+    """(game_id, play_id) -> 1-based snap number in its drive; (game_id, "drive", drive) -> snaps in the drive.
+
+    Snaps = nflverse rows with a play_type (incl. penalties/no-plays/kicks), no game markers.
+    """
     df = raw[raw["play_type"].notna() & raw["fixed_drive"].notna()][["game_id", "fixed_drive", "play_id"]]
     df = df.sort_values(["game_id", "play_id"], kind="mergesort")
     order = df.groupby(["game_id", "fixed_drive"]).cumcount() + 1
-    return {(g, int(p)): int(o) for g, p, o in zip(df["game_id"], df["play_id"], order)}
+    out = {(g, int(p)): int(o) for g, p, o in zip(df["game_id"], df["play_id"], order)}
+    # Drive totals on the same count, keyed (game_id, "drive", drive) with the drive as int, so playOrder <= drivePlays.
+    for (g, d), n in df.groupby(["game_id", "fixed_drive"]).size().items():
+        out[(g, "drive", int(d))] = int(n)
+    return out
 
 
 def select(existing_ids, candidates_by_id, make, n):

@@ -23,8 +23,11 @@ export type ThemePackItem = {
   reveal: { recommendation: PackChoice | "inconclusive"; values: Partial<Record<PackChoice, number>> };
 };
 
-/** Marathon items add the drive: "<game_id>-d<nflverse fixed_drive>" and the 1-based snap number within it. */
-export type MarathonPackItem = ThemePackItem & { driveId: string; playOrder: number };
+/**
+ * Marathon items add the drive: driveId "<game_id>-d<nflverse fixed_drive>", playOrder = 1-based snap number
+ * within it, drivePlays = snaps in the whole drive (same count, so 1 <= playOrder <= drivePlays: "play 9 of 14").
+ */
+export type MarathonPackItem = ThemePackItem & { driveId: string; playOrder: number; drivePlays: number };
 
 export type ThemePack<T extends ThemePackItem = ThemePackItem> = {
   schema_version: "fourth_and_theme_pack.v1";
@@ -46,3 +49,7 @@ export type ThemeRules = { note: string; setSize: number; rules: ThemeRule[] };
 /** lib/themeSchedule.json: append-only; only dates after the last published daily day are ever added. */
 export type ThemeDay = { theme: ThemeId; ids: string[] };
 export type ThemeSchedule = { note: string; days: Record<string, ThemeDay> };
+
+/** lib/themeSnapshot.json: append-only, frozen 2 days ahead (like dailySnapshot.json). Item keys are in set order. */
+export type ThemeSnapshotEntry = { recommendation: PackChoice | "inconclusive"; values: Partial<Record<PackChoice, number>>; best: PackChoice[] };
+export type ThemeSnapshot = { note: string; days: Record<string, { theme: ThemeId; items: Record<string, ThemeSnapshotEntry> }> };

@@ -41,7 +41,8 @@
     }
    },
    "driveId": "2022_17_ARI_ATL-d6",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2023_17_LAC_DEN-3816",
@@ -78,7 +79,8 @@
     }
    },
    "driveId": "2023_17_LAC_DEN-d18",
-   "playOrder": 13
+   "playOrder": 13,
+   "drivePlays": 13
   },
   {
    "id": "2022_16_JAX_NYJ-2985",
@@ -115,7 +117,8 @@
     }
    },
    "driveId": "2022_16_JAX_NYJ-d15",
-   "playOrder": 12
+   "playOrder": 12,
+   "drivePlays": 16
   },
   {
    "id": "2023_18_KC_LAC-3757",
@@ -152,7 +155,8 @@
     }
    },
    "driveId": "2023_18_KC_LAC-d18",
-   "playOrder": 10
+   "playOrder": 10,
+   "drivePlays": 19
   },
   {
    "id": "2023_15_NYG_NO-1767",
@@ -189,7 +193,8 @@
     }
    },
    "driveId": "2023_15_NYG_NO-d9",
-   "playOrder": 8
+   "playOrder": 8,
+   "drivePlays": 17
   },
   {
    "id": "2023_04_CIN_TEN-507",
@@ -226,7 +231,8 @@
     }
    },
    "driveId": "2023_04_CIN_TEN-d2",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 16
   },
   {
    "id": "2022_13_MIA_SF-2779",
@@ -263,7 +269,8 @@
     }
    },
    "driveId": "2022_13_MIA_SF-d16",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 13
   },
   {
    "id": "2023_17_LV_IND-2636",
@@ -300,7 +307,8 @@
     }
    },
    "driveId": "2023_17_LV_IND-d13",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 14
   },
   {
    "id": "2022_13_LAC_LV-2993",
@@ -337,7 +345,8 @@
     }
    },
    "driveId": "2022_13_LAC_LV-d19",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2023_10_DET_LAC-1007",
@@ -374,7 +383,8 @@
     }
    },
    "driveId": "2023_10_DET_LAC-d6",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 13
   },
   {
    "id": "2023_17_ARI_PHI-479",
@@ -411,7 +421,8 @@
     }
    },
    "driveId": "2023_17_ARI_PHI-d2",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2022_15_DET_NYJ-347",
@@ -448,7 +459,8 @@
     }
    },
    "driveId": "2022_15_DET_NYJ-d1",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2023_02_SEA_DET-2663",
@@ -484,7 +496,8 @@
     }
    },
    "driveId": "2023_02_SEA_DET-d14",
-   "playOrder": 5
+   "playOrder": 5,
+   "drivePlays": 14
   },
   {
    "id": "2022_19_NYG_MIN-3208",
@@ -521,7 +534,8 @@
     }
    },
    "driveId": "2022_19_NYG_MIN-d13",
-   "playOrder": 13
+   "playOrder": 13,
+   "drivePlays": 16
   },
   {
    "id": "2022_10_MIN_BUF-3548",
@@ -557,7 +571,8 @@
     }
    },
    "driveId": "2022_10_MIN_BUF-d19",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 15
   },
   {
    "id": "2023_02_KC_JAX-3626",
@@ -594,7 +609,8 @@
     }
    },
    "driveId": "2023_02_KC_JAX-d19",
-   "playOrder": 8
+   "playOrder": 8,
+   "drivePlays": 16
   },
   {
    "id": "2022_17_CAR_TB-2635",
@@ -631,7 +647,8 @@
     }
    },
    "driveId": "2022_17_CAR_TB-d16",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2023_11_PIT_CLE-3477",
@@ -668,7 +685,8 @@
     }
    },
    "driveId": "2023_11_PIT_CLE-d19",
-   "playOrder": 13
+   "playOrder": 13,
+   "drivePlays": 13
   },
   {
    "id": "2022_09_LAC_ATL-657",
@@ -705,7 +723,8 @@
     }
    },
    "driveId": "2022_09_LAC_ATL-d3",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2022_12_LA_KC-1985",
@@ -742,7 +761,8 @@
     }
    },
    "driveId": "2022_12_LA_KC-d8",
-   "playOrder": 16
+   "playOrder": 16,
+   "drivePlays": 16
   },
   {
    "id": "2023_10_SF_JAX-1680",
@@ -779,7 +799,8 @@
     }
    },
    "driveId": "2023_10_SF_JAX-d9",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2022_14_PHI_NYG-1047",
@@ -816,7 +837,8 @@
     }
    },
    "driveId": "2022_14_PHI_NYG-d4",
-   "playOrder": 13
+   "playOrder": 13,
+   "drivePlays": 14
   },
   {
    "id": "2022_02_CIN_DAL-165",
@@ -852,7 +874,8 @@
     }
    },
    "driveId": "2022_02_CIN_DAL-d1",
-   "playOrder": 7
+   "playOrder": 7,
+   "drivePlays": 14
   },
   {
    "id": "2023_11_TEN_JAX-921",
@@ -888,7 +911,8 @@
     }
    },
    "driveId": "2023_11_TEN_JAX-d5",
-   "playOrder": 10
+   "playOrder": 10,
+   "drivePlays": 18
   },
   {
    "id": "2022_11_TEN_GB-2126",
@@ -925,7 +949,8 @@
     }
    },
    "driveId": "2022_11_TEN_GB-d9",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2023_17_DET_DAL-2314",
@@ -962,7 +987,8 @@
     }
    },
    "driveId": "2023_17_DET_DAL-d14",
-   "playOrder": 6
+   "playOrder": 6,
+   "drivePlays": 14
   },
   {
    "id": "2022_14_LV_LA-3346",
@@ -999,7 +1025,8 @@
     }
    },
    "driveId": "2022_14_LV_LA-d15",
-   "playOrder": 20
+   "playOrder": 20,
+   "drivePlays": 23
   },
   {
    "id": "2022_09_LA_TB-3913",
@@ -1036,7 +1063,8 @@
     }
    },
    "driveId": "2022_09_LA_TB-d24",
-   "playOrder": 13
+   "playOrder": 13,
+   "drivePlays": 13
   },
   {
    "id": "2022_03_PIT_CLE-2716",
@@ -1073,7 +1101,8 @@
     }
    },
    "driveId": "2022_03_PIT_CLE-d12",
-   "playOrder": 8
+   "playOrder": 8,
+   "drivePlays": 15
   },
   {
    "id": "2023_16_SEA_TEN-3400",
@@ -1110,7 +1139,8 @@
     }
    },
    "driveId": "2023_16_SEA_TEN-d13",
-   "playOrder": 11
+   "playOrder": 11,
+   "drivePlays": 19
   },
   {
    "id": "2022_15_MIA_BUF-4334",
@@ -1147,7 +1177,8 @@
     }
    },
    "driveId": "2022_15_MIA_BUF-d21",
-   "playOrder": 18
+   "playOrder": 18,
+   "drivePlays": 19
   },
   {
    "id": "2023_01_JAX_IND-4551",
@@ -1184,7 +1215,8 @@
     }
    },
    "driveId": "2023_01_JAX_IND-d28",
-   "playOrder": 19
+   "playOrder": 19,
+   "drivePlays": 20
   },
   {
    "id": "2023_03_NO_GB-3038",
@@ -1221,7 +1253,8 @@
     }
    },
    "driveId": "2023_03_NO_GB-d14",
-   "playOrder": 12
+   "playOrder": 12,
+   "drivePlays": 12
   },
   {
    "id": "2022_09_TEN_KC-501",
@@ -1258,7 +1291,8 @@
     }
    },
    "driveId": "2022_09_TEN_KC-d1",
-   "playOrder": 19
+   "playOrder": 19,
+   "drivePlays": 19
   },
   {
    "id": "2023_17_PIT_SEA-3163",
@@ -1295,7 +1329,8 @@
     }
    },
    "driveId": "2023_17_PIT_SEA-d15",
-   "playOrder": 10
+   "playOrder": 10,
+   "drivePlays": 14
   },
   {
    "id": "2023_15_ATL_CAR-1904",
@@ -1332,7 +1367,8 @@
     }
    },
    "driveId": "2023_15_ATL_CAR-d12",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 16
   },
   {
    "id": "2023_15_CHI_CLE-1730",
@@ -1369,7 +1405,8 @@
     }
    },
    "driveId": "2023_15_CHI_CLE-d11",
-   "playOrder": 10
+   "playOrder": 10,
+   "drivePlays": 14
   },
   {
    "id": "2023_02_NYJ_DAL-2650",
@@ -1406,7 +1443,8 @@
     }
    },
    "driveId": "2023_02_NYJ_DAL-d13",
-   "playOrder": 12
+   "playOrder": 12,
+   "drivePlays": 12
   },
   {
    "id": "2022_15_PHI_CHI-3519",
@@ -1443,7 +1481,8 @@
     }
    },
    "driveId": "2022_15_PHI_CHI-d20",
-   "playOrder": 19
+   "playOrder": 19,
+   "drivePlays": 19
   },
   {
    "id": "2023_01_LA_SEA-3321",
@@ -1480,7 +1519,8 @@
     }
    },
    "driveId": "2023_01_LA_SEA-d13",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 16
   },
   {
    "id": "2022_03_KC_IND-2314",
@@ -1517,7 +1557,8 @@
     }
    },
    "driveId": "2022_03_KC_IND-d14",
-   "playOrder": 12
+   "playOrder": 12,
+   "drivePlays": 18
   },
   {
    "id": "2022_15_MIA_BUF-739",
@@ -1554,7 +1595,8 @@
     }
    },
    "driveId": "2022_15_MIA_BUF-d3",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2022_17_DEN_KC-1079",
@@ -1591,7 +1633,8 @@
     }
    },
    "driveId": "2022_17_DEN_KC-d5",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2023_01_DET_KC-386",
@@ -1627,7 +1670,8 @@
     }
    },
    "driveId": "2023_01_DET_KC-d3",
-   "playOrder": 4
+   "playOrder": 4,
+   "drivePlays": 15
   },
   {
    "id": "2023_18_KC_LAC-1486",
@@ -1663,7 +1707,8 @@
     }
    },
    "driveId": "2023_18_KC_LAC-d8",
-   "playOrder": 7
+   "playOrder": 7,
+   "drivePlays": 12
   },
   {
    "id": "2022_06_NE_CLE-469",
@@ -1700,7 +1745,8 @@
     }
    },
    "driveId": "2022_06_NE_CLE-d2",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2022_03_DAL_NYG-1121",
@@ -1737,7 +1783,8 @@
     }
    },
    "driveId": "2022_03_DAL_NYG-d4",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2023_04_TB_NO-3796",
@@ -1774,7 +1821,8 @@
     }
    },
    "driveId": "2023_04_TB_NO-d17",
-   "playOrder": 16
+   "playOrder": 16,
+   "drivePlays": 16
   },
   {
    "id": "2022_06_BUF_KC-3772",
@@ -1810,7 +1858,8 @@
     }
    },
    "driveId": "2022_06_BUF_KC-d18",
-   "playOrder": 4
+   "playOrder": 4,
+   "drivePlays": 13
   },
   {
    "id": "2022_16_TB_ARI-350",
@@ -1846,7 +1895,8 @@
     }
    },
    "driveId": "2022_16_TB_ARI-d2",
-   "playOrder": 8
+   "playOrder": 8,
+   "drivePlays": 14
   },
   {
    "id": "2022_06_NYJ_GB-3422",
@@ -1883,7 +1933,8 @@
     }
    },
    "driveId": "2022_06_NYJ_GB-d22",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 15
   },
   {
    "id": "2022_17_PIT_BAL-2272",
@@ -1920,7 +1971,8 @@
     }
    },
    "driveId": "2022_17_PIT_BAL-d9",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2022_06_TB_PIT-3790",
@@ -1957,7 +2009,8 @@
     }
    },
    "driveId": "2022_06_TB_PIT-d19",
-   "playOrder": 15
+   "playOrder": 15,
+   "drivePlays": 17
   },
   {
    "id": "2022_06_JAX_IND-1030",
@@ -1994,7 +2047,8 @@
     }
    },
    "driveId": "2022_06_JAX_IND-d5",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2023_16_BAL_SF-4108",
@@ -2030,7 +2084,8 @@
     }
    },
    "driveId": "2023_16_BAL_SF-d22",
-   "playOrder": 4
+   "playOrder": 4,
+   "drivePlays": 15
   },
   {
    "id": "2022_05_SF_CAR-3372",
@@ -2066,7 +2121,8 @@
     }
    },
    "driveId": "2022_05_SF_CAR-d17",
-   "playOrder": 6
+   "playOrder": 6,
+   "drivePlays": 14
   },
   {
    "id": "2022_16_WAS_SF-1105",
@@ -2103,7 +2159,8 @@
     }
    },
    "driveId": "2022_16_WAS_SF-d5",
-   "playOrder": 18
+   "playOrder": 18,
+   "drivePlays": 18
   },
   {
    "id": "2022_04_LA_SF-388",
@@ -2140,7 +2197,8 @@
     }
    },
    "driveId": "2022_04_LA_SF-d1",
-   "playOrder": 16
+   "playOrder": 16,
+   "drivePlays": 16
   },
   {
    "id": "2022_02_NE_PIT-478",
@@ -2177,7 +2235,8 @@
     }
    },
    "driveId": "2022_02_NE_PIT-d2",
-   "playOrder": 14
+   "playOrder": 14,
+   "drivePlays": 14
   },
   {
    "id": "2023_07_MIA_PHI-3466",
@@ -2213,7 +2272,8 @@
     }
    },
    "driveId": "2023_07_MIA_PHI-d16",
-   "playOrder": 9
+   "playOrder": 9,
+   "drivePlays": 17
   }
  ]
 }

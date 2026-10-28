@@ -53,3 +53,63 @@ export function extendThemeSchedule(
   }
   return out;
 }
+
+/** Frozen reveal of one themed item (same as a daily SnapshotEntry). */
+export type ThemeSnapshotEntry = { recommendation: string; values: Record<string, number>; best: string[] };
+export type ThemeSnapshotDay = { theme: ThemeId; items: Record<string, ThemeSnapshotEntry> };
+
+type PackItemLike = { id: string; reveal: { recommendation: string; values: Record<string, number> } };
+
+/**
+ * Append-only freeze (lib/themeSnapshot.json), same rule as scripts/snapshot-daily.ts: every scheduled
+ * themed date <= `until` that has no entry yet is frozen from the current packs. Existing dates never change.
+ */
+export function snapshotThemes(
+  schedule: Record<string, ThemeDay>,
+  packs: Record<ThemeId, PackItemLike[]>,
+  existing: Record<string, ThemeSnapshotDay>,
+  until: string,
+  best: (item: PackItemLike) => string[],
+): { days: Record<string, ThemeSnapshotDay>; added: string[] } {
+  const days = { ...existing };
+  const added: string[] = [];
+  for (const d of Object.keys(schedule).sort()) {
+    if (d > until || days[d]) continue;
+    const { theme, ids } = schedule[d];
+    const byId = new Map(packs[theme].map((i) => [i.id, i]));
+    const items: Record<string, ThemeSnapshotEntry> = {};
+    for (const id of ids) {
+      const it = byId.get(id);
+      if (!it) throw new Error(`${d}: ${id} not in ${theme} pack`);
+      items[id] = { recommendation: it.reveal.recommendation, values: { ...it.reveal.values }, best: best(it) };
+    }
+    days[d] = { theme, items };
+    added.push(d);
+  }
+  return { days, added };
+}
+
+/**
+ * Problems that must fail the build: a scheduled id missing from its pack; a frozen (snapshotted) date
+ * whose theme or ids changed or vanished from the schedule; a published date (<= today) not frozen.
+ */
+export function themeScheduleIssues(
+  schedule: Record<string, ThemeDay>,
+  packIds: Record<ThemeId, string[]>,
+  snapshot: Record<string, ThemeSnapshotDay>,
+  today: string,
+): string[] {
+  const issues: string[] = [];
+  for (const [d, { theme, ids }] of Object.entries(schedule)) {
+    const have = new Set(packIds[theme] ?? []);
+    for (const id of ids) if (!have.has(id)) issues.push(`${d}: ${id} missing from ${theme} pack`);
+    if (d <= today && !snapshot[d]) issues.push(`${d}: published themed day is not frozen in themeSnapshot.json`);
+  }
+  for (const [d, snap] of Object.entries(snapshot)) {
+    const s = schedule[d];
+    if (!s) issues.push(`${d}: frozen themed day was removed from themeSchedule.json`);
+    else if (s.theme !== snap.theme || JSON.stringify(s.ids) !== JSON.stringify(Object.keys(snap.items)))
+      issues.push(`${d}: frozen themed day changed (was ${snap.theme} ${Object.keys(snap.items).join(",")})`);
+  }
+  return issues;
+}
