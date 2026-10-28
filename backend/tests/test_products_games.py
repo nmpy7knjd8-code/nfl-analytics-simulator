@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 import pandas as pd
 import pytest
@@ -140,6 +141,11 @@ def test_end_game_row_carries_final_result_not_fallback(scores, want):
     assert doc["swing_play_ids"] == []
 
 
+_PRE_Q1_RELEASES = {"games-v2", "games-v3", "games-v4"}  # built before the END GAME fix
+
+
+@pytest.mark.skipif(os.environ.get("GAMES_RELEASE_TAG") in _PRE_Q1_RELEASES,
+                    reason="game files come from a release built before the END GAME fix (games-v5+)")
 @pytest.mark.parametrize("path", [p for p in _game_files()], ids=lambda p: p.stem)
 def test_game_file_end_game_row_is_final_result(path):
     doc = json.loads(path.read_text())
