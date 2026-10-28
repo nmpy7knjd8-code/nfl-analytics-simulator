@@ -58,15 +58,14 @@ export function buildFeed(doc: GameFileV2): FeedGame {
     if (!text) continue;
     const before = c.home_wp[i] ?? wpAt(i);
     const after = i + 1 < n ? wpAt(i + 1) : doc.final_home_wp ?? before;
-    const hs = (i + 1 < n ? c.home_score[i + 1] : doc.game.home_score) as number | null;
-    const as = (i + 1 < n ? c.away_score[i + 1] : doc.game.away_score) as number | null;
-    const home = hs ?? c.home_score[i] ?? 0;
-    const away = as ?? c.away_score[i] ?? 0;
+    // home_score/away_score on row i are already the score after play i.
+    const home = c.home_score[i] ?? 0;
+    const away = c.away_score[i] ?? 0;
     plays.push({
       id: String(c.play_id[i]), qtr: c.qtr[i], sec: c.sec[i], t: elapsed(c.qtr[i], c.sec[i]), team: c.posteam[i],
       down: c.down[i], dist: c.ydstogo[i], text, penalty: c.penalty_text?.[i] ?? null,
       homeWp: after, homeWpBefore: before, big: swings.has(c.play_id[i]),
-      scoring: home !== (c.home_score[i] ?? 0) || away !== (c.away_score[i] ?? 0),
+      scoring: i > 0 && (home !== (c.home_score[i - 1] ?? 0) || away !== (c.away_score[i - 1] ?? 0)),
       fourth: c.down[i] === 4 && c.play_type[i] !== "no_play",
       homeScore: home, awayScore: away,
     });
