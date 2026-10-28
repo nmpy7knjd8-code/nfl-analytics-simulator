@@ -26,11 +26,15 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npx tsx scripts/snapshot-daily.ts
+      - run: npx tsx scripts/snapshot-themes.ts
+      - run: npx tsx scripts/check-theme-schedule.ts
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: chore/daily-snapshot
           base: main
-          add-paths: frontend/lib/dailySnapshot.json
+          add-paths: |
+            frontend/lib/dailySnapshot.json
+            frontend/lib/themeSnapshot.json
           commit-message: "Daily snapshot: freeze reveal values through today+2 (ET)"
           title: "Daily snapshot: freeze reveal values through today+2 (ET)"
-          body: "Automated by .github/workflows/daily-snapshot.yml. Append-only: adds missing days to frontend/lib/dailySnapshot.json from the current pack; existing entries untouched."
+          body: "Automated by .github/workflows/daily-snapshot.yml. Append-only: adds missing days to frontend/lib/dailySnapshot.json and frontend/lib/themeSnapshot.json from the current pack; existing entries untouched."
