@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
@@ -272,3 +273,19 @@ def test_analyzer_drops_fg_when_out_of_range(yardline, has_fg):
     assert ("fg" in res.actions) is has_fg
     assert res.recommendation != "fg" or has_fg
     sensitivity_example(az, sit, convert_delta=-0.1)  # must not KeyError without fg
+
+
+def test_fg_curve_tracks_observed_by_band_qa0217():
+    """QA 0217 E: the per-yard FG curve stays within 3 pts of the fit seasons' make rate in
+    40-49 and 50-55 (one logistic was +3 pts at 40-49 and -5 pts at 50-55), and stays monotone."""
+    import pickle
+    emp = pickle.loads((Path(__file__).parent / "fixtures" / "grid_engine" / "empirics.pkl").read_bytes())
+    t = emp.fg_by_kick_distance
+    for lo, hi in ((40, 49), (50, 55)):
+        rows = [t[(y, y)] for y in range(lo, hi + 1)]
+        n = sum(r["n"] for r in rows)
+        model = sum(r["p_make"] * r["n"] for r in rows) / n
+        obs = sum(r["made"] for r in rows) / n
+        assert abs(model - obs) < 0.03, (lo, hi, model, obs)
+    ps = [t[(y, y)]["p_make"] for y in range(18, max(k[1] for k in t) + 1)]
+    assert all(x > y for x, y in zip(ps, ps[1:]))
