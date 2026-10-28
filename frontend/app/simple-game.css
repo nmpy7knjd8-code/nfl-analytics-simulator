@@ -104,6 +104,8 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-at{color:var(--sg-g)}.pf-wk{margin-left:auto;font-size:13px;color:var(--sg-g)}
 .pf-chips{display:flex;gap:6px;overflow-x:auto;flex:none;padding:6px 0;scrollbar-width:none;margin:0 -2px}
 .pf-chips::-webkit-scrollbar{display:none}
+.pf-chips::after{content:"";flex:0 0 24px}
+.pf-chips{scroll-snap-type:x proximity;scroll-padding-inline:2px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}.pf-chip{scroll-snap-align:start}
 .pf-chip{flex:none;min-height:48px;padding:0 16px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px;white-space:nowrap}
 .pf-chip.is-on{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
 .pf-chip:focus-visible,.pf-row:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
