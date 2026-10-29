@@ -1,4 +1,62 @@
 {
  "note": "Append-only. Never edit or remove a date. Reveal values + best call(s) per themed ET day, frozen 2 days ahead by scripts/snapshot-themes.ts (same rule as dailySnapshot.json).",
- "days": {}
+ "days": {
+  "2026-10-31": {
+   "theme": "playoffs",
+   "items": {
+    "2022_19_LAC_JAX-3658": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.873442,
+      "punt": 0.849089,
+      "fg": 0.888973
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_19_GB_DAL-4668": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.0554969,
+      "punt": 0.0400629,
+      "fg": 0.0547709
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_19_NYG_MIN-971": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.152744,
+      "punt": 0.136478
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_19_MIA_KC-515": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.689193,
+      "punt": 0.69612
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_19_PIT_BUF-2819": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.892469,
+      "punt": 0.878073
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  }
+ }
 }
