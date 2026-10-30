@@ -331,6 +331,60 @@
      "fg"
     ]
    }
+  },
+  "2026-11-01": {
+   "2023_16_DAL_MIA-349": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.468737,
+     "punt": 0.408211,
+     "fg": 0.435585
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_05_CAR_DET-1586": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.835529,
+     "punt": 0.781097,
+     "fg": 0.807074
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_16_IND_ATL-3388": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.0549484,
+     "punt": 0.0339363
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_18_NYJ_MIA-3177": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.39732,
+     "punt": 0.399246
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_06_WAS_CHI-801": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.50455,
+     "punt": 0.536452
+    },
+    "best": [
+     "punt"
+    ]
+   }
   }
  }
 }
