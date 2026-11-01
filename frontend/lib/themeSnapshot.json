@@ -57,6 +57,66 @@
      ]
     }
    }
+  },
+  "2026-11-03": {
+   "theme": "goal-line",
+   "items": {
+    "2023_03_LA_CIN-1333": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.68711,
+      "punt": 0.588009,
+      "fg": 0.661933
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_08_TEN_HOU-2127": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.807019,
+      "punt": 0.663149,
+      "fg": 0.757958
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_18_DAL_WAS-3811": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.975827,
+      "punt": 0.959625,
+      "fg": 0.974203
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_02_TEN_BUF-1798": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.653984,
+      "punt": 0.488878,
+      "fg": 0.603025
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_13_NYJ_MIN-3679": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.191103,
+      "punt": 0.08554,
+      "fg": 0.129434
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
