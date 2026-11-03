@@ -553,6 +553,62 @@
      "go"
     ]
    }
+  },
+  "2026-11-05": {
+   "2023_16_BUF_LAC-548": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.692103,
+     "punt": 0.580809,
+     "fg": 0.644146
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_17_ARI_PHI-3541": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.468167,
+     "punt": 0.397947,
+     "fg": 0.600815
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_16_NYG_MIN-2578": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.487094,
+     "punt": 0.462306,
+     "fg": 0.547424
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_16_NYG_PHI-1936": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.12261,
+     "punt": 0.0758576,
+     "fg": 0.0997282
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_12_TB_CLE-1572": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.512061,
+     "punt": 0.458639
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }
