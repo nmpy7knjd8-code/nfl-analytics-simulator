@@ -47,8 +47,14 @@ export const qtrLabel = (q: number) => (q > 4 ? "OT" : `Q${q}`);
  * X = the offense turned it over and it was returned for a TD; K = a special teams TD (punt or kick try returned).
  * The data can't tell an interception from a fumble, or a punt from a blocked field goal, so we stop there.
  */
-export function resultLabel(r: string, qtr = 0, last?: TileCode): string {
+/** Exact opponent-TD wording from the return-type letter. M and "-" fall back to the last square. */
+export const RET_LABEL: Partial<Record<RetCode, string>> = {
+  I: "Pick-six", F: "Fumble return TD", B: "Blocked kick TD", P: "Punt returned for TD", K: "Kickoff return TD",
+};
+export function resultLabel(r: string, qtr = 0, last?: TileCode, ret?: RetCode): string {
   if (r === "EH" && qtr >= 4) return "End of game";
+  const exact = (r === "OD" || r === "OT") && ret ? RET_LABEL[ret] : undefined;
+  if (exact) return exact;
   if (r === "OD" || r === "OT") return last === "X" ? "Turnover returned for TD" : last === "K" ? "Special teams TD" : "Other team scored";
   return RESULT_LABEL[r] ?? r;
 }
@@ -65,5 +71,5 @@ export const playsLabel = (n: number) => `${n} ${n === 1 ? "play" : "plays"}`;
 
 /** Screen-reader line for one strip. */
 export function driveAria(d: Drive, name: (abbr: string) => string): string {
-  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1])}`;
+  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret)}`;
 }
