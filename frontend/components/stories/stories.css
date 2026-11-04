@@ -32,3 +32,9 @@
 .otd .st-list { margin: 0; }
 .cb-head{font-size:16px;font-weight:700;margin:4px 0 8px}
 .cb-spark{display:block;margin:4px 0}
+.fd-sit { font-weight: 700; font-size: 18px; margin: 6px 0 12px; }
+.fd-q { font-weight: 700; margin: 8px 0; }
+.fd-btns { display: flex; gap: 12px; }
+.fd-btns .st-oval { flex: 1; }
+.fd-out { margin: 6px 0; }
+.fd-big { font-weight: 800; font-size: 20px; margin: 0 0 8px; }
