@@ -47,7 +47,7 @@ def test_committed_files():
         for gid, drives in d["games"].items():
             assert gid != "2022_17_BUF_CIN" and drives
             for s in drives:
-                team, q, clock, yards, res, tiles = s.split(" ")
+                team, q, clock, yards, res, tiles = s.split(" ")[:6]
                 assert res in d["result_key"] and set(tiles) <= set(d["tile_key"]) and tiles
         n += len(d["games"])
     assert n == 1960
@@ -132,6 +132,38 @@ def test_ydsnet_override_scope():
     d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2021", "2020")}
     assert "JAX 1 00:26 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
     assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 10:22")][0].split(" ")[3] == "39"
+
+
+def test_od_return_codes_and_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-od-return.json").read_text())
+    assert o["rule"] == "od_return" and len(o["games"]) == 425 == len(set(o["games"]))
+    old = ["AAA 2 10:00 5 OD GX", "BBB 2 09:00 0 TD T"]
+    assert bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX I", old[1]])
+    assert not bd.od_return_ok(old, old)
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX Z", old[1]])
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX I", old[1] + " I"])
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 6 OD GX I", old[1]])
+    td = dict(touchdown=1, td_team="BBB")
+    assert bd.ret_code([r(pt="pass", interception=1, **td)]) == "I"
+    assert bd.ret_code([r(fumble_lost=1, **td)]) == "F"
+    assert bd.ret_code([r(pt="punt", punt_attempt=1, punt_blocked=1, **td)]) == "B"
+    assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="blocked", **td)]) == "B"
+    assert bd.ret_code([r(pt="punt", punt_attempt=1, **td)]) == "P"
+    assert bd.ret_code([r(pt="kickoff", kickoff_attempt=1, **td)]) == "K"
+    assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="missed", **td)]) == "M"
+    assert bd.ret_code([r()]) == "-"
+    n = 0
+    for f in DIR.glob("*.json"):
+        d = json.loads(f.read_text())
+        assert d["cols"][-1] == "ret" and set(d["ret_key"]) == set("IFBPKM-")
+        for g in d["games"].values():
+            for s in g:
+                p = s.split(" ")
+                assert len(p) == (7 if p[4] == "OD" else 6)
+                n += p[4] == "OD"
+    assert n == 487
+
+
 
 
 def test_qtr_clock_from_stray_tagged_first_snap():
