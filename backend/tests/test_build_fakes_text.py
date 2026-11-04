@@ -26,7 +26,7 @@ def test_plain_names_drops_team_prefixes_and_codes():
 
 def test_sidecar_has_no_team_codes():
     import re
-    full = list(json.loads(mod.NAMES.read_text())["names"].values())
+    full = list(mod.load_names()["names"].values())
     for t in json.loads(mod.OUT.read_text()).values():
         for n in full:  # full names like "AJ McCarron" are not team codes
             t = t.replace(n, "")
@@ -46,7 +46,7 @@ def test_fake_plays_use_full_names_and_fakes_json_untouched():
     assert len(fakes["plays"]) == 162 and len(fakes["real_punts"]) == 299
     assert len(roster["plays"]) == 162 + 299  # fakes + real punts
     assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 461
-    assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("Direct snap to A.Levine.")
+    assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("A.Levine")  # unlinked snap name dropped
 
 
 def test_full_names_collapses_doubled_period_after_suffix():
@@ -73,3 +73,27 @@ def test_suffix_short_name_keeps_sentence_period():
     out = mod.full_names("fair catch by M.Sanu Sr.", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"})
     assert out == "fair catch by Mohamed Sanu."
     assert mod.full_names("M.Sanu Sr. to NE 21", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"}) == "Mohamed Sanu to NE 21"
+
+
+def test_no_initials_or_orphan_fumbles_left():
+    import re
+    out = json.loads(mod.OUT.read_text())
+    assert not [v for v in out.values() if re.search(r"\b[A-Z]\.[A-Z][a-z]", v) or ". fumbles" in v]
+    assert not [v for v in out.values() if re.search(r"(?<!\bJr)(?<!\bSr)(?<!\b[A-Z])\. [a-z]", v)]
+
+
+def test_unresolved_names_are_dropped_not_guessed():
+    assert mod.drop_unresolved("punts to the Ravens 21, downed by V.Biegel. R.McMillan was injured during the play.") == "punts to the Ravens 21, downed."
+    assert mod.drop_unresolved("Direct snap to N.Niemann. J.Kelley up the middle.") == "J.Kelley up the middle."
+    assert mod.drop_unresolved("out of bounds. Penalty on R.Beal, Running Into the Kicker.") == "out of bounds. Penalty, Running Into the Kicker."
+
+
+def test_reversed_play_keeps_only_the_ruling_that_stands():
+    s = "X for 4 yards. fumbles, recovered by B.Skrine. The Replay Official reviewed the fumble ruling, and the play was reversed. X for 4 yards."
+    assert mod.after_reversal(s) == "X for 4 yards."
+    out = json.loads(mod.OUT.read_text())
+    assert out["2019_05_CHI_OAK|4|05:48|LV"] == "Erik Harris right guard to the Raiders 31 for 4 yards."
+
+
+def test_sentence_starts_capitalized():
+    assert mod.capitalize("He is Out. penalty on X. Sam Franklin Jr. to the 5") == "He is Out. Penalty on X. Sam Franklin Jr. to the 5"

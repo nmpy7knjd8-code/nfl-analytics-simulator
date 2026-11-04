@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import math
 import re
 from pathlib import Path
 
@@ -55,3 +56,26 @@ def test_frozen():
     new = json.loads(json.dumps(d))
     new["top"][0][d["cols"].index("low")] = 0.5
     assert bc.check_frozen(d, new)
+
+
+def test_spark_shows_the_low():
+    d = json.loads(FILE.read_text())
+    for e in d["top"]:
+        g = dict(zip(d["cols"], e))
+        assert len(g["spark"]) == d["spark_points"]
+        assert min(g["spark"]) <= math.ceil(100 * g["low"]) + 1, g["game_id"]
+
+
+def test_spark_low_between_samples():
+    rows = [r(), r(q=2, gsr=2780, wp=0.6), r(q=2, gsr=2770, wp=0.01, t="11:10"), r(q=2, gsr=2760, wp=0.6), r(q=4, gsr=0, wp=0.6)]
+    g = dict(zip(bc.COLS, bc.build(rows)["top"][0]))
+    assert min(g["spark"]) == 1 and g["spark"][-1] == 100
+
+
+def test_override_allows_only_spark():
+    d = json.loads(FILE.read_text())
+    gid = d["top"][0][3]
+    new = json.loads(json.dumps(d)); new["top"][0][-1] = [0] * 24
+    assert bc.check_frozen(d, new) and bc.check_frozen(d, new, {gid}) == []
+    new["top"][0][9] = 0.5
+    assert bc.check_frozen(d, new, {gid})
