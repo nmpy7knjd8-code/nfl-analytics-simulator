@@ -52,3 +52,10 @@ test("F7: result code OD (renamed from OT by Data Builders) reads the same as OT
   assert.equal(resultLabel("OD"), resultLabel("OT"));
   assert.equal(parseDrive("BUF 3 07:53 0 OD GX")?.result, "OD");
 });
+
+test("OD drives carry an appended return-type letter; other drives parse unchanged", () => {
+  assert.deepEqual(parseDrive("ARI 2 10:00 5 OD GX I")?.ret, "I");
+  assert.equal(parseDrive("ARI 2 10:00 5 OD GX I")?.tiles.join(""), "GX");
+  assert.equal(parseDrive("ARI 1 15:00 70 TD GFGT")?.ret, undefined);
+  assert.equal(parseDrive("ARI 2 10:00 5 OD GX Z"), null);
+});

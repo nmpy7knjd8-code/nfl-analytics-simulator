@@ -5,7 +5,9 @@ export type DrivesFile = {
   tile_key: Record<TileCode, string>; result_key: Record<string, string>; cols: string[];
   games: Record<string, string[]>;
 };
-export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[] };
+export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[]; ret?: RetCode };
+/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, K kickoff return, M missed FG return, - other. */
+export type RetCode = "I" | "F" | "B" | "P" | "K" | "M" | "-";
 
 export const TILE_ORDER: TileCode[] = ["T", "F", "G", "N", "X", "K", "Q"];
 /** Fan words for each tile; no model numbers. */
@@ -28,9 +30,11 @@ export function isDrivesFile(x: unknown): x is DrivesFile {
 
 /** "ARI 1 15:00 70 TD GFGT" -> Drive. Returns null for a malformed string. */
 export function parseDrive(s: string): Drive | null {
-  const m = /^([A-Z]{2,3}) (\d) (\d\d:\d\d) (-?\d+) ([A-Z]{1,2}) ([TFGNXKQ]+)$/.exec(s);
+  const m = /^([A-Z]{2,3}) (\d) (\d\d:\d\d) (-?\d+) ([A-Z]{1,2}) ([TFGNXKQ]+)(?: ([IFBPKM-]))?$/.exec(s);
   if (!m) return null;
-  return { team: m[1], qtr: Number(m[2]), clock: m[3], yards: Number(m[4]), result: m[5], tiles: m[6].split("") as TileCode[] };
+  const d: Drive = { team: m[1], qtr: Number(m[2]), clock: m[3], yards: Number(m[4]), result: m[5], tiles: m[6].split("") as TileCode[] };
+  if (m[7]) d.ret = m[7] as RetCode;
+  return d;
 }
 
 export function gameDrives(f: DrivesFile, gameId: string): Drive[] {
