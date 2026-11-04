@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { gameDrives, isDrivesFile, parseDrive, RESULT_LABEL, TILE_LABEL, driveAria, qtrLabel, resultLabel } from "./drives";
+import { gameDrives, isDrivesFile, parseDrive, RESULT_LABEL, TILE_LABEL, driveAria, qtrLabel, resultLabel, yardsLabel } from "./drives";
 
 const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
@@ -105,4 +105,13 @@ test("F7: every shipped drive string parses, old and new forms", () => {
     const f = JSON.parse(readFileSync(new URL(`../public/data/drives/${s}.json`, import.meta.url), "utf8"));
     for (const list of Object.values(f.games) as string[][]) for (const x of list) assert.ok(parseDrive(x), x);
   }
+});
+
+test("F7: negative net yards read as 'lost N yards'", () => {
+  assert.equal(yardsLabel(-10), "lost 10 yards");
+  assert.equal(yardsLabel(-1), "lost 1 yard");
+  assert.equal(yardsLabel(0), "0 yards");
+  assert.equal(yardsLabel(1), "1 yard");
+  assert.equal(yardsLabel(48), "48 yards");
+  assert.match(driveAria({ team: "NYG", qtr: 1, clock: "08:03", yards: -10, result: "P", tiles: ["N", "N", "N", "K"] }, (t: string) => t), /lost 10 yards/);
 });

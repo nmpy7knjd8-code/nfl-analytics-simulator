@@ -43,8 +43,9 @@ def test_fake_plays_use_full_names_and_fakes_json_untouched():
     roster = json.loads(mod.NAMES.read_text())
     fakes = json.loads(mod.SRC.read_text())
     out = mod.build(fakes, roster)
-    assert len(roster["plays"]) == len(fakes["plays"]) == 162
-    assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 162
+    assert len(fakes["plays"]) == 162 and len(fakes["real_punts"]) == 299
+    assert len(roster["plays"]) == 162 + 299  # fakes + real punts
+    assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 461
     assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("Direct snap to A.Levine.")
 
 
@@ -66,3 +67,9 @@ def test_real_punts_use_the_same_full_name_swap():
     out = mod.build(fakes, {"names": {"g": "Matt Bosher"}, "plays": {k: {"M.Bosher": "g"}}})
     assert "Matt Bosher" in out[k] and "M.Bosher" not in out[k]
     assert "M.Bosher" in mod.build(fakes, {"names": {}, "plays": {}})[k]
+
+
+def test_suffix_short_name_keeps_sentence_period():
+    out = mod.full_names("fair catch by M.Sanu Sr.", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"})
+    assert out == "fair catch by Mohamed Sanu."
+    assert mod.full_names("M.Sanu Sr. to NE 21", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"}) == "Mohamed Sanu to NE 21"

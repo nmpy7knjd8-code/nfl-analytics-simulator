@@ -194,7 +194,7 @@ def _punt_lost(r: dict[str, Any]) -> str | None:
     return f"{head}, and {f} {verb}. {team} recovers{' ' + tail if tail else ''}."
 
 
-_DECLINED_ONLY = re.compile(r"^Penalty on ([A-Z]{2,3})-(?:\d{1,2}-)?([^,]+), ([^,]+), declined\.?$", re.I)
+_DECLINED_ONLY = re.compile(r"^Penalty on ([A-Z]{2,3})-(?:(\d{1,2})-)?([^,]+), ([^,]+), declined\.?$", re.I)
 _REPORTED = re.compile(r"(?:\d{1,2}-)?[A-Z][\w.'\-]* reported in as eligible\.?\s*", re.I)
 _SPOT = re.compile(r"recovered by ([A-Z]{2,3})-\S+ at ([A-Z]{2,3}) (\d{1,2})", re.I)
 
@@ -500,7 +500,9 @@ def _must_mention(r: dict[str, Any], s: str) -> str:
     if _t(r.get("fumble")) and "fumble" not in low and "muff" not in low:
         f, team = _name(r, "fumbled_1"), r.get("fumble_recovery_1_team")
         if f or team:
-            s += f" {f or 'The ball carrier'} fumbles" + (f", and {team} recovers." if team else ".")
+            d = r.get("desc") or ""  # a muffed punt/kick is not a fumble (no FUMBLES in the feed)
+            verb = "muffs the catch" if re.search(r"\bMUFFS\b", d) and not re.search(r"\bFUMBLES\b", d) else "fumbles"
+            s += f" {f or 'The ball carrier'} {verb}" + (f", and {team} recovers." if team else ".")
     elif _t(r.get("fumble_lost")) and "recover" not in low and (team := r.get("fumble_recovery_1_team")):
         s += f" {team} recovers."
     if _t(r.get("touchdown")) and "touchdown" not in low:
@@ -520,8 +522,11 @@ def _effective(r: dict[str, Any]) -> dict[str, Any]:
 def display_text(r: dict[str, Any]) -> str:
     r = _effective(r)
     if m := _DECLINED_ONLY.match(clean_desc(r.get("desc") or "")):  # QA 0217 G: lone declined flag, no play
-        team, who, foul = m.groups()
-        who = ((r.get("names") or {}).get("penalty")) or who
+        team, num, who, foul = m.groups()
+        if not num and (j := re.search(rf"Penalty on {team}-(\d{{1,2}})-", r.get("desc") or "", re.I)):
+            num = j.group(1)  # clean_desc drops jersey numbers; the roster key needs it
+        names = r.get("names") or {}  # roster full name (TEAM-jersey) before the feed's short name
+        who = (names.get("penalties") or {}).get(f"{team.upper()}-{num}") or names.get("penalty") or who
         return f"Flag on {who} ({team.upper()}) for {foul.strip().lower()}, declined. No play."
     s = _display_text(r)
     return s if marker_text(r.get("desc") or "") is not None else _must_mention(r, s)
