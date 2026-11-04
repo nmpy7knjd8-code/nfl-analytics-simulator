@@ -1,5 +1,9 @@
 // B2 "Real punt or fake?": a 4th-down punt situation from nflverse; the fan guesses real or fake.
 // Data: lib/site/fakes.json (copy of data/site/fakes.json, built by mining/build_fakes.py).
+// Fan text: lib/site/fakesText.json, the feed cleaner (backend play_text) run over each desc by
+// mining/build_fakes_text.py. Never show raw nflverse desc.
+import fanTexts from "./site/fakesText.json";
+import { teamNickname } from "./teams";
 export type PuntPlay = {
   season: number; week: number; season_type: "REG" | "POST"; game_id: string;
   team: string; opp: string; qtr: number; clock: string; down: number; togo: number; yardline_100: number;
@@ -61,7 +65,7 @@ export const isCorrect = (card: Card, guess: Guess) => card.answer === guess;
 export function spotText(p: PuntPlay): string {
   const y = p.yardline_100;
   if (y === 50) return "midfield";
-  return y > 50 ? `their own ${100 - y}` : `the ${p.opp} ${y}`;
+  return y > 50 ? `their own ${100 - y}` : `the ${teamNickname(p.opp)} ${y}`;
 }
 
 export function scoreText(p: PuntPlay): string {
@@ -73,7 +77,7 @@ export function scoreText(p: PuntPlay): string {
 const QTR = ["", "1st", "2nd", "3rd", "4th"];
 /** Plain situation line. Clock is game clock left in the quarter. */
 export function situationText(p: PuntPlay): string {
-  return `${p.team} is ${scoreText(p)}, 4th & ${p.togo} at ${spotText(p)}, ${p.clock.replace(/^0/, "")} left in the ${QTR[p.qtr]}. The punter is back.`;
+  return `The ${teamNickname(p.team)} are ${scoreText(p)}, 4th & ${p.togo} at ${spotText(p)}, ${p.clock.replace(/^0/, "")} left in the ${QTR[p.qtr]}. The punter is back.`;
 }
 
 /** nflverse play text made plain: no clock prefix, formation tag, or jersey numbers; trimmed to fit. */
@@ -88,6 +92,16 @@ export function plainDesc(desc: string, max = 150): string {
   return s;
 }
 
+const FAN = fanTexts as Record<string, string>;
+/** The feed cleaner's text for this play (clock, snapper, jersey numbers gone), trimmed to fit. */
+export function playText(p: PuntPlay, max = 150): string {
+  const t = FAN[`${p.game_id}|${p.qtr}|${p.clock}|${p.team}`];
+  return plainDesc(t ?? p.desc, max);
+}
+
+/** "Ravens vs Dolphins" for the card's setup line. */
+export const matchupText = (p: PuntPlay) => `${teamNickname(p.team)} vs ${teamNickname(p.opp)}`;
+
 /** Short "Why" line for the reveal. Uses only counts in the file. */
 export function whyText(card: Card): string {
   const p = card.play;
@@ -96,7 +110,7 @@ export function whyText(card: Card): string {
     const res = p.first_down ? "and got the first down" : "and came up short";
     return `It was ${how} out of punt formation, ${res}.`;
   }
-  return `A real punt: ${plainDesc(p.desc, 90)}`;
+  return `A real punt: ${playText(p, 90)}`;
 }
 
 export const pct = (n: number, d: number) => (d ? Math.round((100 * n) / d) : 0);
