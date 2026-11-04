@@ -152,28 +152,23 @@ export function shareText(results: boolean[]): string {
   return `Kick or go for two? Same call as the coach ${n}/${results.length}\n${results.map((r) => (r ? "✅" : "⬜")).join("")}`;
 }
 
-/** Average points per try from a shown rate: multiplier × the rate as displayed (one decimal),
- * rounded to hundredths, so the line's numbers follow from the percentages the fan sees.
- * League success rates only; no win chance. */
-export function pointsPerTry(r: { tries: number; made: number }, points: 1 | 2): number {
-  if (!r.tries) return 0;
-  const tenths = Math.round((1000 * r.made) / r.tries); // e.g. 944 for "94.4%"
-  return Math.round((points * tenths) / 10) / 100;
-}
-const pts2 = (n: number) => n.toFixed(2);
-const GO_PHRASE: Record<Call, string> = { kick: "going for two", run: "a two-point run", pass: "a two-point pass" };
+/** Clear Q4 cases by the margin after the touchdown, before the try (trying team's side). */
+export const MARGIN_LINES: Record<number, string> = {
+  [-2]: "Down 2: going for two ties it, a kick doesn't.",
+  [-5]: "Down 5: two makes it a field-goal game, a kick leaves them down 4.",
+  [1]: "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.",
+  [4]: "Up 4: two puts them up 6, so a touchdown alone only ties. A kick leaves them up 5.",
+  [0]: "Tied: two puts them up 2, a kick up 1. A field goal beats either.",
+};
+export const EARLY_LINE = "Early on, both choices average about one point.";
+export const NEUTRAL_LINE = "Both choices average about one point.";
 
-/** One plain verdict on the coach's call, by league average points per try:
- * kick = 1 × the XP rate; go for two = 2 × the two-point rate (run or pass rate for that play;
- * the overall two-point rate when the coach kicked). */
-export function verdictText(file: TwoPointFile, t: Try): string {
-  const call = coachCall(t);
-  const kick = pointsPerTry(file.extra_point, 1);
-  const goRate = call === "kick" ? file.two_point : file.two_point[call];
-  const go = pointsPerTry(goRate, 2);
-  const goName = GO_PHRASE[call];
-  if (kick === go) return `Even call by the numbers: kicking and ${goName} both average ${pts2(kick)} points a try.`;
-  const coachBetter = call === "kick" ? kick > go : go > kick;
-  const [hiName, hi, loName, lo] = kick > go ? ["kicking", kick, goName, go] : [goName, go, "kicking", kick];
-  return `${coachBetter ? "Good" : "Tough"} call by the numbers: ${hiName} averages ${pts2(hi)} points a try, ${loName} ${pts2(lo)}.`;
+/** One plain line on the try from the score alone (no rates, no model numbers).
+ * Before Q4: EARLY_LINE. Q4 regulation with a clear margin: MARGIN_LINES. Otherwise (Q4 other
+ * margins, OT, missing score): NEUTRAL_LINE, since "Early on" would be false there. */
+export function verdictText(_file: TwoPointFile, t: Try): string {
+  const q = Number(t.qtr);
+  if (Number.isFinite(q) && q >= 1 && q < 4) return EARLY_LINE;
+  if (q === 4 && Number.isInteger(t.diff) && t.diff in MARGIN_LINES) return MARGIN_LINES[t.diff];
+  return NEUTRAL_LINE;
 }

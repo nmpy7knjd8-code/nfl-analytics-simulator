@@ -115,30 +115,32 @@ test("QA copy: League labels, match header, result line, league match line", asy
   for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
 });
 
-test("verdict line: exact copy from shown league rates, no win chance", async () => {
+test("verdict line: Q4 score margin only, no win chance or points-per-try", async () => {
   const m = await import("./twoPoint");
-  // Shown: XP 94.4%, two-point 47.5%, run 54.9%, pass 44.7%.
-  assert.equal(m.pointsPerTry(file.extra_point, 1), 0.94);
-  assert.equal(m.pointsPerTry(file.two_point, 2), 0.95);
-  assert.equal(m.pointsPerTry(file.two_point.run, 2), 1.1);
-  assert.equal(m.pointsPerTry(file.two_point.pass, 2), 0.89);
-  // Arithmetic follows the displayed percentages.
-  for (const [r, k] of [[file.extra_point, 1], [file.two_point, 2], [file.two_point.run, 2], [file.two_point.pass, 2]] as const) {
-    const shown = Number(m.pct1(r).replace("%", ""));
-    assert.equal(m.pointsPerTry(r, k), Math.round(k * shown) / 100);
-  }
-  const k = kicks[0], run = tries.find((x) => x.kind === "run")!, pass = tries.find((x) => x.kind === "pass")!;
-  assert.equal(m.verdictText(file, k), "Tough call by the numbers: going for two averages 0.95 points a try, kicking 0.94.");
-  assert.equal(m.verdictText(file, run), "Good call by the numbers: a two-point run averages 1.10 points a try, kicking 0.94.");
-  assert.equal(m.verdictText(file, pass), "Tough call by the numbers: kicking averages 0.94 points a try, a two-point pass 0.89.");
-  // Made or missed doesn't change the verdict.
-  assert.equal(m.verdictText(file, { ...run, made: !run.made }), m.verdictText(file, run));
-  const even = { ...file, extra_point: { tries: 100, made: 95, rate: 0.95 } };
-  assert.equal(m.verdictText(even, k), "Even call by the numbers: kicking and going for two both average 0.95 points a try.");
+  const base = tries.find((x) => x.qtr === 4)!;
+  const at = (qtr: number, diff: number) => m.verdictText(file, { ...base, qtr, diff });
+  assert.equal(at(4, -2), "Down 2: going for two ties it, a kick doesn't.");
+  assert.equal(at(4, -5), "Down 5: two makes it a field-goal game, a kick leaves them down 4.");
+  assert.equal(at(4, 1), "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.");
+  assert.equal(at(4, 4), "Up 4: two puts them up 6, so a touchdown alone only ties. A kick leaves them up 5.");
+  assert.equal(at(4, 0), "Tied: two puts them up 2, a kick up 1. A field goal beats either.");
+  // Q4, not a clear case.
+  for (const d of [-8, -7, -3, -1, 2, 3, 5, 7, 14]) assert.equal(at(4, d), m.NEUTRAL_LINE);
+  // Early game, even on a clear margin.
+  for (const q of [1, 2, 3]) for (const d of [-2, -5, 1, 4, 0, 6]) assert.equal(at(q, d), "Early on, both choices average about one point.");
+  // Overtime: never a margin line, never "Early on".
+  for (const d of [-2, 0, 1]) assert.equal(at(5, d), "Both choices average about one point.");
+  // No score data.
+  assert.equal(at(4, NaN), m.NEUTRAL_LINE);
+  assert.equal(m.verdictText(file, { ...base, diff: undefined as unknown as number }), m.NEUTRAL_LINE);
+  assert.equal(m.verdictText(file, { ...base, qtr: NaN }), m.NEUTRAL_LINE);
+  // Made or missed and play type don't change it; per_choice_win_chance is never read.
   const poisoned = { ...file, per_choice_win_chance: { boom: true } } as unknown as typeof file;
   for (const t of [...tries, ...kicks]) {
     const v = m.verdictText(poisoned, t);
-    assert.equal(v, m.verdictText(file, t));
-    assert.ok(!/win|chance|expected|EPA|WPA|odds|bet/i.test(v), v);
+    assert.equal(v, m.verdictText(file, { ...t, made: !t.made }));
+    assert.ok(!/win chance|expected|EPA|WPA|odds|bet\b|per try|a try|Tough|Good call|Even call/i.test(v), v);
   }
+  // Real data has every clear case.
+  for (const d of [-2, -5, 1, 4, 0]) assert.ok([...tries, ...kicks].some((t) => t.qtr === 4 && t.diff === d), String(d));
 });
