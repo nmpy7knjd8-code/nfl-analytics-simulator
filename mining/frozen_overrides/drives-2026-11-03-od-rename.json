@@ -1,7 +1,7 @@
 {
  "file": "data/site/drives/{season}.json",
  "rule": "od_rename",
- "approved_by": "PENDING HGIC",
+ "approved_by": "PR #273: Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #273 approved Nov 3, 2026 11:19 PM ET, OT→OD rename only.",
  "reason": "Result code OT (opponent touchdown) reads as overtime, and the file has overtime drives. Rename it OD (Charts UI agreed; reader accepts both). Listed games may change only by OT -> OD in the result field (od_rename_ok); result_key may change only OT -> OD.",
  "games": [
   "2019_01_BUF_NYJ",
