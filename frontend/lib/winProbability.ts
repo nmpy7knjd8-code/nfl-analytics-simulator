@@ -198,7 +198,7 @@ export function whyText(delta: number, p: EventPoint, favored: string): string {
   // QA L6 / P3-K: a 20+ yard gain (#97 yards_gained) is about field position, not the score.
   else if ((p.yards_gained ?? 0) >= 20) cause = bigGain(p.yards_gained as number, p.yardline_100);
   else if (p.event === "other") cause = /sack/.test(d) ? "a sack lost yards and could have killed the drive" : "it moved the ball and the clock";
-  else if (/intercept|fumble/.test(d)) cause = "a turnover handed the ball and field position to the other side";
+  else if (/intercept/.test(d) || (/fumble/.test(d) && fumbleLost(p, p.possession_team_id ?? ""))) cause = "a turnover handed the ball and field position to the other side";
   else if (/touchdown/.test(d)) cause = "a touchdown changed the score in one snap";
   else if (/field goal|fg/.test(d)) cause = "the kick put 3 on the board";
   else if (/fourth-and|fourth down|4th/.test(d)) cause = "a fourth-down call decided who kept the ball";

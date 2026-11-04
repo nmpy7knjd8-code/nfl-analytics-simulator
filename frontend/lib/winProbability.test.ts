@@ -343,3 +343,11 @@ test("#285 review: no Why ever says pts or points", () => {
   for (const c of cases) assert.doesNotMatch(whyText(0.2, { ...base, ...c } as EventPoint, "DET"), /\b(pts|points)\b/i);
   for (const g of Object.values(WP_FIXTURES)) for (const s of findSwingPlays(g.series)) assert.doesNotMatch(s.why, /\b(pts|points)\b/i);
 });
+
+test("#285 nit: an offense-recovered fumble never falls through to the generic turnover reason", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "KC", return_td: false, kick_return_td: false, yards_gained: 3 } as EventPoint;
+  const own = { ...base, event: undefined, description: "I.Pacheco FUMBLES, RECOVERED by KC-T.Kelce" } as unknown as EventPoint;
+  assert.doesNotMatch(whyText(0.12, own, "KC"), /turnover|took the ball away/);
+  const lost = { ...own, description: "I.Pacheco FUMBLES, RECOVERED by DET-A.Hutchinson" } as EventPoint;
+  assert.match(whyText(0.12, lost, "KC"), /a turnover handed the ball/);
+});
