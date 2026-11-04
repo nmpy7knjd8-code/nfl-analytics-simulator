@@ -26,13 +26,22 @@ def test_build_maps_only_players_named_in_text():
 
 
 def test_committed_file_small_and_consistent():
-    assert OUT.stat().st_size < 40_000
+    assert OUT.stat().st_size < 64_000
     d = json.loads(OUT.read_text())
-    fakes = json.loads((ROOT / "data/site/fakes.json").read_text())["plays"]
-    keys = {bp.play_key(p) for p in fakes}
-    assert set(d["plays"]) <= keys and len(d["plays"]) == 162 and len(d["names"]) == 300
+    f = json.loads((ROOT / "data/site/fakes.json").read_text())
+    fake_keys = {bp.play_key(p) for p in f["plays"]}
+    real_keys = {bp.play_key(p) for p in f["real_punts"]}
+    assert not fake_keys & real_keys
+    assert set(d["plays"]) <= fake_keys | real_keys and len(d["plays"]) == 461 and len(d["names"]) == 515
+    assert len(set(d["plays"]) & fake_keys) == 162 and set(d["plays"]) >= real_keys  # all 299 real punts
     used = {g for m in d["plays"].values() for g in m.values()}
     assert used == set(d["names"]) and all(re.fullmatch(r"00-\d{7}", g) for g in used)
     assert any(v == "Matthew Hayball" for v in d["names"].values())
     assert set(d) == {"schema_version", "source", "files", "names", "plays"}  # no play ids, wp or betting fields
     assert not [k for k in d if BANNED.search(k)]
+
+
+def test_real_punt_names_mapped():
+    d = json.loads(OUT.read_text())
+    full = {d["names"][g] for m in d["plays"].values() for g in m.values()}
+    assert {"Sterling Hofrichter", "Matt Haack"} <= full

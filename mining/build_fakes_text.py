@@ -58,7 +58,13 @@ def full_names(s: str, short_to_id: dict[str, str], names: dict[str, str]) -> st
     if not pairs:
         return s
     alt = "|".join(re.escape(k) for k in sorted(pairs, key=len, reverse=True))
-    s = re.sub(rf"(?<![\w.'-])(?:{alt})(?![\w'-])", lambda m: pairs[m.group(0)], s)
+    def swap(m: re.Match) -> str:
+        full, short = pairs[m.group(0)], m.group(0)
+        # 'by M.Sanu Sr.' at a sentence end: the short name's own period was also the sentence's period.
+        if short.endswith(".") and not full.endswith(".") and re.match(r"\s*($|[A-Z(])", s[m.end():]):
+            full += "."
+        return full
+    s = re.sub(rf"(?<![\w.'-])(?:{alt})(?![\w'-])", swap, s)
     # 'to S.Franklin.' -> 'to Sam Franklin Jr..': a full name ending in a period meets the sentence's own period.
     return re.sub(r"\b(Jr|Sr|[A-Z])\.\.(?=\s|$)", r"\1.", s)
 

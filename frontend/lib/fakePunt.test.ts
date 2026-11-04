@@ -84,7 +84,7 @@ test("N4: answer text runs through the feed cleaner, never raw nflverse desc", (
   const bailey = all.find((p) => /J\.Bailey punts/.test(p.desc) && /Center-/.test(p.desc))!;
   assert.ok(bailey, "fixture play");
   assert.ok(!playText(bailey).includes("Cardona") && !playText(bailey).includes("Center"), playText(bailey));
-  assert.match(playText(bailey), /^J\.Bailey punts \d+ yards/);
+  assert.match(playText(bailey), /^(J\.|Jake )Bailey punts \d+ yards/);
 });
 
 test("N4: setup line and matchup use team names, not codes", () => {
