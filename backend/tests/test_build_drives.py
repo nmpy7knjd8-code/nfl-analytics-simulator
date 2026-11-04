@@ -87,4 +87,27 @@ def test_two_point_override_scope():
     base = {"schema": "drives/v1", "cols": [], "games": {"g": old, "h": old}}
     new = {"schema": "drives/v1", "cols": [], "games": {"g": good, "h": good}}
     assert bd.check_frozen(base, new, {"g"}) == ["h"]
-    assert bd.check_frozen(base, base, {"g"}) == ["g (override: not exactly the two-point tile fix)"]
+    assert bd.check_frozen(base, base, {"g"}) == ["g (override: not exactly the two_point change)"]
+
+
+def test_od_rename_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-od-rename.json").read_text())
+    assert o["rule"] == "od_rename" and len(o["games"]) == 425 == len(set(o["games"]))
+    old = ["AAA 1 15:00 -5 OT NX", "BBB 1 14:50 0 TD T", "AAA 5 10:00 3 P GK"]
+    new = ["AAA 1 15:00 -5 OD NX", "BBB 1 14:50 0 TD T", "AAA 5 10:00 3 P GK"]
+    assert bd.od_rename_ok(old, new)
+    assert not bd.od_rename_ok(old, ["AAA 1 15:00 -5 OD N", *new[1:]])
+    assert not bd.od_rename_ok(old, [new[0], "BBB 1 14:50 0 OD T", new[2]])
+    rk_o, rk_n = {"OT": "Opponent touchdown", "P": "Punt"}, {"OD": "Opponent touchdown", "P": "Punt"}
+    base = {"schema": "drives/v1", "cols": [], "result_key": rk_o, "games": {"g": old, "h": old}}
+    nxt = {"schema": "drives/v1", "cols": [], "result_key": rk_n, "games": {"g": new, "h": new}}
+    assert bd.check_frozen(base, nxt, {"g", "h"}, "od_rename") == []
+    assert bd.check_frozen(base, nxt, {"g"}, "od_rename") == ["h"]
+    assert bd.check_frozen(base, nxt, {"g", "h"}, "two_point")[-1] == "result_key"
+
+
+def test_no_ot_result_code_left():
+    for f in DIR.glob("*.json"):
+        d = json.loads(f.read_text())
+        assert "OT" not in d["result_key"] and d["result_key"]["OD"] == "Opponent touchdown"
+        assert not [s for v in d["games"].values() for s in v if s.split(" ")[4] == "OT"]
