@@ -262,4 +262,6 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .ds-Q{background:repeating-linear-gradient(45deg,#f1f3f4 0 3px,#d0d3d6 3px 5px)}
 .ds-sub{font-size:12px;color:var(--sg-g)}
 .pf-gain{display:block;font-size:14px;font-weight:800;color:var(--sg-b);margin:2px 0 4px}
+
+.pf-gl-note { display: block; font-size: 13px; color: #555; margin-top: 2px; }
 .sg-end .sg-pair-end{margin-top:8px}.sg-pair-end .sg-keep{min-height:48px}
