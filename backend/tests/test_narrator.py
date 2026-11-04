@@ -71,3 +71,27 @@ def test_story_three_to_five_in_game_order():
 def test_kind_classification():
     kinds = [narrator._kind(r) for r in ROWS]
     assert kinds == ["td", "fg_good", "interception", "fourth_go", "punt", "fg_miss"]
+
+
+OT_TEXTS = {
+    "td": ("pass", "J.Goff pass to A.St. Brown for 12 yards, TOUCHDOWN.", 1),
+    "interception": ("pass", "P.Mahomes pass INTERCEPTED by B.Branch.", 2),
+    "fumble": ("run", "D.Montgomery FUMBLES, RECOVERED BY KC-N.Bolton.", 1),
+    "fg_good": ("field_goal", "J.Moody 27 yard field goal is GOOD", 4),
+    "fg_miss": ("field_goal", "J.Moody 52 yard field goal is No Good", 4),
+    "punt": ("punt", "J.Fox punts 50 yards", 4),
+    "fourth_go": ("run", "D.Montgomery right tackle for 3 yards", 4),
+    "play": ("pass", "J.Goff pass short right for 24 yards", 2),
+}
+
+
+@pytest.mark.parametrize("kind", sorted(OT_TEXTS))
+def test_overtime_sentences_have_no_win_chance_or_percent(kind):
+    pt, text, down = OT_TEXTS[kind]
+    row = dict(play_id=9, qtr=5, clock="6:05", posteam="DET", down=down, ydstogo=1, play_type=pt, home="KC",
+               away="DET", text=text, home_wp=0.3, home_wp_after=0.9, home_score=20, away_score=20, swing=True)
+    assert narrator._kind(row) == kind
+    s = narrator.sentence(row)
+    assert "overtime" in s
+    assert "%" not in s
+    assert not re.search(r"win|swing|chance|point", s, re.I), s

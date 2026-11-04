@@ -52,19 +52,32 @@ def _kind(row: dict[str, Any]) -> str:
 
 
 TEMPLATES = {
-    "td": "{team} scored a touchdown with {clock} left in {period}, a {swing}-point swing toward {gainer}.",
-    "interception": "{opp} intercepted {team} with {clock} left in {period}, a {swing}-point swing toward {gainer}.",
-    "fumble": "A {team} fumble with {clock} left in {period} swung win chances {swing} points toward {gainer}.",
+    "td": "{team} scored a touchdown with {clock} left in {period}, a {swing}% swing toward {gainer}.",
+    "interception": "{opp} intercepted {team} with {clock} left in {period}, a {swing}% swing toward {gainer}.",
+    "fumble": "A {team} fumble with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
     "fg_good": "{team}'s field goal with {clock} left in {period} moved {gainer} to {gainer_wp}% to win.",
     "fg_miss": "{team} came away empty on a field goal try with {clock} left in {period}; {gainer} rose to {gainer_wp}%.",
-    "punt": "A {team} punt with {clock} left in {period} swung win chances {swing} points toward {gainer}.",
+    "punt": "A {team} punt with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
     "fourth_go": "{team} went for it on fourth and {togo} with {clock} left in {period}; {gainer} moved to {gainer_wp}%.",
-    "play": "With {clock} left in {period}, one {team} play swung win chances {swing} points toward {gainer}.",
+    "play": "With {clock} left in {period}, one {team} play swung win chance {swing}% toward {gainer}.",
+}
+
+# Overtime (qtr >= 5): same events, no win %, swing size or win-chance wording.
+OT_TEMPLATES = {
+    "td": "{team} scored a touchdown with {clock} left in overtime.",
+    "interception": "{opp} intercepted {team} with {clock} left in overtime.",
+    "fumble": "{team} fumbled with {clock} left in overtime.",
+    "fg_good": "{team} made a field goal with {clock} left in overtime.",
+    "fg_miss": "{team} came away empty on a field goal try with {clock} left in overtime.",
+    "punt": "{team} punted with {clock} left in overtime.",
+    "fourth_go": "{team} went for it on fourth and {togo} with {clock} left in overtime.",
+    "play": "{team} ran a key play with {clock} left in overtime.",
 }
 
 
 def sentence(row: dict[str, Any]) -> str:
-    return TEMPLATES[_kind(row)].format(**facts(row))
+    table = OT_TEMPLATES if int(row["qtr"]) >= 5 else TEMPLATES
+    return table[_kind(row)].format(**facts(row))
 
 
 def story(rows: list[dict[str, Any]], *, min_sentences: int = 3, max_sentences: int = 5) -> list[str]:
