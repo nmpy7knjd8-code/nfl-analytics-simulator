@@ -179,7 +179,8 @@ export function PlayFeedC6() {
               <TeamLogo abbr={g.home} size={22} /><b>{g.home} {g.homeScore}</b>
             </div>
             <span className="pf-wk">{g.label}</span>
-            {weather ? <span className={`pf-wx pf-wx-${weather.kind}`} title={weather.note}>{weather.text}</span> : null}
+            {weather ? <span className={`pf-wx pf-wx-${weather.kind}`}>{weather.text}</span> : null}
+            {weather?.note ? <span className="pf-wx-note">{weather.note}</span> : null}
           </div>
           <button type="button" className="pf-change" onClick={() => setPicking(true)}>Change game</button>
         </div>

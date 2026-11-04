@@ -29,4 +29,5 @@ test("every badge is plain words: no ids, no stat names, no betting words", () =
 
 test("the feed header mounts the badge", () => {
   assert.match(readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8"), /gameWeather\(/);
+  assert.match(readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8"), /pf-wx-note">\{weather\.note\}/, "note shows inline on phones, not as hover text");
 });
