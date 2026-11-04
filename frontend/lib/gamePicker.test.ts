@@ -70,3 +70,10 @@ test("game cards link to a built Game Story, otherwise to the play feed", async 
   assert.equal(gameCardHref("2024_08_CHI_WAS", built), "/feed/?game=2024_08_CHI_WAS");
   assert.equal(gameFromQuery(new URL(gameCardHref("2024_08_CHI_WAS", built), "http://x").search), "2024_08_CHI_WAS");
 });
+
+test("unbuilt Game Story paths map to their game id for the 404 redirect", async () => {
+  const { gameIdFromStoryPath } = await import("./gamePicker");
+  assert.equal(gameIdFromStoryPath("/nfl-analytics-simulator/games/2024_08_CHI_WAS/"), "2024_08_CHI_WAS");
+  assert.equal(gameIdFromStoryPath("/games/2024_08_CHI_WAS"), "2024_08_CHI_WAS");
+  for (const bad of ["/games/", "/games/abc/", "/rivalry/2024_08_CHI_WAS/", "/games/2024_08_chi_was/"]) assert.equal(gameIdFromStoryPath(bad), null);
+});
