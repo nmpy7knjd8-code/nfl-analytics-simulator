@@ -230,6 +230,17 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-recap .sg-recap-key{padding:4px 0;font-size:13px;font-weight:700;color:var(--sg-g);text-transform:uppercase;letter-spacing:.03em}
 .sg-recap-key .sg-c{font-size:13px}
 .sg-agree{display:inline-block;width:14px;text-align:center;color:var(--sg-g)}
+
+/* E6 Hard mode */
+.sg-hard{display:flex;align-items:center;gap:10px;min-height:48px;font-size:15px;font-weight:600;margin:0 0 8px}
+.sg-hard input{width:22px;height:22px;accent-color:var(--sg-b)}
+.sg-conf-q{margin:6px 0 14px}
+.sg-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sg-conf-b{justify-content:center}
+.sg-calib{text-align:center;font-weight:600;margin:6px 0 10px}
+/* The end-of-day Hard mode toggle needs room: on phones the share preview is dropped (the Share button still sends the same text). */
+@media (max-width:420px) and (max-height:900px){.sg-end .sg-share{display:none}}
+@media (max-width:375px){.sg-calib{font-size:13px;margin:2px 0 4px}.sg-end .sg-hard{margin:0}}
 /* F7 drive strips */
 .ds-key{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--sg-g)}
 .ds-key li{display:flex;align-items:center;gap:5px}
