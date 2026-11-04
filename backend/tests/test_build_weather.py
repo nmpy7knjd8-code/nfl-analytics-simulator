@@ -46,3 +46,11 @@ def test_frozen():
     gid = next(iter(new["games"]))
     new["games"][gid] = [99, 99]
     assert bw.check_frozen(d, new) == [gid]
+
+
+def test_indoors_lists_dome_and_closed_only():
+    import json as _j
+    from pathlib import Path as _P
+    d = _j.loads((_P(__file__).resolve().parents[2] / "data/site/weather.json").read_text())
+    assert d["indoors"] and not set(d["indoors"]) & set(d["games"])
+    assert d["indoors"] == sorted(d["indoors"])

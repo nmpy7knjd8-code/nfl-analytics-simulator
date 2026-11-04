@@ -2,7 +2,8 @@
 
 Source: nflverse play-by-play 2019-2025 (REG+POST): game-level roof, temp (F), wind (mph), final scores.
 A game gets weather only when nflverse roof is "outdoors" or "open" and both temp and wind are present; dome,
-closed-roof and missing-weather games are absent (no badge). 2022_17_BUF_CIN (suspended) is left out.
+closed-roof and missing-weather games are absent from ``games``; dome/closed-roof games are listed in
+``indoors`` (nflverse roof) so the badge can say "Indoors". 2022_17_BUF_CIN (suspended) is left out.
 ``bands`` are average total points per wind band and per temperature band over those games, so the badge
 can say e.g. "Games this windy averaged 42.3 points". No play ids, EPA, win chance or betting fields.
 
@@ -52,6 +53,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
             games.setdefault(r["game_id"], r)
     out: dict[str, list[int]] = {}
     wind, temp = [], []
+    indoors = sorted(gid for gid, g in games.items() if g.get("roof") in ("dome", "closed"))
     for gid, g in sorted(games.items()):
         t, w = _num(g.get("temp")), _num(g.get("wind"))
         if g.get("roof") not in OPEN_AIR or t is None or w is None:
@@ -71,6 +73,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "bands": {"wind": [_band(wind, lo, hi, "mph") for lo, hi in WIND_BANDS],
                   "temp": [_band(temp, lo, hi, "f") for lo, hi in TEMP_BANDS]},
         "games": out,
+        "indoors": indoors,
     }
 
 
@@ -81,6 +84,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if old.get("season_list") == new.get("season_list"):
         bad += ["bands"] if old["bands"] != new["bands"] else []
         bad += ["games added"] if set(new["games"]) != set(old["games"]) else []
+        bad += ["indoors"] if "indoors" in old and old["indoors"] != new.get("indoors") else []
     return bad
 
 
