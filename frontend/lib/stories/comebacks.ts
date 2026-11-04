@@ -42,10 +42,20 @@ export function lowPct(low: number): string {
 
 export const weekText = (c: Comeback): string => gameWeekLabel(c.season, c.week, c.seasonType);
 export const scoreText = (c: Comeback): string => `${c.winner} ${c.winnerScore}, ${c.loser} ${c.loserScore}${c.ot ? " (won in overtime)" : ""}`;
-export const lowText = (c: Comeback): string => `${c.winner} fell to ${lowPct(c.low)} to win in Q${c.lowQtr} with ${c.lowClock.replace(/^0(\d)/, "$1")} left`;
+const ORD = ["1st", "2nd", "3rd", "4th"];
+/** "with 3:52 left", or "at the end of the 3rd quarter" when the clock reads 0:00 (QA C3). */
+export function clockText(qtr: number, clock: string): string {
+  return /^0?0:00$/.test(clock) ? `at the end of the ${ORD[qtr - 1] ?? `Q${qtr}`} quarter` : `with ${clock.replace(/^0(\d)/, "$1")} left`;
+}
+export const lowText = (c: Comeback): string =>
+  /^0?0:00$/.test(c.lowClock) ? `${c.winner} fell to ${lowPct(c.low)} to win ${clockText(c.lowQtr, c.lowClock)}`
+    : `${c.winner} fell to ${lowPct(c.low)} to win in Q${c.lowQtr} ${clockText(c.lowQtr, c.lowClock)}`;
 
+/** Header: the full count for context, then how many are listed (QA C2: header said 65, list shows 50). */
 export function headline(d: ComebacksDoc): string {
-  return `${belowCount(d)} of ${d.decided_games.toLocaleString("en-US")} games since ${d.season_list[0]} were won by a team that fell below 5% to win.`;
+  const n = belowCount(d), shown = rows(d).length;
+  const tail = shown < n ? ` Here are the ${shown} biggest.` : "";
+  return `${n} teams came back from under 5% to win since ${d.season_list[0]}, out of ${d.decided_games.toLocaleString("en-US")} games.${tail}`;
 }
 
 /** Sparkline path (0..100 win chance for the winner, regulation only) in a w×h box. */
