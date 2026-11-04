@@ -10,11 +10,13 @@ by a model value:
 Each drive is one string "TEAM QTR CLOCK YARDS RESULT TILES" (e.g. "NO 1 13:02 83 DN FFGGFNGFFNNGG") to keep
 the file small; plays = number of tiles; result codes are spelled out in ``result_key``. Overtime drives are included (no win chance anywhere in this file). The bad
 2019_03_CIN_BUF "End of half" row and the row before it are dropped; 2022_17_BUF_CIN is left out.
-No play ids, EPA or betting fields.
+Two-point tries (nflverse two_point_attempt) are not snaps: they add no tile, and a drive whose only
+"snap" was a try (kick or punt return TD) is dropped. No play ids, EPA or betting fields.
 
 Frozen: a published game's drives may not change.
 
 Usage: python mining/build_drives.py PBP_PARQUET [...] [--out-dir data/site/drives]
+       [--allow-changes mining/frozen_overrides/<file>.json]
 """
 from __future__ import annotations
 
@@ -41,7 +43,7 @@ RESULT_KEY = {"TD": "Touchdown", "FG": "Field goal", "P": "Punt", "TO": "Turnove
 COLS = ["team", "qtr", "clock", "yards", "result", "tiles"]  # one space-separated string per drive
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive",
            "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start",
-           "ydsnet", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "desc"]
+           "ydsnet", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "desc"]
 
 
 def _num(v: Any) -> float | None:
@@ -75,7 +77,8 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
     drives: dict[int, list[dict[str, Any]]] = {}
     for i, r in enumerate(rs):
         d = _num(r.get("fixed_drive"))
-        if i in bad or d is None or r.get("play_type") not in SNAPS or not r.get("posteam"):
+        if (i in bad or d is None or r.get("play_type") not in SNAPS or not r.get("posteam")
+                or _num(r.get("two_point_attempt")) == 1):  # a two-point try is not a drive snap
             continue
         drives.setdefault(int(d), []).append(r)
     out = []
@@ -107,11 +110,47 @@ def build(rows: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
                 "result_key": RESULT_KEY, "cols": COLS, "games": g} for s, g in sorted(by_season.items())}
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
+def two_point_fix_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` minus two-point-try tiles only: each changed drive keeps team, quarter, clock,
+    yards and result and loses exactly its last tile after a T (or after the X or K of a defensive or return TD); a dropped drive was "0 yards, TD, one tile"."""
+    j = 0
+    for o in old:
+        n = new[j] if j < len(new) else None
+        if n == o:
+            j += 1
+            continue
+        ot, nt = o.split(" "), (n.split(" ") if n else [])
+        if nt[:5] == ot[:5] and len(ot[5]) == len(nt[5]) + 1 and ot[5][:-1] == nt[5] and nt[5][-1:] in ("T", "X", "K"):
+            j += 1
+            continue
+        if not (ot[3] == "0" and ot[4] == "TD" and len(ot[5]) == 1):
+            return False
+    return j == len(new)
+
+
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset()) -> list[str]:
+    """Published games may not change, except `allowed` games (a reviewed override), which may change only by
+    two_point_fix_ok and must change."""
     if not old or old.get("schema") != new["schema"]:
         return []
-    return [g for g, v in old["games"].items() if new["games"].get(g) != v] + (
-        ["cols"] if old["cols"] != new["cols"] else [])
+    bad = []
+    for g, v in old["games"].items():
+        n = new["games"].get(g)
+        if g in allowed:
+            if n == v or n is None or not two_point_fix_ok(v, n):
+                bad.append(f"{g} (override: not exactly the two-point tile fix)")
+        elif n != v:
+            bad.append(g)
+    return bad + (["cols"] if old["cols"] != new["cols"] else [])
+
+
+def load_override(path: str | None) -> set[str]:
+    if not path:
+        return set()
+    o = json.loads(Path(path).read_text())
+    if not o.get("reason") or not o.get("approved_by") or not isinstance(o.get("games"), list):
+        raise SystemExit(f"override {path} needs reason, approved_by and a games list")
+    return set(o["games"])
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -130,14 +169,16 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("pbp", nargs="+")
     ap.add_argument("--out-dir", default=str(OUT_DIR))
+    ap.add_argument("--allow-changes", default=None)
     a = ap.parse_args(argv)
+    allowed = load_override(a.allow_changes)
     out_dir = Path(a.out_dir)
     built = build(load_rows(a.pbp))
     olds, fails = {}, []
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
-        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new)]
+        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed)]
     if fails:
         print("FAIL: published drives would change: " + ", ".join(fails[:10]), file=sys.stderr)
         return 1
