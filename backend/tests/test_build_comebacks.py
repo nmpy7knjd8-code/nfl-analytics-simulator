@@ -79,3 +79,25 @@ def test_override_allows_only_spark():
     assert bc.check_frozen(d, new) and bc.check_frozen(d, new, {gid}) == []
     new["top"][0][9] = 0.5
     assert bc.check_frozen(d, new, {gid})
+
+
+def test_spark_final_index_never_overwritten():
+    # OT win whose regulation low (Q4 0:28) is nearest the last sample: the line keeps its end-of-regulation value.
+    rows = [r(hs=13, as_=10), r(q=4, gsr=40, wp=0.4), r(q=4, gsr=28, wp=0.02, t="00:28"), r(q=4, gsr=0, wp=0.47),
+            r(q=5, gsr=0, wp=0.9)]
+    g = dict(zip(bc.COLS, bc.build(rows)["top"][0]))
+    assert g["ot"] and g["spark"][-1] == 47 and g["spark"][-2] == 2
+    rows = [r(), r(q=4, gsr=5, wp=0.03, t="00:05"), r(q=4, gsr=0, wp=0.6)]
+    g = dict(zip(bc.COLS, bc.build(rows)["top"][0]))
+    assert g["spark"][-1] == 100 and g["spark"][-2] == 3
+
+
+def test_published_spark_ends_at_pre_override_value():
+    d = json.loads(FILE.read_text())
+    for e in d["top"]:
+        g = dict(zip(d["cols"], e))
+        if not g["ot"]:
+            assert g["spark"][-1] == 100, g["game_id"]
+    nyj = {e[3]: dict(zip(d["cols"], e)) for e in d["top"]}.get("2023_08_NYJ_NYG")
+    if nyj:
+        assert nyj["spark"][-1] == 47

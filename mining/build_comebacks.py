@@ -83,8 +83,9 @@ def game_entry(rs: list[dict[str, Any]]) -> list[Any] | None:
         spark[-1] = 100  # regulation final: the winner's line ends at 100
     # The stated low must show: the sample nearest the low's game time takes the low's value (length stays SPARK).
     lt = REG - _num(low["game_seconds_remaining"])
-    last = SPARK - 1 if ot else SPARK - 2  # never the regulation-final 100
-    k = min(range(last + 1), key=lambda i: abs(i * REG / (SPARK - 1) - lt))
+    # Never the final index: it is the regulation final (100) or, for OT wins, the end-of-regulation chance.
+    # A low nearest the last sample goes at index SPARK - 2 instead.
+    k = min(range(SPARK - 1), key=lambda i: abs(i * REG / (SPARK - 1) - lt))
     spark[k] = round(100 * w(low))
     win, lose = (f["home_team"], f["away_team"]) if home_won else (f["away_team"], f["home_team"])
     return [int(f["season"]), int(f["week"]), f["season_type"], f["game_id"], win, lose, max(hs, as_),
