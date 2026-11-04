@@ -284,7 +284,7 @@ test("article before yardage: 'an' for 8, 11, 18, 80–89; 'a' otherwise", () =>
 
 test("QA 0116 N8: safeties and blocked kicks name the real cause, not the sack or punt", () => {
   const w = (event: string, description: string) => whyText(0.2, { ...base(), event, description, yards_gained: 0 } as EventPoint, "DET");
-  assert.match(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /a safety gave the defense 2 points/);
+  assert.match(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /a safety gave the defense 2 and the ball back/);
   assert.doesNotMatch(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /sack lost yards/);
   assert.match(w("punt", "(2:00) M.Haack punt is BLOCKED by J.Doe, recovered by NE at IND 2."), /a blocked punt/);
   assert.match(w("field_goal", "(0:03) 44 yard field goal is BLOCKED."), /a blocked field goal/);
@@ -325,4 +325,21 @@ test("W1 nit: 'stopped short' only on 3rd/4th down; early downs say 'held'; a fl
   assert.match(d({ down: 3 }), /stopped KC short on 3rd & 8/);
   assert.match(d({ down: 3, penalty_text: "PENALTY on KC-T.Kelce, Offensive Holding, 10 yards" }), /because a penalty on the play went against KC/);
   assert.doesNotMatch(d({ down: 2 }), /stopped/);
+});
+
+test("#285 review: an offense-recovered fumble is not a takeaway; a lost one is", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "KC", event: "other", return_td: false, kick_return_td: false } as EventPoint;
+  const own = whyText(0.12, { ...base, description: "I.Pacheco FUMBLES, RECOVERED by KC-T.Kelce" } as EventPoint, "DET");
+  assert.doesNotMatch(own, /took the ball away/);
+  assert.match(whyText(0.12, { ...base, description: "I.Pacheco FUMBLES, RECOVERED by DET-A.Hutchinson" } as EventPoint, "DET"), /the defense took the ball away from KC/);
+});
+
+test("#285 review: no Why ever says pts or points", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "DET", return_td: false, kick_return_td: false } as EventPoint;
+  const cases: Partial<EventPoint>[] = [
+    { event: "safety" }, { description: "Field goal attempt is BLOCKED" }, { event: "field_goal" }, { event: "other", description: "41 yard field goal is GOOD" },
+    { event: "touchdown" }, { event: "punt" }, { event: "interception" }, { event: "fumble_lost" }, { event: "other", description: "sacked" },
+  ];
+  for (const c of cases) assert.doesNotMatch(whyText(0.2, { ...base, ...c } as EventPoint, "DET"), /\b(pts|points)\b/i);
+  for (const g of Object.values(WP_FIXTURES)) for (const s of findSwingPlays(g.series)) assert.doesNotMatch(s.why, /\b(pts|points)\b/i);
 });
