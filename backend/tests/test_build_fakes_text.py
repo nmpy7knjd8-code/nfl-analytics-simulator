@@ -26,5 +26,23 @@ def test_plain_names_drops_team_prefixes_and_codes():
 
 def test_sidecar_has_no_team_codes():
     import re
+    full = list(json.loads(mod.NAMES.read_text())["names"].values())
     for t in json.loads(mod.OUT.read_text()).values():
+        for n in full:  # full names like "AJ McCarron" are not team codes
+            t = t.replace(n, "")
         assert not re.search(r"\b[A-Z]{2,3}\b|\b[A-Z]{2,3}-[A-Z]", t), t
+
+
+def test_full_names_swaps_linked_short_names_only():
+    s = mod.full_names("Direct snap to A.Levine. A.Levine up the middle, tackled by J.Grant and B.Skrine. AA.Levine",
+                       {"A.Levine": "1", "J.Grant": "2", "B.Skrine": "3"}, {"1": "Anthony Levine", "2": "Jakeem Grant"})
+    assert s == "Direct snap to Anthony Levine. Anthony Levine up the middle, tackled by Jakeem Grant and B.Skrine. AA.Levine"
+
+
+def test_fake_plays_use_full_names_and_fakes_json_untouched():
+    roster = json.loads(mod.NAMES.read_text())
+    fakes = json.loads(mod.SRC.read_text())
+    out = mod.build(fakes, roster)
+    assert len(roster["plays"]) == len(fakes["plays"]) == 162
+    assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 162
+    assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("Direct snap to A.Levine.")
