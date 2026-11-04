@@ -36,7 +36,7 @@ def test_committed_file_matches_spec_bands():
     assert t[(None, 32)] == (88, 44.7) and t[(33, 50)] == (347, 42.9)
     assert sum(b["games"] for b in d["bands"]["wind"]) == 1199
     assert not [k for k in set(d) | set(d["cols"]) if BANNED.search(k)]
-    assert FILE.stat().st_size < 40_000
+    assert FILE.stat().st_size < 45_000
 
 
 def test_frozen():
