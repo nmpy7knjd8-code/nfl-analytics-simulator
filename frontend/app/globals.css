@@ -1776,7 +1776,7 @@ body { font-variant-numeric: tabular-nums; }
 .ab a{color:var(--sg-b)}
 /* —— chart pages (F4/D2), same white card as /kicks —— */
 .ch-card{padding:8px 6px}
-.ch-chips{margin:8px 0 0;justify-content:center;flex-wrap:wrap;overflow:visible}
+.ch-chips{margin:8px -2px 0}.ch-chips>:first-child{margin-left:auto}.ch-chips>:last-child{margin-right:auto}
 .ch-pick{text-align:left}
 .era-ax{font-size:11px;fill:#5f6368}
 .era-ax.is-on{fill:#000;font-weight:700}
@@ -1812,12 +1812,13 @@ body { font-variant-numeric: tabular-nums; }
 .oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
 /* —— D6 heat map (coaches' real go-rates) —— */
 .hm-card{padding:8px 6px}
-.hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(0,1fr));gap:2px}
+.hm-scroll{overflow-x:auto;scrollbar-width:none;margin:0 -6px;padding:0 6px}.hm-scroll::-webkit-scrollbar{display:none}
+.hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(44px,1fr));gap:2px}
 .hm-row{display:contents}
 .hm-corner{font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
 .hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
-.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap}
-.hm-cell{aspect-ratio:1;min-height:28px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
+.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:0;background:#fff;z-index:1}
+.hm-cell{min-width:44px;min-height:44px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
 .hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
 .hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
 .hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}

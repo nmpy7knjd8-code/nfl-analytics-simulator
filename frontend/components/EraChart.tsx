@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { era, goRate, type EraZoneId } from "../lib/era";
+import { ChipScroll } from "./ChipScroll";
 import { Header, Trademark } from "./SimpleGame";
 
 const W = 358, H = 220, L = 30, R = 84, T = 12, B = 26, YMAX = 40;
@@ -47,11 +48,13 @@ export function EraChart() {
             <rect key={s.season} x={x(i) - 18} y={0} width={36} height={H} fill="transparent" style={{ cursor: "pointer" }} onClick={() => setSel(i)} aria-hidden="true" />
           ))}
         </svg>
-        <div className="pf-chips ch-chips" role="group" aria-label="Season">
-          {seasons.map((s, i) => (
-            <button key={s.season} type="button" className={`pf-chip${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{s.season}</button>
-          ))}
-        </div>
+        <ChipScroll>
+          <div className="pf-chips ch-chips" role="group" aria-label="Season">
+            {seasons.map((s, i) => (
+              <button key={s.season} type="button" className={`pf-chip${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{s.season}</button>
+            ))}
+          </div>
+        </ChipScroll>
       </section>
 
       <section className="kb-hero ch-pick" aria-live="polite">

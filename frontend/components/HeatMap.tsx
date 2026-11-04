@@ -23,7 +23,7 @@ export function HeatMap() {
       <p className="kb-lede">How often real coaches went for it on 4th down, by yards to go and spot on the field. Darker blue means they went more. Tap a square.</p>
 
       <section className="kb-hero hm-card">
-        <div className="hm-grid" role="grid" aria-label="Go-for-it rate by spot and yards to go">
+        <div className="hm-scroll"><div className="hm-grid" role="grid" aria-label="Go-for-it rate by spot and yards to go">
           <div className="hm-corner" aria-hidden="true">to go →</div>
           {f.distances.map((d) => <div key={d} className="hm-colh" aria-hidden="true">{d === 10 ? "10+" : d}</div>)}
           {f.bands.map((b, c) => (
@@ -47,8 +47,8 @@ export function HeatMap() {
               })}
             </div>
           ))}
-        </div>
-        <div className="hm-axis">↑ toward the opponent&apos;s end zone · numbers are % that went for it</div>
+        </div></div>
+        <div className="hm-axis">↑ toward their end zone · % went for it</div>
       </section>
 
       <section className="kb-hero ch-pick" aria-live="polite">
