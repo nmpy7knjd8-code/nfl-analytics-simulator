@@ -1865,4 +1865,5 @@ body:has(.sg-app) .fd-top,body:has(.sg-app) .app-nav{display:none}
 .be-track { position: relative; display: block; height: 6px; border-radius: 3px; background: #e4e4e7; margin: 0.3rem 6px 0.15rem; }
 .be-dot { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #2563eb; border: 2px solid #fff; box-shadow: 0 0 0 1px #2563eb; transform: translate(-50%, -50%); }
 .be-need { position: absolute; top: -4px; width: 2px; height: 14px; background: #18181b; transform: translateX(-50%); }
+.be-ends { display: flex; justify-content: space-between; margin: 0 0 0.1rem; font-size: 0.8125rem; font-weight: 400; line-height: 1.2; color: #71717a; }
 .be-src, .be-empty { font-size: 0.8125rem; font-weight: 400; color: #52525b; }

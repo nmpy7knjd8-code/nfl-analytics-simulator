@@ -19,6 +19,7 @@ export function BreakEvenBar({ distance, yardline100, reveal }: { distance: numb
           {needPct !== null ? <span className="be-need" style={{ left: `${needPct}%` }} /> : null}
           <span className="be-dot" style={{ left: `${r.pct}%` }} />
         </span>
+        <span className="be-ends" aria-hidden="true"><span>0%</span><span>100%</span></span>
       </div>
     </div>
   );
