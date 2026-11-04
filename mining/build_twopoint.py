@@ -8,7 +8,11 @@ Source: nflverse play-by-play 2019-2025 (REG + POST). Shown values are real nflv
 Per-try rows ("tries") cover every try the headline counts, overtime included (one rule: 960 rows =
 two_point.tries); overtime tries never carry win chance (per_choice_win_chance is null for qtr > 4). "kicks" are real extra points in
 the same row shape, chosen by a full filter (no sampling): Q4, 5:00 or less left, margin before the try
-within 8. No win chance in either list (B1 is a no-win-chance feature; wp dropped in schema 2). Concept 2 (behind CHECKER_ENABLED=false): per-choice
+within 8. #207 removed wp at Analyte's earlier no-win-chance request; HGIC asked for it back (2026-11-03,
+append-only): wp_before / wp_after at the end of cols, for tries and kicks. wp_before = nflverse vegas_wp at the
+try snap (the trying/kicking team = "team" = posteam). wp_after = the same team's nflverse vegas win chance on the
+next later-play_id row of the game with a clock and win chance (not END GAME), else the final result (1/0/0.5):
+the swings wp_after rule (mining/build_swings.py attach_after). Overtime (qtr > 4): both null. Concept 2 (behind CHECKER_ENABLED=false): per-choice
 win chance (go for 2 vs kick the PAT) for each try is filled by ``--fill-win-chance`` from the 4th-down
 engine (see ``fill_win_chance``); overtime and late-Q4 (0:01-2:00) tries stay null.
 No EPA, xpass, play ids or betting fields. Rows are arrays under "cols" to keep the file small.
@@ -33,8 +37,11 @@ from _frozen import check_frozen as _check  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/twopoint.json"
 COLUMNS = ["game_id", "season", "week", "season_type", "posteam", "defteam", "qtr", "time", "play_type",
-           "pass_attempt", "two_point_attempt", "two_point_conv_result", "extra_point_result", "score_differential", "vegas_wp"]
-COLS = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
+           "pass_attempt", "two_point_attempt", "two_point_conv_result", "extra_point_result", "score_differential", "vegas_wp",
+           "vegas_home_wp", "home_team", "home_score", "away_score", "play_id", "desc"]
+BASE_COLS = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
+WP_COLS = ["wp_before", "wp_after"]  # appended 2026-11-03 (HGIC), see module docstring
+COLS = BASE_COLS + WP_COLS
 KICK_MAX_DIFF = 8     # margin before the try within one score
 KICK_MAX_CLOCK = 300  # seconds left in Q4 (5:00 or less)
 SUMMARY = ("two_point", "extra_point")
@@ -58,6 +65,41 @@ def _num(v: Any) -> float | None:
     return None if math.isnan(f) else f
 
 
+def _r4(v: Any) -> float | None:
+    v = _num(v)
+    return None if v is None else round(v, 4)
+
+
+def wp_pair(r: dict[str, Any]) -> list[float | None]:
+    """[wp_before, wp_after] from the trying team's view; null in overtime."""
+    if int(r["qtr"]) > 4:
+        return [None, None]
+    return [_r4(r.get("vegas_wp")), _r4(r.get("_wp_after"))]
+
+
+def attach_after(rows: list[dict[str, Any]], want: Callable[[dict[str, Any]], bool]) -> None:
+    """Set _wp_after on ``want`` rows (posteam's side): the swings wp_after rule (build_swings.attach_after)."""
+    by_game: dict[str, list[dict[str, Any]]] = {}
+    for r in rows:
+        if _num(r.get("play_id")) is not None:
+            by_game.setdefault(r["game_id"], []).append(r)
+    for g in by_game.values():
+        g.sort(key=lambda r: float(r["play_id"]))
+        for k, r in enumerate(g):
+            if not want(r) or not r.get("posteam"):
+                continue
+            home_post = None
+            for n in g[k + 1:]:
+                if (n.get("time") and _num(n.get("vegas_home_wp")) is not None
+                        and not (n.get("desc") or "").upper().startswith("END GAME")):
+                    home_post = float(n["vegas_home_wp"])
+                    break
+            if home_post is None:
+                hs, as_ = float(r["home_score"]), float(r["away_score"])
+                home_post = 1.0 if hs > as_ else 0.0 if hs < as_ else 0.5
+            r["_wp_after"] = home_post if r["posteam"] == r["home_team"] else 1.0 - home_post
+
+
 def _rate(made: int, tries: int) -> dict[str, Any]:
     return {"tries": tries, "made": made, "rate": round(made / tries, 4) if tries else 0.0}
 
@@ -69,7 +111,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
     by = lambda k: [r for r in tries if try_kind(r) == k]  # noqa: E731
     def row(r, kind, made):
         return [int(r["season"]), int(r["week"]), r["season_type"], r["game_id"], r["posteam"], r["defteam"],
-                int(r["qtr"]), r["time"], int(r["score_differential"]), kind, int(made)]
+                int(r["qtr"]), r["time"], int(r["score_differential"]), kind, int(made), *wp_pair(r)]
 
     order = lambda s: (s[0], s[1], s[3], s[6], [-int(x) for x in s[7].split(":")])  # noqa: E731
     situ = sorted((row(r, try_kind(r), ok(r)) for r in tries), key=order)
@@ -206,10 +248,27 @@ def load_override() -> set[str]:
     return set(json.loads(OVERRIDE.read_text())["tries"]) if OVERRIDE.exists() else set()
 
 
+WP_OVERRIDE = ROOT / "mining/frozen_overrides/twopoint-2026-11-03-wp-append.json"
+
+
+def wp_append_ok(old: dict[str, Any] | None, new: dict[str, Any]) -> bool:
+    """Override (narrow, append-only): new cols are exactly old cols + WP_COLS."""
+    return bool(old) and WP_OVERRIDE.exists() and old["cols"] == BASE_COLS and new["cols"] == BASE_COLS + WP_COLS
+
+
+def strip_wp(doc: dict[str, Any]) -> dict[str, Any]:
+    n = len(BASE_COLS)
+    return {**doc, "cols": doc["cols"][:n], "tries": [r[:n] for r in doc["tries"]], "kicks": [r[:n] for r in doc["kicks"]]}
+
+
 def check_frozen(old, new, allowed: set[str] | None = None):
-    """Override (narrow): the listed tries may change only kind no_play -> run/pass, and only the run/pass
+    """With the wp-append override, old rows are compared against new rows minus the appended wp columns,
+    so every existing value must stay identical.
+    Override (narrow): the listed tries may change only kind no_play -> run/pass, and only the run/pass
     sub-totals may move; two_point tries/made/rate and extra_point stay frozen."""
     allowed = load_override() if allowed is None else allowed
+    if wp_append_ok(old, new):
+        new = strip_wp(new)
     if old and allowed:
         ci = old["cols"].index("kind")
         nk = {key(dict(zip(new["cols"], r))): r for r in new["tries"]}
@@ -232,8 +291,10 @@ def check_frozen(old, new, allowed: set[str] | None = None):
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
     df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
-    df = df[(df["two_point_attempt"] == 1) | (df["play_type"] == "extra_point")]
-    return json.loads(df.to_json(orient="records"))
+    rows = json.loads(df.to_json(orient="records"))
+    is_try = lambda r: r.get("two_point_attempt") == 1 or r.get("play_type") == "extra_point"  # noqa: E731
+    attach_after(rows, is_try)
+    return [r for r in rows if is_try(r)]
 
 
 def main(argv: list[str] | None = None) -> int:
