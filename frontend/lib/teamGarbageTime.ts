@@ -7,8 +7,10 @@ import raw from "./teamGarbageTime.json";
 
 export type View = "all" | "close";
 export type Triple = [number, number, number];
-export type GtLeague = { rz: Triple; ypp: Triple; third: Triple };
-export type GtRow = { team: string; rz: Triple; ypp: Triple; third: Triple };
+/** [trips, td, rank|rate, fg, no_score]; td + fg + no_score === trips. */
+export type RzTuple = [number, number, number, number, number];
+export type GtLeague = { rz: RzTuple; ypp: Triple; third: Triple };
+export type GtRow = { team: string; rz: RzTuple; ypp: Triple; third: Triple };
 export type GtView = { league: GtLeague; teams: GtRow[] };
 export type GtFile = {
   schema_version: number; stub: boolean; source: string; season_type: string;
@@ -27,7 +29,7 @@ export function gtView(view: View, season: string, f: GtFile = GT): GtView | und
 }
 
 export type TeamStats = {
-  rz: { trips: number; td: number; rate: number; rank: number; league: number };
+  rz: { trips: number; td: number; fg: number; noScore: number; rate: number; rank: number; league: number };
   ypp: { plays: number; yards: number; rate: number; rank: number; league: number };
   third: { att: number; conv: number; rate: number; rank: number; league: number };
   teams: number;
@@ -38,7 +40,7 @@ export function teamStats(abbr: string, v: GtView): TeamStats | undefined {
   if (!r) return undefined;
   const L = v.league;
   return {
-    rz: { trips: r.rz[0], td: r.rz[1], rate: r.rz[1] / r.rz[0], rank: r.rz[2], league: L.rz[1] / L.rz[0] },
+    rz: { trips: r.rz[0], td: r.rz[1], fg: r.rz[3], noScore: r.rz[4], rate: r.rz[1] / r.rz[0], rank: r.rz[2], league: L.rz[1] / L.rz[0] },
     ypp: { plays: r.ypp[0], yards: r.ypp[1], rate: r.ypp[1] / r.ypp[0], rank: r.ypp[2], league: L.ypp[1] / L.ypp[0] },
     third: { att: r.third[0], conv: r.third[1], rate: r.third[1] / r.third[0], rank: r.third[2], league: L.third[1] / L.third[0] },
     teams: v.teams.length,
