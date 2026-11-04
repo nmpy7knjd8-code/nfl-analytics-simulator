@@ -25,6 +25,7 @@ SRC = ROOT / "data/site/fakes.json"
 OUT = ROOT / "frontend/lib/site/fakesText.json"
 TEAMS_TS = ROOT / "frontend/lib/teams.ts"
 NAMES = ROOT / "data/site/player_names.json"
+GAME_NAMES = ROOT / "data/site/player_names_game.json"  # "game_id|short" -> gsis for players linked elsewhere in the game
 
 
 def load_nicknames() -> dict[str, str]:
@@ -69,8 +70,40 @@ def full_names(s: str, short_to_id: dict[str, str], names: dict[str, str]) -> st
     return re.sub(r"\b(Jr|Sr|[A-Z])\.\.(?=\s|$)", r"\1.", s)
 
 
+TOKEN = r"[A-Z][a-z]?\.(?:[A-Z]\.)*(?:Van )?[A-Z][A-Za-z'-]+(?: (?:Jr|Sr)\.| I{2,3}\b)?"
+_DROP = [  # unresolved short names: drop the name, never guess one
+    (re.compile(rf"(downed|recovered|tackled|fair catch|out of bounds) by {TOKEN}"), r"\1"),
+    (re.compile(rf"(?:^|(?<=\. )|(?<=, )){TOKEN} was injured during the play\.\s*"), ""),
+    (re.compile(rf"Direct snap to {TOKEN}\.\s*"), ""),
+    (re.compile(rf"Penalty on {TOKEN}, "), "Penalty, "),
+]
+
+
+def drop_unresolved(s: str) -> str:
+    """'downed by V.Biegel.' -> 'downed.' when no nflverse id links V.Biegel."""
+    for rx, rep in _DROP:
+        s = rx.sub(rep, s)
+    return s.strip()
+
+
+def after_reversal(s: str) -> str:
+    """Replay-reversed plays: keep only the ruling that stands (as the games feed does)."""
+    i = s.rfind("the play was reversed.")
+    return s[i + len("the play was reversed."):].strip() if i >= 0 else s
+
+
+def capitalize(s: str) -> str:
+    """Upper-case each sentence start ('He is Out. penalty on' -> 'Penalty on'); not after Jr./Sr./initials."""
+    s = s[:1].upper() + s[1:]
+    return re.sub(r"(?<!\bJr)(?<!\bSr)(?<!\b[A-Z])\. ([a-z])", lambda m: ". " + m.group(1).upper(), s)
+
+
 def load_names() -> dict:
-    return json.loads(NAMES.read_text()) if NAMES.exists() else {"names": {}, "plays": {}}
+    r = json.loads(NAMES.read_text()) if NAMES.exists() else {"names": {}, "plays": {}}
+    if GAME_NAMES.exists():
+        g = json.loads(GAME_NAMES.read_text())
+        r = {**r, "names": {**g["names"], **r["names"]}, "game": g["plays"]}
+    return r
 
 
 def build(fakes: dict, roster: dict | None = None) -> dict[str, str]:
@@ -78,7 +111,11 @@ def build(fakes: dict, roster: dict | None = None) -> dict[str, str]:
     out = {}
     for p in fakes["plays"] + fakes["real_punts"]:
         k = key(p)
-        out[k] = full_names(plain_names(plain_english(clean_desc(p["desc"]))), roster["plays"].get(k, {}), roster["names"])
+        g = p["game_id"] + "|"
+        ids = {short[len(g):]: i for short, i in roster.get("game", {}).items() if short.startswith(g)}
+        ids.update(roster["plays"].get(k, {}))
+        s = after_reversal(plain_names(plain_english(clean_desc(p["desc"]))))
+        out[k] = capitalize(drop_unresolved(full_names(s, ids, roster["names"])))
     return out
 
 
