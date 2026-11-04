@@ -46,3 +46,23 @@ def test_fake_plays_use_full_names_and_fakes_json_untouched():
     assert len(roster["plays"]) == len(fakes["plays"]) == 162
     assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 162
     assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("Direct snap to A.Levine.")
+
+
+def test_full_names_collapses_doubled_period_after_suffix():
+    s = mod.full_names("pass incomplete short left to S.Franklin. Next.", {"S.Franklin": "1"}, {"1": "Sam Franklin Jr."})
+    assert s == "pass incomplete short left to Sam Franklin Jr. Next."
+    assert mod.full_names("to S.Franklin.", {"S.Franklin": "1"}, {"1": "Sam Franklin Jr."}) == "to Sam Franklin Jr."
+
+
+def test_no_sidecar_value_has_doubled_period():
+    out = json.loads(mod.OUT.read_text())
+    assert not [v for v in out.values() if ".." in v]
+
+
+def test_real_punts_use_the_same_full_name_swap():
+    fakes = json.loads(mod.SRC.read_text())
+    p = fakes["real_punts"][0]
+    k = mod.key(p)
+    out = mod.build(fakes, {"names": {"g": "Matt Bosher"}, "plays": {k: {"M.Bosher": "g"}}})
+    assert "Matt Bosher" in out[k] and "M.Bosher" not in out[k]
+    assert "M.Bosher" in mod.build(fakes, {"names": {}, "plays": {}})[k]
