@@ -51,3 +51,17 @@ test("wording stays plain", () => {
   assert.equal(yardsVsLeague(5.38, 5.49), "0.1 yards fewer than the league");
   assert.equal(yardsVsLeague(5.5, 5.49), "Same as the league");
 });
+
+test("rz fg + no points: td + fg + no_score === trips everywhere; league = team sums", () => {
+  for (const s of ["all", ...GT.season_list.map(String)]) for (const v of ["all", "close"] as const) {
+    const V = gtView(v, s)!;
+    for (const r of [...V.teams.map((t) => t.rz), V.league.rz]) {
+      assert.equal(r.length, 5, `${s}/${v}`);
+      assert.equal(r[1] + r[3] + r[4], r[0], `${s}/${v}`);
+    }
+    assert.equal(V.league.rz[3], V.teams.reduce((a, t) => a + t.rz[3], 0));
+    assert.equal(V.league.rz[4], V.teams.reduce((a, t) => a + t.rz[4], 0));
+  }
+  const k = teamStats("KC", GT.close)!;
+  assert.equal(k.rz.td + k.rz.fg + k.rz.noScore, k.rz.trips);
+});
