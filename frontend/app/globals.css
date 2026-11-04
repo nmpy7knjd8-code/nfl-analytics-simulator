@@ -1856,3 +1856,6 @@ body { font-variant-numeric: tabular-nums; }
 .mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
 .mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
 .wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
+/* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in
+   AppNav's path check, so the static HTML and the client render match on 404s under /team/ etc. (React #418). */
+body:has(.sg-app) .fd-top,body:has(.sg-app) .app-nav{display:none}
