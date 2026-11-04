@@ -5,7 +5,8 @@ Source: nflverse play-by-play 2019-2025 (REG + POST). Shown values are real nflv
   * two-point tries: two_point_attempt == 1 -> 960 tries, 456 success (47.5%); run 266, pass 681,
     13 "no_play" rows that still carry a result (counted in the overall rate only);
   * extra points: play_type == "extra_point", extra_point_result == "good" -> 9,119 tries.
-Per-try rows ("tries") are regulation only (qtr 5 dropped: 3 tries). "kicks" are real extra points in
+Per-try rows ("tries") cover every try the headline counts, overtime included (one rule: 960 rows =
+two_point.tries); overtime tries never carry win chance (per_choice_win_chance is null for qtr > 4). "kicks" are real extra points in
 the same row shape, chosen by a full filter (no sampling): Q4, 5:00 or less left, margin before the try
 within 8. No win chance in either list (B1 is a no-win-chance feature; wp dropped in schema 2). Concept 2 (behind CHECKER_ENABLED=false): per-choice
 win chance (go for 2 vs kick the PAT) for each try is filled by ``--fill-win-chance`` from the 4th-down
@@ -61,7 +62,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 int(r["qtr"]), r["time"], int(r["score_differential"]), kind, int(made)]
 
     order = lambda s: (s[0], s[1], s[3], s[6], [-int(x) for x in s[7].split(":")])  # noqa: E731
-    situ = sorted((row(r, r["play_type"], ok(r)) for r in tries if int(r["qtr"]) <= 4), key=order)
+    situ = sorted((row(r, r["play_type"], ok(r)) for r in tries), key=order)
     kicks = sorted((row(r, "extra_point", r.get("extra_point_result") == "good") for r in xps if is_close_late_kick(r)),
                    key=order)
     return {
@@ -170,8 +171,27 @@ def key(r: dict[str, Any]) -> tuple:
     return (r["game_id"], r["qtr"], r["clock"], r["team"])
 
 
+def kick_key(r: dict[str, Any]) -> tuple:
+    """Kicks need ``made`` too: 2020_12_CAR_MIN has two MIN extra points at Q4 00:46 (a blocked one wiped
+    out by an offside penalty, then the good re-kick), which collided under ``key``."""
+    return (*key(r), r["made"])
+
+
+def carry_win_chance(old: dict[str, Any] | None, new: dict[str, Any]) -> None:
+    """Keep the published per-choice win chance; tries without an entry (overtime) get null, never a value."""
+    w = (old or {}).get("per_choice_win_chance")
+    if not w:
+        return
+    by = dict(w["by_try"])
+    for r in new["tries"]:
+        t = dict(zip(new["cols"], r))
+        by.setdefault(wc_key(t), None)
+        assert int(t["qtr"]) <= 4 or by[wc_key(t)] is None
+    new["per_choice_win_chance"] = {**w, "by_try": by}
+
+
 def check_frozen(old, new):
-    return _check(old, new, key, "tries", SUMMARY) + _check(old, new, key, "kicks")
+    return _check(old, new, key, "tries", SUMMARY) + _check(old, new, kick_key, "kicks")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -203,6 +223,7 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("PBP_PARQUET required")
     new = build(load_rows(a.pbp))
     old = json.loads(out.read_text()) if out.exists() else None
+    carry_win_chance(old, new)
     bad = check_frozen(old, new)
     if bad:
         print("FAIL: published two-point data would change: " + "; ".join(bad[:10]), file=sys.stderr)
