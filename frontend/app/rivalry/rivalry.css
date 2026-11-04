@@ -25,3 +25,4 @@
 .rv .rv-more a{color:var(--sg-b);font-weight:700}
 .rv .rv-nb{white-space:nowrap;display:inline-block}
 .rv .rv-pts{margin-top:-10px}
+.rv .rv-more a{padding:12px 0} /* QA V3: 44px tap height without moving the layout */

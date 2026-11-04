@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { teamNickname } from "./teams";
 import raw from "./site/fakes.json";
-import { buildRound, isCorrect, plainDesc, ratesText, situationText, whyText, ROUND_SIZE, type FakesFile } from "./fakePunt";
+import { buildRound, isCorrect, matchupText, plainDesc, playText, ratesText, situationText, whyText, ROUND_SIZE, type FakesFile } from "./fakePunt";
 
 const file = raw as unknown as FakesFile;
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -68,4 +69,26 @@ test("plain text: no clock prefix, formation tag or jersey numbers; real rates s
 test("fan copy: no betting words, EPA or WPA", () => {
   const src = readFileSync(resolve(HERE, "fakePunt.ts"), "utf8") + readFileSync(resolve(HERE, "../components/FakePunt.tsx"), "utf8");
   assert.ok(!/\b(EPA|WPA|odds|spread|vegas|bet)\b/i.test(src.replace(/^\s*\/\/.*$/gm, "")));
+});
+
+test("N4: answer text runs through the feed cleaner, never raw nflverse desc", () => {
+  const all = [...file.plays, ...file.real_punts];
+  for (const p of all) {
+    for (const s of [playText(p), whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" })]) {
+      assert.ok(!/\(\d{0,2}:\d{2}\)|Center-|Holder-|\b\d{1,2}-[A-Z]|\(Punt formation\)/i.test(s), s);
+    }
+  }
+  const bailey = all.find((p) => /J\.Bailey punts/.test(p.desc) && /Center-/.test(p.desc))!;
+  assert.ok(bailey, "fixture play");
+  assert.ok(!playText(bailey).includes("Cardona") && !playText(bailey).includes("Center"), playText(bailey));
+  assert.match(playText(bailey), /^J\.Bailey punts \d+ yards/);
+});
+
+test("N4: setup line and matchup use team names, not codes", () => {
+  const p = file.plays[0];
+  assert.equal(matchupText(p), "Ravens vs Dolphins");
+  assert.match(situationText(p), /^The Ravens are up 35–3, 4th & 1 at their own 30/);
+  const near = file.plays.find((x) => x.yardline_100 < 50)!;
+  assert.match(situationText(near), new RegExp(`at the ${teamNickname(near.opp)} ${near.yardline_100},`));
+  for (const x of [...file.plays, ...file.real_punts]) assert.ok(!/\b[A-Z]{2,3}\b/.test(situationText(x) + matchupText(x)), situationText(x));
 });
