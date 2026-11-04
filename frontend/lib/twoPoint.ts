@@ -122,11 +122,9 @@ export function resultText(t: Try): string {
 }
 export function leagueMatchText(file: TwoPointFile, t: Try): string {
   const r = leagueRateFor(file, t);
-  const usual = t.made === r.made * 2 >= r.tries;
   const kind = KIND_PLURAL[t.kind];
-  return usual
-    ? `That's the usual result: league ${kind} are good ${pct1(r)}.`
-    : `That's against the league rate: ${kind} are good ${pct1(r)}.`;
+  const most = r.made * 2 >= r.tries ? `Most ${kind} are good.` : `Most ${kind} fail.`;
+  return `${most} The league converts ${pct1(r)}.`;
 }
 
 /** Button rate label: the league-wide rate, not this team's chance. */
