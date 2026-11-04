@@ -1,7 +1,4 @@
 /* /fourth-down in the Fourth & Daily design: white card on black (.sg-app), oval outlined buttons, one blue primary. */
-/* The layout's old top bar and bottom tabs stay hidden here until /fourth-down joins AppNav's game-route list (Integration). */
-.app-shell:has(.fd4) > header, .app-shell:has(.fd4) > nav { display: none !important; }
-.app-stage:has(.fd4) { padding-bottom: 0 !important; }
 .fd4 { gap: 8px; }
 .fd4-h1 { font-size: 24px; line-height: 1.15; font-weight: 800; margin: 0; color: #000; }
 .fd4-sub { font-size: 16px; font-weight: 500; color: var(--sg-g); max-width: 320px; }
