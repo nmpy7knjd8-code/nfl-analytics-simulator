@@ -95,7 +95,7 @@ export function FourthDownChecker() {
             onDown={() => set({ distance: clamp(sit.distance - 1, MIN_DISTANCE, MAX_DISTANCE) })}
             onUp={() => set({ distance: clamp(sit.distance + 1, MIN_DISTANCE, MAX_DISTANCE) })}
             downOff={sit.distance <= MIN_DISTANCE} upOff={sit.distance >= MAX_DISTANCE} />
-          <Stepper label="Ball on" value={fieldText(sit.yardline_100)}
+          <Stepper label="Ball on" value={sit.yardline_100 === 50 ? "the 50" : fieldText(sit.yardline_100)}
             onDown={() => set({ yardline_100: clamp(sit.yardline_100 + 1, 1, 99) })}
             onUp={() => set({ yardline_100: clamp(sit.yardline_100 - 1, 1, 99) })}
             downOff={sit.yardline_100 >= 99} upOff={sit.yardline_100 <= 1} />
