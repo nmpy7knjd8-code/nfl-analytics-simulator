@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { storyHref } from "../../../lib/stories/gameStory";
 import { notFound } from "next/navigation";
 import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
@@ -67,7 +68,7 @@ export default async function RivalryPage({ params }: Props) {
                 {m.story ? <span className="rv-go">Game story →</span> : null}
               </>
             );
-            return <li key={m.id}>{m.story ? <Link href={`/games/${m.id}/`} className="rv-row">{body}</Link> : <div className="rv-row">{body}</div>}</li>;
+            return <li key={m.id}>{m.story ? <Link href={storyHref(m.id)} className="rv-row">{body}</Link> : <div className="rv-row">{body}</div>}</li>;
           })}
         </ol>
         <p className="rv-note">

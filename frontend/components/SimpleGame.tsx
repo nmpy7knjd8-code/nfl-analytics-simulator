@@ -23,6 +23,7 @@ import { CardSkeletons, PlayedToday } from "./EmptyState";
 import { playedToday, streakLine } from "../lib/emptyState";
 import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
+import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -264,6 +265,7 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
         <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
+        <BreakEvenBar distance={it.situation.distance} yardline100={it.situation.yardline_100} reveal={it.reveal} />
       </div>
       <FieldView item={it} outcome={out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null }} />
       <div className="sg-btns">

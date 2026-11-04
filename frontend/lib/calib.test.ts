@@ -5,11 +5,11 @@ import { calib } from "./calib";
 
 test("verified buckets", () => {
   const b = (lo: number) => calib.buckets.find((x) => x.lo === lo)!;
-  assert.deepEqual([b(0).predicted, b(0).actual, b(0).plays], [1.5, 2.1, 29472]);
-  assert.deepEqual([b(5).predicted, b(5).actual, b(5).plays], [7.4, 8.9, 13578]);
+  assert.deepEqual([b(0).predicted, b(0).actual, b(0).moments], [1.5, 2.1, 29472]);
+  assert.deepEqual([b(5).predicted, b(5).actual, b(5).moments], [7.4, 8.9, 13578]);
   assert.deepEqual([b(40).predicted, b(40).actual], [45.0, 42.9]);
   assert.deepEqual([b(95).predicted, b(95).actual], [98.5, 98.5]);
-  assert.equal(calib.buckets.reduce((n, x) => n + x.plays, 0), 338914);
+  assert.equal(calib.buckets.reduce((n, x) => n + x.moments, 0), 338914);
   assert.equal(calib.model, "nflverse");
   assert.deepEqual([b(50).predicted, b(50).actual], [55.1, 53.6]);
 });

@@ -27,3 +27,14 @@ test("chip rows on /outcomes, /calibration, /era scroll the selected chip into v
   }
   assert.match(readFileSync(new URL("../components/ChipScroll.tsx", import.meta.url), "utf8"), /MutationObserver/);
 });
+
+test("chip rows start at the left edge and scroll only enough to show the selected chip", () => {
+  const src = readFileSync(new URL("../components/ChipScroll.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(src, /clientWidth - on\.offsetWidth\) \/ 2/, "no centering");
+  assert.match(src, /Math\.max\(0, start - pad\)/);
+  assert.doesNotMatch(rule(".pf-chips"), /scroll-snap-type/, "snap would pull a minimal scroll back");
+});
+
+test("/heatmap corner and yard labels stay pinned over the scrolled squares", () => {
+  for (const sel of [".hm-corner", ".hm-rowh"]) assert.match(rule(sel), /position:sticky;left:-6px.*background:#fff/);
+});

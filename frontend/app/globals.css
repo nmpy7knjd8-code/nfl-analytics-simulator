@@ -1815,9 +1815,9 @@ body { font-variant-numeric: tabular-nums; }
 .hm-scroll{overflow-x:auto;scrollbar-width:none;margin:0 -6px;padding:0 6px}.hm-scroll::-webkit-scrollbar{display:none}
 .hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(44px,1fr));gap:2px}
 .hm-row{display:contents}
-.hm-corner{font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
+.hm-corner{position:sticky;left:-6px;z-index:2;background:#fff;box-shadow:-6px 0 0 #fff;font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
 .hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
-.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:0;background:#fff;z-index:1}
+.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:-6px;background:#fff;box-shadow:-6px 0 0 #fff;z-index:1}
 .hm-cell{min-width:44px;min-height:44px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
 .hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
 .hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
@@ -1859,3 +1859,10 @@ body { font-variant-numeric: tabular-nums; }
 /* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in
    AppNav's path check, so the static HTML and the client render match on 404s under /team/ etc. (React #418). */
 body:has(.sg-app) .fd-top,body:has(.sg-app) .app-nav{display:none}
+
+/* A1 break-even bar (Daily answer row) */
+.be { display: grid; gap: 0.2rem; }
+.be-track { position: relative; display: block; height: 6px; border-radius: 3px; background: #e4e4e7; margin: 0.3rem 6px 0.15rem; }
+.be-dot { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #2563eb; border: 2px solid #fff; box-shadow: 0 0 0 1px #2563eb; transform: translate(-50%, -50%); }
+.be-need { position: absolute; top: -4px; width: 2px; height: 14px; background: #18181b; transform: translateX(-50%); }
+.be-src, .be-empty { font-size: 0.8125rem; font-weight: 400; color: #52525b; }
