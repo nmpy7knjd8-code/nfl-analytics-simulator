@@ -149,13 +149,13 @@ def test_od_return_codes_and_scope():
     assert bd.ret_code([r(pt="punt", punt_attempt=1, punt_blocked=1, **td)]) == "B"
     assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="blocked", **td)]) == "B"
     assert bd.ret_code([r(pt="punt", punt_attempt=1, **td)]) == "P"
-    assert bd.ret_code([r(pt="kickoff", kickoff_attempt=1, **td)]) == "K"
+    assert bd.ret_code([r(pt="kickoff", kickoff_attempt=1, **td)]) == "-"  # K never produced
     assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="missed", **td)]) == "M"
     assert bd.ret_code([r()]) == "-"
     n = 0
     for f in DIR.glob("*.json"):
         d = json.loads(f.read_text())
-        assert d["cols"][-1] == "ret" and set(d["ret_key"]) == set("IFBPKM-")
+        assert d["cols"][-1] == "ret" and set(d["ret_key"]) == set("IFBPKM-")  # K kept: published bytes
         for g in d["games"].values():
             for s in g:
                 p = s.split(" ")

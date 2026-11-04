@@ -6,8 +6,8 @@ export type DrivesFile = {
   games: Record<string, string[]>;
 };
 export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[]; ret?: RetCode };
-/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, K kickoff return, M missed FG return, - other. */
-export type RetCode = "I" | "F" | "B" | "P" | "K" | "M" | "-";
+/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, M missed FG return, - other. (Data ret_key also lists K, kickoff return, but no drive ever has it.) */
+export type RetCode = "I" | "F" | "B" | "P" | "M" | "-";
 
 export const TILE_ORDER: TileCode[] = ["T", "F", "G", "N", "X", "K", "Q"];
 /** Fan words for each tile; no model numbers. */
