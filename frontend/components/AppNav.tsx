@@ -17,10 +17,10 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 
 /** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
  * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
- * "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games", "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
+ * "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games", "/fourth-down", "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
-  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games"]);
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games", "/swing", "/fourth-down"]);
   // Prefix routes "/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/" are NOT hidden here: one exported
   // 404.html serves every unknown URL, so a path-prefix check made the client render differ from the static
   // HTML on e.g. /team/ZZZ/ (React #418). Their old bars are hidden in CSS instead (globals.css: body:has(.sg-app)),

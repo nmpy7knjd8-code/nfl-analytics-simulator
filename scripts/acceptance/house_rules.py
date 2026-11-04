@@ -128,6 +128,10 @@ def external_images(text: str) -> list[str]:
     return out
 
 
+# Win-chance swings are shown in percent; "N points" reads like game points (HGIC copy fix, Nov 3 2026).
+SWING_POINTS = re.compile(r"Chance to win swung |-point swing toward|swung win chances|win chances? \{swing\} points|play swung win chances")
+
+
 def main() -> int:
     data = json.load(open(sys.argv[1]))
     site = sys.argv[2]
@@ -144,6 +148,14 @@ def main() -> int:
     for p in data["plays"] + data["wpPoints"]:
         if p.get("description"):
             scan(p["description"], f"play {p['game_id']}#{p.get('play_index')}")
+
+    # Client bundles: old "N points" swing copy must not ship.
+    for root, _, files in os.walk(site):
+        for f in files:
+            if f.endswith(".js"):
+                m = SWING_POINTS.search(open(os.path.join(root, f), encoding="utf-8", errors="ignore").read())
+                if m:
+                    fails.append(f"copy: {os.path.relpath(os.path.join(root, f), site)} has swing-in-points text {m.group(0)!r}")
 
     # Built pages (visible text only; redirect stubs skipped).
     allowed = manifest_files(site)
