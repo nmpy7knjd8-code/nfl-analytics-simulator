@@ -4,8 +4,9 @@ Runs each raw nflverse desc through the feed's play-text cleaner (backend nfl_si
 clean_desc + plain_english, the same pass behind games display_text fallbacks), so /fake-punt never
 shows "(:07) J.Bailey punts ... Center-J.Cardona". Then plain_names() drops "NYJ-" prefixes before
 player names and turns field spots like "NYG 44" into "the Giants 44" (nicknames from
-frontend/lib/teams.ts). Player names stay short (M.Hayball): fakes.json has no player ids and the repo
-has no local roster file. A sidecar keeps fakes.json frozen byte for byte.
+frontend/lib/teams.ts). Last, full_names() swaps short names (M.Hayball) for full ones (Michael Hayball)
+using data/site/player_names.json (plays keyed game_id|qtr|clock|team -> short name -> gsis_id, names
+gsis_id -> display name); names with no match keep the short form. A sidecar keeps fakes.json frozen byte for byte.
 
 Usage: python mining/build_fakes_text.py [--check]
 """
@@ -23,6 +24,7 @@ from nfl_sim.play_text import clean_desc, plain_english  # noqa: E402
 SRC = ROOT / "data/site/fakes.json"
 OUT = ROOT / "frontend/lib/site/fakesText.json"
 TEAMS_TS = ROOT / "frontend/lib/teams.ts"
+NAMES = ROOT / "data/site/player_names.json"
 
 
 def load_nicknames() -> dict[str, str]:
@@ -50,12 +52,30 @@ def key(p: dict) -> str:
     return f"{p['game_id']}|{p['qtr']}|{p['clock']}|{p['team']}"
 
 
-def build(fakes: dict) -> dict[str, str]:
-    return {key(p): plain_names(plain_english(clean_desc(p["desc"]))) for p in fakes["plays"] + fakes["real_punts"]}
+def full_names(s: str, short_to_id: dict[str, str], names: dict[str, str]) -> str:
+    """'punts by A.Levine' -> 'punts by Anthony Levine' when the play links A.Levine to a gsis_id with a name."""
+    pairs = {short: names[g] for short, g in short_to_id.items() if names.get(g)}
+    if not pairs:
+        return s
+    alt = "|".join(re.escape(k) for k in sorted(pairs, key=len, reverse=True))
+    return re.sub(rf"(?<![\w.'-])(?:{alt})(?![\w'-])", lambda m: pairs[m.group(0)], s)
 
 
-def render(fakes: dict) -> str:
-    return json.dumps(build(fakes), separators=(",", ":"), ensure_ascii=False, sort_keys=True) + "\n"
+def load_names() -> dict:
+    return json.loads(NAMES.read_text()) if NAMES.exists() else {"names": {}, "plays": {}}
+
+
+def build(fakes: dict, roster: dict | None = None) -> dict[str, str]:
+    roster = load_names() if roster is None else roster
+    out = {}
+    for p in fakes["plays"] + fakes["real_punts"]:
+        k = key(p)
+        out[k] = full_names(plain_names(plain_english(clean_desc(p["desc"]))), roster["plays"].get(k, {}), roster["names"])
+    return out
+
+
+def render(fakes: dict, roster: dict | None = None) -> str:
+    return json.dumps(build(fakes, roster), separators=(",", ":"), ensure_ascii=False, sort_keys=True) + "\n"
 
 
 def main(argv: list[str]) -> int:
