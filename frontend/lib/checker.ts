@@ -219,10 +219,10 @@ const VERB: Record<string, string> = { go: "going for it", fg: "kicking", punt: 
 const LABEL: Record<string, string> = { go: "Go", fg: "Kick", punt: "Punt" };
 const pct = (v: number) => (v * 100).toFixed(1);
 
-/** "Go: 30.7% chance to win, 6.1 more than kicking (24.6%)". The gap is taken from the
+/** "Go: 30.7% chance to win, 6.1% more than kicking (24.6%)". The gap is taken from the
  * rounded shown values so it always equals the subtraction a reader would do. */
 export function whyText(best: [string, number], next: [string, number]): string {
   const a = pct(best[1]), b = pct(next[1]);
   const gap = ((Math.round(Number(a) * 10) - Math.round(Number(b) * 10)) / 10).toFixed(1);
-  return `${LABEL[best[0]]}: ${a}% chance to win, ${gap} more than ${VERB[next[0]]} (${b}%)`;
+  return `${LABEL[best[0]]}: ${a}% chance to win, ${gap}% more than ${VERB[next[0]]} (${b}%)`;
 }

@@ -91,13 +91,13 @@ test("checker header score wording", async () => {
 
 test("Why line: the gap always equals the shown rounded subtraction", async () => {
   const { whyText } = await import("./checker");
-  assert.equal(whyText(["go", 0.30694], ["fg", 0.24646]), "Go: 30.7% chance to win, 6.1 more than kicking (24.6%)");
-  assert.equal(whyText(["punt", 0.5], ["go", 0.4]), "Punt: 50.0% chance to win, 10.0 more than going for it (40.0%)");
+  assert.equal(whyText(["go", 0.30694], ["fg", 0.24646]), "Go: 30.7% chance to win, 6.1% more than kicking (24.6%)");
+  assert.equal(whyText(["punt", 0.5], ["go", 0.4]), "Punt: 50.0% chance to win, 10.0% more than going for it (40.0%)");
   let seed = 7;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   for (let i = 0; i < 5000; i++) {
     const hi = rnd(), lo = hi * rnd();
-    const m = /: ([\d.]+)% chance to win, ([\d.]+) more than \w+(?: \w+ \w+)? \(([\d.]+)%\)$/.exec(whyText(["go", hi], ["fg", lo]))!;
+    const m = /: ([\d.]+)% chance to win, ([\d.]+)% more than \w+(?: \w+ \w+)? \(([\d.]+)%\)$/.exec(whyText(["go", hi], ["fg", lo]))!;
     assert.ok(m, whyText(["go", hi], ["fg", lo]));
     assert.equal(Math.round(Number(m[1]) * 10) - Math.round(Number(m[3]) * 10), Math.round(Number(m[2]) * 10));
   }
