@@ -21,7 +21,7 @@ export default function TeamsIndex() {
           {ABBRS.map((a) => (
             <li key={a}>
               <Link className="ix-card" href={`/team/${a}/`}>
-                <TeamLogo abbr={a} size={28} />
+                <TeamLogo abbr={a} size={24} />
                 <b>{teamNickname(a)}</b>
               </Link>
             </li>
