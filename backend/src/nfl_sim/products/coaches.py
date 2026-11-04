@@ -37,6 +37,30 @@ from nfl_sim.products.meta import provenance, write_json
 MIN_CALLS_FOR_GRADE = 20
 TOP_N = 5
 
+# OVERRIDE (pinned 2026-11-03, approved by Head Grokka in Charge, option 1): the published
+# coaches files (#170) were built when the engine offered a punt only from yardline_100 >= 36.
+# The shared engine now offers it from >= 35 (engine.PUNT_MIN_YARDLINE_100). To keep every
+# published coaches value unchanged, the coaches build re-scores 4th downs on the 35 with the
+# old cutoff. Remove only with an approved republish of the coaches files.
+COACHES_PUNT_MIN_YARDLINE_100 = 36
+
+
+def pin_punt_cutoff(table: pd.DataFrame) -> pd.DataFrame:
+    """Re-score rows between the engine's punt cutoff and the coaches cutoff with the pinned cutoff."""
+    from nfl_sim.products import engine as eng_mod
+    t = table.copy()
+    m = (t["yardline_100"] >= eng_mod.PUNT_MIN_YARDLINE_100) & (t["yardline_100"] < COACHES_PUNT_MIN_YARDLINE_100)
+    if not m.any():
+        return t
+    saved = eng_mod.PUNT_MIN_YARDLINE_100
+    eng_mod.PUNT_MIN_YARDLINE_100 = COACHES_PUNT_MIN_YARDLINE_100
+    try:
+        fourth_downs._init()
+        t.loc[m, "engine"] = [fourth_downs._eval(r) for r in t[m].to_dict("records")]
+    finally:
+        eng_mod.PUNT_MIN_YARDLINE_100 = saved
+    return t[t["engine"].notna()]
+
 
 def _clock(r) -> str:
     """Game clock at the snap, "M:SS" left in the quarter (records are keyed by game_id + qtr + clock)."""
@@ -143,7 +167,7 @@ def coach_rows(t: pd.DataFrame) -> list[dict]:
 
 
 def build() -> dict[int, int]:
-    table = fourth_downs.load()
+    table = pin_punt_cutoff(fourth_downs.load())
     wpa = pd.concat([fourth_downs.load_pbp(s, ["game_id", "play_id", "wpa"]) for s in fourth_downs.SEASONS])
     table = table.merge(wpa.drop_duplicates(["game_id", "play_id"]), on=["game_id", "play_id"], how="left")
     t = calls_frame(table)
