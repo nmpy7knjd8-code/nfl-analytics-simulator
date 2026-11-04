@@ -8,14 +8,15 @@ import {
   type CheckSituation, type FourthDownGrid,
 } from "../lib/checker";
 import { gameText } from "../lib/dailyView";
+import { storyHref } from "../lib/stories/gameStory";
 import { Header, Trademark } from "./SimpleGame";
 
 const NAME: Record<QuizChoice, string> = { go: "Go for it", fg: "Kick the field goal", punt: "Punt" };
 const SHORT: Record<QuizChoice, string> = { go: "Go", fg: "Kick", punt: "Punt" };
 /** Daily item ids are "{game_id}-{play_id}". */
-function storyHref(gameId: string | undefined | null, id: string): string | null {
+function realStoryHref(gameId: string | undefined | null, id: string): string | null {
   const m = /-(\d+)$/.exec(id);
-  return gameId && m ? `/games/${gameId}/#play-${m[1]}` : null;
+  return gameId && m ? storyHref(gameId, Number(m[1])) : null;
 }
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -70,7 +71,7 @@ export function FourthDownChecker() {
   const fgOpt = result?.options.find((o) => o.id === "fg");
   const fgOff = fgOpt?.disabled && fgOpt.note ? fgOpt.note.replace(/^Too far: /, "a ").replace("-yd kick", "-yd try") : null;
   const real = result?.source.kind === "play" ? result.source.item : null;
-  const realHref = real ? storyHref(real.source.game_id, real.id) : null;
+  const realHref = real ? realStoryHref(real.source.game_id, real.id) : null;
 
   const status = (body: React.ReactNode, alert = false) => (
     <div className="sg-app fd4">

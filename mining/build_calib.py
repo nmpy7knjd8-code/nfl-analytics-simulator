@@ -77,7 +77,7 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
                   "expectations (home team), regulation only; ties and 2022_17_BUF_CIN left out",
         "builtAt": "",
         "dataThrough": last[:10],
-        "buckets": [{"lo": EDGES[i], "hi": EDGES[i + 1], "plays": n[i],
+        "buckets": [{"lo": EDGES[i], "hi": EDGES[i + 1], "moments": n[i],
                      "predicted": round(100 * wp_sum[i] / n[i], 1) if n[i] else None,
                      "actual": round(100 * won[i] / n[i], 1) if n[i] else None} for i in range(len(n))],
     }
@@ -86,7 +86,10 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if not old or old.get("schema") != new["schema"] or old.get("source") != new["source"]:
         return []  # a new season span (or schema) replaces the buckets
-    return [f"{b['lo']}-{b['hi']}" for b, nb in zip(old["buckets"], new["buckets"]) if b != nb] + (
+    # "plays" was renamed "moments" (QA D3: buckets count every nflverse row incl. timeouts and END GAME,
+    # not only snaps); the rename alone is not a value change.
+    ren = lambda b: {("moments" if k == "plays" else k): v for k, v in b.items()}  # noqa: E731
+    return [f"{b['lo']}-{b['hi']}" for b, nb in zip(old["buckets"], new["buckets"]) if ren(b) != nb] + (
         ["buckets"] if len(old["buckets"]) != len(new["buckets"]) else [])
 
 
@@ -121,7 +124,7 @@ def main(argv: list[str] | None = None) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     new = stamp(new, old)
     out.write_text(dumps(new))
-    print(f"wrote {out} ({out.stat().st_size} bytes, {sum(b['plays'] for b in new['buckets'])} plays)")
+    print(f"wrote {out} ({out.stat().st_size} bytes, {sum(b['moments'] for b in new['buckets'])} moments)")
     return 0
 
 

@@ -92,10 +92,10 @@ def test_calib_filter_regulation_vegas_no_ties():
 def test_calib_values_recomputed_from_nflverse_rows():
     out = bc.build(CAL_ROWS)
     kept = [r for r in CAL_ROWS if bc.keep(r)]
-    assert sum(b["plays"] for b in out["buckets"]) == len(kept)
+    assert sum(b["moments"] for b in out["buckets"]) == len(kept)
     for i, b in enumerate(out["buckets"]):
         rs = [r for r in kept if bc.bucket(100 * r["vegas_home_wp"]) == i]
-        assert b["plays"] == len(rs)
+        assert b["moments"] == len(rs)
         if rs:
             assert b["predicted"] == round(100 * sum(r["vegas_home_wp"] for r in rs) / len(rs), 1)
             assert b["actual"] == round(100 * sum(r["result"] > 0 for r in rs) / len(rs), 1)
@@ -106,8 +106,8 @@ def test_calib_committed_file_shape():
     assert set(data) == {"schema", "model", "source", "builtAt", "dataThrough", "buckets"}
     assert data["schema"] == "calib/v1" and data["model"] == "nflverse"
     assert [(b["lo"], b["hi"]) for b in data["buckets"]] == list(zip(bc.EDGES, bc.EDGES[1:]))
-    assert sum(b["plays"] for b in data["buckets"]) == 338914
-    assert data["buckets"][0] == {"lo": 0, "hi": 5, "plays": 29472, "predicted": 1.5, "actual": 2.1}
+    assert sum(b["moments"] for b in data["buckets"]) == 338914
+    assert data["buckets"][0] == {"lo": 0, "hi": 5, "moments": 29472, "predicted": 1.5, "actual": 2.1}
     for b in data["buckets"]:
         assert b["lo"] <= b["predicted"] <= b["hi"] and 0 <= b["actual"] <= 100
     assert CALIB_SITE.stat().st_size < 3_000 and not BANNED.search(CALIB_SITE.read_text())
@@ -134,3 +134,13 @@ def test_full_rebuild_matches_committed_files():
     paths = sorted(glob.glob(f"{d}/pbp_20*.parquet"))
     assert be.build(be.load_rows(paths)) == json.loads(ERA_SITE.read_text())
     assert bc.build(bc.load_rows(paths)) == json.loads(CALIB_SITE.read_text())
+
+
+def test_calib_plays_to_moments_rename_is_not_a_value_change():
+    new = json.loads((ROOT / "data/site/calib.json").read_text())
+    assert all("moments" in b and "plays" not in b for b in new["buckets"])
+    old = json.loads(json.dumps(new))
+    old["buckets"] = [{("plays" if k == "moments" else k): v for k, v in b.items()} for b in old["buckets"]]
+    assert bc.check_frozen(old, new) == []
+    old["buckets"][0]["plays"] += 1
+    assert bc.check_frozen(old, new) == ["0-5"]

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { storyHref } from "../../../lib/stories/gameStory";
 import { notFound } from "next/navigation";
 import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
@@ -43,7 +44,7 @@ function GameCard({ g }: { g: PGame }) {
       </span>
     </>
   );
-  return <li>{g.story ? <Link href={`/games/${g.id}/`} className="po-game">{body}</Link> : <div className="po-game">{body}</div>}</li>;
+  return <li>{g.story ? <Link href={storyHref(g.id)} className="po-game">{body}</Link> : <div className="po-game">{body}</div>}</li>;
 }
 
 export default async function PlayoffsPage({ params }: Props) {
