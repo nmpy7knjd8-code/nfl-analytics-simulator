@@ -82,3 +82,9 @@ export function feedUrlToWrite(current: string, id: string, basePath = ""): stri
 export function gameCardHref(id: string, built: ReadonlySet<string>): string {
   return built.has(id) ? `/games/${encodeURIComponent(id)}` : feedHref(id);
 }
+
+/** Game id from an unbuilt Game Story path ("/games/2024_08_CHI_WAS/", with or without basePath), or null. */
+export function gameIdFromStoryPath(path: string): string | null {
+  const m = /\/games\/(\d{4}_\d{2}_[A-Z]{2,3}_[A-Z]{2,3})\/?$/.exec(path);
+  return m ? m[1] : null;
+}

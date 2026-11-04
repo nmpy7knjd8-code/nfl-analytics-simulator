@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CHECKER_ENABLED } from "../lib/features";
 import { Header, Trademark } from "../components/SimpleGame";
 import "./not-found.css";
+import { GameFeedRedirect } from "../components/GameFeedRedirect";
 
 // Branded 404 (QA2 L4). The Pages build (scripts/pages/assemble.py) injects a small
 // script into the exported 404.html that forwards old /demo/, /quiz/ and /decide/ links.
@@ -24,6 +25,7 @@ const LINKS = ALL_LINKS.filter((l) => CHECKER_ENABLED || l.href !== "/fourth-dow
 export default function NotFound() {
   return (
     <main id="main" className="nf-light">
+      <GameFeedRedirect />
       <div className="sg-app nf" aria-labelledby="nf-title">
         <Header right="404" />
         <h1 id="nf-title" className="nf-title">That page isn&apos;t on the field.</h1>

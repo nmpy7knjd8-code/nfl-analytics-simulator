@@ -38,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import math
 import sys
 from pathlib import Path
@@ -156,6 +157,15 @@ def post_round_map(rows: Iterable[dict[str, Any]]) -> dict[tuple[int, int], str]
     return {(s, w): ROUNDS[i] for s, ws in weeks.items() for i, w in enumerate(sorted(ws)) if i < len(ROUNDS)}
 
 
+AN_NUMBER = re.compile(r"\b([Aa]) (8|11|18|8\d|8\d\d)(?=\b)")
+
+
+def fix_article(text: str) -> str:
+    """'a 11-yard' -> 'an 11-yard': numbers read aloud with a vowel sound (8, 11, 18, 80-89, 800s) take 'an'.
+    games-v4 display_text is read-only, so the fix is applied to our swings.json copy only."""
+    return AN_NUMBER.sub(lambda m: f"{m.group(1)}n {m.group(2)}", text)
+
+
 def display_texts(games_dir: Path):
     """Lazy (game_id, play_id) -> games-v4 display_text lookup; files are only read."""
     cache: dict[str, dict[int, str]] = {}
@@ -179,7 +189,7 @@ def build(rows: list[dict[str, Any]], text_of, top_n: int = TOP_N) -> dict[str, 
     for r in cands:  # already ranked
         picked.setdefault(week_key(r), r)
     for r in [*picked.values(), *cands[:top_n]]:
-        r["_text"] = text_of(r["game_id"], r["play_id"])
+        r["_text"] = fix_article(text_of(r["game_id"], r["play_id"]))
     for k, r in picked.items():
         weeks[k] = swing_record(r, rounds)
     seasons = sorted({int(r["season"]) for r in rows})
@@ -198,7 +208,7 @@ VALUE_KEYS = ("wp_before", "wp_after", "swing")
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Iterable[str] = (),
-                 text_fields: Iterable[str] = ()) -> list[str]:
+                 text_fields: Iterable[str] = (), article_weeks: Iterable[str] = ()) -> list[str]:
     """Problems with published weeks.
 
     `allowed` weeks may change anything (and must change their play or value).
@@ -206,7 +216,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Itera
     """
     if not old:
         return []
-    allowed, text_fields = set(allowed), set(text_fields)
+    allowed, text_fields, article_weeks = set(allowed), set(text_fields), set(article_weeks)
     probs = []
     for k, v in sorted(old.get("weeks", {}).items()):
         n = new["weeks"].get(k)
@@ -218,6 +228,11 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Itera
             if not play_changed:
                 probs.append(f"{k} in override but play/value unchanged")
             continue
+        if k in article_weeks:
+            others = any(v.get(f) != n.get(f) for f in set(v) | set(n) if f != "desc")
+            if others or n.get("desc") == v.get("desc") or n.get("desc") != fix_article(v.get("desc") or ""):
+                probs.append(f"{k} in article override but change is not exactly the a/an desc fix")
+            continue
         if play_changed:
             probs.append(f"{k} play/value changed (not in override)")
         elif any(v.get(f) != n.get(f) for f in set(v) | set(n) if f not in text_fields):
@@ -225,13 +240,13 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Itera
     return probs
 
 
-def load_override(path: str | None) -> tuple[set[str], set[str]]:
+def load_override(path: str | None) -> tuple[set[str], set[str], set[str]]:
     if not path:
-        return set(), set()
+        return set(), set(), set()
     o = json.loads(Path(path).read_text())
     if not o.get("reason") or not o.get("reviewed_in") or not isinstance(o.get("weeks"), list):
         raise SystemExit(f"override {path} needs reason, reviewed_in and a weeks list")
-    return set(o["weeks"]), set(o.get("text_fields_all_weeks", []))
+    return set(o["weeks"]), set(o.get("text_fields_all_weeks", [])), set(o.get("article_fix_weeks", []))
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
