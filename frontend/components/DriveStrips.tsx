@@ -43,7 +43,7 @@ export function DriveStrips({ gameId, basePath }: { gameId: string; basePath: st
                   <TeamLogo abbr={d.team} size={18} />
                   <b>{teamNickname(d.team)}</b>
                   <span className="ds-when">{qtrLabel(d.qtr)} {d.clock}</span>
-                  <span className={`ds-res${d.result === "TD" || d.result === "FG" ? " is-score" : ""}`}>{resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1])}</span>
+                  <span className={`ds-res${d.result === "TD" || d.result === "FG" ? " is-score" : ""}`}>{resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret)}</span>
                 </div>
                 <div className="ds-tiles">
                   {d.tiles.map((t, j) => <span key={j} className={`ds-t ds-${t}`} title={TILE_LABEL[t]} />)}
