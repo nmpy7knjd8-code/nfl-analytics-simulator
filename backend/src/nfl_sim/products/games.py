@@ -29,7 +29,9 @@ SEASONS = fourth_downs.SEASONS
 SWING_THRESHOLD = 0.08
 # Facts only. Never copy spread / moneyline / total / odds columns.
 FACT_COLUMNS = ("game_id", "season", "game_type", "week", "gameday", "home_team", "away_team",
-                "home_score", "away_score", "overtime", "stadium", "home_coach", "away_coach")
+                "home_score", "away_score", "overtime", "stadium", "home_coach", "away_coach",
+                "roof", "wind", "temp")
+OPEN_AIR_ROOFS = ("outdoors", "open")  # nflverse roof; wind/temp only reported for open-air games
 PLAY_COLS = ["game_id", "play_id", "qtr", "quarter_seconds_remaining", "game_seconds_remaining", "posteam",
              "down", "ydstogo", "yardline_100", "desc", "play_type", "home_wp", "total_home_score",
              "total_away_score"]
@@ -66,8 +68,17 @@ def index_rows(schedules: pd.DataFrame, season: int) -> list[dict]:
             "home_score": int(r["home_score"]), "away_score": int(r["away_score"]),
             "overtime": bool(int(r["overtime"])), "stadium": r["stadium"],
             "home_coach": r["home_coach"], "away_coach": r["away_coach"],
+            **weather(r),
         })
     return out
+
+
+def weather(r: dict) -> dict:
+    """roof from nflverse; wind (mph) and temp (F) only for open-air games, else null."""
+    roof = _str(r.get("roof"))
+    open_air = roof in OPEN_AIR_ROOFS
+    return {"roof": roof, "wind": _int(r.get("wind")) if open_air else None,
+            "temp": _int(r.get("temp")) if open_air else None}
 
 
 def _clock(qsr) -> str | None:
