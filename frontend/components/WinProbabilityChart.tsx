@@ -151,7 +151,7 @@ export function SwingPlayList({ swings, series }: { swings: SwingPlay[]; series:
             </div>
             {sit ? <div className="swing-sit">{sit}</div> : null}
             <p className="play-desc swing-headline">
-              <a className="swing-link" href={`#play-${s.point.play_id}`}>{text}</a>
+              <a className="swing-link" href={`#play-${s.point.play_id}`}><span className="swing-link-text">{text}</span></a>
               <PlayPenalty text={p.penalty_text} />
             </p>
             <RawText raw={raw} text={text} />
