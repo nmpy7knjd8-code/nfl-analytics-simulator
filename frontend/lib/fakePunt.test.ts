@@ -103,3 +103,13 @@ test("P3: answer text is never cut mid-play: no '…', ends in sentence punctuat
   const hayball = file.real_punts.find((p) => /M\.Hayball punts 35 yards to NYG 44/.test(p.desc));
   if (hayball) assert.match(whyText({ play: hayball, answer: "real" }), /for 8 yards\.$/);
 });
+
+test("answer text uses plain names: no 'NYJ-' prefixes or team codes", () => {
+  for (const p of [...file.plays, ...file.real_punts]) {
+    const s = whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" }) + " " + playText(p);
+    assert.ok(!/\b[A-Z]{2,3}-[A-Z]/.test(s), s);
+    assert.ok(!/\b[A-Z]{2,3}\b/.test(s), s);
+  }
+  const farley = file.real_punts.find((p) => /downed by NYJ-\d+-M\.Farley/.test(p.desc));
+  if (farley) assert.match(playText(farley), /downed by M\.Farley/);
+});
