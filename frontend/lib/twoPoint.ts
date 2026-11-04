@@ -157,7 +157,7 @@ export const MARGIN_LINES: Record<number, string> = {
   [-2]: "Down 2: going for two ties it, a kick doesn't.",
   [-5]: "Down 5: two makes it a field-goal game, a kick leaves them down 4.",
   [1]: "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.",
-  [4]: "Up 4: two puts them up 6, so a touchdown alone only ties. A kick leaves them up 5.",
+  [4]: "Up 4: two puts them up 6, so the other team needs a touchdown and the extra point to win. A kick leaves them up 5.",
   [0]: "Tied: two puts them up 2, a kick up 1. A field goal beats either.",
 };
 export const EARLY_LINE = "Early on, both choices average about one point.";
