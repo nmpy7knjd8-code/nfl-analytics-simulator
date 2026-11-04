@@ -42,6 +42,7 @@ If an existing project conflicts with these defaults, inspect it and document th
 * No EPA, WPA or xpass on fan screens; no odds, lines or betting text.
 * No field goal offered over 64 yards; no overtime win chance; CHECKER_ENABLED stays false until approved.
 * No agent or worker may write an "Approved by" line in a PR body unless it quotes HGIC's actual approval message for that exact PR (with time). A later rejection overrides an earlier approval; check HGIC's latest message on the PR right before merging.
+* NFL bots never message Garrett and never ask him for approvals or decisions. Every question, approval request and status update goes to Head Grokka in Charge, who decides and forwards anything huge to Garrett. (Garrett, Nov 3 2026, via HGIC)
 * Team colors and logos: self-hosted nflverse team logos and wordmarks are allowed. Never hotlink external images (logo files must be self-hosted under /teams/ and listed in teams/manifest.json). The footer carries "Team names and logos are trademarks of the NFL and its teams. Not affiliated."
 
 ## Core domain invariants

@@ -96,3 +96,18 @@ test("plain text", () => {
   assert.equal(situationText(t), "ATL just scored a touchdown. They're down 22 with 9:19 left in the 4th.");
   assert.equal(coachText(t), "Went for two with a pass. No good.");
 });
+
+test("QA copy: League labels, match header, result line, league match line", async () => {
+  const m = await import("./twoPoint");
+  assert.equal(m.leagueLabel(file.extra_point), "League: 94.4%");
+  assert.equal(m.matchHeader(true), "You matched the coach");
+  assert.equal(m.matchHeader(false), "You didn't match the coach");
+  const k = kicks.find((x) => x.made)!, miss = kicks.find((x) => !x.made)!;
+  assert.equal(m.resultText(k), "Good, 1 point");
+  assert.equal(m.resultText(miss), "No good");
+  assert.equal(m.leagueMatchText(file, k), "That's the usual result: league extra points are good 94.4%.");
+  assert.equal(m.leagueMatchText(file, miss), "That's against the league rate: extra points are good 94.4%.");
+  const p = tries.find((x) => x.kind === "pass" && !x.made)!;
+  assert.equal(m.leagueMatchText(file, p), "That's the usual result: league two-point passes are good 44.2%.");
+  for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
+});

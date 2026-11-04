@@ -37,3 +37,6 @@
 .wi-bar{display:none}
 .wi-sub{font-size:15px}
 .wi-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--sg-g)}
+
+/* Centre the season year inside each chip. */
+.co-seasons .pf-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; line-height: 1; }

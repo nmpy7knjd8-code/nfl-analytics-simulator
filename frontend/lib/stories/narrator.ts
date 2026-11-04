@@ -26,14 +26,14 @@ export function kind(r: NarrRow): Kind {
 }
 
 const T: Record<Kind, string> = {
-  td: "{team} scored a touchdown with {clock} left in {period}, a {swing}-point swing toward {gainer}.",
-  interception: "{opp} intercepted {team} with {clock} left in {period}, a {swing}-point swing toward {gainer}.",
-  fumble: "A {team} fumble with {clock} left in {period} swung win chances {swing} points toward {gainer}.",
+  td: "{team} scored a touchdown with {clock} left in {period}, a {swing}% swing toward {gainer}.",
+  interception: "{opp} intercepted {team} with {clock} left in {period}, a {swing}% swing toward {gainer}.",
+  fumble: "A {team} fumble with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
   fg_good: "{team}'s field goal with {clock} left in {period} moved {gainer} to {gainer_wp}% to win.",
   fg_miss: "{team} came away empty on a field goal try with {clock} left in {period}; {gainer} rose to {gainer_wp}%.",
-  punt: "A {team} punt with {clock} left in {period} swung win chances {swing} points toward {gainer}.",
+  punt: "A {team} punt with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
   fourth_go: "{team} went for it on fourth and {togo} with {clock} left in {period}; {gainer} moved to {gainer_wp}%.",
-  play: "With {clock} left in {period}, one {team} play swung win chances {swing} points toward {gainer}.",
+  play: "With {clock} left in {period}, one {team} play swung win chance {swing}% toward {gainer}.",
 };
 
 /** Overtime: same events, no win chance or swing size. */

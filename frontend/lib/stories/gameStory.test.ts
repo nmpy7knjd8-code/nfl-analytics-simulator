@@ -8,7 +8,7 @@ const detKc = JSON.parse(readFileSync(new URL("../__fixtures__/2023_01_DET_KC.js
 const row: NarrRow = { play_id: 10, qtr: 4, clock: "1:05", posteam: "DET", down: 1, ydstogo: 10, text: "J.Goff pass to A.St. Brown for 20 yards, TOUCHDOWN.", play_type: "pass", home_wp: 0.6, home_wp_after: 0.2, swing: true, home_score: 20, away_score: 21 };
 
 test("regulation sentence matches #58's template", () => {
-  assert.equal(sentence(row, "KC", "DET"), "DET scored a touchdown with 1:05 left in the fourth quarter, a 40-point swing toward DET.");
+  assert.equal(sentence(row, "KC", "DET"), "DET scored a touchdown with 1:05 left in the fourth quarter, a 40% swing toward DET.");
 });
 test("overtime sentences never carry a win chance or swing size", () => {
   const kinds: Partial<NarrRow>[] = [{}, { text: "INTERCEPTED by X", play_type: "pass" }, { text: "FUMBLES, RECOVERED BY X", play_type: "run" },
@@ -44,8 +44,12 @@ test("chart is regulation only; shown text has no ids or stat jargon", () => {
   assert.equal(playText("(2:13) 3-J.Fox punts 40 yards, Center-47-S.Daly."), "J.Fox punts 40 yards, Center-S.Daly.");
 });
 
-test("C1 key 4th downs on DET_KC: regulation 4th downs that swung 10+ points, in game order", () => {
+test("C1 key 4th downs on DET_KC: regulation 4th downs that swung win chance 10%+, in game order", () => {
   const s = buildStory(detKc);
   assert.ok(s.keys.length >= 1);
   for (const k of s.keys) { assert.ok(k.qtr <= 4); assert.ok(k.swing >= 10); assert.ok(s.rows.has(k.playId)); }
+});
+
+test("copy: regulation swings are in percent, never 'points'", () => {
+  for (const b of buildStory(detKc).beats) assert.ok(!/\bpoints?\b/i.test(b.sentence), b.sentence);
 });
