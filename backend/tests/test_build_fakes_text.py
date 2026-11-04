@@ -43,6 +43,7 @@ def test_fake_plays_use_full_names_and_fakes_json_untouched():
     roster = json.loads(mod.NAMES.read_text())
     fakes = json.loads(mod.SRC.read_text())
     out = mod.build(fakes, roster)
-    assert len(roster["plays"]) == len(fakes["plays"]) == 162
-    assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 162
+    assert len(fakes["plays"]) == 162 and len(fakes["real_punts"]) == 299
+    assert len(roster["plays"]) == 162 + 299  # fakes + real punts
+    assert sum(any(full in out[k] for full in (roster["names"].get(g) for g in m.values()) if full) for k, m in roster["plays"].items()) == 461
     assert mod.build(fakes, {"names": {}, "plays": {}})["2019_01_BAL_MIA|2|02:59|BAL"].startswith("Direct snap to A.Levine.")
