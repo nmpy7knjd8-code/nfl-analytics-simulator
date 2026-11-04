@@ -10,3 +10,10 @@
 .tp-row{display:flex;flex-direction:column;gap:8px}
 .tp .sg-keep{min-height:54px;font-weight:700;font-size:19px;width:100%;margin-top:0}
 @media (max-width:375px){.tp-h1{font-size:22px;margin:4px 0 8px}.tp-rates{font-size:14px}.tp .sg-big{font-size:48px}}
+/* QA 2026-10-28 T3/T4: buttons right under the situation, >=44px (48px house rule), footnotes >=13px. */
+.tp .tp-btns{margin-top:0;padding-top:12px}
+.tp .sg-btn{min-height:48px}
+.tp .sg-btn small,.tp .sg-note,.tp .sg-lbl,.tp .tp-note{font-size:13px}
+.tp .sg-btn small{font-size:14px}
+.tp-league{margin:8px 0 4px;font-size:15px;font-weight:600;color:#000}
+@media (max-width:375px){.tp.sg-rv .sg-lbl{font-size:13px}.tp-league{font-size:14px}}
