@@ -8,6 +8,7 @@ import {
   type CheckSituation, type FourthDownGrid,
 } from "../lib/checker";
 import { gameText } from "../lib/dailyView";
+import { Header, Trademark } from "./SimpleGame";
 
 const NAME: Record<QuizChoice, string> = { go: "Go for it", fg: "Kick the field goal", punt: "Punt" };
 const SHORT: Record<QuizChoice, string> = { go: "Go", fg: "Kick", punt: "Punt" };
@@ -28,11 +29,11 @@ function Stepper({ label, value, onDown, onUp, downOff, upOff }: {
   label: string; value: string; onDown: () => void; onUp: () => void; downOff?: boolean; upOff?: boolean;
 }) {
   return (
-    <div className="ck-step" role="group" aria-label={label}>
-      <span className="ck-step-label">{label}</span>
-      <button type="button" className="ck-step-btn" onClick={onDown} disabled={downOff} aria-label={`${label}: less`}>−</button>
-      <output className="ck-step-val" aria-live="polite">{value}</output>
-      <button type="button" className="ck-step-btn" onClick={onUp} disabled={upOff} aria-label={`${label}: more`}>+</button>
+    <div className="fd4-step" role="group" aria-label={label}>
+      <span className="fd4-step-l">{label}</span>
+      <button type="button" className="fd4-sb" onClick={onDown} disabled={downOff} aria-label={`${label}: less`}>−</button>
+      <output className="fd4-sv" aria-live="polite">{value}</output>
+      <button type="button" className="fd4-sb" onClick={onUp} disabled={upOff} aria-label={`${label}: more`}>+</button>
     </div>
   );
 }
@@ -43,8 +44,10 @@ export function FourthDownChecker() {
   const [sit, setSit] = useState<CheckSituation>(START);
   const [grid, setGrid] = useState<FourthDownGrid | null>(null);
   const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    setFailed(false);
     // ?play=<daily item id> opens the checker on that exact real play.
     const id = new URLSearchParams(window.location.search).get("play");
     const item = id ? DAILY_ITEMS.find((it) => it.id === id) : null;
@@ -53,11 +56,15 @@ export function FourthDownChecker() {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((g: FourthDownGrid) => setGrid(g))
       .catch(() => setFailed(true));
-  }, []);
+  }, [attempt]);
 
   const set = (patch: Partial<CheckSituation>) => setSit((s) => ({ ...s, ...patch }));
-  const result = useMemo(() => checkSituation(sit, grid), [sit, grid]);
-  const changes = useMemo(() => (result ? whatCouldChange(sit, grid, result.best) : []), [sit, grid, result]);
+  const result = useMemo(() => {
+    try { return checkSituation(sit, grid); } catch { return null; }
+  }, [sit, grid]);
+  const changes = useMemo(() => {
+    try { return result ? whatCouldChange(sit, grid, result.best) : []; } catch { return []; }
+  }, [sit, grid, result]);
   const loading = !grid && !failed && result?.source.kind !== "play";
 
   const fgOpt = result?.options.find((o) => o.id === "fg");
@@ -65,15 +72,25 @@ export function FourthDownChecker() {
   const real = result?.source.kind === "play" ? result.source.item : null;
   const realHref = real ? storyHref(real.source.game_id, real.id) : null;
 
+  const status = (body: React.ReactNode, alert = false) => (
+    <div className="sg-app fd4">
+      <Header right="4th down" />
+      <div className="sg-status" role={alert ? "alert" : "status"}>{body}</div>
+      <Trademark />
+    </div>
+  );
+  if (loading) return status(<><span className="sg-spin" aria-hidden="true" /><p>Loading…</p></>);
+  if (failed && !result) return status(<><p>Couldn&apos;t load the numbers.</p><button type="button" className="sg-next fd4-cta" onClick={() => setAttempt((a) => a + 1)}>Try again</button></>, true);
+
   return (
-    <div className="ck">
-      <section className="fd-card" aria-labelledby="ck-in">
-        <h2 id="ck-in" className="gs-h2">The situation</h2>
-        <p className="ck-summary">
-          4th &amp; {sit.distance} at {fieldText(sit.yardline_100)} · {marginText(sit.posteam_score - sit.defteam_score)} ({sit.posteam_score}–{sit.defteam_score}) · Q{sit.qtr} {clock(sit.quarter_seconds_remaining)}
+    <div className="sg-app fd4">
+      <Header right="4th down" />
+      <h1 className="fd4-h1">Go, kick, or punt?</h1>
+      <section className="fd4-card" aria-label="The situation">
+        <p className="fd4-sum">
+          4th &amp; {sit.distance} at {fieldText(sit.yardline_100)} · {marginText(sit.posteam_score - sit.defteam_score)} · Q{sit.qtr} {clock(sit.quarter_seconds_remaining)}
         </p>
-        <div className="ck-steps">
-          <div className="ck-step"><span className="ck-step-label">Down</span><span className="ck-step-val ck-fixed">4th</span></div>
+        <div className="fd4-steps">
           <Stepper label="Yards to go" value={String(sit.distance)}
             onDown={() => set({ distance: clamp(sit.distance - 1, MIN_DISTANCE, MAX_DISTANCE) })}
             onUp={() => set({ distance: clamp(sit.distance + 1, MIN_DISTANCE, MAX_DISTANCE) })}
@@ -106,59 +123,37 @@ export function FourthDownChecker() {
         </div>
       </section>
 
-      <section className="fd-card" aria-labelledby="ck-out" aria-live="polite">
-        <h2 id="ck-out" className="gs-h2">The call</h2>
-        {loading ? <p className="fd-muted">Loading the engine grid…</p> : null}
-        {failed && !result ? <p className="fd-muted">Couldn&apos;t load the engine grid. Try again in a moment.</p> : null}
-        {!loading && !result && !failed ? <p className="fd-muted">No engine value for this spot.</p> : null}
-        {result ? (
+      <section className="fd4-card fd4-out" aria-label="The call" aria-live="polite">
+        {!result ? <p className="fd4-muted">No numbers for this spot yet. Try a different spot.</p> : (
           <>
-            <p className="ck-rec">{NAME[result.best]}</p>
-            {result.closeCall ? <p className="ck-close">Close call: the top two are under 2 pts apart.</p> : null}
-            <ul className="fd-bars" aria-label="Chance to win by choice">
+            <p className="fd4-rec"><span className="sg-lbl">The call</span> {NAME[result.best]}{result.closeCall ? <span className="fd4-close">Close call</span> : null}</p>
+            <ul className="fd4-bars" aria-label="Chance to win by choice">
               {result.options.filter((o) => o.shown).map((o) => {
                 const v = result.item.reveal.values[o.id];
                 const off = o.disabled || v == null;
                 return (
-                  <li key={o.id} className={`fd-bar${o.id === result.best ? " is-best" : ""}`}>
-                    <span className="fd-bar-label">{SHORT[o.id]}</span>
-                    <span className="fd-bar-track">
-                      <span className="fd-bar-fill" style={{ width: off ? 0 : `${Math.round(v! * 100)}%` }} />
-                    </span>
-                    <span className="fd-bar-num">{off ? (o.id === "fg" ? "Too far" : "—") : `${(v! * 100).toFixed(1)}%`}</span>
+                  <li key={o.id} className={o.id === result.best ? "is-best" : undefined}>
+                    <span className="fd4-bl">{SHORT[o.id]}</span>
+                    <span className="fd4-track"><span style={{ width: off ? 0 : `${Math.round(v! * 100)}%` }} /></span>
+                    <span className="fd4-num">{off ? (o.id === "fg" ? "Too far" : "—") : `${(v! * 100).toFixed(1)}%`}</span>
                   </li>
                 );
               })}
             </ul>
             {result.ranked.length > 1 ? (
-              <p className="fd-why">
-                <strong>Why:</strong> {NAME[result.best]} gives the offense a {(result.ranked[0][1] * 100).toFixed(1)}% chance to win, {(result.gap * 100).toFixed(1)} pts more than {SHORT[result.ranked[1][0]]}.
-                {fgOff ? ` Kick is off: ${fgOff}, past the 64-yd limit.` : ""}
+              <p className="fd4-why">
+                {(result.ranked[0][1] * 100).toFixed(1)}% chance to win, {(result.gap * 100).toFixed(1)} points better than {SHORT[result.ranked[1][0]].toLowerCase()}.
+                {fgOff ? ` No kick: ${fgOff} is too long.` : ""}
+                {changes.length ? ` ${changes[0]}` : ""}
               </p>
             ) : null}
-            <div>
-              <h3 className="ck-h3">What could change this</h3>
-              {changes.length ? (
-                <ul className="ck-changes">{changes.map((c) => <li key={c}>{c}</li>)}</ul>
-              ) : (
-                <p className="fd-muted">{grid ? "Nothing nearby flips it: 1 yard more or less to go, 5 yards either way, or 3 points either way." : "Loading…"}</p>
-              )}
-            </div>
-            <p className="fd-muted ck-src">
-              {result.source.kind === "play" && real ? (
-                <>
-                  Same numbers as the Daily: this is a real play, {gameText(real)}.{" "}
-                  {realHref ? <a href={`${BASE}${realHref}`}>See this game at this play</a> : null}
-                </>
-              ) : result.source.kind === "grid" ? (
-                <>
-                  {`From the engine grid (same engine as the Daily).${result.source.assumptions.length ? ` Nearest grid point: ${result.source.assumptions.join("; ")}.` : ""} The grid assumes the offense is the home team.`}
-                </>
-              ) : null}
-            </p>
+            {real ? (
+              <p className="fd4-muted">Real play: {gameText(real)}.{" "}{realHref ? <a href={`${BASE}${realHref}`}>See the game</a> : null}</p>
+            ) : null}
           </>
-        ) : null}
+        )}
       </section>
+      <Trademark />
     </div>
   );
 }

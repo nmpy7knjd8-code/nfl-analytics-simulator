@@ -1,0 +1,30 @@
+/* /fourth-down in the Fourth & Daily design: white card on black (.sg-app), oval outlined buttons, one blue primary. */
+/* The layout's old top bar and bottom tabs stay hidden here until /fourth-down joins AppNav's game-route list (Integration). */
+.app-shell:has(.fd4) > header, .app-shell:has(.fd4) > nav { display: none !important; }
+.app-stage:has(.fd4) { padding-bottom: 0 !important; }
+.fd4 { gap: 8px; }
+.fd4-h1 { font-size: 24px; line-height: 1.15; font-weight: 800; margin: 0; color: #000; }
+.fd4-sub { font-size: 16px; font-weight: 500; color: var(--sg-g); max-width: 320px; }
+.fd4-cta { display: flex; align-items: center; justify-content: center; text-decoration: none; max-width: 320px; }
+.fd4-card { border: 1.5px solid #000; border-radius: 16px; padding: 10px 12px; display: grid; gap: 8px; }
+.fd4-sum { margin: 0; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+.fd4-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+.fd4-step { display: grid; grid-template-columns: 48px 1fr 48px; grid-template-rows: auto 48px; align-items: center; font-variant-numeric: tabular-nums; }
+.fd4-step-l { grid-column: 1 / -1; font-size: 12px; font-weight: 700; color: var(--sg-g); text-transform: uppercase; letter-spacing: .04em; }
+.fd4-sv { text-align: center; font-weight: 800; font-size: 16px; white-space: nowrap; }
+.fd4-sb { width: 48px; height: 48px; border-radius: 999px; border: 1.5px solid #000; background: #fff; color: #000; font-size: 22px; font-weight: 700; padding: 0; }
+.fd4-sb:disabled { border-color: #c4c4c4; color: #b0b0b0; cursor: not-allowed; }
+.fd4-sb:focus-visible { outline: 3px solid var(--sg-b); outline-offset: 2px; }
+.fd4-out { gap: 6px; }
+.fd4-rec { margin: 0; font-size: 22px; font-weight: 800; color: var(--sg-b); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fd4-rec .sg-lbl { color: var(--sg-g); }
+.fd4-close { font-size: 12px; font-weight: 800; background: #000; color: #fff; border-radius: 999px; padding: 2px 10px; }
+.fd4-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.fd4-bars li { display: grid; grid-template-columns: 3rem 1fr 4rem; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+.fd4-track { height: 12px; border-radius: 999px; background: #eee; overflow: hidden; }
+.fd4-track span { display: block; height: 100%; background: #000; border-radius: 999px; }
+.fd4-bars .is-best .fd4-track span { background: var(--sg-b); }
+.fd4-num { text-align: right; font-variant-numeric: tabular-nums; }
+.fd4-why, .fd4-muted { margin: 0; font-size: 14px; line-height: 1.35; color: var(--sg-g); }
+.fd4-muted a { color: var(--sg-b); font-weight: 700; display: inline-flex; min-height: 48px; align-items: center; }
+@media (max-width: 375px) { .fd4-h1 { font-size: 21px; } .fd4-steps { gap: 4px 8px; } .fd4-rec { font-size: 20px; } .fd4-why { font-size: 13px; } .fd4-sv { font-size: 15px; letter-spacing: -0.02em; } }
