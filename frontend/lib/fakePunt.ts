@@ -102,7 +102,7 @@ export function playText(p: PuntPlay, max = 150): string {
 /** "Ravens vs Dolphins" for the card's setup line. */
 export const matchupText = (p: PuntPlay) => `${teamNickname(p.team)} vs ${teamNickname(p.opp)}`;
 
-/** Short "Why" line for the reveal. Uses only counts in the file. */
+/** "Why" line for the reveal. Real punts show the full cleaned play text, never cut mid-play. */
 export function whyText(card: Card): string {
   const p = card.play;
   if (card.answer === "fake") {
@@ -110,7 +110,7 @@ export function whyText(card: Card): string {
     const res = p.first_down ? "and got the first down" : "and came up short";
     return `It was ${how} out of punt formation, ${res}.`;
   }
-  return `A real punt: ${playText(p, 90)}`;
+  return `A real punt: ${playText(p, Infinity)}`;
 }
 
 export const pct = (n: number, d: number) => (d ? Math.round((100 * n) / d) : 0);
