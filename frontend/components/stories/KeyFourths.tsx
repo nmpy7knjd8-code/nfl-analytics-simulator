@@ -1,4 +1,5 @@
 "use client";
+import { swingPctText } from "@/lib/stories/swings";
 
 import { useState } from "react";
 import type { Story } from "../../lib/stories/gameStory";
@@ -29,7 +30,7 @@ export function KeyFourths({ story }: { story: Story }) {
             <>
               <p className="gs-call">{CALL_LABEL[k.call]}</p>
               <p className="gs-text">{story.rows.get(k.playId)?.text ?? ""}</p>
-              <p className="gs-meta">Win chance swung {k.swing}% toward {k.toward}.</p>
+              <p className="gs-meta">Win chance swung {swingPctText(k.swing)} toward {k.toward}.</p>
               <button type="button" className="gs-oval gs-oval-fill" onClick={() => { setI(i + 1); setShown(false); }}>Continue</button>
             </>
           ) : (
