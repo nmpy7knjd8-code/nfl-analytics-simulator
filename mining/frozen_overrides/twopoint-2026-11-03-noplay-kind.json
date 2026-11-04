@@ -1,0 +1,19 @@
+{
+ "approved_by": "PENDING HGIC",
+ "reason": "QA D2 (data-0333): 13 real two-point tries labelled kind 'no_play' (nflverse play_type no_play, penalty enforced between downs) relabelled run/pass from nflverse pass_attempt; run/pass sub-totals follow. Nothing else may change.",
+ "tries": [
+  "2019_06_SEA_CLE|4|09:02|CLE",
+  "2019_08_PHI_BUF|2|00:25|PHI",
+  "2019_13_PHI_MIA|2|00:06|PHI",
+  "2021_15_KC_LAC|4|07:44|KC",
+  "2021_19_ARI_LA|3|04:11|ARI",
+  "2022_11_CLE_BUF|4|04:11|CLE",
+  "2022_19_LAC_JAX|3|00:44|JAX",
+  "2023_07_BUF_NE|4|01:58|BUF",
+  "2023_08_TB_BUF|4|02:44|TB",
+  "2023_09_TB_HOU|3|12:20|HOU",
+  "2023_12_GB_DET|3|11:46|DET",
+  "2023_16_CLE_HOU|4|06:08|HOU",
+  "2023_17_ARI_PHI|3|02:01|ARI"
+ ]
+}
