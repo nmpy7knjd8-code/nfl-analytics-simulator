@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { finalScore, isSwingsDoc, playText, points, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
+import { finalScore, fourthDowns, isSwingsDoc, playText, points, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
 
 const raw = readFileSync(new URL("../../public/data/stories/swings.json", import.meta.url), "utf8");
 const doc = JSON.parse(raw);
@@ -46,4 +46,13 @@ test("QA weeks: 2019-w01 Lutz +42.8 NO, 2024-w19 Mayfield fumble -25.8 TB, no RE
   assert.ok(!/REVERSED/i.test(JSON.stringify(d)));
   assert.equal(finalScore(a), "Final: HOU 28, NO 30");
   assert.equal(playText("Pass to [79-J.Cominsky] x"), "Pass to [J.Cominsky] x");
+});
+
+test("D3 4th downs only: only regulation 4th downs, deduped, biggest first", () => {
+  const d = JSON.parse(readFileSync(new URL("../../public/data/stories/swings.json", import.meta.url), "utf8"));
+  const rows = fourthDowns(d.top, Object.values(d.weeks));
+  assert.ok(rows.length > 0);
+  assert.ok(rows.every((r) => r.down === 4 && r.qtr <= 4));
+  for (let k = 1; k < rows.length; k++) assert.ok(Math.abs(rows[k - 1].swing) >= Math.abs(rows[k].swing));
+  assert.equal(new Set(rows.map((r) => `${r.game_id}|${r.clock}|${r.swing}`)).size, rows.length);
 });

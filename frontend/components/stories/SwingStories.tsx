@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Header, Trademark } from "../SimpleGame";
 import { feedHref } from "../../lib/gamePicker";
 import {
-  beforeAfter, finalScore, isSwingsDoc, matchup, playText, points, situation, swingLine, top25, weekLabel, weeksNewestFirst,
+  beforeAfter, finalScore, fourthDowns, isSwingsDoc, matchup, playText, points, situation, swingLine, top25, weekLabel, weeksNewestFirst,
   type Swing,
 } from "../../lib/stories/swings";
 import "./stories.css";
@@ -31,6 +31,7 @@ export function SwingStories() {
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [i, setI] = useState(0);
+  const [only4th, setOnly4th] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -46,6 +47,7 @@ export function SwingStories() {
     return () => { live = false; };
   }, [attempt]);
 
+  const list = load.state === "ready" ? (only4th ? fourthDowns(load.top, load.weeks) : load.top) : [];
   return (
     <div className="sg-app st-app">
       <Header right="Swings" />
@@ -81,10 +83,14 @@ export function SwingStories() {
           )}
 
           <h2 className="st-h2">Biggest swings since 2019</h2>
-          <p className="st-sub">Top 25 regulation plays. Overtime isn&apos;t counted.</p>
-          {load.top.length ? (
+          <div className="st-filter" role="group" aria-label="Filter plays">
+            <button type="button" className={`st-oval${only4th ? "" : " st-oval-fill"}`} aria-pressed={!only4th} onClick={() => setOnly4th(false)}>All plays</button>
+            <button type="button" className={`st-oval${only4th ? " st-oval-fill" : ""}`} aria-pressed={only4th} onClick={() => setOnly4th(true)}>4th downs only</button>
+          </div>
+          <p className="st-sub">{only4th ? "Regulation 4th-down plays from the top 25 and each week\u2019s pick." : "Top 25 regulation plays. Overtime isn\u2019t counted."}</p>
+          {list.length ? (
             <ol className="st-list">
-              {load.top.map((s, n) => (
+              {list.map((s, n) => (
                 <li key={`${s.game_id}-${n}`} className="st-row">
                   <span className="st-rank">{n + 1}</span>
                   <div className="st-row-b">
@@ -98,7 +104,7 @@ export function SwingStories() {
               ))}
             </ol>
           ) : (
-            <div className="st-empty"><p>No swings to list yet.</p></div>
+            <div className="st-empty"><p>{only4th ? "No 4th-down plays in this list yet." : "No swings to list yet."}</p></div>
           )}
         </>
       )}

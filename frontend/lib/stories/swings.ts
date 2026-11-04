@@ -87,3 +87,17 @@ export function weeksNewestFirst(weeks: Record<string, Swing>): Swing[] {
 export function top25(rows: Swing[]): Swing[] {
   return regulation(rows).slice().sort((a, b) => Math.abs(b.swing) - Math.abs(a.swing)).slice(0, 25);
 }
+
+/** D3 "4th downs only": regulation 4th-down plays from the top list plus each week's pick, biggest swing first, no duplicates. */
+export function fourthDowns(top: Swing[], weeks: Swing[]): Swing[] {
+  const seen = new Set<string>();
+  return regulation([...top, ...weeks])
+    .filter((r) => r.down === 4)
+    .filter((r) => {
+      const k = `${r.game_id}|${r.qtr}|${r.clock}|${r.swing}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    })
+    .sort((a, b) => Math.abs(b.swing) - Math.abs(a.swing));
+}
