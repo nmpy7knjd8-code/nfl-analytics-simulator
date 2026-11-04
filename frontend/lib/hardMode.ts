@@ -54,3 +54,6 @@ export function calibrationText(confs: (number | null | undefined)[], credits: n
   if (credits.some((_, i) => confs[i] == null)) return `Calibration needs all ${credits.length} answers.`;
   return calibrationLine(calibrationScore(credits.map((credit, i) => ({ confidence: confs[i] as number, credit })))!);
 }
+
+/** End-of-day toggle. The setting applies from the next daily, so today's flow never changes mid-game. */
+export const HARD_NEXT_LABEL = "Hard mode from the next daily: rate how sure you are";

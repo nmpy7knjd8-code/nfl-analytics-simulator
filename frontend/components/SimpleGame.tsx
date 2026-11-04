@@ -25,7 +25,7 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
-import { CONFIDENCE_STEPS, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
+import { CONFIDENCE_STEPS, HARD_NEXT_LABEL, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const nick = (a: string) => teamNickname(a);
@@ -66,13 +66,19 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     if (mode !== "daily" || key == null) return;
     setDare(challengeFor(window.location.hash, dayNumber(key), items.length));
   }, [key, mode, items.length]);
-  // E6 Hard mode: daily only, chosen before call 1; confidence before each reveal.
+  // E6 Hard mode: daily only. `hard` is fixed when the day loads; the end-screen
+  // toggle only changes the saved setting (`hardNext`), which applies from the next daily.
   const [hard, setHard] = useState(false);
+  const [hardNext, setHardNext] = useState(false);
   const [confs, setConfs] = useState<(number | null)[]>([]);
   const [pending, setPending] = useState<QuizChoice | null>(null);
-  useEffect(() => { if (mode === "daily") setHard(readHard(typeof window === "undefined" ? null : window.localStorage)); }, [mode]);
+  useEffect(() => {
+    if (mode !== "daily") return;
+    const v = readHard(typeof window === "undefined" ? null : window.localStorage);
+    setHard(v); setHardNext(v);
+  }, [mode]);
   useEffect(() => { if (mode === "daily" && key != null) setConfs(readConfs(window.localStorage, key)); }, [mode, key]);
-  const toggleHard = () => { const v = !hard; setHard(v); writeHard(window.localStorage, v); };
+  const toggleHardNext = () => { const v = !hardNext; setHardNext(v); writeHard(window.localStorage, v); };
   const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
   useEffect(() => {
     if (mode !== "daily" || key == null) return;
@@ -185,6 +191,9 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
           const line = isHard ? calibrationText(confs, picks.map((x) => x.scored.credit)) : null;
           return line ? <p className="sg-calib">{line}</p> : null;
         })()}
+        {mode === "daily" ? (
+          <label className="sg-hard"><input type="checkbox" checked={hardNext} onChange={toggleHardNext} /><span>{HARD_NEXT_LABEL}</span></label>
+        ) : null}
         {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
           {mode === "daily" && dare.kind === "ok" ? (
@@ -251,10 +260,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       </div>
     );
   }
-  const hardToggle = mode === "daily" && idx === 0 && !p ? (
-    <label className="sg-hard"><input type="checkbox" checked={hard} onChange={toggleHard} /><span>Hard mode: rate how sure you are</span></label>
-  ) : null;
-  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={<>{banner}{hardToggle}</>} onPick={choose} />;
+  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={banner} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
     return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;
   }

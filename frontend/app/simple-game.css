@@ -233,6 +233,9 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .sg-conf-b{justify-content:center}
 .sg-calib{text-align:center;font-weight:600;margin:6px 0 10px}
+/* The end-of-day Hard mode toggle needs room: on phones the share preview is dropped (the Share button still sends the same text). */
+@media (max-width:420px) and (max-height:900px){.sg-end .sg-share{display:none}}
+@media (max-width:375px){.sg-calib{font-size:13px;margin:2px 0 4px}.sg-end .sg-hard{margin:0}}
 /* F7 drive strips */
 .ds-key{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--sg-g)}
 .ds-key li{display:flex;align-items:center;gap:5px}

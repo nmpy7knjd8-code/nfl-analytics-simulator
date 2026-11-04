@@ -72,3 +72,13 @@ test("confidence answers survive a reload (saved per day) and need all 5 for a s
   assert.equal(calibrationText([80, 60, 100], [1, 1, 1, 1, 1]), "Calibration needs all 5 answers.");
   assert.match(calibrationText([100, 100, 100, 100, 100], [1, 1, 1, 1, 1])!, /^Hard mode calibration: 100\/100/);
 });
+
+test("Hard mode toggle lives on the end-of-day screen only, and the day's mode is fixed at load", () => {
+  const src = readFileSync(new URL("../components/SimpleGame.tsx", import.meta.url), "utf8");
+  const end = src.slice(src.indexOf("if (done) {"), src.lastIndexOf("  const it = items[idx];"));
+  const play = src.slice(src.lastIndexOf("  const it = items[idx];"));
+  assert.match(end, /checked=\{hardNext\} onChange=\{toggleHardNext\}/, "toggle on the end screen");
+  assert.doesNotMatch(play, /type="checkbox"|toggleHard/, "no toggle on the play screens");
+  assert.match(src, /const isHard = hard && mode === "daily";/, "today's flow reads the day-start value");
+  assert.doesNotMatch(src.replace(/setHard\(v\); setHardNext\(v\);/, ""), /setHard\(/, "only the load effect sets today's mode");
+});
