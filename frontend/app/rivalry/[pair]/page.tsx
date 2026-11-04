@@ -4,14 +4,15 @@ import { notFound } from "next/navigation";
 import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
 import { Header, Trademark } from "../../../components/SimpleGame";
-import { SEASONS, allPairs, rivalry, seriesLine, stripColors } from "../../../lib/rivalries";
+import { SEASONS, allPairs, canonicalPair, reversePairs, rivalry, seriesLine, stripColors } from "../../../lib/rivalries";
+import { PairRedirect } from "./PairRedirect";
 import "../rivalry.css";
 
 type Props = { params: Promise<{ pair: string }> };
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return allPairs().map((pair) => ({ pair }));
+  return [...allPairs(), ...reversePairs()].map((pair) => ({ pair }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,6 +25,8 @@ const fmtDate = (d: string) =>
 
 export default async function RivalryPage({ params }: Props) {
   const { pair } = await params;
+  const canon = canonicalPair(pair);
+  if (canon && canon !== pair) return <PairRedirect to={canon} />;
   const r = rivalry(pair);
   if (!r) notFound();
   const name = teamNickname;

@@ -244,3 +244,29 @@ def test_desc_is_clean_display_text(built):
     for r in _records(built):
         assert not re.search(r"\b\d{1,2}-[A-Z][a-zA-Z]*\.", r["desc"]), r["desc"]  # no "14-S.Darnold" jersey tags
         assert not r["desc"].startswith("(")  # no raw "(13:50) (Shotgun)" prefix
+
+
+def test_fix_article():
+    f = bs.fix_article
+    assert f("throws a 11-yard pass") == "throws an 11-yard pass"
+    assert f("A 8-yard run, a 18-yard catch, a 85-yard TD") == "An 8-yard run, an 18-yard catch, an 85-yard TD"
+    assert f("a 1-yard run, a 80s, a 7-yard, a 81") == "a 1-yard run, a 80s, a 7-yard, an 81"
+    assert f("a 9-yard, a 110-yard, an 11-yard") == "a 9-yard, a 110-yard, an 11-yard"
+
+
+def test_article_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/swings-2026-11-03-a-an.json").read_text())
+    assert o["weeks"] == [] and sorted(o["article_fix_weeks"]) == [
+        "2019-w06", "2020-w07", "2020-w16", "2020-w21", "2021-w13", "2024-w12"]
+    old = {"weeks": {"w1": {"desc": "throws a 11-yard pass", "swing": 0.2}, "w2": {"desc": "x", "swing": 0.1}}}
+    good = {"weeks": {"w1": {"desc": "throws an 11-yard pass", "swing": 0.2}, "w2": {"desc": "x", "swing": 0.1}}}
+    assert bs.check_frozen(old, good, [], (), ["w1"]) == []
+    assert bs.check_frozen(old, good) == ["w1 changed (not in override)"]
+    other = {"weeks": {"w1": {"desc": "throws an 11-yard pass", "swing": 0.3}, "w2": good["weeks"]["w2"]}}
+    assert bs.check_frozen(old, other, [], (), ["w1"]) == ["w1 in article override but change is not exactly the a/an desc fix"]
+    assert bs.check_frozen(old, old, [], (), ["w1"]) == ["w1 in article override but change is not exactly the a/an desc fix"]
+
+
+def test_committed_swings_have_no_a_before_an_number():
+    import re as _re
+    assert not _re.findall(r"\b[aA] (?:8|11|18|8\d)\b", (ROOT / "data/site/swings.json").read_text())

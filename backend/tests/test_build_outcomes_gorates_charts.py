@@ -125,7 +125,7 @@ def test_charts_regulation_only_with_ot_flag():
         assert len(g["wp"]) == 60 and all(0 <= v <= 1 for v in g["wp"])
     reg_rows = [r for r in C_ROWS if r["game_id"] == "2023_01_BUF_NYJ" and 1 <= r["qtr"] <= 4
                 and r["vegas_home_wp"] is not None]
-    reg_rows.sort(key=lambda r: r["play_id"])
+    reg_rows.sort(key=lambda r: (r["qtr"], -r["game_seconds_remaining"]))  # game-clock order
     assert ot["wp"][-1] == round(reg_rows[-1]["vegas_home_wp"], 3)  # last point = end of regulation, not OT
     assert ot["wp"][0] == round(reg_rows[0]["vegas_home_wp"], 3)
     _, site = _site("charts/2023.json")
@@ -197,3 +197,30 @@ def test_charts_final_point_override_is_narrow():
     assert bm.check_frozen(old, built, {gid}) == [gid]
     ov = bm.load_override()
     assert len(ov) == 30 and {"2019_15_JAX_OAK", "2021_05_DEN_PIT", "2022_18_CAR_NO"} <= ov
+
+
+def test_charts_game_clock_order_not_play_id():
+    """A Q2 timeout row filed with a higher play_id than END GAME (2024_10_ATL_NO) must not become a late point."""
+    base = dict(game_id="2099_01_AAA_BBB", season=2099, week=1, season_type="REG", game_date="2099-09-01",
+                home_team="BBB", away_team="AAA", home_score=20, away_score=17)
+    rows = [{**base, "qtr": 1, "game_seconds_remaining": 3600, "vegas_home_wp": 0.5, "play_id": 1},
+            {**base, "qtr": 3, "game_seconds_remaining": 1500, "vegas_home_wp": 0.6, "play_id": 300},
+            {**base, "qtr": 4, "game_seconds_remaining": 600, "vegas_home_wp": 0.8, "play_id": 400},
+            {**base, "qtr": 2, "game_seconds_remaining": 1900, "vegas_home_wp": 0.1, "play_id": 999}]
+    wp = bm.build(rows)[2099]["games"][0]["wp"]
+    assert wp[-2] == 0.8 and wp[-1] == 1.0 and wp[29] == 0.1 and wp[35] == 0.6
+
+
+def test_charts_clock_order_override_is_narrow():
+    pts = bm.load_clock_override()
+    assert len(pts) == 88 and sum(map(len, pts.values())) == 161
+    built = bm.build(C_ROWS)[2023]
+    old = json.loads(bm.dumps(built))
+    gid = old["games"][0]["gameId"]
+    old["games"][0]["wp"][10] = 0.123
+    assert bm.check_frozen(old, built, points={gid: {10}}) == []
+    assert bm.check_frozen(old, built, points={gid: {11}}) == [gid]
+    old["games"][0]["homeScore"] += 1  # only listed wp points may change
+    assert bm.check_frozen(old, built, points={gid: {10}}) == [gid]
+    site = {g["gameId"]: g for g in _site("charts/2024.json")[1]["games"]}
+    assert site["2024_13_HOU_JAX"]["wp"][28] == 0.325 and site["2024_04_BUF_BAL"]["wp"][29] == 0.962

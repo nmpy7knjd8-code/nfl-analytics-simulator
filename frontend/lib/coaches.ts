@@ -3,13 +3,14 @@ import path from "node:path";
 
 /** Ported from closed PR #59. Engine-derived: pages render only when CHECKER_ENABLED is true. */
 
-/** One call in a coach's best / worst list (coaches.v1, #56). */
+/** One call in a coach's best / worst list (coaches.v1.2). Keyed by game_id + qtr + clock; no play_id. */
 export type CoachCall = {
   game_id: string;
-  play_id: number;
+  qtr: number;
+  /** Game clock at the snap, "M:SS" left in the quarter. */
+  clock: string;
   week: number;
   opponent: string;
-  qtr: number;
   ydstogo: number;
   yardline_100: number;
   score_differential: number;
@@ -18,6 +19,15 @@ export type CoachCall = {
   wp_cost_pts: number;
   result: string;
   desc: string;
+  wp_before: number | null;
+  wp_after_chosen: number | null;
+  wp_after_best: number | null;
+  wp_after_actual: number | null;
+  decision_value_pts: number;
+  outcome_vs_expected_pts: number | null;
+  net_value_pts: number;
+  /** Win-chance points the call beat (+) or trailed (−) the best other option by. */
+  alt_cost_pts: number;
 };
 
 export type Coach = {
@@ -36,12 +46,18 @@ export type Coach = {
   gradeable: boolean;
   /** Letter grade when the data file carries one; null otherwise. */
   grade: string | null;
+  games: number;
+  wp_cost_pts_total: number;
+  decision_value_pts: number;
+  outcome_vs_expected_pts: number;
+  net_value_pts: number;
+  /** Ranked by alt_cost_pts. Data only: not shown on the site. */
   best: CoachCall[];
   worst: CoachCall[];
 };
 
 export type CoachSeason = {
-  schema_version: "coaches.v1";
+  schema_version: "coaches.v1.2";
   engine_version: string;
   provenance: { source: string; build_date: string; license: string; nflreadpy_version: string };
   season: number;

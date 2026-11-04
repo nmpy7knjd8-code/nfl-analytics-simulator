@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { LETTERS, makeRound, score, type ChartGame, type ChartsFile } from "../lib/matchChart";
 import { Header, Trademark } from "./SimpleGame";
+import { teamNickname } from "../lib/teams";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
@@ -80,10 +81,10 @@ export function MatchChart() {
               return (
                 <div key={g.gameId} className={`mc-row${results ? (ok ? " is-ok" : " is-bad") : ""}`}>
                   <div className="mc-game">
-                    <div><strong>{g.away}</strong> {g.awayScore} at <strong>{g.home}</strong> {g.homeScore}{g.ot ? " (OT)" : ""}</div>
+                    <div><strong>{teamNickname(g.away)}</strong> {g.awayScore} at <strong>{teamNickname(g.home)}</strong> {g.homeScore}{g.ot ? " (OT)" : ""}</div>
                     <div className="mc-sub">{g.seasonType === "POST" ? "Playoffs" : `Week ${g.week}`}, {season}{results ? (ok ? " · Right" : ` · It was ${LETTERS[round.chartOrder.indexOf(gi)]}`) : ""}</div>
                   </div>
-                  <div className="mc-chips" role="radiogroup" aria-label={`Chart for ${g.away} at ${g.home}`}>
+                  <div className="mc-chips" role="radiogroup" aria-label={`Chart for ${teamNickname(g.away)} at ${teamNickname(g.home)}`}>
                     {LETTERS.map((L, slot) => (
                       <button key={L} type="button" role="radio" aria-checked={guesses[gi] === slot} className={`mc-chip${guesses[gi] === slot ? " is-on" : ""}`} onClick={() => pick(gi, slot)} disabled={checked}>{L}</button>
                     ))}
