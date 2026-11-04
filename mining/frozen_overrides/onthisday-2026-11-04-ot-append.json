@@ -1,0 +1,6 @@
+{
+ "file": "data/site/onthisday.json",
+ "rule": "ot_append",
+ "approved_by": "PENDING HGIC",
+ "reason": "Analyte 2026-11-04: append ot (true if the game had any nflverse play with qtr >= 5) as the last col of every game row. Append-only: cols must be exactly the old 4 + [ot] and the first 4 values of every row must stay identical (ot_append_ok + strip_ot)."
+}
