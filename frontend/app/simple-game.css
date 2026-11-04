@@ -108,7 +108,12 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-chips{display:flex;gap:6px;overflow-x:auto;flex:none;padding:6px 12px;scrollbar-width:none;margin:0 -2px}
 .pf-chips::-webkit-scrollbar{display:none}
 .pf-chips::after{content:"";flex:0 0 16px}
-.pf-chips{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent)}
+/* S3: bleed to the card edge (card padding 14px) with matching inner padding; fade only toward hidden chips */
+.pf-chips{margin:0 -14px;padding:6px 14px;scroll-padding:0 14px}
+.pf-chips::after{flex:0 0 12px}
+.pf-chips.fade-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
+.pf-chips.fade-l{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px);mask-image:linear-gradient(90deg,transparent,#000 32px)}
+.pf-chips.fade-l.fade-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent)}
 .pf-chip{flex:none;min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px;white-space:nowrap}
 .pf-chip.is-on{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
 .pf-chip:focus-visible,.pf-row:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
@@ -225,6 +230,17 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-recap .sg-recap-key{padding:4px 0;font-size:13px;font-weight:700;color:var(--sg-g);text-transform:uppercase;letter-spacing:.03em}
 .sg-recap-key .sg-c{font-size:13px}
 .sg-agree{display:inline-block;width:14px;text-align:center;color:var(--sg-g)}
+
+/* E6 Hard mode */
+.sg-hard{display:flex;align-items:center;gap:10px;min-height:48px;font-size:15px;font-weight:600;margin:0 0 8px}
+.sg-hard input{width:22px;height:22px;accent-color:var(--sg-b)}
+.sg-conf-q{margin:6px 0 14px}
+.sg-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sg-conf-b{justify-content:center}
+.sg-calib{text-align:center;font-weight:600;margin:6px 0 10px}
+/* The end-of-day Hard mode toggle needs room: on phones the share preview is dropped (the Share button still sends the same text). */
+@media (max-width:420px) and (max-height:900px){.sg-end .sg-share{display:none}}
+@media (max-width:375px){.sg-calib{font-size:13px;margin:2px 0 4px}.sg-end .sg-hard{margin:0}}
 /* F7 drive strips */
 .ds-key{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--sg-g)}
 .ds-key li{display:flex;align-items:center;gap:5px}

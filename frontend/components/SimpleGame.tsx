@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
 import { shieldStreak } from "../lib/shields";
 import {
-  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
+  dateKey, dayNumber, formatScore, loadStreak, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
 import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
@@ -25,6 +25,7 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
+import { CONFIDENCE_STEPS, HARD_NEXT_LABEL, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const nick = (a: string) => teamNickname(a);
@@ -50,7 +51,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [key, setKey] = useState<string | null>(null);
   const [seed, setSeed] = useState("0");
   useEffect(() => { setKey(dateKey()); setSeed(String(Date.now())); }, []);
-  const items: DailyItem[] = useMemo(() => (key == null ? [] : mode === "daily" ? dailySet(key) : practiceSet(seed)), [key, mode, seed]);
+  const items: DailyItem[] = useMemo(() => gameItems(mode, key, seed), [key, mode, seed]);
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [idx, setIdx] = useState(0);
@@ -65,6 +66,19 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     if (mode !== "daily" || key == null) return;
     setDare(challengeFor(window.location.hash, dayNumber(key), items.length));
   }, [key, mode, items.length]);
+  // E6 Hard mode: daily only. `hard` is fixed when the day loads; the end-screen
+  // toggle only changes the saved setting (`hardNext`), which applies from the next daily.
+  const [hard, setHard] = useState(false);
+  const [hardNext, setHardNext] = useState(false);
+  const [confs, setConfs] = useState<(number | null)[]>([]);
+  const [pending, setPending] = useState<QuizChoice | null>(null);
+  useEffect(() => {
+    if (mode !== "daily") return;
+    const v = readHard(typeof window === "undefined" ? null : window.localStorage);
+    setHard(v); setHardNext(v);
+  }, [mode]);
+  useEffect(() => { if (mode === "daily" && key != null) setConfs(readConfs(window.localStorage, key)); }, [mode, key]);
+  const toggleHardNext = () => { const v = !hardNext; setHardNext(v); writeHard(window.localStorage, v); };
   const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
   useEffect(() => {
     if (mode !== "daily" || key == null) return;
@@ -103,10 +117,17 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     }
   }, [done, key, mode, picks, items]);
 
-  const choose = useCallback((c: QuizChoice) => {
+  const commit = useCallback((c: QuizChoice) => {
     const it = items[idx];
     setPicks((p) => (p.length > idx ? p : [...p, { pick: c, scored: scoreCall(c, it) }]));
   }, [idx, items]);
+  const isHard = hard && mode === "daily";
+  const choose = useCallback((c: QuizChoice) => { if (isHard) setPending(c); else commit(c); }, [isHard, commit]);
+  const lockConfidence = (v: number) => {
+    if (pending == null) return;
+    setConfs((cs) => { const n = [...cs]; n[idx] = v; if (key != null) writeConfs(window.localStorage, key, n); return n; });
+    commit(pending); setPending(null);
+  };
 
   const dayNo = key ? dayNumber(key) : 0;
   const n = items.length;
@@ -166,6 +187,13 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         {mode === "daily" && dare.kind === "ok"
           ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
           : mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
+        {(() => {
+          const line = isHard ? calibrationText(confs, picks.map((x) => x.scored.credit)) : null;
+          return line ? <p className="sg-calib">{line}</p> : null;
+        })()}
+        {mode === "daily" ? (
+          <label className="sg-hard"><input type="checkbox" checked={hardNext} onChange={toggleHardNext} /><span>{HARD_NEXT_LABEL}</span></label>
+        ) : null}
         {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
           {mode === "daily" && dare.kind === "ok" ? (
@@ -218,6 +246,20 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const banner = dare.kind === "bad" && idx === 0
     ? <p className="sg-dare-bad" role="status">This challenge link doesn&apos;t work. Play today&apos;s five instead.</p>
     : dare.kind === "ok" && idx === 0 ? <p className="sg-dare-ok" role="status">A friend challenged you. Their picks show after you finish.</p> : null;
+  if (!p && isHard && pending != null) {
+    return (
+      <div className="sg-app">
+        <Header right={counter} />
+        <p className="sg-lbl">Hard mode</p>
+        <h1 className="sg-sent sg-conf-q">How sure are you about <b>{CHOICE_LABEL[pending]}</b>?</h1>
+        <div className="sg-conf" role="group" aria-label="Your confidence">
+          {CONFIDENCE_STEPS.map((c) => <button key={c} type="button" className="sg-btn sg-conf-b" aria-pressed={confs[idx] === c} onClick={() => lockConfidence(c)}>{c}%</button>)}
+        </div>
+        <button type="button" className="sg-keep" onClick={() => setPending(null)}>Change my pick</button>
+        <Trademark />
+      </div>
+    );
+  }
   if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={banner} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
     return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;

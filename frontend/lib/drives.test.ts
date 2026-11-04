@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { gameDrives, isDrivesFile, parseDrive, RESULT_LABEL, TILE_LABEL, driveAria, qtrLabel } from "./drives";
+import { gameDrives, isDrivesFile, parseDrive, RESULT_LABEL, TILE_LABEL, driveAria, qtrLabel, resultLabel } from "./drives";
 
 const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
@@ -83,4 +83,26 @@ test("F7 W3: opponent touchdowns name how they happened from the last tile", asy
   }
   assert.equal(resultLabel("TD", 1, "T"), "Touchdown");
   assert.equal(resultLabel("EH", 4, "Q"), "End of game");
+});
+
+test("F7: exact opponent-TD labels from the return-type letter, with fallbacks", () => {
+  const lab = (s: string) => { const d = parseDrive(s)!; return resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret); };
+  assert.equal(lab("ARI 2 10:00 5 OD GX I"), "Pick-six");
+  assert.equal(lab("ARI 2 10:00 5 OD GX F"), "Fumble return TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GK B"), "Blocked kick TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GK P"), "Punt returned for TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GK K"), "Special teams TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GX K"), "Turnover returned for TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GK M"), "Special teams TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GX -"), "Turnover returned for TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GX"), "Turnover returned for TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GG -"), "Other team scored");
+  assert.equal(lab("ARI 1 15:00 70 TD GFGT"), "Touchdown");
+});
+
+test("F7: every shipped drive string parses, old and new forms", () => {
+  for (const s of SEASONS) {
+    const f = JSON.parse(readFileSync(new URL(`../public/data/drives/${s}.json`, import.meta.url), "utf8"));
+    for (const list of Object.values(f.games) as string[][]) for (const x of list) assert.ok(parseDrive(x), x);
+  }
 });

@@ -1,4 +1,5 @@
-"""Build data/site/player_names.json: gsis_id -> full display name for players named in /fake-punt play text.
+"""Build data/site/player_names.json: gsis_id -> full display name for players named in /fake-punt play text
+(fakes.json ``plays`` and ``real_punts``).
 
 Source: nflverse players (players.parquet, display_name) and nflverse play-by-play 2019-2025 (the *_player_id /
 *_player_name columns on each fake-punt play). fakes.json and fakesText.json carry no gsis ids, only short names
@@ -67,7 +68,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("pbp", nargs="+")
     ap.add_argument("--out", default=str(OUT))
     a = ap.parse_args(argv)
-    fakes = json.loads(FAKES.read_text())["plays"]
+    f = json.loads(FAKES.read_text())
+    fakes = f["plays"] + f["real_punts"]
     games = {p["game_id"] for p in fakes}
     pl = pd.read_parquet(a.players, columns=["gsis_id", "display_name"]).dropna()
     names = dict(zip(pl["gsis_id"], pl["display_name"]))
