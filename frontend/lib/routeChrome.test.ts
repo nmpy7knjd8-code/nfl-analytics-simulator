@@ -79,7 +79,7 @@ for (const { file, route } of ROUTES) {
     if (!/<Header\b/.test(all) || !all.includes("☰") && !/from\s+["'][./]+(components\/)?SimpleGame["']/.test(all))
       problems.push("missing the Fourth & Daily <Header> with the ☰ menu (import { Header } from SimpleGame)");
     if (!/<Trademark\b/.test(all)) problems.push("missing the <Trademark /> footer");
-    if (!gameRouteBody.includes(`"${route.replace(/\[[^\]]+\]/g, "")}`))
+    if (!gameRouteBody.includes(`"${route.replace(/\[[^\]]+\]/g, "").replace(/\/+/g, "/")}`))
       problems.push(`not in AppNav useGameRoute(), so the old top bar and bottom nav still render on ${route}`);
     for (const [f, src] of srcs) {
       for (const [re, what] of DARK_MARKERS) {

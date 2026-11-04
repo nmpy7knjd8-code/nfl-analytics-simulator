@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CoachRecord } from "./CoachRecord";
 import { useEffect, useState } from "react";
 import { dailyStats, dateKey, formatScore, loadStreak, type DailyStats } from "../lib/daily";
 import { calendarCells, shieldStreak, type DayMark } from "../lib/shields";
@@ -46,6 +47,7 @@ export function StatsView() {
             ))}
           </div>
           <p className="st-key"><i className="st-played" /> Played <i className="st-shield-k" /> Shield <i className="st-missed" /> Missed</p>
+          <CoachRecord />
           <p className="sg-note">Saved only in this browser.</p>
         </>
       )}
