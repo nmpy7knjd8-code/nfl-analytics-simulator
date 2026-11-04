@@ -7,6 +7,7 @@ import {
   CALL_LABEL, buildRound, readKicks, coachCallText, leagueLabel, leagueMatchText, matchHeader, resultText, verdictText, otherTriesNote, ratesLines, readTries, sameAsCoach, shareText, situationText,
   type Call, type Try, type TwoPointFile,
 } from "../lib/twoPoint";
+import { winChanceRow } from "../lib/twoPointWinChance";
 import { teamLogo } from "./ScoreBug";
 import { Header, Trademark } from "./SimpleGame";
 
@@ -152,6 +153,7 @@ export function TwoPoint() {
       </div>
       <p className="tp-league">{leagueMatchText(file, t)}</p>
       <p className="tp-call">{verdictText(file, t)}</p>
+      <WinChanceLine t={t} />
       <ul className="tp-rates" aria-label={`Real rates, ${file.season_list[0]}–${file.season_list[file.season_list.length - 1]}`}>
         {ratesLines(file).map((l) => <li key={l}>{l}</li>)}
       </ul>
@@ -161,6 +163,23 @@ export function TwoPoint() {
         <button type="button" className="sg-next" onClick={() => setIdx(idx + 1)}>{idx + 1 < n ? "Next try" : "See your score"}</button>
       </div>
       <Trademark />
+    </div>
+  );
+}
+
+/** B1: real before/after win chance for the trying team, with a thin mini-bar. Renders nothing when off, null or OT. */
+export function WinChanceLine({ t }: { t: Try }) {
+  const r = winChanceRow(t);
+  if (!r) return null;
+  const lo = Math.min(r.before, r.after), hi = Math.max(r.before, r.after);
+  return (
+    <div className="tp-wc">
+      <p className="tp-wc-text">{r.text}</p>
+      <div className="tp-wc-bar" aria-hidden="true">
+        <span className="tp-wc-base" style={{ width: `${lo}%` }} />
+        <span className={`tp-wc-delta ${r.after >= r.before ? "is-up" : "is-down"}`} style={{ left: `${lo}%`, width: `${hi - lo}%` }} />
+        <span className="tp-wc-tick" style={{ left: `${r.before}%` }} />
+      </div>
     </div>
   );
 }

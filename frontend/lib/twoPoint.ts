@@ -7,27 +7,32 @@ export type TwoPointFile = {
   two_point: Rate & { run: Rate; pass: Rate };
   extra_point: Rate;
   cols: string[];
-  tries: (string | number)[][];
-  kicks?: (string | number)[][];
+  tries: (string | number | null)[][];
+  kicks?: (string | number | null)[][];
   kick_rule?: string;
 };
 export type Try = {
   season: number; week: number; season_type: "REG" | "POST"; game_id: string; team: string; opp: string;
   qtr: number; clock: string; diff: number; kind: "run" | "pass" | "extra_point"; made: boolean;
+  /** nflverse vegas_wp for the trying team before/after the try (#282); null when missing or OT. */
+  wp_before?: number | null; wp_after?: number | null;
 };
 export type Call = "kick" | "run" | "pass";
 
 export const ROUND_SIZE = 5;
 
-function readRows(file: TwoPointFile, rows: (string | number)[][]): Try[] {
+function readRows(file: TwoPointFile, rows: (string | number | null)[][]): Try[] {
   const at = (n: string) => file.cols.indexOf(n);
   const ix = Object.fromEntries(["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"].map((n) => [n, at(n)]));
   if (Object.values(ix).some((i) => i < 0)) return [];
+  const wb = at("wp_before"), wa = at("wp_after");
+  const num = (r: (string | number | null)[], i: number) => (i < 0 || r[i] == null || !Number.isFinite(Number(r[i])) ? null : Number(r[i]));
   return rows
     .map((r) => ({
       season: Number(r[ix.season]), week: Number(r[ix.week]), season_type: r[ix.season_type] as Try["season_type"],
       game_id: String(r[ix.game_id]), team: String(r[ix.team]), opp: String(r[ix.opp]), qtr: Number(r[ix.qtr]),
       clock: String(r[ix.clock]), diff: Number(r[ix.diff]), kind: r[ix.kind] as Try["kind"], made: Number(r[ix.made]) === 1,
+      wp_before: num(r, wb), wp_after: num(r, wa),
     }))
     .filter((t) => t.qtr >= 1 && t.qtr <= 4);
 }
@@ -91,7 +96,7 @@ export function marginText(diff: number): string {
 }
 const QTR = ["", "1st", "2nd", "3rd", "4th"];
 export function situationText(t: Try): string {
-  return `${t.team} just scored a touchdown. They're ${marginText(t.diff)} with ${t.clock.replace(/^0/, "")} left in the ${QTR[t.qtr]}.`;
+  return `${t.team} just scored a touchdown. They're ${marginText(t.diff)} before the try with ${t.clock.replace(/^0/, "")} left in the ${QTR[t.qtr]}.`;
 }
 
 export const CALL_LABEL: Record<Call, string> = { kick: "Kick the extra point", run: "Go for two: run", pass: "Go for two: pass" };
@@ -152,23 +157,59 @@ export function shareText(results: boolean[]): string {
   return `Kick or go for two? Same call as the coach ${n}/${results.length}\n${results.map((r) => (r ? "✅" : "⬜")).join("")}`;
 }
 
-/** Clear Q4 cases by the margin after the touchdown, before the try (trying team's side). */
+/** Q4 lines by the margin after the touchdown, before the try (trying team's side), -16 to 16.
+ * Each compares the score after two (+2) with after a kick (+1) and what the next score does. */
 export const MARGIN_LINES: Record<number, string> = {
-  [-2]: "Down 2: going for two ties it, a kick doesn't.",
+  [-16]: "Down 16: two leaves them down 14, so two touchdowns and kicks tie. A kick leaves them down 15.",
+  [-15]: "Down 15: two leaves them down 13, so two touchdowns and kicks win. A kick leaves them down 14, and those only tie.",
+  [-14]: "Down 14: two leaves them down 12, a kick down 13. Either way two touchdowns and kicks win.",
+  [-13]: "Down 13: two leaves them down 11, so two touchdowns win. A kick leaves them down 12, where two touchdowns need a kick to win.",
+  [-12]: "Down 12: two leaves them down 10, so a touchdown, kick and field goal tie. A kick leaves them down 11.",
+  [-11]: "Down 11: two leaves them down 9, so a touchdown and field goal tie. A kick leaves them down 10, so they'd need the extra point too.",
+  [-10]: "Down 10: two leaves them down 8, so a touchdown and two ties. A kick leaves them down 9, still two scores.",
+  [-9]: "Down 9: two leaves them down 7, so a touchdown and kick ties. A kick leaves them down 8.",
+  [-8]: "Down 8: two leaves them down 6, so a touchdown ties. A kick leaves them down 7, so they'd need the extra point too.",
+  [-7]: "Down 7: two leaves them down 5, so a touchdown wins. A kick leaves them down 6, so a touchdown only ties.",
+  [-6]: "Down 6: two leaves them down 4, a kick down 5. Either way a touchdown wins and a field goal doesn't.",
   [-5]: "Down 5: two makes it a field-goal game, a kick leaves them down 4.",
-  [1]: "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.",
-  [4]: "Up 4: two puts them up 6, so the other team needs a touchdown and the extra point to win. A kick leaves them up 5.",
+  [-4]: "Down 4: two leaves them down 2, so a field goal wins. A kick leaves them down 3, so a field goal only ties.",
+  [-3]: "Down 3: two leaves them down 1, a kick down 2. A field goal wins either way.",
+  [-2]: "Down 2: going for two ties it, a kick doesn't.",
+  [-1]: "Down 1: two takes the lead, a kick ties.",
   [0]: "Tied: two puts them up 2, a kick up 1. A field goal beats either.",
+  [1]: "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.",
+  [2]: "Up 2: two puts them up 4, so a field goal can't tie. A kick leaves them up 3.",
+  [3]: "Up 3: two makes it 5, a kick 4. Either way a field goal can't tie and a touchdown wins.",
+  [4]: "Up 4: two puts them up 6, so the other team needs a touchdown and the extra point to win. A kick leaves them up 5.",
+  [5]: "Up 5: two puts them up 7, so a touchdown and kick only ties. A kick leaves them up 6, where that wins.",
+  [6]: "Up 6: two puts them up 8, so the other team needs a touchdown and two to tie. A kick leaves them up 7.",
+  [7]: "Up 7: two puts them up 9, a two-score game. A kick leaves them up 8, so a touchdown and two ties.",
+  [8]: "Up 8: two puts them up 10, a kick up 9. Either way it's a two-score game.",
+  [9]: "Up 9: two puts them up 11, a kick up 10. Either way it's a two-score game.",
+  [10]: "Up 10: two puts them up 12, so two touchdowns only tie. A kick leaves them up 11, where two touchdowns win.",
+  [11]: "Up 11: two puts them up 13, so two touchdowns need a kick to tie. A kick leaves them up 12, where two touchdowns tie.",
+  [12]: "Up 12: two puts them up 14, so two touchdowns and kicks only tie. A kick leaves them up 13, where those win.",
+  [13]: "Up 13: two puts them up 15, so two touchdowns and kicks fall short. A kick leaves them up 14, where those tie.",
+  [14]: "Up 14: two puts them up 16, a kick up 15. Either way two touchdowns and kicks fall short.",
+  [15]: "Up 15: two puts them up 17, a three-score game. A kick leaves them up 16, where two touchdowns with two-point tries tie.",
+  [16]: "Up 16: two puts them up 18, a kick up 17. Either way it's a three-score game.",
 };
 export const EARLY_LINE = "Early on, both choices average about one point.";
 export const NEUTRAL_LINE = "Both choices average about one point.";
 
+/** Seconds left in the quarter from the data's quarter clock ("MM:SS"), or NaN. */
+export function clockSeconds(clock: string): number {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(clock ?? "").trim());
+  return m ? Number(m[1]) * 60 + Number(m[2]) : NaN;
+}
+
 /** One plain line on the try from the score alone (no rates, no model numbers).
- * Before Q4: EARLY_LINE. Q4 regulation with a clear margin: MARGIN_LINES. Otherwise (Q4 other
- * margins, OT, missing score): NEUTRAL_LINE, since "Early on" would be false there. */
+ * Q1, Q2, or Q3 with more than 5:00 left: EARLY_LINE. Q4 regulation, |diff| <= 16: MARGIN_LINES.
+ * Otherwise (Q3 under 5:00, bigger margins, OT, missing data): NEUTRAL_LINE. */
 export function verdictText(_file: TwoPointFile, t: Try): string {
   const q = Number(t.qtr);
-  if (Number.isFinite(q) && q >= 1 && q < 4) return EARLY_LINE;
+  if (q === 1 || q === 2) return EARLY_LINE;
+  if (q === 3) return clockSeconds(t.clock) > 300 ? EARLY_LINE : NEUTRAL_LINE;
   if (q === 4 && Number.isInteger(t.diff) && t.diff in MARGIN_LINES) return MARGIN_LINES[t.diff];
   return NEUTRAL_LINE;
 }
