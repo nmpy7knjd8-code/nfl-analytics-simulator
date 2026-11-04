@@ -4,7 +4,7 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { dateKey } from "../lib/daily";
 import {
-  CALL_LABEL, buildRound, readKicks, coachText, otherTriesNote, pct1, ratesLines, readTries, sameAsCoach, shareText, situationText,
+  CALL_LABEL, buildRound, readKicks, coachCallText, leagueLabel, leagueMatchText, matchHeader, resultText, otherTriesNote, ratesLines, readTries, sameAsCoach, shareText, situationText,
   type Call, type Try, type TwoPointFile,
 } from "../lib/twoPoint";
 import { teamLogo } from "./ScoreBug";
@@ -120,18 +120,18 @@ export function TwoPoint() {
           </div>
           <p className="sg-sent">{situationText(t)}</p>
         </section>
-        <div className="sg-btns">
+        <div className="sg-btns tp-btns">
           {going ? (
             <>
               <p className="sg-note">Run or pass?</p>
-              <button type="button" className="sg-btn" onClick={() => pick("run")}>Run<small>good {pct1(tp.run)}</small></button>
-              <button type="button" className="sg-btn" onClick={() => pick("pass")}>Pass<small>good {pct1(tp.pass)}</small></button>
+              <button type="button" className="sg-btn" onClick={() => pick("run")}>Run<small>{leagueLabel(tp.run)}</small></button>
+              <button type="button" className="sg-btn" onClick={() => pick("pass")}>Pass<small>{leagueLabel(tp.pass)}</small></button>
               <button type="button" className="sg-keep" onClick={() => setGoing(false)}>Back</button>
             </>
           ) : (
             <>
-              <button type="button" className="sg-btn" onClick={() => pick("kick")}>Kick for 1<small>good {pct1(xp)}</small></button>
-              <button type="button" className="sg-btn" onClick={() => setGoing(true)}>Go for 2<small>good {pct1(tp)}</small></button>
+              <button type="button" className="sg-btn" onClick={() => pick("kick")}>Kick for 1<small>{leagueLabel(xp)}</small></button>
+              <button type="button" className="sg-btn" onClick={() => setGoing(true)}>Go for 2<small>{leagueLabel(tp)}</small></button>
             </>
           )}
         </div>
@@ -144,11 +144,13 @@ export function TwoPoint() {
   return (
     <div className={`sg-app sg-rv tp ${same ? "sg-ok" : "sg-half"}`}>
       <Header right={counter} />
-      <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{same ? "=" : "≠"}</span>{same ? "Same as the coach" : "Coach went another way"}</h1>
+      <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{same ? "=" : "≠"}</span>{matchHeader(same)}</h1>
       <div className="sg-res">
         <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CALL_LABEL[call]}</div></div>
-        <div className="sg-ln"><div className="sg-lbl">The {t.team} coach</div><div className="sg-v">{coachText(t)}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">The {t.team} coach</div><div className="sg-v">{coachCallText(t)}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">Result</div><div className="sg-v tp-result">{resultText(t)}</div></div>
       </div>
+      <p className="tp-league">{leagueMatchText(file, t)}</p>
       <ul className="tp-rates" aria-label={`Real rates, ${file.season_list[0]}–${file.season_list[file.season_list.length - 1]}`}>
         {ratesLines(file).map((l) => <li key={l}>{l}</li>)}
       </ul>

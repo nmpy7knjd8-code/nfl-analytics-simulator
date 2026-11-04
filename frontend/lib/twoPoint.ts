@@ -101,6 +101,37 @@ export function coachText(t: Try): string {
   return `Went for two with a ${t.kind}. ${t.made ? "Good, 2 points." : "No good."}`;
 }
 
+/** Reveal header: did the player pick what the coach picked. */
+export const matchHeader = (same: boolean) => (same ? "You matched the coach" : "You didn't match the coach");
+
+/** The coach's call alone, without the result (the result gets its own line). */
+export function coachCallText(t: Try): string {
+  return t.kind === "extra_point" ? "Kicked the extra point" : `Went for two with a ${t.kind}`;
+}
+
+/** League rate for the kind of try the coach called. */
+export function leagueRateFor(file: TwoPointFile, t: Try): Rate {
+  return t.kind === "extra_point" ? file.extra_point : file.two_point[t.kind];
+}
+
+const KIND_PLURAL: Record<Try["kind"], string> = { extra_point: "extra points", run: "two-point runs", pass: "two-point passes" };
+
+/** Result on its own line: good or no good, then plainly whether that matched the league rate. */
+export function resultText(t: Try): string {
+  return t.made ? (t.kind === "extra_point" ? "Good, 1 point" : "Good, 2 points") : "No good";
+}
+export function leagueMatchText(file: TwoPointFile, t: Try): string {
+  const r = leagueRateFor(file, t);
+  const usual = t.made === r.made * 2 >= r.tries;
+  const kind = KIND_PLURAL[t.kind];
+  return usual
+    ? `That's the usual result: league ${kind} are good ${pct1(r)}.`
+    : `That's against the league rate: ${kind} are good ${pct1(r)}.`;
+}
+
+/** Button rate label: the league-wide rate, not this team's chance. */
+export const leagueLabel = (r: { tries: number; made: number }) => `League: ${pct1(r)}`;
+
 export function ratesLines(file: TwoPointFile): string[] {
   const tp = file.two_point, xp = file.extra_point;
   return [
