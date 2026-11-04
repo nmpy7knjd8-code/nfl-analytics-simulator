@@ -49,3 +49,12 @@ test("teamRivals: records add up and match the pair pages", () => {
   assert.deepEqual([lv.key, lv.meetings, lv.w, lv.l], ["KC-LV", 14, 11, 3]);
   assert.ok(kc[0].meetings >= kc[kc.length - 1].meetings);
 });
+
+test("either order of a pair has a page that points at the alphabetical key", async () => {
+  const { canonicalPair, reversePairs } = await import("./rivalries");
+  assert.equal(canonicalPair("GB-DET"), "DET-GB");
+  assert.equal(canonicalPair("DET-GB"), "DET-GB");
+  assert.equal(canonicalPair("DET-XYZ"), null);
+  assert.ok(reversePairs().includes("GB-DET"));
+  assert.ok(!reversePairs().some((k) => allPairs().includes(k)));
+});
