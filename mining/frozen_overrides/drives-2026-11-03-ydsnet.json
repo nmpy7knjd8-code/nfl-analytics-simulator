@@ -1,7 +1,7 @@
 {
  "file": "data/site/drives/{season}.json",
  "rule": "ydsnet",
- "approved_by": "PENDING HGIC",
+ "approved_by": "PR #279: Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #279 approved Nov 3, 2026 11:25 PM ET, yards field only, 11 games.",
  "reason": "QA 2026-11-03-38cac21 net yards: yards came from the first snap's nflverse ydsnet, but in these 12 drives nflverse tags some snaps with a neighbouring `drive` number whose ydsnet belongs to another possession. Now the candidate nflverse ydsnet closest to the snaps' own yardline_100 movement is used. Listed games may change only the yards field (ydsnet_fix_ok).",
  "games": [
   "2019_02_SEA_PIT",
