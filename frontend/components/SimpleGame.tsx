@@ -15,7 +15,7 @@ import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import type { QuizChoice } from "../lib/quiz";
 import {
   CHOICE_LABEL, RESULT_GLYPH, RESULT_TITLE, bestCallText, coachCallText, isGoalToGo, kickTooFar, optionTags,
-  outcomeFromGame, plainShare, situationSentence, tappable, type Outcome,
+  outcomeFromGame, plainShare, situationLine, situationSentence, tappable, type Outcome,
 } from "../lib/simpleGame";
 import { teamNickname } from "../lib/teams";
 import { agreedCount, challengeFor, encodeChallenge, SHORT, type ChallengeStatus } from "../lib/challenge";
@@ -260,6 +260,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       <div className="sg-app">
         <Header right={counter} />
         <p className="sg-lbl">Hard mode</p>
+        <p className="sg-conf-sit">{situationLine(it)}</p>
         <h1 className="sg-sent sg-conf-q">How sure are you about <b>{CHOICE_LABEL[pending]}</b>?</h1>
         <div className="sg-conf" role="group" aria-label="Your confidence">
           {CONFIDENCE_STEPS.map((c) => <button key={c} type="button" className="sg-btn sg-conf-b" aria-pressed={confs[idx] === c} onClick={() => lockConfidence(c)}>{c}%</button>)}
