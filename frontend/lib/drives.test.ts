@@ -45,3 +45,10 @@ test("F7: end-of-half code reads End of game in Q4 and OT", async () => {
   assert.equal(resultLabel("EH", 2), "End of half");
   assert.equal(resultLabel("EH", 4), "End of game");
 });
+
+test("F7: result code OD (renamed from OT by Data Builders) reads the same as OT", async () => {
+  const { resultLabel } = await import("./drives");
+  assert.equal(resultLabel("OD"), "Other team scored");
+  assert.equal(resultLabel("OD"), resultLabel("OT"));
+  assert.equal(parseDrive("BUF 3 07:53 0 OD GX")?.result, "OD");
+});
