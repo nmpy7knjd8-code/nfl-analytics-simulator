@@ -1517,7 +1517,7 @@ body:has(.quiz-page) .app-nav-item.is-current {
    150 ms only on reveals. Tabular numerals, body 16 px, labels >= 13 px. */
 body { font-variant-numeric: tabular-nums; }
 .fd-top { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: var(--safe-top) var(--page-pad-x) 0; min-height: calc(48px + var(--safe-top)); max-width: 40rem; margin: 0 auto; width: 100%; }
-.fd-brand { white-space: nowrap; flex-shrink: 0; font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
+.fd-brand { white-space: nowrap; flex-shrink: 0; font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; display: inline-flex; align-items: center; min-height: 44px; }
 .fd-top-r { display: flex; align-items: center; position: relative; }
 .fd-top .sg-menu { color: var(--color-ink); }
 .fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
@@ -1773,7 +1773,7 @@ body { font-variant-numeric: tabular-nums; }
 .ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:#000}
 .ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
 .ab>ul{padding-left:20px;display:grid;gap:6px}
-.ab a{color:var(--sg-b)}
+.ab a{color:var(--sg-b);padding:12px 0} /* QA V3: 44px tap height; inline padding does not move the text */
 /* —— chart pages (F4/D2), same white card as /kicks —— */
 .ch-card{padding:8px 6px}
 .ch-chips{margin:8px -2px 0}.ch-chips>:first-child{margin-left:auto}.ch-chips>:last-child{margin-right:auto}
@@ -1856,6 +1856,9 @@ body { font-variant-numeric: tabular-nums; }
 .mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
 .mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
 .wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
+/* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in
+   AppNav's path check, so the static HTML and the client render match on 404s under /team/ etc. (React #418). */
+body:has(.sg-app) .fd-top,body:has(.sg-app) .app-nav{display:none}
 
 /* A1 break-even bar (Daily answer row) */
 .be { display: grid; gap: 0.2rem; }

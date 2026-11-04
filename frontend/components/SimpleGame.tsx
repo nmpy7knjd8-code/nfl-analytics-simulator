@@ -35,7 +35,7 @@ export type Pick = { pick: QuizChoice; scored: ScoredCall };
 export function Header({ right }: { right: string }) {
   return (
     <header className="sg-top">
-      <Link href="/" className="sg-brand">Fourth <span>&amp;</span> Daily</Link>
+      <Link href="/" className="sg-brand">Fourth{" "}<span>&amp;</span>{" "}Daily</Link>
       <div className="sg-top-r">
         <span className="sg-count">{right}</span>
         <SiteMenu />
