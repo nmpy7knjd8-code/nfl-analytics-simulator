@@ -2,7 +2,7 @@
  * Stories lane: C2 Swing of the Week + C3 top-25 regulation swings.
  * Data: data/site/swings.json (v1, built in CI by mining/build_swings.py from nflverse pbp, #160),
  * copied to public/data/stories/swings.json and lazy-loaded; a test keeps the copy identical.
- * Fan copy never names the stat: "chance to win swung N points". No game or play ids are shown.
+ * Fan copy never names the stat: "win chance swung N%". No game or play ids are shown.
  */
 import { gameWeekLabel } from "../playFeed";
 
@@ -52,10 +52,12 @@ export function playText(desc: string): string {
 }
 
 export const points = (s: Swing): number => Math.round(Math.abs(s.swing) * 100);
+/** Signed percent for the list, from the team's side: "+90%" / "\u221276%". */
+export const signedPct = (s: Swing): string => `${s.swing < 0 ? "\u2212" : "+"}${points(s)}%`;
 export const pct = (wp: number): number => Math.round(wp * 100);
 
 export function swingLine(s: Swing): string {
-  return `Chance to win swung ${points(s)} points`;
+  return `Win chance swung ${points(s)}%`;
 }
 
 export function beforeAfter(s: Swing): string {

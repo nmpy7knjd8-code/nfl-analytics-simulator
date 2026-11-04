@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { finalScore, fourthDowns, isSwingsDoc, playText, points, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
+import { finalScore, fourthDowns, isSwingsDoc, playText, points, signedPct, regulation, swingLine, top25, weeksNewestFirst, situation, beforeAfter, weekLabel, type Swing } from "./swings";
 
 const raw = readFileSync(new URL("../../public/data/stories/swings.json", import.meta.url), "utf8");
 const doc = JSON.parse(raw);
@@ -29,7 +29,7 @@ test("weeks newest first; Super Bowl label for round SB", () => {
 test("fan copy: no jersey numbers, no stat names", () => {
   assert.equal(playText(base.desc), "J.Daniels pass deep middle to N.Brown for 52 yards, TOUCHDOWN.");
   assert.equal(playText("9-M.Gay 34 yard field goal is No Good, Center-97-Z.Triner, Holder-8-B.Pinion."), "M.Gay 34 yard field goal is No Good, Center-Z.Triner, Holder-B.Pinion.");
-  assert.equal(swingLine(base), "Chance to win swung 90 points");
+  assert.equal(swingLine(base), "Win chance swung 90%");
   assert.equal(points({ ...base, swing: -0.757 }), 76);
   assert.equal(beforeAfter(base), "WAS 10% → 100% to win");
   assert.equal(situation(base), "Q4 · 0:02 · 1st & 10 · WAS ball");
@@ -55,4 +55,10 @@ test("D3 4th downs only: only regulation 4th downs, deduped, biggest first", () 
   assert.ok(rows.every((r) => r.down === 4 && r.qtr <= 4));
   for (let k = 1; k < rows.length; k++) assert.ok(Math.abs(rows[k - 1].swing) >= Math.abs(rows[k].swing));
   assert.equal(new Set(rows.map((r) => `${r.game_id}|${r.clock}|${r.swing}`)).size, rows.length);
+});
+
+test("copy: win chance in percent, never 'points'", () => {
+  const b = { swing: 0.902 } as Swing;
+  assert.equal(signedPct(b), "+90%"); assert.equal(signedPct({ swing: -0.757 } as Swing), "\u221276%");
+  assert.ok(!/points?/i.test(swingLine(b)));
 });
