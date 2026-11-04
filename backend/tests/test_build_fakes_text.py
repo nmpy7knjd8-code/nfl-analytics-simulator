@@ -67,3 +67,9 @@ def test_real_punts_use_the_same_full_name_swap():
     out = mod.build(fakes, {"names": {"g": "Matt Bosher"}, "plays": {k: {"M.Bosher": "g"}}})
     assert "Matt Bosher" in out[k] and "M.Bosher" not in out[k]
     assert "M.Bosher" in mod.build(fakes, {"names": {}, "plays": {}})[k]
+
+
+def test_suffix_short_name_keeps_sentence_period():
+    out = mod.full_names("fair catch by M.Sanu Sr.", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"})
+    assert out == "fair catch by Mohamed Sanu."
+    assert mod.full_names("M.Sanu Sr. to NE 21", {"M.Sanu Sr.": "g"}, {"g": "Mohamed Sanu"}) == "Mohamed Sanu to NE 21"
