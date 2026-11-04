@@ -9,6 +9,7 @@ import {
 import { Header, Trademark } from "./SimpleGame";
 import { TeamLogo } from "./TeamLogo";
 import { GamePicker } from "./GamePicker";
+import { DriveStrips } from "./DriveStrips";
 import { DEFAULT_FEED_GAME, feedUrlToWrite, gameFromQuery, seasonOf } from "../lib/gamePicker";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -104,6 +105,7 @@ export function PlayFeedC6() {
   const [attempt, setAttempt] = useState(0);
   const [filter, setFilter] = useState<FeedFilter>(NO_FILTER);
   const [open, setOpen] = useState<string | null>(null);
+  const [view, setView] = useState<"plays" | "drives">("plays");
   useEffect(() => {
     if (!gameId) return;
     const ctrl = new AbortController();
@@ -158,6 +160,12 @@ export function PlayFeedC6() {
         <Chart g={g} play={play} onClose={closeChart} />
       ) : (
         <>
+          <div className="pf-chips ds-view" role="group" aria-label="Show">
+            <Chip on={view === "plays"} label="Plays" onClick={() => setView("plays")} />
+            <Chip on={view === "drives"} label="Drives" onClick={() => setView("drives")} />
+          </div>
+          {view === "drives" ? (gameId ? <DriveStrips gameId={gameId} basePath={BASE} /> : null) : (
+          <>
           <div className="pf-chips" role="group" aria-label="Filter plays">
             <Chip on={!any} label="All" onClick={() => setFilter(NO_FILTER)} />
             {g ? [g.away, g.home].map((t) => <Chip key={t} on={filter.team === t} label={t} onClick={() => set("team", t)} />) : null}
@@ -205,6 +213,8 @@ export function PlayFeedC6() {
               </>
             )}
           </div>
+          </>
+          )}
         </>
       )}
       <Trademark />
