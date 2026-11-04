@@ -11,8 +11,8 @@ test("public copy is identical to data/site/weather.json", () => {
   assert.ok(isWeatherDoc(doc));
 });
 
-test("open-air game reads wind and temperature with its wind band", () => {
-  assert.deepEqual(gameWeather(doc, "2024_08_CHI_WAS"), { kind: "outdoors", text: "2 mph wind · 58°F", note: "Games with 0–9 mph wind averaged 45.9 total points." });
+test("open-air game reads wind and temperature, badge only", () => {
+  assert.deepEqual(gameWeather(doc, "2024_08_CHI_WAS"), { kind: "outdoors", text: "2 mph wind · 58°F", note: "" });
 });
 
 test("roofed games get an Indoors badge; unknown games get nothing", () => {
@@ -30,4 +30,11 @@ test("every badge is plain words: no ids, no stat names, no betting words", () =
 test("the feed header mounts the badge", () => {
   assert.match(readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8"), /gameWeather\(/);
   assert.match(readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8"), /pf-wx-note">\{weather\.note\}/, "note shows inline on phones, not as hover text");
+});
+
+test("badge and note never mention points or averages", () => {
+  for (const id of [...Object.keys(doc.games), ...doc.indoors]) {
+    const w = gameWeather(doc, id)!;
+    assert.doesNotMatch(`${w.text} ${w.note}`, /points|averaged/i, id);
+  }
 });

@@ -12,6 +12,7 @@ import { TeamLogo } from "./TeamLogo";
 import { GamePicker } from "./GamePicker";
 import { DriveStrips } from "./DriveStrips";
 import { gameWeather, isWeatherDoc, type WeatherDoc } from "../lib/stories/weather";
+import { badgeLabel, isGoalLineDoc, stopKey, stopSet } from "../lib/stories/goalLine";
 import { DEFAULT_FEED_GAME, feedUrlToWrite, gameFromQuery, seasonOf } from "../lib/gamePicker";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -119,6 +120,13 @@ export function PlayFeedC6() {
       .then((d) => { if (isWeatherDoc(d)) setWx(d); }).catch(() => {});
   }, []);
   const weather = wx && gameId ? gameWeather(wx, gameId) : null;
+  // C4: goal-line stop badge. Decorative: while loading or on error, plays simply show no badge.
+  const [goal, setGoal] = useState<{ stops: Set<string>; label: string } | null>(null);
+  useEffect(() => {
+    fetch(`${BASE}/data/stories/goalline.json`).then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (isGoalLineDoc(d)) setGoal({ stops: stopSet(d), label: badgeLabel(d) }); }).catch(() => {});
+  }, []);
+  const goalStops = goal?.stops ?? new Set<string>();
   const [picking, setPicking] = useState(false);
   useEffect(() => {
     const read = () => setGameId(gameFromQuery(window.location.search));
@@ -238,8 +246,9 @@ export function PlayFeedC6() {
                         </div>
                       ) : (
                       <button type="button" id={`pf-${p.id}`} className={`pf-row${p.big ? " is-big" : ""}`} onClick={() => setOpen(p.id)}>
-                        <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}</span>
+                        <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}{gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <em className="pf-tag pf-tag-gl">Goal-line stop</em> : null}</span>
                         <span className="pf-text">{p.text}</span>
+                        {gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <span className="pf-gl-note">{goal!.label}</span> : null}
                         {p.big ? <span className="pf-gain">{bigPlayGain(g!, p)}</span> : null}
                         <WinBar g={g!} wp={p.homeWp} />
                       </button>

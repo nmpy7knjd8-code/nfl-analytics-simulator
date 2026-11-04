@@ -2,12 +2,15 @@
 
 Source: nflverse play-by-play 2019-2025 (REG+POST) final scores; game_date is nflverse's (US Eastern) date.
 2022_17_BUF_CIN (suspended, no final) is left out. ``days`` maps each MM-DD that had games (any season)
-to its games [game_id, year, away_score, home_score]; ``fallback`` maps every other MM-DD of the 366 (Feb 29
+to its games [game_id, year, away_score, home_score, ot] (ot = true when the game had any nflverse play with
+qtr >= 5, i.e. went to overtime); ``fallback`` maps every other MM-DD of the 366 (Feb 29
 included) to the offset in days of the nearest day that had games (circular across New Year; ties go to the
 earlier day; negative = earlier, e.g. -2 = "two days ago"). The FE picks the key in
 New York time. No play ids, EPA, win chance or betting fields.
 
-Frozen: a published game row may not change; days may only gain games when a season is added.
+Frozen: a published game row may not change; days may only gain games when a season is added. The one allowed
+change is the append-only ``ot`` column (mining/frozen_overrides/onthisday-2026-11-04-ot-append.json): cols must
+be exactly the old 4 + ["ot"] and the first 4 values of every row must stay identical.
 
 Usage: python mining/build_onthisday.py PBP_PARQUET [...] [--out data/site/onthisday.json]
 """
@@ -27,9 +30,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/onthisday.json"
 SCHEMA = "onthisday/v1"
 NO_RESULT_GAME = "2022_17_BUF_CIN"
-COLS = ["game_id", "year", "away_score", "home_score"]  # game_id = season_week_AWAY_HOME
+COLS = ["game_id", "year", "away_score", "home_score", "ot"]  # game_id = season_week_AWAY_HOME
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "home_score",
-           "away_score"]
+           "away_score", "qtr"]
+OT_OVERRIDE = ROOT / "mining/frozen_overrides/onthisday-2026-11-04-ot-append.json"
 LEAP = 2024
 
 
@@ -57,7 +61,8 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
     by_md: dict[str, list[list[Any]]] = {}
     for g in gl:
         d = str(g["game_date"])[:10]
-        by_md.setdefault(d[5:], []).append([g["game_id"], int(d[:4]), int(g["away_score"]), int(g["home_score"])])
+        by_md.setdefault(d[5:], []).append([g["game_id"], int(d[:4]), int(g["away_score"]), int(g["home_score"]),
+                                       bool(g.get("ot", False))])
     fallback = {}
     for k in all_keys():
         if k not in by_md:
@@ -75,9 +80,24 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def ot_append_ok(old: dict[str, Any], new: dict[str, Any]) -> bool:
+    if old.get("cols") != COLS[:4] or new.get("cols") != COLS or not OT_OVERRIDE.exists():
+        return False
+    o = json.loads(OT_OVERRIDE.read_text())
+    return o.get("rule") == "ot_append" and bool(o.get("approved_by"))
+
+
+def strip_ot(d: dict[str, Any]) -> dict[str, Any]:
+    return {**d, "cols": d["cols"][:4], "days": {k: [g[:4] for g in gs] for k, gs in d["days"].items()}}
+
+
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
+    if old.get("cols") != new.get("cols"):
+        if not ot_append_ok(old, new):
+            return ["cols"]
+        new = strip_ot(new)
     newg = {g[0]: g for gs in new["days"].values() for g in gs}
     bad = [g[0] for gs in old["days"].values() for g in gs if newg.get(g[0]) != g]
     if old.get("season_list") == new.get("season_list") and (old["days"], old["fallback"]) != (new["days"], new["fallback"]):
@@ -89,7 +109,9 @@ def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
     df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
-    df = df.drop_duplicates("game_id")
+    ot = df.groupby("game_id")["qtr"].max().ge(5)
+    df = df.drop_duplicates("game_id").drop(columns="qtr")
+    df["ot"] = df["game_id"].map(ot).astype(bool)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 
