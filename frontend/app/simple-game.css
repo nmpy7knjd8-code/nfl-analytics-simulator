@@ -225,3 +225,11 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-recap .sg-recap-key{padding:4px 0;font-size:13px;font-weight:700;color:var(--sg-g);text-transform:uppercase;letter-spacing:.03em}
 .sg-recap-key .sg-c{font-size:13px}
 .sg-agree{display:inline-block;width:14px;text-align:center;color:var(--sg-g)}
+
+/* E6 Hard mode */
+.sg-hard{display:flex;align-items:center;gap:10px;min-height:48px;font-size:15px;font-weight:600;margin:0 0 8px}
+.sg-hard input{width:22px;height:22px;accent-color:var(--sg-b)}
+.sg-conf-q{margin:6px 0 14px}
+.sg-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sg-conf-b{justify-content:center}
+.sg-calib{text-align:center;font-weight:600;margin:6px 0 10px}

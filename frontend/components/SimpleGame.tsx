@@ -25,6 +25,7 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
+import { CONFIDENCE_STEPS, calibrationLine, calibrationScore, readHard, writeHard } from "../lib/hardMode";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const nick = (a: string) => teamNickname(a);
@@ -65,6 +66,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     if (mode !== "daily" || key == null) return;
     setDare(challengeFor(window.location.hash, dayNumber(key), items.length));
   }, [key, mode, items.length]);
+  // E6 Hard mode: daily only, chosen before call 1; confidence before each reveal.
+  const [hard, setHard] = useState(false);
+  const [confs, setConfs] = useState<number[]>([]);
+  const [pending, setPending] = useState<QuizChoice | null>(null);
+  useEffect(() => { if (mode === "daily") setHard(readHard(typeof window === "undefined" ? null : window.localStorage)); }, [mode]);
+  const toggleHard = () => { const v = !hard; setHard(v); writeHard(window.localStorage, v); };
   const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
   useEffect(() => {
     if (mode !== "daily" || key == null) return;
@@ -103,10 +110,17 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     }
   }, [done, key, mode, picks, items]);
 
-  const choose = useCallback((c: QuizChoice) => {
+  const commit = useCallback((c: QuizChoice) => {
     const it = items[idx];
     setPicks((p) => (p.length > idx ? p : [...p, { pick: c, scored: scoreCall(c, it) }]));
   }, [idx, items]);
+  const isHard = hard && mode === "daily";
+  const choose = useCallback((c: QuizChoice) => { if (isHard) setPending(c); else commit(c); }, [isHard, commit]);
+  const lockConfidence = (v: number) => {
+    if (pending == null) return;
+    setConfs((cs) => { const n = [...cs]; n[idx] = v; return n; });
+    commit(pending); setPending(null);
+  };
 
   const dayNo = key ? dayNumber(key) : 0;
   const n = items.length;
@@ -166,6 +180,11 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         {mode === "daily" && dare.kind === "ok"
           ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
           : mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
+        {(() => {
+          const sc = isHard && confs.filter((c) => c != null).length === picks.length
+            ? calibrationScore(picks.map((x, i) => ({ confidence: confs[i], credit: x.scored.credit }))) : null;
+          return sc != null ? <p className="sg-calib">{calibrationLine(sc)}</p> : null;
+        })()}
         {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
           {mode === "daily" && dare.kind === "ok" ? (
@@ -218,7 +237,24 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const banner = dare.kind === "bad" && idx === 0
     ? <p className="sg-dare-bad" role="status">This challenge link doesn&apos;t work. Play today&apos;s five instead.</p>
     : dare.kind === "ok" && idx === 0 ? <p className="sg-dare-ok" role="status">A friend challenged you. Their picks show after you finish.</p> : null;
-  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={banner} onPick={choose} />;
+  if (!p && isHard && pending != null) {
+    return (
+      <div className="sg-app">
+        <Header right={counter} />
+        <p className="sg-lbl">Hard mode</p>
+        <h1 className="sg-sent sg-conf-q">How sure are you about <b>{CHOICE_LABEL[pending]}</b>?</h1>
+        <div className="sg-conf" role="group" aria-label="Your confidence">
+          {CONFIDENCE_STEPS.map((c) => <button key={c} type="button" className="sg-btn sg-conf-b" onClick={() => lockConfidence(c)}>{c}%</button>)}
+        </div>
+        <button type="button" className="sg-keep" onClick={() => setPending(null)}>Change my pick</button>
+        <Trademark />
+      </div>
+    );
+  }
+  const hardToggle = mode === "daily" && idx === 0 && !p ? (
+    <label className="sg-hard"><input type="checkbox" checked={hard} onChange={toggleHard} /><span>Hard mode: say how sure you are before each reveal</span></label>
+  ) : null;
+  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={<>{banner}{hardToggle}</>} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
     return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;
   }
