@@ -1,0 +1,17 @@
+{
+ "file": "data/site/drives/{season}.json",
+ "rule": "qtr_clock",
+ "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): approved Nov 4, 2026 1:27 AM ET, scope per override.",
+ "reason": "Analyte task 2026-11-03 follow-up to #279: in the same 12 drives / 11 games, quarter and start clock came from drive_quarter_start/drive_game_clock_start of a stray neighbouring nflverse `drive` tag. When a fixed_drive's snaps carry more than one nflverse drive tag, quarter and clock now come from the drive's first snap (qtr, time). Listed games may change only quarter/clock (qtr_clock_fix_ok). Of the 12 #279 drives, 10 (in 9 games) change; 2019_08_ARI_NO and 2023_12_PIT_CIN already had the first snap's quarter and clock.",
+ "games": [
+  "2019_02_SEA_PIT",
+  "2019_03_DEN_GB",
+  "2019_12_JAX_TEN",
+  "2019_19_HOU_KC",
+  "2020_01_CHI_DET",
+  "2020_01_TB_NO",
+  "2020_09_CAR_KC",
+  "2021_02_DEN_JAX",
+  "2025_10_NO_CAR"
+ ]
+}

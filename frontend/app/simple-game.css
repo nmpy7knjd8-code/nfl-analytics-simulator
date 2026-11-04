@@ -108,7 +108,12 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-chips{display:flex;gap:6px;overflow-x:auto;flex:none;padding:6px 12px;scrollbar-width:none;margin:0 -2px}
 .pf-chips::-webkit-scrollbar{display:none}
 .pf-chips::after{content:"";flex:0 0 16px}
-.pf-chips{-webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent)}
+/* S3: bleed to the card edge (card padding 14px) with matching inner padding; fade only toward hidden chips */
+.pf-chips{margin:0 -14px;padding:6px 14px;scroll-padding:0 14px}
+.pf-chips::after{flex:0 0 12px}
+.pf-chips.fade-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 32px),transparent)}
+.pf-chips.fade-l{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px);mask-image:linear-gradient(90deg,transparent,#000 32px)}
+.pf-chips.fade-l.fade-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(90deg,transparent,#000 32px,#000 calc(100% - 32px),transparent)}
 .pf-chip{flex:none;min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px;white-space:nowrap}
 .pf-chip.is-on{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
 .pf-chip:focus-visible,.pf-row:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
@@ -256,3 +261,4 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .ds-K{background:#9aa0a6}
 .ds-Q{background:repeating-linear-gradient(45deg,#f1f3f4 0 3px,#d0d3d6 3px 5px)}
 .ds-sub{font-size:12px;color:var(--sg-g)}
+.pf-gain{display:block;font-size:14px;font-weight:800;color:var(--sg-b);margin:2px 0 4px}

@@ -5,7 +5,9 @@ export type DrivesFile = {
   tile_key: Record<TileCode, string>; result_key: Record<string, string>; cols: string[];
   games: Record<string, string[]>;
 };
-export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[] };
+export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[]; ret?: RetCode };
+/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, M missed FG return, - other. (Data ret_key also lists K, kickoff return, but no drive ever has it.) */
+export type RetCode = "I" | "F" | "B" | "P" | "M" | "-";
 
 export const TILE_ORDER: TileCode[] = ["T", "F", "G", "N", "X", "K", "Q"];
 /** Fan words for each tile; no model numbers. */
@@ -28,9 +30,11 @@ export function isDrivesFile(x: unknown): x is DrivesFile {
 
 /** "ARI 1 15:00 70 TD GFGT" -> Drive. Returns null for a malformed string. */
 export function parseDrive(s: string): Drive | null {
-  const m = /^([A-Z]{2,3}) (\d) (\d\d:\d\d) (-?\d+) ([A-Z]{1,2}) ([TFGNXKQ]+)$/.exec(s);
+  const m = /^([A-Z]{2,3}) (\d) (\d\d:\d\d) (-?\d+) ([A-Z]{1,2}) ([TFGNXKQ]+)(?: ([IFBPKM-]))?$/.exec(s);
   if (!m) return null;
-  return { team: m[1], qtr: Number(m[2]), clock: m[3], yards: Number(m[4]), result: m[5], tiles: m[6].split("") as TileCode[] };
+  const d: Drive = { team: m[1], qtr: Number(m[2]), clock: m[3], yards: Number(m[4]), result: m[5], tiles: m[6].split("") as TileCode[] };
+  if (m[7]) d.ret = m[7] as RetCode;
+  return d;
 }
 
 export function gameDrives(f: DrivesFile, gameId: string): Drive[] {
@@ -38,11 +42,34 @@ export function gameDrives(f: DrivesFile, gameId: string): Drive[] {
 }
 
 export const qtrLabel = (q: number) => (q > 4 ? "OT" : `Q${q}`);
-export const resultLabel = (r: string, qtr = 0) => (r === "EH" && qtr >= 4 ? "End of game" : RESULT_LABEL[r] ?? r);
+/**
+ * Drive result in fan words. For an opponent touchdown (OD, formerly OT) the drive's last tile says how:
+ * X = the offense turned it over and it was returned for a TD; K = a special teams TD (punt or kick try returned).
+ * The data can't tell an interception from a fumble, or a punt from a blocked field goal, so we stop there.
+ */
+/** Exact opponent-TD wording from the return-type letter. M, "-" and any other letter (incl. K) fall back to the last square. */
+export const RET_LABEL: Partial<Record<RetCode, string>> = {
+  I: "Pick-six", F: "Fumble return TD", B: "Blocked kick TD", P: "Punt returned for TD",
+};
+export function resultLabel(r: string, qtr = 0, last?: TileCode, ret?: RetCode): string {
+  if (r === "EH" && qtr >= 4) return "End of game";
+  const exact = (r === "OD" || r === "OT") && ret ? RET_LABEL[ret] : undefined;
+  if (exact) return exact;
+  if (r === "OD" || r === "OT") return last === "X" ? "Turnover returned for TD" : last === "K" ? "Special teams TD" : "Other team scored";
+  return RESULT_LABEL[r] ?? r;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** "2024-02-11" -> "Feb 11, 2024" (read as a calendar date, no time zone shift). */
+export function humanDate(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  return m ? `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}` : iso;
+}
+export const seasonNote = (dataThrough: string) => `Season data through ${humanDate(dataThrough)}.`;
 export const yardsLabel = (y: number) => `${y} ${Math.abs(y) === 1 ? "yard" : "yards"}`;
 export const playsLabel = (n: number) => `${n} ${n === 1 ? "play" : "plays"}`;
 
 /** Screen-reader line for one strip. */
 export function driveAria(d: Drive, name: (abbr: string) => string): string {
-  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr)}`;
+  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret)}`;
 }

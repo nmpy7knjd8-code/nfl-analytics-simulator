@@ -90,7 +90,8 @@ export function plainDesc(desc: string, max = 150): string {
     .trim();
   if (s.length > max) {
     // Prefer the last full sentence that fits; only fall back to a word cut + "…" if there is none.
-    const end = [...s.slice(0, max + 1).matchAll(/[.!?](?=\s|$)/g)].pop();
+    // A period after an initial or suffix ("C.J. Goodwin", "R.James Jr. to") is not a sentence end.
+    const end = [...s.slice(0, max).matchAll(/(?<!\b(?:[A-Z]|Jr|Sr|St))[.!?](?=\s|$)/g)].pop();
     s = end ? s.slice(0, end.index! + 1) : s.slice(0, s.lastIndexOf(" ", max - 1)).replace(/[,;.]$/, "") + "…";
   }
   return s;

@@ -18,3 +18,13 @@
 .tp .sg-btn small{font-size:14px}
 .tp-league{margin:8px 0 4px;font-size:15px;font-weight:600;color:#000}
 @media (max-width:375px){.tp.sg-rv .sg-lbl{font-size:13px}.tp-league{font-size:14px}.tp-call{font-size:14px}}
+
+/* B1 win-chance row */
+.tp .tp-wc { margin: 4px 0 12px; }
+.tp .tp-wc-text { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+.tp .tp-wc-bar { position: relative; height: 6px; border-radius: 3px; background: #e6e8ec; overflow: hidden; }
+.tp .tp-wc-bar > span { position: absolute; top: 0; bottom: 0; }
+.tp .tp-wc-base { left: 0; background: #9aa3b2; }
+.tp .tp-wc-delta.is-up { background: #1f5eff; }
+.tp .tp-wc-delta.is-down { background: #d14b3c; }
+.tp .tp-wc-tick { width: 2px; margin-left: -1px; background: #111; }

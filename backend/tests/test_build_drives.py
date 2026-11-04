@@ -47,7 +47,7 @@ def test_committed_files():
         for gid, drives in d["games"].items():
             assert gid != "2022_17_BUF_CIN" and drives
             for s in drives:
-                team, q, clock, yards, res, tiles = s.split(" ")
+                team, q, clock, yards, res, tiles = s.split(" ")[:6]
                 assert res in d["result_key"] and set(tiles) <= set(d["tile_key"]) and tiles
         n += len(d["games"])
     assert n == 1960
@@ -130,5 +130,87 @@ def test_ydsnet_override_scope():
     assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 FG NNNK", old[1]])
     assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 P NNK", old[1]])
     d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2021", "2020")}
-    assert "JAX 2 14:43 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
-    assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 07:40")][0].split(" ")[3] == "39"
+    assert "JAX 1 00:26 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
+    assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 10:22")][0].split(" ")[3] == "39"
+
+
+def test_od_return_codes_and_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-od-return.json").read_text())
+    assert o["rule"] == "od_return" and len(o["games"]) == 425 == len(set(o["games"]))
+    old = ["AAA 2 10:00 5 OD GX", "BBB 2 09:00 0 TD T"]
+    assert bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX I", old[1]])
+    assert not bd.od_return_ok(old, old)
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX Z", old[1]])
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 5 OD GX I", old[1] + " I"])
+    assert not bd.od_return_ok(old, ["AAA 2 10:00 6 OD GX I", old[1]])
+    td = dict(touchdown=1, td_team="BBB")
+    assert bd.ret_code([r(pt="pass", interception=1, **td)]) == "I"
+    assert bd.ret_code([r(fumble_lost=1, **td)]) == "F"
+    assert bd.ret_code([r(pt="punt", punt_attempt=1, punt_blocked=1, **td)]) == "B"
+    assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="blocked", **td)]) == "B"
+    assert bd.ret_code([r(pt="punt", punt_attempt=1, **td)]) == "P"
+    assert bd.ret_code([r(pt="kickoff", kickoff_attempt=1, **td)]) == "-"  # K never produced
+    assert bd.ret_code([r(pt="field_goal", field_goal_attempt=1, field_goal_result="missed", **td)]) == "M"
+    assert bd.ret_code([r()]) == "-"
+    n = 0
+    for f in DIR.glob("*.json"):
+        d = json.loads(f.read_text())
+        assert d["cols"][-1] == "ret" and set(d["ret_key"]) == set("IFBPKM-")  # K kept: published bytes
+        for g in d["games"].values():
+            for s in g:
+                p = s.split(" ")
+                assert len(p) == (7 if p[4] == "OD" else 6)
+                n += p[4] == "OD"
+    assert n == 487
+
+
+
+
+def test_qtr_clock_from_stray_tagged_first_snap():
+    rows = [r(pt="kickoff", posteam="BBB", drive=4, ydsnet=13), r(drive=4, ydsnet=13, yardline_100=75, yards_gained=-2,
+            qtr=1, time="00:26", drive_quarter_start=2, drive_game_clock_start="14:43"),
+            r(drive=3, ydsnet=-2, yardline_100=77, yards_gained=0, qtr=2, time="15:00"),
+            r(pt="punt", drive=3, ydsnet=-2, yardline_100=77, yards_gained=0, fixed_drive_result="Punt", qtr=2, time="14:57")]
+    assert bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"][0].split(" ")[:4] == ["AAA", "1", "00:26", "-2"]
+    plain = [r(pt="kickoff", posteam="BBB"), r(qtr=1, time="14:55"), r(qtr=1, time="14:20")]
+    assert bd.build(plain)[2099]["games"]["2099_01_AAA_BBB"][0].split(" ")[:3] == ["AAA", "1", "15:00"]
+
+
+def test_qtr_clock_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-qtr-clock.json").read_text())
+    ydsnet = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-ydsnet.json").read_text())
+    assert o["rule"] == "qtr_clock" and len(o["games"]) == 9 == len(set(o["games"]))
+    assert set(o["games"]) <= set(ydsnet["games"])
+    old = ["AAA 2 14:43 -2 P NNNK", "BBB 1 10:00 5 TD GT"]
+    assert bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 -2 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, old)
+    assert not bd.qtr_clock_fix_ok(old, ["BBB 1 00:26 -2 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 3 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 -2 P NNK", old[1]])
+
+
+
+def test_fixed_drive_split_where_posteam_changes():
+    rows = [r(fixed_drive_result="Field goal", drive=2, ydsnet=43, drive_end_transition="DOWNS"),
+            r(fixed_drive_result="Field goal", drive=2, ydsnet=43, drive_end_transition="DOWNS", pt="pass"),
+            r(fixed_drive_result="Field goal", posteam="BBB", drive=3, ydsnet=32, drive_game_clock_start="08:31",
+              drive_end_transition="FIELD_GOAL"),
+            r(fixed_drive_result="Field goal", posteam="BBB", drive=3, ydsnet=32, drive_game_clock_start="08:31",
+              drive_end_transition="FIELD_GOAL", pt="field_goal")]
+    g = bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"]
+    assert [" ".join(s.split(" ")[:6]) for s in g] == ["AAA 1 15:00 43 DN GG", "BBB 1 08:31 32 FG GK"]
+
+
+def test_posteam_split_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-04-posteam-split.json").read_text())
+    assert o["rule"] == "posteam_split" and sorted(o["games"]) == ["2019_02_TB_CAR", "2023_12_PIT_CIN"]
+    old = ["CIN 2 08:16 13 P GGNKGFGNNK"]
+    assert bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "PIT 2 06:25 13 P GFGNNK"])
+    assert not bd.posteam_split_ok(old, old)
+    assert not bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "PIT 2 06:25 13 P GFGNN"])
+    assert not bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "CIN 2 06:25 13 P GFGNNK"])
+    d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2019", "2023")}
+    s19 = [" ".join(s.split(" ")[:6]) for s in d["2019"]["2019_02_TB_CAR"]]
+    s23 = [" ".join(s.split(" ")[:6]) for s in d["2023"]["2023_12_PIT_CIN"]]
+    assert "CAR 1 13:01 43 DN FFGGFGNGN" in s19 and "TB 1 08:31 32 FG GFGGNK" in s19
+    assert "CIN 2 08:16 -4 P GGNK" in s23 and "PIT 2 06:25 13 P GFGNNK" in s23

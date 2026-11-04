@@ -5,6 +5,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { teamNickname } from "./teams";
 import raw from "./site/fakes.json";
+import fanTextsForTest from "./site/fakesText.json";
+import { readFileSync } from "node:fs";
+const FULL_NAMES: string[] = Object.values(JSON.parse(readFileSync(new URL("../../data/site/player_names.json", import.meta.url), "utf8")).names);
 import { buildRound, isCorrect, matchupText, plainDesc, playText, ratesText, situationText, whyText, ROUND_SIZE, type FakesFile } from "./fakePunt";
 
 const file = raw as unknown as FakesFile;
@@ -106,10 +109,24 @@ test("P3: answer text is never cut mid-play: no '…', ends in sentence punctuat
 
 test("answer text uses plain names: no 'NYJ-' prefixes or team codes", () => {
   for (const p of [...file.plays, ...file.real_punts]) {
-    const s = whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" }) + " " + playText(p);
+    let s = whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" }) + " " + playText(p);
+    for (const n of FULL_NAMES) s = s.split(n).join("");  // full names like "AJ McCarron" are not team codes
     assert.ok(!/\b[A-Z]{2,3}-[A-Z]/.test(s), s);
     assert.ok(!/\b[A-Z]{2,3}\b/.test(s), s);
   }
   const farley = file.real_punts.find((p) => /downed by NYJ-\d+-M\.Farley/.test(p.desc));
   if (farley) assert.match(playText(farley), /downed by M\.Farley/);
+});
+
+test("full player names from player_names.json, short names when unmatched", () => {
+  const texts = Object.values(fanTextsForTest);
+  assert.ok(texts.some((s) => s.startsWith("Direct snap to Anthony Levine. Anthony Levine up the middle")));
+  assert.ok(texts.some((s) => /recovered by B\.Skrine/.test(s)), "unmatched names keep the short form");
+});
+
+test("150 cap does not cut at an initial or Jr.", () => {
+  const s = plainDesc("Chris Jones pass short left to C.J. Goodwin to the Bears 40 for 12 yards. " + "Then a long penalty note follows here. ".repeat(4));
+  assert.ok(s.length <= 150 && /[.!?]$/.test(s) && !/C\.J\.$/.test(s), s);
+  const j = plainDesc("R.James Jr. to the 49ers 26 for 2 yards and a lot more words follow here with no stop at all " + "x ".repeat(40));
+  assert.ok(!j.endsWith("Jr."), j);
 });

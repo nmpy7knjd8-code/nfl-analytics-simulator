@@ -122,7 +122,7 @@ def test_committed_files():
     assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 150_000
+    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 170_000  # +wp_before/wp_after 2026-11-03
 
 
 def test_decoys_stratified_deterministic_and_frozen():
@@ -215,3 +215,34 @@ def test_no_play_kind_from_nflverse_and_override_is_narrow():
     assert bt.check_frozen(bad, t) != []
     bad = json.loads(json.dumps(old)); bad["two_point"]["made"] = 455  # headline totals stay frozen
     assert bt.check_frozen(bad, t) != []
+
+
+def test_wp_append_only_scope():
+    t = json.loads(TWO.read_text())
+    assert t["cols"] == bt.BASE_COLS + ["wp_before", "wp_after"]
+    old = bt.strip_wp(t)
+    assert bt.wp_append_ok(old, t) and bt.check_frozen(old, t) == []
+    bad = {**t, "tries": [r[:10] + [1 - r[10]] + r[11:] for r in t["tries"][:1]] + t["tries"][1:]}
+    assert bt.check_frozen(old, bad) != []  # an existing value may not change
+    assert not bt.wp_append_ok(old, {**t, "cols": t["cols"] + ["x"]})
+    for lst in ("tries", "kicks"):
+        for r in t[lst]:
+            x = dict(zip(t["cols"], r))
+            if x["qtr"] > 4:
+                assert x["wp_before"] is None and x["wp_after"] is None
+            else:
+                assert 0 <= x["wp_before"] <= 1 and 0 <= x["wp_after"] <= 1
+
+
+def test_wp_after_swings_rule_trying_team_view():
+    g = "2099_01_AAA_BBB"
+    base = {"game_id": g, "home_team": "BBB", "home_score": 7, "away_score": 6, "time": "05:00", "desc": "x"}
+    rows = [{**base, "play_id": 1, "posteam": "AAA", "play_type": "extra_point", "vegas_home_wp": 0.4},
+            {**base, "play_id": 2, "posteam": "BBB", "play_type": "kickoff", "vegas_home_wp": 0.55},
+            {**base, "play_id": 3, "posteam": "BBB", "play_type": "extra_point", "vegas_home_wp": 0.9, "time": "00:00"},
+            {**base, "play_id": 4, "posteam": None, "play_type": None, "vegas_home_wp": 1.0, "desc": "END GAME"}]
+    bt.attach_after(rows, lambda r: r["play_type"] == "extra_point")
+    assert round(rows[0]["_wp_after"], 4) == 0.45  # next row, AAA's view (1 - home)
+    assert rows[2]["_wp_after"] == 1.0  # no next row (END GAME skipped): final result, home won
+    ot = {"qtr": 5, "vegas_wp": 0.5, "_wp_after": 1.0}
+    assert bt.wp_pair(ot) == [None, None] and bt.wp_pair({**ot, "qtr": 4}) == [0.5, 1.0]

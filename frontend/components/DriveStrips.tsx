@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TILE_LABEL, TILE_ORDER, driveAria, drivesUrl, gameDrives, isDrivesFile, playsLabel, qtrLabel, resultLabel, yardsLabel, type Drive } from "../lib/drives";
+import { TILE_LABEL, TILE_ORDER, driveAria, drivesUrl, gameDrives, isDrivesFile, playsLabel, qtrLabel, resultLabel, seasonNote, yardsLabel, type Drive } from "../lib/drives";
 import { teamNickname } from "../lib/teams";
 import { TeamLogo } from "./TeamLogo";
 
@@ -43,7 +43,7 @@ export function DriveStrips({ gameId, basePath }: { gameId: string; basePath: st
                   <TeamLogo abbr={d.team} size={18} />
                   <b>{teamNickname(d.team)}</b>
                   <span className="ds-when">{qtrLabel(d.qtr)} {d.clock}</span>
-                  <span className={`ds-res${d.result === "TD" || d.result === "FG" ? " is-score" : ""}`}>{resultLabel(d.result, d.qtr)}</span>
+                  <span className={`ds-res${d.result === "TD" || d.result === "FG" ? " is-score" : ""}`}>{resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret)}</span>
                 </div>
                 <div className="ds-tiles">
                   {d.tiles.map((t, j) => <span key={j} className={`ds-t ds-${t}`} title={TILE_LABEL[t]} />)}
@@ -54,7 +54,7 @@ export function DriveStrips({ gameId, basePath }: { gameId: string; basePath: st
           );
         })}
       </ol>
-      <p className="kb-note">Each square is one snap, in order. Data: nflverse play-by-play. Data through {load.dataThrough}.</p>
+      <p className="kb-note">Each square is one snap, in order. Data: nflverse play-by-play. {seasonNote(load.dataThrough)}</p>
     </section>
   );
 }

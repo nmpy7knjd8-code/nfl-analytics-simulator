@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import {
-  KIND_LABEL, NO_FILTER, buildFeed, canChart, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
+  KIND_LABEL, NO_FILTER, bigPlayGain, buildFeed, canChart, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
   type FeedFilter, type FeedGame, type FeedPlay, type KindFilter,
 } from "../lib/playFeed";
 import { Header, Trademark } from "./SimpleGame";
@@ -21,6 +22,31 @@ function Chip({ on, label, onClick }: { on: boolean; label: string; onClick: () 
     <button type="button" className={`pf-chip${on ? " is-on" : ""}`} aria-pressed={on} onClick={onClick}>
       {label}
     </button>
+  );
+}
+
+/** S3: chip row bleeds to the card edges with matching padding; a fade shows only on a side that has more chips to scroll to. */
+function ChipRow({ className, label, children }: { className: string; label: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [edge, setEdge] = useState({ l: false, r: false });
+  const update = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const l = el.scrollLeft > 2, r = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+    setEdge((e) => (e.l === l && e.r === r ? e : { l, r }));
+  }, []);
+  useEffect(() => {
+    update();
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [update, children]);
+  return (
+    <div ref={ref} className={`${className}${edge.l ? " fade-l" : ""}${edge.r ? " fade-r" : ""}`} role="group" aria-label={label} onScroll={update}>
+      {children}
+    </div>
   );
 }
 
@@ -160,19 +186,19 @@ export function PlayFeedC6() {
         <Chart g={g} play={play} onClose={closeChart} />
       ) : (
         <>
-          <div className="pf-chips ds-view" role="group" aria-label="Show">
+          <ChipRow className="pf-chips ds-view" label="Show">
             <Chip on={view === "plays"} label="Plays" onClick={() => setView("plays")} />
             <Chip on={view === "drives"} label="Drives" onClick={() => setView("drives")} />
-          </div>
+          </ChipRow>
           {view === "drives" ? (gameId ? <DriveStrips gameId={gameId} basePath={BASE} /> : null) : (
           <>
-          <div className="pf-chips" role="group" aria-label="Filter plays">
+          <ChipRow className="pf-chips" label="Filter plays">
             <Chip on={!any} label="All" onClick={() => setFilter(NO_FILTER)} />
             {g ? [g.away, g.home].map((t) => <Chip key={t} on={filter.team === t} label={t} onClick={() => set("team", t)} />) : null}
             {(Object.keys(KIND_LABEL) as KindFilter[]).map((k) => <Chip key={k} on={filter.kind === k} label={KIND_LABEL[k]} onClick={() => set("kind", k)} />)}
             {[1, 2, 3, 4].map((q) => <Chip key={q} on={filter.qtr === q} label={`Q${q}`} onClick={() => set("qtr", q)} />)}
             {g?.plays.some((p) => p.ot) ? <Chip on={filter.qtr === 5} label="OT" onClick={() => set("qtr", 5)} /> : null}
-          </div>
+          </ChipRow>
           <div className="pf-list" aria-busy={load.state === "loading"}>
             {load.state === "loading" ? (
               <>
@@ -204,6 +230,7 @@ export function PlayFeedC6() {
                       <button type="button" id={`pf-${p.id}`} className={`pf-row${p.big ? " is-big" : ""}`} onClick={() => setOpen(p.id)}>
                         <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}</span>
                         <span className="pf-text">{p.text}</span>
+                        {p.big ? <span className="pf-gain">{bigPlayGain(g!, p)}</span> : null}
                         <WinBar g={g!} wp={p.homeWp} />
                       </button>
                       )}
