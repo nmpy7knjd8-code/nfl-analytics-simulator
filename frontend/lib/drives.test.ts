@@ -52,3 +52,28 @@ test("F7: result code OD (renamed from OT by Data Builders) reads the same as OT
   assert.equal(resultLabel("OD"), resultLabel("OT"));
   assert.equal(parseDrive("BUF 3 07:53 0 OD GX")?.result, "OD");
 });
+
+test("F7 W2: footer date is human-readable and comes from the file", async () => {
+  const { humanDate, seasonNote } = await import("./drives");
+  assert.equal(humanDate("2024-02-11"), "Feb 11, 2024");
+  assert.equal(seasonNote("2025-02-09"), "Season data through Feb 9, 2025.");
+  for (const s of SEASONS) {
+    const f = JSON.parse(readFileSync(new URL(`../public/data/drives/${s}.json`, import.meta.url), "utf8"));
+    assert.match(seasonNote(f.dataThrough), /^Season data through [A-Z][a-z]{2} \d{1,2}, \d{4}\.$/);
+  }
+  const ui = readFileSync(new URL("../components/DriveStrips.tsx", import.meta.url), "utf8");
+  assert.match(ui, /seasonNote\(load\.dataThrough\)/);
+  assert.doesNotMatch(ui, /Data through \{/);
+});
+
+test("F7 W3: opponent touchdowns name how they happened from the last tile", async () => {
+  const { resultLabel } = await import("./drives");
+  for (const code of ["OD", "OT"]) {
+    assert.equal(resultLabel(code, 2, "X"), "Turnover returned for TD");
+    assert.equal(resultLabel(code, 2, "K"), "Special teams TD");
+    assert.equal(resultLabel(code, 2, "G"), "Other team scored");
+    assert.equal(resultLabel(code), "Other team scored");
+  }
+  assert.equal(resultLabel("TD", 1, "T"), "Touchdown");
+  assert.equal(resultLabel("EH", 4, "Q"), "End of game");
+});
