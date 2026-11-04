@@ -19,5 +19,5 @@ export function stopSet(d: GoalLineDoc): Set<string> {
 /** Badge wording: rounded percent, never "0%". */
 export function badgeLabel(d: GoalLineDoc): string {
   const n = Math.round(d.rates.rate * 100);
-  return `Goal-line stop. Offenses score on ${n < 1 ? "<1" : n}% of these tries.`;
+  return `Offenses score on ${n < 1 ? "<1" : n}% of these tries.`;
 }

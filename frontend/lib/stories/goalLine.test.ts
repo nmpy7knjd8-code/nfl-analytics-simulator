@@ -21,9 +21,9 @@ test("100 real stops keyed by game, quarter and clock", () => {
 
 test("badge reads in percent from 229 tries, no ids or stat names", () => {
   assert.equal(doc.rates.tries, 229);
-  assert.equal(badgeLabel(doc), "Goal-line stop. Offenses score on 56% of these tries.");
+  assert.equal(badgeLabel(doc), "Offenses score on 56% of these tries.");
   assert.doesNotMatch(badgeLabel(doc), /EPA|WPA|odds|bet|_/);
-  assert.equal(badgeLabel({ ...doc, rates: { ...doc.rates, rate: 0.001 } }), "Goal-line stop. Offenses score on <1% of these tries.");
+  assert.equal(badgeLabel({ ...doc, rates: { ...doc.rates, rate: 0.001 } }), "Offenses score on <1% of these tries.");
 });
 
 test("the feed mounts the badge on plays only (no /goal-line/ page)", () => {
