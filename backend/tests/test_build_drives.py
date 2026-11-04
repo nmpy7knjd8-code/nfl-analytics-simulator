@@ -60,3 +60,31 @@ def test_frozen():
     gid = next(iter(new["games"]))
     new["games"][gid] = new["games"][gid][1:]
     assert bd.check_frozen(d, new) == [gid]
+
+
+def test_two_point_try_is_not_a_snap():
+    rows = [r(touchdown=1, td_team="AAA"), r(two_point_attempt=1, yards_gained=2),
+            r(d=2, pt="kickoff", posteam="BBB"), r(d=2, posteam="BBB", two_point_attempt=1, ydsnet=0)]
+    assert bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"] == ["AAA 1 15:00 75 TD T"]
+
+
+def test_return_td_drive_without_snaps_gone():
+    d = json.loads((DIR / "2024.json").read_text())["games"]["2024_01_ARI_BUF"]
+    assert not [s for s in d if s.startswith("ARI 4 08:44")]
+    assert "BUF 4 13:32 70 TD GFGNGFNFNT" in d
+
+
+def test_two_point_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-two-point.json").read_text())
+    assert len(o["games"]) == 703 == len(set(o["games"]))
+    old = ["AAA 1 15:00 75 TD GFTG", "BBB 1 10:00 0 TD G", "BBB 2 09:00 -5 OT NXG", "AAA 2 05:00 3 P GK"]
+    good = ["AAA 1 15:00 75 TD GFT", "BBB 2 09:00 -5 OT NX", "AAA 2 05:00 3 P GK"]
+    assert bd.two_point_fix_ok(old, good)
+    assert not bd.two_point_fix_ok(old, ["AAA 1 15:00 75 TD GF", *good[1:]])
+    assert not bd.two_point_fix_ok(old, [good[0], good[1], "AAA 2 05:00 3 P G"])
+    assert not bd.two_point_fix_ok(old, [good[0], "BBB 2 09:00 -6 OT NX", good[2]])
+    assert not bd.two_point_fix_ok(["AAA 1 15:00 75 P GK"], [])
+    base = {"schema": "drives/v1", "cols": [], "games": {"g": old, "h": old}}
+    new = {"schema": "drives/v1", "cols": [], "games": {"g": good, "h": good}}
+    assert bd.check_frozen(base, new, {"g"}) == ["h"]
+    assert bd.check_frozen(base, base, {"g"}) == ["g (override: not exactly the two-point tile fix)"]
