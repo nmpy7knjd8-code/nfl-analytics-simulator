@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { calib } from "../lib/calib";
+import { ChipScroll } from "./ChipScroll";
 import { Header, Trademark } from "./SimpleGame";
 
 const S = 358, P = 42, IN = S - P - 20;
@@ -45,11 +46,13 @@ export function CalibrationChart() {
           <li>Home team actually won<strong>{cur.actual.toFixed(1)}%</strong></li>
           <li className="era-all">Plays in this group<strong>{cur.plays.toLocaleString()}</strong></li>
         </ul>
-        <div className="pf-chips ch-chips" role="group" aria-label="Pick a group">
-          {b.map((x, i) => (
-            <button key={x.lo} type="button" className={`pf-chip${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{x.lo}–{x.hi}</button>
-          ))}
-        </div>
+        <ChipScroll>
+          <div className="pf-chips ch-chips" role="group" aria-label="Pick a group">
+            {b.map((x, i) => (
+              <button key={x.lo} type="button" className={`pf-chip${i === sel ? " is-on" : ""}`} aria-pressed={i === sel} onClick={() => setSel(i)}>{x.lo}–{x.hi}</button>
+            ))}
+          </div>
+        </ChipScroll>
       </section>
 
       <p className="kb-note">

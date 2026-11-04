@@ -2,7 +2,7 @@
 .sg-app{--sg-b:#1E5BFF;--sg-g:#5f6368;max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:0 16px 8px;color:#000;background:#fff;font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .sg-app button{font-family:inherit;cursor:pointer}
 .sg-top{display:flex;justify-content:space-between;align-items:center;height:48px;flex:none}
-.sg-brand{font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
+.sg-brand{display:inline-flex;align-items:center;min-height:44px;font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
 .sg-top-r{display:flex;align-items:center;gap:6px;position:relative}
 .sg-count{font-size:14px;color:var(--sg-g);font-weight:600}
 .sg-menu{width:48px;height:48px;border:0;background:none;font-size:24px;margin-right:-12px;color:#000}
@@ -105,11 +105,11 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .pf-game{display:flex;align-items:center;gap:6px;min-height:32px;flex:none;font-size:16px}
 .pf-game img{width:22px;height:22px;object-fit:contain}
 .pf-at{color:var(--sg-g)}.pf-wk{margin-left:auto;font-size:13px;color:var(--sg-g)}
-.pf-chips{display:flex;gap:6px;overflow-x:auto;flex:none;padding:6px 0;scrollbar-width:none;margin:0 -2px}
+.pf-chips{display:flex;gap:6px;overflow-x:auto;flex:none;padding:6px 12px;scrollbar-width:none;margin:0 -2px}
 .pf-chips::-webkit-scrollbar{display:none}
-.pf-chips::after{content:"";flex:0 0 24px}
-.pf-chips{scroll-snap-type:x proximity;scroll-padding-inline:2px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}.pf-chip{scroll-snap-align:start}
-.pf-chip{flex:none;min-height:48px;padding:0 16px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px;white-space:nowrap}
+.pf-chips::after{content:"";flex:0 0 1px}
+.pf-chips{scroll-snap-type:x proximity;scroll-padding-inline:12px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 24px),transparent)}.pf-chip{scroll-snap-align:start}
+.pf-chip{flex:none;min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;border-radius:999px;border:1.5px solid #000;background:#fff;color:#000;font-weight:700;font-size:15px;white-space:nowrap}
 .pf-chip.is-on{background:var(--sg-b);border-color:var(--sg-b);color:#fff}
 .pf-chip:focus-visible,.pf-row:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
 .pf-list{flex:1 1 0;min-height:0;overflow-y:auto;overscroll-behavior:contain;border-top:1px solid #e6e6e6}

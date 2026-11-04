@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { outcomes, cellFor, binLabel } from "../lib/outcomes";
+import { ChipScroll } from "./ChipScroll";
 import { Header, Trademark } from "./SimpleGame";
 
 const W = 358, H = 200, L = 6, R = 6, T = 10, B = 26;
@@ -26,20 +27,24 @@ export function OutcomeHistogram() {
       <h1 className="kb-h1">Where 4th downs land</h1>
       <p className="kb-lede">Every real run or pass on 4th down, by how many yards it gained.</p>
 
-      <div className="pf-chips ch-chips" role="group" aria-label="Yards to go">
-        {Array.from({ length: 10 }, (_, i) => i + 1).map((t) => (
-          <button key={t} type="button" className={`pf-chip${t === togo ? " is-on" : ""}`} aria-pressed={t === togo} onClick={() => setTogo(t)}>
-            {t === 10 ? "10+" : t}
-          </button>
-        ))}
-      </div>
-      <div className="pf-chips ch-chips" role="group" aria-label="Where on the field">
-        {outcomes.zones.map((q) => (
-          <button key={q.id} type="button" className={`pf-chip${q.id === zone ? " is-on" : ""}`} aria-pressed={q.id === zone} onClick={() => setZone(q.id)}>
-            {q.label}
-          </button>
-        ))}
-      </div>
+      <ChipScroll>
+        <div className="pf-chips ch-chips" role="group" aria-label="Yards to go">
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((t) => (
+            <button key={t} type="button" className={`pf-chip${t === togo ? " is-on" : ""}`} aria-pressed={t === togo} onClick={() => setTogo(t)}>
+              {t === 10 ? "10+" : t}
+            </button>
+          ))}
+        </div>
+      </ChipScroll>
+      <ChipScroll>
+        <div className="pf-chips ch-chips" role="group" aria-label="Where on the field">
+          {outcomes.zones.map((q) => (
+            <button key={q.id} type="button" className={`pf-chip${q.id === zone ? " is-on" : ""}`} aria-pressed={q.id === zone} onClick={() => setZone(q.id)}>
+              {q.label}
+            </button>
+          ))}
+        </div>
+      </ChipScroll>
 
       <section className="kb-hero ch-card" aria-live="polite">
         <div className="oh-head">4th-and-{togo === 10 ? "10+" : togo} · {z.label.toLowerCase()}</div>
