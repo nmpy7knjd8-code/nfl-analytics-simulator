@@ -132,3 +132,29 @@ def test_ydsnet_override_scope():
     d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2021", "2020")}
     assert "JAX 2 14:43 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
     assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 07:40")][0].split(" ")[3] == "39"
+
+
+def test_fixed_drive_split_where_posteam_changes():
+    rows = [r(fixed_drive_result="Field goal", drive=2, ydsnet=43, drive_end_transition="DOWNS"),
+            r(fixed_drive_result="Field goal", drive=2, ydsnet=43, drive_end_transition="DOWNS", pt="pass"),
+            r(fixed_drive_result="Field goal", posteam="BBB", drive=3, ydsnet=32, drive_game_clock_start="08:31",
+              drive_end_transition="FIELD_GOAL"),
+            r(fixed_drive_result="Field goal", posteam="BBB", drive=3, ydsnet=32, drive_game_clock_start="08:31",
+              drive_end_transition="FIELD_GOAL", pt="field_goal")]
+    g = bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"]
+    assert [" ".join(s.split(" ")[:6]) for s in g] == ["AAA 1 15:00 43 DN GG", "BBB 1 08:31 32 FG GK"]
+
+
+def test_posteam_split_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-04-posteam-split.json").read_text())
+    assert o["rule"] == "posteam_split" and sorted(o["games"]) == ["2019_02_TB_CAR", "2023_12_PIT_CIN"]
+    old = ["CIN 2 08:16 13 P GGNKGFGNNK"]
+    assert bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "PIT 2 06:25 13 P GFGNNK"])
+    assert not bd.posteam_split_ok(old, old)
+    assert not bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "PIT 2 06:25 13 P GFGNN"])
+    assert not bd.posteam_split_ok(old, ["CIN 2 08:16 -4 P GGNK", "CIN 2 06:25 13 P GFGNNK"])
+    d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2019", "2023")}
+    s19 = [" ".join(s.split(" ")[:6]) for s in d["2019"]["2019_02_TB_CAR"]]
+    s23 = [" ".join(s.split(" ")[:6]) for s in d["2023"]["2023_12_PIT_CIN"]]
+    assert "CAR 1 13:01 43 DN FFGGFGNGN" in s19 and "TB 1 08:31 32 FG GFGGNK" in s19
+    assert "CIN 2 08:16 -4 P GGNK" in s23 and "PIT 2 06:25 13 P GFGNNK" in s23

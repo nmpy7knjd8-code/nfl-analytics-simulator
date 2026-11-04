@@ -40,10 +40,13 @@ RESULTS = {"Touchdown": "TD", "Field goal": "FG", "Punt": "P", "Turnover": "TO",
            "Missed field goal": "MF", "End of half": "EH", "Opp touchdown": "OD", "Safety": "SF"}
 RESULT_KEY = {"TD": "Touchdown", "FG": "Field goal", "P": "Punt", "TO": "Turnover", "DN": "Turnover on downs",
               "MF": "Missed field goal", "EH": "End of half", "OD": "Opponent touchdown", "SF": "Safety"}
+TRANSITIONS = {"TOUCHDOWN": "TD", "FIELD_GOAL": "FG", "PUNT": "P", "INTERCEPTION": "TO", "FUMBLE": "TO",
+               "DOWNS": "DN", "MISSED_FG": "MF", "END_HALF": "EH", "END_GAME": "EH", "SAFETY": "SF",
+               "OPP_TOUCHDOWN": "OD"}
 COLS = ["team", "qtr", "clock", "yards", "result", "tiles"]  # one space-separated string per drive
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive", "drive",
            "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start",
-           "ydsnet", "yardline_100", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "desc"]
+           "ydsnet", "yardline_100", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "drive_end_transition", "desc"]
 
 
 def _num(v: Any) -> float | None:
@@ -94,20 +97,28 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
     for i, r in enumerate(rs):
         if r["game_id"] == BAD_ROW_GAME and str(r.get("desc") or "").startswith("End of half"):
             bad |= {i, i - 1}
-    drives: dict[int, list[dict[str, Any]]] = {}
+    drives: dict[tuple[int, int], list[dict[str, Any]]] = {}
+    seg: dict[int, tuple[int, str]] = {}  # fixed_drive -> (segment index, posteam of its last snap)
     for i, r in enumerate(rs):
         d = _num(r.get("fixed_drive"))
         if (i in bad or d is None or r.get("play_type") not in SNAPS or not r.get("posteam")
                 or _num(r.get("two_point_attempt")) == 1):  # a two-point try is not a drive snap
             continue
-        drives.setdefault(int(d), []).append(r)
+        k, pt = seg.get(int(d), (0, r["posteam"]))
+        if pt != r["posteam"]:  # nflverse fixed_drive holding two possessions: split where posteam changes
+            k += 1
+        seg[int(d)] = (k, r["posteam"])
+        drives.setdefault((int(d), k), []).append(r)
     out = []
     for d in sorted(drives):
         snaps = drives[d]
+        split = seg[d[0]][0] > 0
         f = snaps[0]
         y = drive_ydsnet(snaps)
         q = int(_num(f.get("drive_quarter_start")) or _num(f.get("qtr")) or 0)
         res = RESULTS[f["fixed_drive_result"]]
+        if split:  # fixed_drive_result covers the whole fixed_drive; use this possession's own nflverse end
+            res = TRANSITIONS[snaps[-1]["drive_end_transition"]]
         out.append(" ".join([f["posteam"], str(q), str(f.get("drive_game_clock_start") or "-"),
                              "-" if y is None else str(int(y)), res, "".join(tile(r) for r in snaps)]))
     return out
@@ -162,7 +173,27 @@ def ydsnet_fix_ok(old: list[str], new: list[str]) -> bool:
         o.split(" ")[:3] + o.split(" ")[4:] == n.split(" ")[:3] + n.split(" ")[4:] for o, n in zip(old, new))
 
 
-RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok}
+def posteam_split_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with drives split in two where posteam changed: the first part keeps team, quarter
+    and clock, the second part has another team, and their tiles join back to the old drive's tiles."""
+    if len(new) <= len(old):
+        return False
+    j = 0
+    for o in old:
+        if j < len(new) and new[j] == o:
+            j += 1
+            continue
+        if j + 1 >= len(new):
+            return False
+        ot, a, c = o.split(" "), new[j].split(" "), new[j + 1].split(" ")
+        if not (a[:3] == ot[:3] and c[0] != a[0] and a[5] + c[5] == ot[5] and a[6:] == c[6:] == ot[6:]):
+            return False
+        j += 2
+    return j == len(new)
+
+
+RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok,
+         "posteam_split": posteam_split_ok}
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset(),
