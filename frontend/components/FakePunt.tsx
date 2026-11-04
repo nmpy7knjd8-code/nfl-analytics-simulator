@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { dateKey } from "../lib/daily";
-import { buildRound, isCorrect, plainDesc, ratesText, shareText, situationText, whyText, type Card, type FakesFile, type Guess } from "../lib/fakePunt";
+import { buildRound, isCorrect, matchupText, playText, ratesText, shareText, situationText, whyText, type Card, type FakesFile, type Guess } from "../lib/fakePunt";
+import { teamNickname } from "../lib/teams";
 import { teamLogo } from "./ScoreBug";
 import { Header, Trademark } from "./SimpleGame";
 
@@ -82,7 +83,7 @@ export function FakePunt() {
               <b aria-label={results[i] ? "Correct" : "Wrong"}>{results[i] ? "✓" : "✗"}</b>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={teamLogo(c.play.team)} alt="" width={22} height={22} className="sg-plate" />
-              <span><strong>{c.play.team}</strong> · {c.play.season}</span>
+              <span><strong>{teamNickname(c.play.team)}</strong> · {c.play.season}</span>
               <span className="sg-c">{c.answer === "fake" ? "Fake" : "Real punt"}</span>
             </div>
           ))}
@@ -106,7 +107,7 @@ export function FakePunt() {
   const p = card.play;
   const g = guesses[idx];
   const counter = `${idx + 1} of ${n}`;
-  const where = `${p.season} ${p.season_type === "POST" ? "playoffs" : `week ${p.week}`} · ${p.team} vs ${p.opp}`;
+  const where = `${p.season} ${p.season_type === "POST" ? "playoffs" : `week ${p.week}`} · ${matchupText(p)}`;
 
   if (g === undefined) {
     return (
@@ -141,7 +142,7 @@ export function FakePunt() {
         <div className="sg-ln"><div className="sg-lbl">It was</div><div className="sg-v">{card.answer === "fake" ? `A fake ${p.kind}${p.first_down ? " · first down" : " · no first down"}` : "A real punt"}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Why</div><div className="sg-v fp-why">{whyText(card)}</div></div>
       </div>
-      {card.answer === "fake" ? <p className="fp-desc">{plainDesc(p.desc)}</p> : null}
+      {card.answer === "fake" ? <p className="fp-desc">{playText(p)}</p> : null}
       <p className="fp-rates">{ratesText(file)}</p>
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={() => setIdx(idx + 1)}>{idx + 1 < n ? "Next punt" : "See your score"}</button>

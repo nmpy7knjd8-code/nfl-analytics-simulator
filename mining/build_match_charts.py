@@ -4,8 +4,9 @@ Source: nflverse play-by-play 2019-2025, REG+POST, Vegas-adjusted win chance (ve
 values copied from nflverse and rounded to 3 dp, never recomputed).
 
 Per game: 60 home win-chance points evenly spaced over the 3,600 s of regulation (t = i*3600/59, i = 0..59).
-Point i is vegas_home_wp on the last regulation row (qtr 1-4, win chance not null, nflverse row order) at or
-before regulation time t. Overtime rows are never used: an overtime game keeps its regulation chart plus
+Point i is vegas_home_wp on the last regulation row (qtr 1-4, win chance not null) at or before regulation
+time t, rows ordered by game clock (quarter, then time left; nflverse row order breaks ties). play_id order is
+never used: nflverse sometimes files a timeout row with a higher play_id than END GAME (2024_10_ATL_NO). Overtime rows are never used: an overtime game keeps its regulation chart plus
 ot: true. In a game with no overtime and no tie, the last point is set to 1.0 (home won) or 0.0 (home
 lost) from the final score, so the chart always ends on the winner's side. Game 2022_17_BUF_CIN (not finished) is left out. Scores are nflverse finals.
 No play ids, EPA or betting fields.
@@ -35,6 +36,7 @@ POINTS = 60
 REG_SECONDS = 3600
 BAD_GAME = "2022_17_BUF_CIN"
 OVERRIDE = ROOT / "mining/frozen_overrides/charts-2026-10-28-final-point.json"
+CLOCK_OVERRIDE = ROOT / "mining/frozen_overrides/charts-2026-11-03-clock-order.json"
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "home_score",
            "away_score", "qtr", "game_seconds_remaining", "vegas_home_wp", "play_id"]
 
@@ -59,6 +61,7 @@ def game_chart(rows: list[dict[str, Any]]) -> list[float] | None:
         if q is None or not 1 <= q <= 4 or gsr is None or wp is None:
             continue
         pts.append((REG_SECONDS - gsr, wp))
+    pts.sort(key=lambda p: p[0])  # game clock order (stable: nflverse row order breaks ties)
     if not pts:
         return None
     out, j = [], 0
@@ -77,7 +80,7 @@ def build(rows: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
     by_season: dict[int, list[dict[str, Any]]] = {}
     last: dict[int, str] = {}
     for gid, rs in games.items():
-        rs.sort(key=lambda r: float(r.get("play_id") or 0))
+        rs.sort(key=lambda r: (_num(r.get("qtr")) or 0, -(_num(r.get("game_seconds_remaining")) or 0)))
         f = rs[0]
         s = int(f["season"])
         last[s] = max(last.get(s, ""), str(f.get("game_date") or ""))
@@ -109,12 +112,29 @@ def load_override() -> set[str]:
     return set(json.loads(OVERRIDE.read_text())["games"]) if OVERRIDE.exists() else set()
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset()) -> list[str]:
+def load_clock_override() -> dict[str, set[int]]:
+    if not CLOCK_OVERRIDE.exists():
+        return {}
+    return {g: set(ix) for g, ix in json.loads(CLOCK_OVERRIDE.read_text())["points"].items()}
+
+
+def _points_ok(old_g: dict[str, Any], new_g: dict[str, Any] | None, points: dict[str, set[int]]) -> bool:
+    """Clock-order override: a listed game may change only its listed wp indices."""
+    ix = points.get(old_g["gameId"])
+    if new_g is None or not ix or len(new_g["wp"]) != len(old_g["wp"]):
+        return False
+    keep = lambda g: {**g, "wp": [v for i, v in enumerate(g["wp"]) if i not in ix]}  # noqa: E731
+    return keep(old_g) == keep(new_g)
+
+
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset(),
+                 points: dict[str, set[int]] | None = None) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
     by = {g["gameId"]: g for g in new["games"]}
     changed = [g["gameId"] for g in old.get("games", []) if by.get(g["gameId"]) != g
-               and not _final_point_ok(g, by.get(g["gameId"]), allowed)]
+               and not _final_point_ok(g, by.get(g["gameId"]), allowed)
+               and not _points_ok(g, by.get(g["gameId"]), points or {})]
     return changed + (["points"] if old.get("points") != new["points"] else [])
 
 
@@ -143,7 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
-        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed)]
+        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed, load_clock_override())]
     if fails:
         print(f"FAIL: published chart games would change: {', '.join(fails)}", file=sys.stderr)
         return 1

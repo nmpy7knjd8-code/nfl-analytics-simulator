@@ -61,3 +61,12 @@ test("the URL always names the game, including the default and the game already 
   assert.equal(feedUrlToWrite(`${B}/feed/?game=2024_10_KC_DEN`, "2024_10_KC_DEN", B), null);
   assert.equal(feedUrlToWrite(`${B}/feed/?game=2024_10_KC_DEN`, "2023_01_DET_KC", B), `${B}/feed/?game=2023_01_DET_KC`);
 });
+
+test("game cards link to a built Game Story, otherwise to the play feed", async () => {
+  const { gameCardHref } = await import("./gamePicker");
+  const { FIXTURE_GAMES } = await import("./fixtures");
+  const built = new Set(FIXTURE_GAMES.items.map((g) => g.game_id));
+  assert.equal(gameCardHref("2023_01_DET_KC", built), "/games/2023_01_DET_KC");
+  assert.equal(gameCardHref("2024_08_CHI_WAS", built), "/feed/?game=2024_08_CHI_WAS");
+  assert.equal(gameFromQuery(new URL(gameCardHref("2024_08_CHI_WAS", built), "http://x").search), "2024_08_CHI_WAS");
+});
