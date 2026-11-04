@@ -142,8 +142,27 @@ function bigGain(yards: number, yardline100: number | null | undefined): string 
   return `${g} flipped field position`;
 }
 
+/** W1: the side that gained is on defense (the other team had the ball). */
+function defenseCause(p: EventPoint, d: string, offense: string): string | null {
+  const ord = ["", "1st", "2nd", "3rd", "4th"];
+  const sit = p.down && p.distance != null ? ` on ${ord[p.down]} & ${p.distance}` : "";
+  if (p.event === "interception" || /intercept/.test(d)) return `the defense intercepted ${offense}`;
+  if (p.event === "fumble_lost" || (/fumble/.test(d) && /recovered by/.test(d))) return `the defense took the ball away from ${offense}`;
+  if (/sack/.test(d)) return `the defense sacked ${offense}${sit}`;
+  if (p.down && p.distance != null && (p.yards_gained ?? 0) < p.distance) return `the defense stopped ${offense} short${sit}`;
+  return null;
+}
+
+/** Shown swing, from the rounded before/after values (as #269): never "0%". */
+function shownSwing(delta: number, p: EventPoint): string {
+  const n = Number.isFinite(p.home_wp_pre) && Number.isFinite(p.home_wp_post)
+    ? Math.abs(Math.round(p.home_wp_post * 100) - Math.round(p.home_wp_pre * 100))
+    : Math.round(Math.abs(delta) * 100);
+  return n < 1 ? "<1" : String(n);
+}
+
 export function whyText(delta: number, p: EventPoint, favored: string): string {
-  const pts = Math.round(Math.abs(delta) * 100);
+  const pts = shownSwing(delta, p);
   const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
@@ -172,7 +191,12 @@ export function whyText(delta: number, p: EventPoint, favored: string): string {
   else if (/field goal|fg/.test(d)) cause = "points went on the board";
   else if (/fourth-and|fourth down|4th/.test(d)) cause = "a fourth-down call decided who kept the ball";
   else if (/sack/.test(d)) cause = "a sack lost yards and could have killed the drive";
-  return `${favored} gained ${pts} points of win chance because ${cause}${
+  // W1: on a non-scoring play where the gainer did not have the ball, give the defense's reason.
+  const offense = p.possession_team_id;
+  const scoring = p.return_td || p.kick_return_td || p.event === "safety" || p.event === "touchdown" || p.event === "field_goal"
+    || /\bsafety\b|touchdown|field goal/.test(d) || /\bblocked\b/.test(d) || p.fourth_down_failed || p.event === "turnover_on_downs" || p.event === "punt";
+  if (offense && offense !== favored && !scoring) cause = defenseCause(p, d, offense) ?? cause;
+  return `${favored}'s win chance swung ${pts}% because ${cause}${
     late || p.is_overtime ? ", and with little time left there was less chance to answer" : ""
   }.`;
 }

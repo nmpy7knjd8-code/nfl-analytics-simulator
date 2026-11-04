@@ -290,3 +290,30 @@ test("QA 0116 N8: safeties and blocked kicks name the real cause, not the sack o
   assert.match(w("field_goal", "(0:03) 44 yard field goal is BLOCKED."), /a blocked field goal/);
   assert.match(w("other", "(5:01) J.Goff sacked at DET 20 for -8 yards."), /a sack lost yards/);
 });
+
+test("W1: DET_KC Q4 5:51 3rd & 1 — KC had the ball, so the Why gives DET's defensive stop, in %", () => {
+  const sw = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series);
+  const s = sw.find((x) => clockLabel(x.point) === "Q4 5:51")!;
+  assert.ok(s, "swing at Q4 5:51");
+  const p = s.point as EventPoint;
+  assert.equal(p.possession_team_id, "KC");
+  assert.equal(s.favored_team_id, "DET");
+  const n = Math.abs(Math.round(p.home_wp_post * 100) - Math.round(p.home_wp_pre * 100));
+  assert.equal(s.why.split(" because ")[0], `DET's win chance swung ${n}%`);
+  assert.match(s.why, /because the defense stopped KC short on 3rd & 1/);
+  assert.doesNotMatch(s.why, /moved the ball and the clock|points/);
+});
+
+test("W1: defense reasons for a stop, a sack and a turnover; offense wording unchanged", () => {
+  const d = (x: Partial<EventPoint>) => whyText(0.12, { ...base(), possession_team_id: "KC", home_wp_pre: 0.5, home_wp_post: 0.38, down: 3, distance: 1, yards_gained: 0, ...x } as EventPoint, "DET");
+  assert.match(d({ event: "other", description: "I.Pacheco up the middle for no gain" }), /^DET's win chance swung 12% because the defense stopped KC short on 3rd & 1/);
+  assert.match(d({ event: "other", description: "P.Mahomes sacked at KC 30 for -7 yards", yards_gained: -7 }), /because the defense sacked KC on 3rd & 1/);
+  assert.match(d({ event: "interception", description: "P.Mahomes pass INTERCEPTED by B.Branch" }), /because the defense intercepted KC/);
+  assert.match(d({ event: "fumble_lost", description: "I.Pacheco FUMBLES, RECOVERED by DET" }), /because the defense took the ball away from KC/);
+  // scoring plays keep their reason even when the defense gained
+  assert.match(d({ event: "interception", return_td: true, description: "INTERCEPTED ... TOUCHDOWN" }), /interception returned for a touchdown/);
+  // offense gainer keeps offense wording
+  assert.match(whyText(0.12, { ...base(), possession_team_id: "DET", home_wp_pre: 0.5, home_wp_post: 0.38, event: "other", description: "J.Goff pass short to A.St. Brown for 3 yards" } as EventPoint, "DET"), /moved the ball and the clock/);
+  // never 0%
+  assert.match(whyText(0.004, { ...base(), possession_team_id: "KC", home_wp_pre: 0.501, home_wp_post: 0.497, event: "other", description: "x" } as EventPoint, "DET"), /swung <1%/);
+});
