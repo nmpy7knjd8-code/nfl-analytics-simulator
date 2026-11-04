@@ -2,7 +2,7 @@
 .sg-app{--sg-b:#1E5BFF;--sg-g:#5f6368;max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:0 16px 8px;color:#000;background:#fff;font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .sg-app button{font-family:inherit;cursor:pointer}
 .sg-top{display:flex;justify-content:space-between;align-items:center;height:48px;flex:none}
-.sg-brand{display:inline-flex;align-items:center;min-height:44px;font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
+.sg-brand{display:inline-flex;align-items:center;column-gap:.28em;min-height:44px;font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
 .sg-top-r{display:flex;align-items:center;gap:6px;position:relative}
 .sg-count{font-size:14px;color:var(--sg-g);font-weight:600}
 .sg-menu{width:48px;height:48px;border:0;background:none;font-size:24px;margin-right:-12px;color:#000}
