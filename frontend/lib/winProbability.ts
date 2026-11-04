@@ -216,9 +216,9 @@ export function inGameOrder(swings: SwingPlay[]): SwingPlay[] {
   return [...swings].sort((a, b) => a.point.game_seconds_elapsed - b.point.game_seconds_elapsed || a.point.play_index - b.point.play_index);
 }
 
-/** "DET win chance +24" (UI Critic 2240 P3-A: not "gains 24 pts", which reads like game points). */
-export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id">): string {
-  return `${s.favored_team_id} win chance +${Math.round(Math.abs(s.delta) * 100)}`;
+/** "DET win chance +24%" (UI Critic 2240 P3-A: not "gains 24 pts"). Same shown rounding as the Why (#269). */
+export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id"> & { point?: EventPoint }): string {
+  return `${s.favored_team_id} win chance +${s.point ? shownSwing(s.delta, s.point) : (Math.round(Math.abs(s.delta) * 100) || "<1")}%`;
 }
 
 /** Swing plays, largest first, capped at `limit`. */
