@@ -92,3 +92,14 @@ test("N4: setup line and matchup use team names, not codes", () => {
   assert.match(situationText(near), new RegExp(`at the ${teamNickname(near.opp)} ${near.yardline_100},`));
   for (const x of [...file.plays, ...file.real_punts]) assert.ok(!/\b[A-Z]{2,3}\b/.test(situationText(x) + matchupText(x)), situationText(x));
 });
+
+test("P3: answer text is never cut mid-play: no '…', ends in sentence punctuation", () => {
+  for (const p of [...file.plays, ...file.real_punts]) {
+    const s = whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" });
+    assert.ok(!s.includes("…"), s);
+    assert.match(s, /[.!?]["”)]?$/, s);
+    assert.ok(s.length <= "A real punt: ".length + 150, s);
+  }
+  const hayball = file.real_punts.find((p) => /M\.Hayball punts 35 yards to NYG 44/.test(p.desc));
+  if (hayball) assert.match(whyText({ play: hayball, answer: "real" }), /for 8 yards\.$/);
+});
