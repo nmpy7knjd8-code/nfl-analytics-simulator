@@ -114,3 +114,31 @@ test("QA copy: League labels, match header, result line, league match line", asy
   assert.match(m.leagueMatchText(file, run), /^Most two-point runs (are good|fail)\. The league converts \d+\.\d%\.$/);
   for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
 });
+
+test("verdict line: exact copy from shown league rates, no win chance", async () => {
+  const m = await import("./twoPoint");
+  // Shown: XP 94.4%, two-point 47.5%, run 54.9%, pass 44.7%.
+  assert.equal(m.pointsPerTry(file.extra_point, 1), 0.94);
+  assert.equal(m.pointsPerTry(file.two_point, 2), 0.95);
+  assert.equal(m.pointsPerTry(file.two_point.run, 2), 1.1);
+  assert.equal(m.pointsPerTry(file.two_point.pass, 2), 0.89);
+  // Arithmetic follows the displayed percentages.
+  for (const [r, k] of [[file.extra_point, 1], [file.two_point, 2], [file.two_point.run, 2], [file.two_point.pass, 2]] as const) {
+    const shown = Number(m.pct1(r).replace("%", ""));
+    assert.equal(m.pointsPerTry(r, k), Math.round(k * shown) / 100);
+  }
+  const k = kicks[0], run = tries.find((x) => x.kind === "run")!, pass = tries.find((x) => x.kind === "pass")!;
+  assert.equal(m.verdictText(file, k), "Tough call by the numbers: going for two averages 0.95 points a try, kicking 0.94.");
+  assert.equal(m.verdictText(file, run), "Good call by the numbers: a two-point run averages 1.10 points a try, kicking 0.94.");
+  assert.equal(m.verdictText(file, pass), "Tough call by the numbers: kicking averages 0.94 points a try, a two-point pass 0.89.");
+  // Made or missed doesn't change the verdict.
+  assert.equal(m.verdictText(file, { ...run, made: !run.made }), m.verdictText(file, run));
+  const even = { ...file, extra_point: { tries: 100, made: 95, rate: 0.95 } };
+  assert.equal(m.verdictText(even, k), "Even call by the numbers: kicking and going for two both average 0.95 points a try.");
+  const poisoned = { ...file, per_choice_win_chance: { boom: true } } as unknown as typeof file;
+  for (const t of [...tries, ...kicks]) {
+    const v = m.verdictText(poisoned, t);
+    assert.equal(v, m.verdictText(file, t));
+    assert.ok(!/win|chance|expected|EPA|WPA|odds|bet/i.test(v), v);
+  }
+});
