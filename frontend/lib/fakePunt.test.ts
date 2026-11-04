@@ -98,6 +98,7 @@ test("P3: answer text is never cut mid-play: no '…', ends in sentence punctuat
     const s = whyText({ play: p, answer: p.kind === "punt" ? "real" : "fake" });
     assert.ok(!s.includes("…"), s);
     assert.match(s, /[.!?]["”)]?$/, s);
+    assert.ok(s.length <= "A real punt: ".length + 150, s);
   }
   const hayball = file.real_punts.find((p) => /M\.Hayball punts 35 yards to NYG 44/.test(p.desc));
   if (hayball) assert.match(whyText({ play: hayball, answer: "real" }), /for 8 yards\.$/);
