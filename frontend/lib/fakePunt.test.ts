@@ -7,7 +7,8 @@ import { teamNickname } from "./teams";
 import raw from "./site/fakes.json";
 import fanTextsForTest from "./site/fakesText.json";
 import { readFileSync } from "node:fs";
-const FULL_NAMES: string[] = Object.values(JSON.parse(readFileSync(new URL("../../data/site/player_names.json", import.meta.url), "utf8")).names);
+const FULL_NAMES: string[] = Object.values(JSON.parse(readFileSync(new URL("../../data/site/player_names.json", import.meta.url), "utf8")).names)
+  .concat(Object.values(JSON.parse(readFileSync(new URL("../../data/site/player_names_game.json", import.meta.url), "utf8")).names));
 import { buildRound, isCorrect, matchupText, plainDesc, playText, ratesText, situationText, whyText, ROUND_SIZE, type FakesFile } from "./fakePunt";
 
 const file = raw as unknown as FakesFile;
@@ -115,13 +116,13 @@ test("answer text uses plain names: no 'NYJ-' prefixes or team codes", () => {
     assert.ok(!/\b[A-Z]{2,3}\b/.test(s), s);
   }
   const farley = file.real_punts.find((p) => /downed by NYJ-\d+-M\.Farley/.test(p.desc));
-  if (farley) assert.match(playText(farley), /downed by M\.Farley/);
+  if (farley) assert.match(playText(farley), /downed by Matthias Farley/);
 });
 
-test("full player names from player_names.json, short names when unmatched", () => {
+test("full player names from player_names.json, unmatched short names dropped", () => {
   const texts = Object.values(fanTextsForTest);
   assert.ok(texts.some((s) => s.startsWith("Direct snap to Anthony Levine. Anthony Levine up the middle")));
-  assert.ok(texts.some((s) => /recovered by B\.Skrine/.test(s)), "unmatched names keep the short form");
+  assert.ok(!texts.some((s) => /\b[A-Z]\.[A-Z][a-z]/.test(s)), "no initial-dot-surname left");
 });
 
 test("150 cap does not cut at an initial or Jr.", () => {
