@@ -352,8 +352,8 @@ def _templated_main(r: dict[str, Any]) -> str | None:
     if td:
         s += " for a touchdown" if pt == "run" or pt == "pass" else ""
     if event_tag(r) == "turnover_on_downs":
-        return f"Fourth down: {s}. Turnover on downs."
-    return s + "."
+        return f"Fourth down: {_period(s)} Turnover on downs."
+    return _period(s)
 
 
 def no_play_text(desc: str, r: dict[str, Any] | None = None) -> str | None:
@@ -517,6 +517,11 @@ def _effective(r: dict[str, Any]) -> dict[str, Any]:
     d = r.get("desc") or ""
     nd = _REPORTED.sub("", _after_reversal(d))
     return r if nd == d else {**r, "desc": nd}
+
+
+def _period(s: str) -> str:
+    """End a sentence once: a name suffix like "Chris Godwin Jr." already ends in a period (Analyte 0320)."""
+    return s if s.endswith(".") else s + "."
 
 
 def display_text(r: dict[str, Any]) -> str:
