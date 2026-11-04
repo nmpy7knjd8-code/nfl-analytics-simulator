@@ -47,7 +47,7 @@ COLS = ["team", "qtr", "clock", "yards", "result", "tiles", "ret"]  # one space-
 RET_KEY = {"I": "Pick-six", "F": "Fumble return TD", "B": "Blocked kick TD", "P": "Punt returned for TD",
            "K": "Kickoff return TD", "M": "Missed field goal returned for TD", "-": "Other"}
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive", "drive",
-           "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start",
+           "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start", "qtr", "time",
            "ydsnet", "yardline_100", "punt_attempt", "kickoff_attempt", "field_goal_attempt",
            "punt_blocked", "field_goal_result", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "desc"]
 
@@ -140,8 +140,13 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
         f = snaps[0]
         y = drive_ydsnet(snaps)
         q = int(_num(f.get("drive_quarter_start")) or _num(f.get("qtr")) or 0)
+        clock = f.get("drive_game_clock_start")
+        if y is not None and y != _num(f.get("ydsnet")) and _num(f.get("qtr")) and f.get("time"):
+            # first snap stray-tagged (drive_ydsnet rejected its ydsnet): its drive_*_start belongs to another
+            # possession; use the first snap's own qtr and time
+            q, clock = int(_num(f.get("qtr"))), f.get("time")
         res = RESULTS[f["fixed_drive_result"]]
-        out.append(" ".join([f["posteam"], str(q), str(f.get("drive_game_clock_start") or "-"),
+        out.append(" ".join([f["posteam"], str(q), str(clock or "-"),
                              "-" if y is None else str(int(y)), res, "".join(tile(r) for r in snaps)]
                             + ([ret_code(every[d])] if res == "OD" else [])))
     return out
@@ -202,7 +207,14 @@ def od_return_ok(old: list[str], new: list[str]) -> bool:
         n == o + " " + n[-1] and n[-1] in RET_KEY if o.split(" ")[4] == "OD" else n == o for o, n in zip(old, new))
 
 
-RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok, "od_return": od_return_ok}
+def qtr_clock_fix_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with only the quarter and/or clock fields changed, in at least one drive."""
+    return len(old) == len(new) and old != new and all(
+        o.split(" ")[:1] + o.split(" ")[3:] == n.split(" ")[:1] + n.split(" ")[3:] for o, n in zip(old, new))
+
+
+RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok,
+         "qtr_clock": qtr_clock_fix_ok, "od_return": od_return_ok}
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset(),

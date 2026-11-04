@@ -1,7 +1,7 @@
 {
  "file": "data/site/drives/{season}.json",
  "rule": "od_return",
- "approved_by": "PENDING HGIC",
+ "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): approved Nov 4, 2026 1:27 AM ET, scope per override.",
  "reason": "Charts UI 2026-11-03 (low priority): OD drives get a 7th field, a return-type letter from the drive's last opponent-TD play (I pick-six, F fumble return, B blocked punt/FG, P punt return, K kickoff return, M missed FG return, - other); cols gains 'ret' at the end. Every other drive and every existing field unchanged (od_return_ok).",
  "games": [
   "2019_01_BUF_NYJ",

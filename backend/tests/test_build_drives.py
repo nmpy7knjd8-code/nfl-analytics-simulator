@@ -130,8 +130,8 @@ def test_ydsnet_override_scope():
     assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 FG NNNK", old[1]])
     assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 P NNK", old[1]])
     d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2021", "2020")}
-    assert "JAX 2 14:43 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
-    assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 07:40")][0].split(" ")[3] == "39"
+    assert "JAX 1 00:26 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
+    assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 10:22")][0].split(" ")[3] == "39"
 
 
 def test_od_return_codes_and_scope():
@@ -162,3 +162,28 @@ def test_od_return_codes_and_scope():
                 assert len(p) == (7 if p[4] == "OD" else 6)
                 n += p[4] == "OD"
     assert n == 487
+
+
+
+
+def test_qtr_clock_from_stray_tagged_first_snap():
+    rows = [r(pt="kickoff", posteam="BBB", drive=4, ydsnet=13), r(drive=4, ydsnet=13, yardline_100=75, yards_gained=-2,
+            qtr=1, time="00:26", drive_quarter_start=2, drive_game_clock_start="14:43"),
+            r(drive=3, ydsnet=-2, yardline_100=77, yards_gained=0, qtr=2, time="15:00"),
+            r(pt="punt", drive=3, ydsnet=-2, yardline_100=77, yards_gained=0, fixed_drive_result="Punt", qtr=2, time="14:57")]
+    assert bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"][0].split(" ")[:4] == ["AAA", "1", "00:26", "-2"]
+    plain = [r(pt="kickoff", posteam="BBB"), r(qtr=1, time="14:55"), r(qtr=1, time="14:20")]
+    assert bd.build(plain)[2099]["games"]["2099_01_AAA_BBB"][0].split(" ")[:3] == ["AAA", "1", "15:00"]
+
+
+def test_qtr_clock_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-qtr-clock.json").read_text())
+    ydsnet = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-ydsnet.json").read_text())
+    assert o["rule"] == "qtr_clock" and len(o["games"]) == 9 == len(set(o["games"]))
+    assert set(o["games"]) <= set(ydsnet["games"])
+    old = ["AAA 2 14:43 -2 P NNNK", "BBB 1 10:00 5 TD GT"]
+    assert bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 -2 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, old)
+    assert not bd.qtr_clock_fix_ok(old, ["BBB 1 00:26 -2 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 3 P NNNK", old[1]])
+    assert not bd.qtr_clock_fix_ok(old, ["AAA 1 00:26 -2 P NNK", old[1]])
