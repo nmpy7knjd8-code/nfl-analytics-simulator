@@ -1,4 +1,6 @@
-import { SimpleGame } from "../../components/SimpleGame";
+import { DailyOrBonus } from "../../components/DailyOrBonus";
+import "../fake-punt/fake-punt.css";
+import "./bonus.css";
 import { shareMetadata } from "../../lib/share";
 
 export const metadata = shareMetadata({
@@ -12,7 +14,7 @@ export const metadata = shareMetadata({
 export default function DailyPage() {
   return (
     <main id="main">
-      <SimpleGame mode="daily" />
+      <DailyOrBonus />
     </main>
   );
 }
