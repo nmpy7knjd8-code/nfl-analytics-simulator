@@ -39,3 +39,12 @@ test("B1: WinChanceLine renders nothing when CHECKER_ENABLED is false", async ()
   assert.equal(CHECKER_ENABLED, false);
   assert.equal(renderToStaticMarkup(createElement(WinChanceLine, { t: base })), "");
 });
+
+test("B1: win-chance bar uses only site palette colors (sg blue, black, white)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const css = readFileSync(new URL("../app/two-point/two-point.css", import.meta.url), "utf8");
+  const rules = css.split("}").filter((r) => r.includes(".tp-wc")).join("}");
+  const colors = rules.match(/#[0-9a-fA-F]{3,8}\b|var\(--[a-z0-9-]+\)/g) ?? [];
+  assert.ok(colors.length > 0);
+  for (const c of colors) assert.ok(["#000", "#fff", "var(--sg-b)"].includes(c), c);
+});
