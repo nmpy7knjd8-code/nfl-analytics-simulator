@@ -117,6 +117,65 @@
      ]
     }
    }
+  },
+  "2026-11-05": {
+   "theme": "marathon",
+   "items": {
+    "2022_06_NYJ_GB-3422": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.064604,
+      "punt": 0.059423,
+      "fg": 0.072021
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2022_09_LAC_ATL-657": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.768141,
+      "punt": 0.701051,
+      "fg": 0.786005
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_07_MIA_PHI-3466": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.785293,
+      "punt": 0.762733
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_13_MIA_SF-2779": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.812618,
+      "punt": 0.751565,
+      "fg": 0.805028
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_17_DEN_KC-1079": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.203721,
+      "punt": 0.170388,
+      "fg": 0.215296
+     },
+     "best": [
+      "fg"
+     ]
+    }
+   }
   }
  }
 }
