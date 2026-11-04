@@ -1,6 +1,6 @@
 {
  "file": "data/site/twopoint.json",
  "rule": "wp_append",
- "approved_by": "PENDING HGIC",
+ "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): approved Nov 4, 2026 1:27 AM ET, scope per override.",
  "reason": "HGIC 2026-11-03 B1: append wp_before / wp_after (nflverse vegas_wp, trying team's view, regulation only, null in overtime; wp_after = swings rule) at the end of cols for tries and kicks. #207 removed wp at Analyte's earlier no-win-chance request; HGIC asked for it back. Append-only: cols must be exactly the old 11 + [wp_before, wp_after] and every existing value must stay identical (wp_append_ok + strip_wp)."
 }
