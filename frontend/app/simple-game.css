@@ -225,3 +225,23 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-recap .sg-recap-key{padding:4px 0;font-size:13px;font-weight:700;color:var(--sg-g);text-transform:uppercase;letter-spacing:.03em}
 .sg-recap-key .sg-c{font-size:13px}
 .sg-agree{display:inline-block;width:14px;text-align:center;color:var(--sg-g)}
+/* F7 drive strips */
+.ds-key{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--sg-g)}
+.ds-key li{display:flex;align-items:center;gap:5px}
+.ds-list{list-style:none;margin:0;padding:0}
+.ds-qh{font-size:13px;font-weight:800;color:#000;margin:14px 0 2px}
+.ds-row{padding:10px 2px;border-bottom:1px solid #eee}
+.ds-top{display:flex;align-items:center;gap:6px;font-size:14px}
+.ds-when{font-size:13px;color:var(--sg-g);font-weight:600}
+.ds-res{margin-left:auto;font-size:13px;font-weight:700;color:var(--sg-g);white-space:nowrap}
+.ds-res.is-score{color:var(--sg-b)}
+.ds-tiles{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0 4px}
+.ds-t{display:inline-block;width:14px;height:14px;border-radius:3px;flex:none}
+.ds-T{background:var(--sg-b)}
+.ds-F{background:#8fb0ff}
+.ds-G{background:#d6e2ff}
+.ds-N{background:#fff;box-shadow:inset 0 0 0 1.5px #c4c7cc}
+.ds-X{background:#000}
+.ds-K{background:#9aa0a6}
+.ds-Q{background:repeating-linear-gradient(45deg,#f1f3f4 0 3px,#d0d3d6 3px 5px)}
+.ds-sub{font-size:12px;color:var(--sg-g)}
