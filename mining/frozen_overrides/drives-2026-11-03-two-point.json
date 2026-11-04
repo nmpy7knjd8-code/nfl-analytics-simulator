@@ -1,6 +1,6 @@
 {
  "file": "data/site/drives/{season}.json",
- "approved_by": "PENDING HGIC",
+ "approved_by": "PR #267: Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): approved Nov 3, 2026 11:10 PM ET.",
  "reason": "Drive strips counted nflverse two-point tries (two_point_attempt == 1, play_type run/pass) as snaps: 943 drives got an extra tile after their last real snap, and 4 kick-return TD drives showed only the try (e.g. 2024_01_ARI_BUF 'ARI 4 08:44 0 TD G'). Listed games may change only by dropping those tiles/drives (two_point_fix_ok).",
  "games": [
   "2019_01_ATL_MIN",
