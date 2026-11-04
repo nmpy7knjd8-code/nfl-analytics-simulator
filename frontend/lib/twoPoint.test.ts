@@ -19,14 +19,15 @@ test("shown rates are the real nflverse counts", () => {
   assert.deepEqual(ratesLines(file), [
     "Extra points: good 94.4% (8,606 of 9,119)",
     "Two-point tries: good 47.5% (456 of 960)",
-    "Runs 54.5% (145 of 266) · passes 44.2% (301 of 681)",
+    "Runs 54.9% (147 of 268) · passes 44.7% (309 of 692)",
   ]);
   assert.equal(pct1({ tries: 0, made: 0 }), "—");
   const tp = file.two_point;
-  assert.equal(tp.run.tries + tp.pass.tries, 947);
-  assert.equal(tp.run.made + tp.pass.made, 446);
-  assert.equal(otherTriesNote(file), "Includes 13 tries (10 good) wiped out by penalties or kneels.");
-  assert.equal(otherTriesNote({ ...file, two_point: { ...tp, tries: 947, made: 446 } }), null);
+  assert.equal(tp.run.tries + tp.pass.tries, 960); // 13 penalty-after-play tries labelled run/pass (nflverse pass_attempt)
+  assert.equal(tp.run.made + tp.pass.made, 456);
+  assert.equal(otherTriesNote(file), null);
+  assert.equal(otherTriesNote({ ...file, two_point: { ...tp, tries: 973, made: 466 } }), "Includes 13 tries (10 good) wiped out by penalties or kneels.");
+  
 });
 
 test("no win chance is shown, and the UI never reads per_choice_win_chance", () => {
@@ -41,7 +42,7 @@ test("no win chance is shown, and the UI never reads per_choice_win_chance", () 
 });
 
 test("cards: regulation run/pass tries only (no overtime, no no_play)", () => {
-  assert.equal(tries.length, 944);
+  assert.equal(tries.length, 957); // 960 minus 3 overtime tries
   assert.ok(tries.every((t) => t.qtr <= 4 && (t.kind === "run" || t.kind === "pass")));
   assert.deepEqual(readTries({ ...file, cols: ["x"] }), []);
 });
@@ -108,6 +109,6 @@ test("QA copy: League labels, match header, result line, league match line", asy
   assert.equal(m.leagueMatchText(file, k), "That's the usual result: league extra points are good 94.4%.");
   assert.equal(m.leagueMatchText(file, miss), "That's against the league rate: extra points are good 94.4%.");
   const p = tries.find((x) => x.kind === "pass" && !x.made)!;
-  assert.equal(m.leagueMatchText(file, p), "That's the usual result: league two-point passes are good 44.2%.");
+  assert.equal(m.leagueMatchText(file, p), "That's the usual result: league two-point passes are good 44.7%.");
   for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
 });
