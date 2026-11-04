@@ -1,0 +1,19 @@
+{
+ "file": "data/site/drives/{season}.json",
+ "rule": "ydsnet",
+ "approved_by": "PENDING HGIC",
+ "reason": "QA 2026-11-03-38cac21 net yards: yards came from the first snap's nflverse ydsnet, but in these 12 drives nflverse tags some snaps with a neighbouring `drive` number whose ydsnet belongs to another possession. Now the candidate nflverse ydsnet closest to the snaps' own yardline_100 movement is used. Listed games may change only the yards field (ydsnet_fix_ok).",
+ "games": [
+  "2019_02_SEA_PIT",
+  "2019_03_DEN_GB",
+  "2019_08_ARI_NO",
+  "2019_12_JAX_TEN",
+  "2019_19_HOU_KC",
+  "2020_01_CHI_DET",
+  "2020_01_TB_NO",
+  "2020_09_CAR_KC",
+  "2021_02_DEN_JAX",
+  "2023_12_PIT_CIN",
+  "2025_10_NO_CAR"
+ ]
+}
