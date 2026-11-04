@@ -25,6 +25,8 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
+import themeSchedule from "../lib/themeSchedule.json";
+import { hasThemedDay } from "../lib/themeReveal";
 import { CONFIDENCE_STEPS, HARD_NEXT_LABEL, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -234,7 +236,14 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         ) : (
           <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
         )}
-        <Link href="/endless/" className="sg-keep">Keep playing</Link>
+        {mode === "daily" && hasThemedDay(themeSchedule.days as Record<string, { ids: string[] }>, key ?? "") ? (
+          <div className="sg-pair sg-pair-end">
+            {/* Plain <a>: a same-page hash change must fire hashchange so DailyOrBonus swaps to the bonus round. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href={`${BASE}/daily/#bonus`} className="sg-keep sg-bonus">Bonus round</a>
+            <Link href="/endless/" className="sg-keep">Keep playing</Link>
+          </div>
+        ) : <Link href="/endless/" className="sg-keep">Keep playing</Link>}
         <Trademark />
       </div>
     );
