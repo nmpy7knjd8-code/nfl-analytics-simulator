@@ -51,9 +51,11 @@ export function playText(desc: string): string {
     .trim();
 }
 
-export const points = (s: Swing): number => Math.round(Math.abs(s.swing) * 100);
+/** Shown swing = difference of the rounded numbers we show (as in #237), so "70% → 75%" always reads "swung 5%". */
+export const shownDelta = (before: number, after: number): number => Math.round(after * 100) - Math.round(before * 100);
+export const points = (s: Swing): number => Math.abs(shownDelta(s.wp_before, s.wp_after));
 /** Signed percent for the list, from the team's side: "+90%" / "\u221276%". */
-export const signedPct = (s: Swing): string => `${s.swing < 0 ? "\u2212" : "+"}${points(s)}%`;
+export const signedPct = (s: Swing): string => `${shownDelta(s.wp_before, s.wp_after) < 0 ? "\u2212" : "+"}${points(s)}%`;
 export const pct = (wp: number): number => Math.round(wp * 100);
 
 export function swingLine(s: Swing): string {

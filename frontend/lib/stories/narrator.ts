@@ -54,7 +54,7 @@ export function facts(r: NarrRow, home: string, away: string): Record<string, st
   const gainer = after >= before ? home : away;
   return {
     team, opp: team ? (team === home ? away : home) : "", gainer, clock: r.clock || "",
-    period: QTR[r.qtr] ?? "overtime", swing: String(Math.round(Math.abs(after - before) * 100)),
+    period: QTR[r.qtr] ?? "overtime", swing: String(Math.abs(Math.round(after * 100) - Math.round(before * 100))),
     gainer_wp: String(Math.round((gainer === home ? after : 1 - after) * 100)), togo: String(r.ydstogo ?? ""),
   };
 }

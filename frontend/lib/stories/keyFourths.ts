@@ -1,3 +1,4 @@
+import { shownDelta } from "./swings";
 /**
  * C1 Pause, Phase-1 rule: a regulation 4th down where the real call swung the
  * chance to win 10+ points. Plays in the last 5 seconds of a half are skipped.
@@ -29,7 +30,7 @@ export function keyFourths(rows: KeyRow[], home: string, away: string, min = 0.1
     if (!call) continue;
     const d = r.home_wp_after - r.home_wp;
     if (Math.abs(d) < min) continue;
-    out.push({ playId: r.play_id, qtr: r.qtr, clock: r.clock.replace(/^0(\d)/, "$1"), team: r.posteam, togo: r.ydstogo, yardline: r.yardline_100 ?? null, call, swing: Math.round(Math.abs(d) * 100), toward: d > 0 ? home : away });
+    out.push({ playId: r.play_id, qtr: r.qtr, clock: r.clock.replace(/^0(\d)/, "$1"), team: r.posteam, togo: r.ydstogo, yardline: r.yardline_100 ?? null, call, swing: Math.abs(shownDelta(r.home_wp, r.home_wp_after)), toward: d > 0 ? home : away });
   }
   return out;
 }
