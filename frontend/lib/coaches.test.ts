@@ -55,10 +55,12 @@ test("best/worst calls are 5 each and overtime calls are dropped", () => {
   assert.equal(regulationOnly([{ qtr: 5 } as never]).length, 0);
 });
 
-import { avgPerCall, avgText, rankCoaches, AVG_LINE } from "./coaches";
+import { avgAmount, avgPerCall, avgText, rankCoaches, AVG_LINE } from "./coaches";
 test("average per call replaces the season sum", () => {
   const reid = readSeason(2023).coaches.find((c) => c.team === "KC")!;
-  assert.equal(avgText(reid), "−0.4 pts"); // −58.21 over 137 calls
+  assert.equal(avgText(reid), "0.4 pts given up");
+  assert.equal(avgAmount(0.21), "0.2 pts gained");
+  assert.equal(avgAmount(-0.01), "0.0 pts"); // −58.21 over 137 calls
   const r = rankCoaches(readSeason(2023).coaches);
   for (let i = 1; i < r.length; i++) assert.ok(avgPerCall(r[i - 1]) >= avgPerCall(r[i]));
   assert.doesNotMatch(AVG_LINE, /calibrat|EPA|WPA|odds|bet/i);
