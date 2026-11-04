@@ -168,3 +168,15 @@ export function situationSentence(item: DailyItem, nick: (abbr: string) => strin
   const at = isGoalToGo(item) ? "" : s.yardline_100 === 50 ? " at midfield" : s.yardline_100 > 50 ? ` at their own ${100 - s.yardline_100}` : ` at the ${s.defteam} ${s.yardline_100}`;
   return `The ${nick(s.posteam)} ${score} with ${clockText(item)} left in ${q}. ${togo}${at}.`;
 }
+
+/** F2: one-line situation kept above the Hard mode confidence step, same data as the score bug:
+ * "SEA 14, DET 21 · Q3 3:30 · 4th & Goal at the DET 7" (away first, like the bug). */
+export function situationLine(item: DailyItem): string {
+  const s = item.situation;
+  const home = s.home_team ?? s.defteam;
+  const away = s.away_team ?? s.posteam;
+  const score = (t: string) => (t === s.posteam ? s.posteam_score : s.defteam_score);
+  const yl = s.yardline_100;
+  const spot = yl === 50 ? "midfield" : `the ${yl > 50 ? s.posteam : s.defteam} ${yl > 50 ? 100 - yl : yl}`;
+  return `${away} ${score(away)}, ${home} ${score(home)} · ${s.qtr >= 5 ? "OT" : `Q${s.qtr}`} ${clockText(item)} · 4th & ${isGoalToGo(item) ? "Goal" : s.distance} at ${spot}`;
+}

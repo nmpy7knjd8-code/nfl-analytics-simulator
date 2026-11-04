@@ -235,6 +235,7 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-hard{display:flex;align-items:center;gap:10px;min-height:48px;font-size:15px;font-weight:600;margin:0 0 8px}
 .sg-hard input{width:22px;height:22px;accent-color:var(--sg-b)}
 .sg-conf-q{margin:6px 0 14px}
+.sg-conf-sit{margin:2px 0 0;font-size:13px;font-weight:600;line-height:1.3}
 .sg-conf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .sg-conf-b{justify-content:center}
 .sg-calib{text-align:center;font-weight:600;margin:6px 0 10px}
