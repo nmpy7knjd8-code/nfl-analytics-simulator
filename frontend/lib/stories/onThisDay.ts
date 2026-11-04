@@ -2,8 +2,7 @@
 export type OnThisDayDoc = { schema: "onthisday/v1"; cols: string[]; days: Record<string, unknown[][]>; fallback: Record<string, number> };
 export type DayGame = { gameId: string; year: number; away: string; home: string; awayScore: number; homeScore: number; ot: boolean };
 
-const RENAME: Record<string, string> = { OAK: "LV", SD: "LAC", STL: "LA" };
-const team = (t: string) => RENAME[t] ?? t;
+import { currentTeam as team } from "../teamCodes";
 
 export function isOnThisDayDoc(x: unknown): x is OnThisDayDoc {
   const d = x as OnThisDayDoc;

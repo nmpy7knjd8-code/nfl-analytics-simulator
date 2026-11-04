@@ -1,12 +1,14 @@
 import type { DailyItem } from "../lib/daily";
 import { clockText, flagText } from "../lib/simpleGame";
 import colors from "../lib/teamColors.json";
+import { currentTeam } from "../lib/teamCodes";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-export const teamLogo = (abbr: string) => `${BASE}/teams/${abbr}/logo.png`;
-export const teamWordmark = (abbr: string) => `${BASE}/teams/${abbr}/wordmark.png`;
+// Old codes (2019 OAK etc.) have no asset folder: map to the current team so /story/?game=2019_05_CHI_OAK has a logo.
+export const teamLogo = (abbr: string) => `${BASE}/teams/${currentTeam(abbr)}/logo.png`;
+export const teamWordmark = (abbr: string) => `${BASE}/teams/${currentTeam(abbr)}/wordmark.png`;
 export const teamColor = (abbr: string, k: "primary" | "secondary" = "primary") =>
-  (colors as { teams: Record<string, { primary: string; secondary: string }> }).teams[abbr]?.[k] ?? "#333";
+  (colors as { teams: Record<string, { primary: string; secondary: string }> }).teams[currentTeam(abbr)]?.[k] ?? "#333";
 
 
 function Dots({ n }: { n: number }) {
