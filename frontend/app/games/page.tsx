@@ -1,6 +1,11 @@
 import Link from "next/link";
-import { GAME_SOURCE_LINE } from "../../lib/fixtures";
-import { TruthChip } from "../../components/TruthChip";
+import { FIXTURE_GAMES, GAME_SOURCE_LINE } from "../../lib/fixtures";
+import { gameCardHref } from "../../lib/gamePicker";
+
+/** Game Story pages are built only for these ids (app/games/[gameId] generateStaticParams). */
+const BUILT = new Set(FIXTURE_GAMES.items.map((g) => g.game_id));
+import { Header, Trademark } from "../../components/SimpleGame";
+import "./games-list.css";
 import { TeamLogo } from "../../components/TeamLogo";
 import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
@@ -18,41 +23,29 @@ export default async function GamesPage() {
   const { data: games } = result;
 
   return (
-    <main className="main page" id="main">
-      <header className="section-head">
-        <div className="overline">
-          <TruthChip kind="historical" />
-          <span className="muted">2023</span>
-        </div>
-        <h1>Games</h1>
-        <p className="games-intro">Pick a matchup and see the plays that swung it.</p>
-      </header>
-
-      <p className="wp-source game-source">{GAME_SOURCE_LINE}</p>
-
-      <p className="list-count">
-        {games.total} games
-      </p>
-
-      <ul className="game-list">
-        {games.items.map((g) => (
-          <li key={g.game_id}>
-            <Link className="game-row" href={`/games/${encodeURIComponent(g.game_id)}`}>
-              <span className="game-row-main">
-                <span className="game-row-matchup">
-                  <TeamLogo abbr={g.away_team_id} size={22} /> {g.away_team_id} @ <TeamLogo abbr={g.home_team_id} size={22} /> {g.home_team_id}
+    <main id="main">
+      <div className="sg-app gl">
+        <Header right="Games" />
+        <h1 className="gl-title">Games</h1>
+        <p className="gl-sub">2023 season · {games.total} games. Pick a matchup and see the plays that swung it.</p>
+        <ul className="gl-list">
+          {games.items.map((g) => (
+            <li key={g.game_id}>
+              <Link className="gl-row" href={gameCardHref(g.game_id, BUILT)}>
+                <span className="gl-main">
+                  <span className="gl-match">
+                    <TeamLogo abbr={g.away_team_id} size={22} /> {g.away_team_id} <span className="gl-at">@</span> <TeamLogo abbr={g.home_team_id} size={22} /> {g.home_team_id}
+                  </span>
+                  <span className="gl-meta">Week {g.week} · {g.game_date}</span>
                 </span>
-                <span className="game-row-meta">
-                  Week {g.week} · {g.game_date}
-                </span>
-              </span>
-              <span className="game-row-score">
-                {g.away_score ?? "—"}–{g.home_score ?? "—"}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+                <span className="gl-score">{g.away_score ?? "—"}–{g.home_score ?? "—"}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="gl-src">{GAME_SOURCE_LINE}</p>
+        <Trademark />
+      </div>
     </main>
   );
 }

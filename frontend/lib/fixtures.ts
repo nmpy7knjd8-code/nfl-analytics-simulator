@@ -10,7 +10,7 @@ import { GAME_FACTS } from "./gameFacts";
 import { gamePlays } from "./gamePlays";
 
 /** The one source line on game pages (real nflverse plays and win chance). */
-export const GAME_SOURCE_LINE = "Real plays and win chance from nflverse (not our model).";
+export const GAME_SOURCE_LINE = "Real plays and win chance from nflverse's model.";
 
 export const FIXTURE_BANNER =
   "Example data — not live. Shows how the product will feel once the API is connected.";

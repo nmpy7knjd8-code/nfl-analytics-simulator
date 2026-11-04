@@ -1,0 +1,80 @@
+{
+ "input_file": "coaches_input_2026-10-26.parquet",
+ "input_sha256": "83e7d8ad23da4ebfd2b98d37f76831cc4ac27db1d8ee1ef50bd233d66546ca20",
+ "rows": 27494,
+ "engine_version": "fourth_down_engine.v1",
+ "punt_min_yardline_100": 36,
+ "source": "data/products/fourth_downs.parquet built 2026-10-26 (fourth_down_engine.v1), plays on the 35 re-scored with the punt offered only from yardline_100 >= 36 (matches #170), plus nflverse wpa",
+ "provenance_by_season": {
+  "2019": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "45a62afa7f7c4c5189a6ae11432107574129e421247b47c58cc10ff81d2ffa9d",
+   "season_sha256": {
+    "2019": "a333ea2eb682727e38a0cf4cd3227ea87cde8968aa514787a9a8d3b5c1d61a89"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2020": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "092f2e71db555bfe83de0ebec73b404ced79419ea067a0b70a36abaa365fdff9",
+   "season_sha256": {
+    "2020": "a478532555ad09a1bfd146e8f2ff7487e809246a731f4560cb2b848fe917b76f"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2021": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "aabc869d3695f31b82208e02149899b04a279695b6e4af4abb448ed96666fd4f",
+   "season_sha256": {
+    "2021": "a5fc2665520582073b65dcc44058db6dc36f2b532bf8ca558e98eead87271d3a"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2022": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "331cd19e3b33b9b491f409992a337f6199a0612de5db28ec4859c9e1745781e6",
+   "season_sha256": {
+    "2022": "96a5c375da47e7bb19be8d81d4bcc1074570651480bbdf7fb5f7dd7cfb4a395b"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2023": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "73d7aa4b122ed03a24a61542b1839e3d313c530b59903fd63d1b6feeab77c565",
+   "season_sha256": {
+    "2023": "e258815943b9dbe7d561444681da87df8958a51444c1ba4b9336419540d51508"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2024": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "3beb6a467c81eab06e8aeefb66303a847d9d144b7a9d8183ed03aca9dd0bb31c",
+   "season_sha256": {
+    "2024": "0667287bf3eb15b57773c82c41603a2863b4bd2f30e54dea1d20aacdeb726bd7"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  },
+  "2025": {
+   "source": "nflverse",
+   "nflreadpy_version": "0.1.5",
+   "data_sha256": "c2bc1ff115a8cd0ff7885144e4f66d361686af5855e51724c117452c23d84905",
+   "season_sha256": {
+    "2025": "1d6f97da58b1e5c414d864fd3c2cd2ca390b13162b4aabf670ccaacf4aaede5f"
+   },
+   "build_date": "2026-10-26",
+   "license": "nflverse play-by-play, CC BY 4.0"
+  }
+ }
+}

@@ -42,6 +42,19 @@ export function allPairs(): string[] {
   return [...new Set(allGames().map((g) => pairKey(g.home, g.away)))].sort();
 }
 
+/** Reverse-order keys ("GB-DET") so either order of a pair has a static page; each points at its alphabetical key. */
+export function reversePairs(): string[] {
+  return allPairs().map((k) => k.split("-").reverse().join("-"));
+}
+
+/** Alphabetical key for a pair written in either order, or null if it isn't a real pair. */
+export function canonicalPair(key: string): string | null {
+  const [a, b, extra] = key.split("-");
+  if (!a || !b || extra !== undefined) return null;
+  const k = pairKey(a, b);
+  return allPairs().includes(k) ? k : null;
+}
+
 export function rivalry(key: string): Rivalry | null {
   const [a, b] = key.split("-");
   if (!a || !b) return null;

@@ -33,11 +33,21 @@ from _frozen import check_frozen as _check  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/twopoint.json"
 COLUMNS = ["game_id", "season", "week", "season_type", "posteam", "defteam", "qtr", "time", "play_type",
-           "two_point_attempt", "two_point_conv_result", "extra_point_result", "score_differential", "vegas_wp"]
+           "pass_attempt", "two_point_attempt", "two_point_conv_result", "extra_point_result", "score_differential", "vegas_wp"]
 COLS = ["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"]
 KICK_MAX_DIFF = 8     # margin before the try within one score
 KICK_MAX_CLOCK = 300  # seconds left in Q4 (5:00 or less)
 SUMMARY = ("two_point", "extra_point")
+OVERRIDE = ROOT / "mining/frozen_overrides/twopoint-2026-11-03-noplay-kind.json"
+
+
+def try_kind(r: dict[str, Any]) -> str:
+    """run or pass. nflverse marks 13 real tries play_type "no_play" (a penalty enforced between downs);
+    their nflverse pass_attempt flag says which they were (1 -> pass, else run)."""
+    pt = r.get("play_type")
+    if pt in ("run", "pass"):
+        return pt
+    return "pass" if _num(r.get("pass_attempt")) == 1 else "run"
 
 
 def _num(v: Any) -> float | None:
@@ -56,13 +66,13 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
     tries = [r for r in rows if _num(r.get("two_point_attempt")) == 1]
     xps = [r for r in rows if r.get("play_type") == "extra_point"]
     ok = lambda r: r.get("two_point_conv_result") == "success"  # noqa: E731
-    by = lambda k: [r for r in tries if r.get("play_type") == k]  # noqa: E731
+    by = lambda k: [r for r in tries if try_kind(r) == k]  # noqa: E731
     def row(r, kind, made):
         return [int(r["season"]), int(r["week"]), r["season_type"], r["game_id"], r["posteam"], r["defteam"],
                 int(r["qtr"]), r["time"], int(r["score_differential"]), kind, int(made)]
 
     order = lambda s: (s[0], s[1], s[3], s[6], [-int(x) for x in s[7].split(":")])  # noqa: E731
-    situ = sorted((row(r, r["play_type"], ok(r)) for r in tries), key=order)
+    situ = sorted((row(r, try_kind(r), ok(r)) for r in tries), key=order)
     kicks = sorted((row(r, "extra_point", r.get("extra_point_result") == "good") for r in xps if is_close_late_kick(r)),
                    key=order)
     return {
@@ -190,7 +200,32 @@ def carry_win_chance(old: dict[str, Any] | None, new: dict[str, Any]) -> None:
     new["per_choice_win_chance"] = {**w, "by_try": by}
 
 
-def check_frozen(old, new):
+
+
+def load_override() -> set[str]:
+    return set(json.loads(OVERRIDE.read_text())["tries"]) if OVERRIDE.exists() else set()
+
+
+def check_frozen(old, new, allowed: set[str] | None = None):
+    """Override (narrow): the listed tries may change only kind no_play -> run/pass, and only the run/pass
+    sub-totals may move; two_point tries/made/rate and extra_point stay frozen."""
+    allowed = load_override() if allowed is None else allowed
+    if old and allowed:
+        ci = old["cols"].index("kind")
+        nk = {key(dict(zip(new["cols"], r))): r for r in new["tries"]}
+        fixed = []
+        for r in old["tries"]:
+            k = key(dict(zip(old["cols"], r)))
+            if "|".join(map(str, k)) in allowed and r[ci] == "no_play":
+                n = nk.get(k)
+                if n is None or n[:ci] + n[ci + 1:] != r[:ci] + r[ci + 1:] or n[ci] not in ("run", "pass"):
+                    return [f"override {k}: only kind no_play -> run/pass may change"]
+                r = n
+            fixed.append(r)
+        tp = lambda d: {k: v for k, v in d["two_point"].items() if k not in ("run", "pass")}  # noqa: E731
+        if tp(old) != tp(new):
+            return ["summary two_point"]
+        old = {**old, "tries": fixed, "two_point": new["two_point"]}
     return _check(old, new, key, "tries", SUMMARY) + _check(old, new, kick_key, "kicks")
 
 

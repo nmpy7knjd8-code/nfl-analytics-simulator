@@ -113,3 +113,11 @@ Use background agents or separate worktrees only if supported and useful. The le
 A feature is complete only when it works in the integrated application, has appropriate tests, has documented assumptions, and does not misrepresent missing functionality as implemented.
 
 Do not start the next project phase until the current phase’s acceptance criteria have been evaluated and the user has approved continuation.
+
+## Settings change log
+
+One line per branch-protection, Actions or repo-settings change: `YYYY-MM-DD (ET) | who | change | why`.
+
+* ~2026-10-31 | unknown | main began requiring 1 approving review (admins included) | not recorded; it blocked the nightly snapshot merge (#222)
+* by 2026-11-03 | unknown | 1-review requirement removed | not recorded
+* 2026-11-03 | HGIC | keep 0 required reviews; required checks stay backend, frontend, acceptance, build | HGIC decision (settings proposal item 4)
