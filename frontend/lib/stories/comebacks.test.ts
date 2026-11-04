@@ -41,3 +41,20 @@ test("schema guard rejects bad shapes", () => {
   assert.equal(isComebacksDoc({}), false);
   assert.equal(isComebacksDoc({ ...doc, cols: ["season"] }), false);
 });
+
+test("(a) low point is regulation only: Q1-Q4, never an overtime value", () => {
+  assert.match(doc.source, /regulation rows only/);
+  for (const c of rows(doc)) {
+    assert.ok(c.lowQtr >= 1 && c.lowQtr <= 4, `${c.gameId} low in Q${c.lowQtr}`);
+    assert.doesNotMatch(lowText(c), /\bOT\b|overtime|Q5/i);
+  }
+});
+
+test("(b) low reads as % win chance, never points/EPA/WPA; (c) trademark footer present", () => {
+  for (const c of rows(doc)) {
+    assert.match(lowText(c), /fell to (<1|\d{1,2})% to win in Q[1-4]/);
+    assert.doesNotMatch(lowText(c), /\bpts?\b|points|EPA|WPA/i);
+  }
+  const src = readFileSync(new URL("../../components/stories/Comebacks.tsx", import.meta.url), "utf8");
+  assert.match(src, /<Trademark \/>/);
+});
