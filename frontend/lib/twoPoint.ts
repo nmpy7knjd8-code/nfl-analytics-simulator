@@ -7,27 +7,32 @@ export type TwoPointFile = {
   two_point: Rate & { run: Rate; pass: Rate };
   extra_point: Rate;
   cols: string[];
-  tries: (string | number)[][];
-  kicks?: (string | number)[][];
+  tries: (string | number | null)[][];
+  kicks?: (string | number | null)[][];
   kick_rule?: string;
 };
 export type Try = {
   season: number; week: number; season_type: "REG" | "POST"; game_id: string; team: string; opp: string;
   qtr: number; clock: string; diff: number; kind: "run" | "pass" | "extra_point"; made: boolean;
+  /** nflverse vegas_wp for the trying team before/after the try (#282); null when missing or OT. */
+  wp_before?: number | null; wp_after?: number | null;
 };
 export type Call = "kick" | "run" | "pass";
 
 export const ROUND_SIZE = 5;
 
-function readRows(file: TwoPointFile, rows: (string | number)[][]): Try[] {
+function readRows(file: TwoPointFile, rows: (string | number | null)[][]): Try[] {
   const at = (n: string) => file.cols.indexOf(n);
   const ix = Object.fromEntries(["season", "week", "season_type", "game_id", "team", "opp", "qtr", "clock", "diff", "kind", "made"].map((n) => [n, at(n)]));
   if (Object.values(ix).some((i) => i < 0)) return [];
+  const wb = at("wp_before"), wa = at("wp_after");
+  const num = (r: (string | number | null)[], i: number) => (i < 0 || r[i] == null || !Number.isFinite(Number(r[i])) ? null : Number(r[i]));
   return rows
     .map((r) => ({
       season: Number(r[ix.season]), week: Number(r[ix.week]), season_type: r[ix.season_type] as Try["season_type"],
       game_id: String(r[ix.game_id]), team: String(r[ix.team]), opp: String(r[ix.opp]), qtr: Number(r[ix.qtr]),
       clock: String(r[ix.clock]), diff: Number(r[ix.diff]), kind: r[ix.kind] as Try["kind"], made: Number(r[ix.made]) === 1,
+      wp_before: num(r, wb), wp_after: num(r, wa),
     }))
     .filter((t) => t.qtr >= 1 && t.qtr <= 4);
 }
