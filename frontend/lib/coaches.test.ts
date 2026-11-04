@@ -63,9 +63,9 @@ test("best/worst calls are 5 each and overtime calls are dropped", () => {
 import { avgAmount, avgPerCall, avgText, rankCoaches, AVG_LINE } from "./coaches";
 test("average per call replaces the season sum", () => {
   const reid = readSeason(2023).coaches.find((c) => c.team === "KC")!;
-  assert.equal(avgText(reid), "0.4 pts given up");
-  assert.equal(avgAmount(0.21), "0.2 pts gained");
-  assert.equal(avgAmount(-0.01), "0.0 pts"); // −58.21 over 137 calls
+  assert.equal(avgText(reid), "0.4% less chance to win per call");
+  assert.equal(avgAmount(0.21), "0.2% more chance to win per call");
+  assert.equal(avgAmount(-0.01), "Same chance to win as the model"); // −58.21 over 137 calls
   const r = rankCoaches(readSeason(2023).coaches);
   for (let i = 1; i < r.length; i++) assert.ok(avgPerCall(r[i - 1]) >= avgPerCall(r[i]));
   assert.doesNotMatch(AVG_LINE, /calibrat|EPA|WPA|odds|bet/i);
@@ -86,6 +86,24 @@ test("best calls: regulation only, ranked by alt_cost_pts, plain wording", async
   assert.ok(b.length > 0);
   assert.ok(b.every((c) => c.qtr <= 4 && c.alt_cost_pts > 0));
   for (let i = 1; i < b.length; i++) assert.ok(b[i - 1].alt_cost_pts >= b[i].alt_cost_pts);
-  assert.equal(bestNote(b[0]), "Beat the next-best choice by 10.7 win-chance pts.");
+  assert.equal(bestNote(b[0]), "10.7% more chance to win than the next-best choice.");
   assert.doesNotMatch(bestNote(b[0]), /EPA|WPA|odds|bet/i);
+});
+
+test("rendered /coaches and coach pages never say pts or points", async () => {
+  const React = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  (globalThis as unknown as { React: typeof React }).React = React;
+  const { CoachesSeasonPage, CoachBlock } = await import("../components/CoachesView");
+  const { readSeason } = await import("./coaches");
+  const strip = (html: string) => html.replace(/<[^>]+>/g, " ");
+  const bad = /\b(pts|points)\b/i;
+  for (const season of SEASONS) {
+    const data = readSeason(season);
+    assert.doesNotMatch(strip(renderToStaticMarkup(React.createElement(CoachesSeasonPage, { data }))), bad);
+    for (const c of data.coaches) {
+      const text = strip(renderToStaticMarkup(React.createElement(CoachBlock, { c })));
+      assert.doesNotMatch(text, bad, `${c.team} ${season}`);
+    }
+  }
 });

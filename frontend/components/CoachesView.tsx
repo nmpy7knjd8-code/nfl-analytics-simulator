@@ -5,7 +5,7 @@ import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
 import {
   type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
-  rankCoaches, regulationOnly, bestCalls, bestNote, avgText, AVG_LINE, avgPerCall, seasonHref, wentWhenShould,
+  rankCoaches, regulationOnly, bestCalls, bestNote, costNote, pctWording, avgText, AVG_LINE, avgPerCall, seasonHref, wentWhenShould,
 } from "../lib/coaches";
 
 /** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
@@ -66,14 +66,14 @@ export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
     <GamePage right="Coaches">
       <header>
         <h1 className="co-h1">Coaches · {data.season}</h1>
-        <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: average win-chance points per call.</p>
+        <p className="co-sub">How each head coach&apos;s 4th-down calls matched the model. Number on the right: average change in chance to win per call.</p>
       </header>
       <SeasonPicker season={data.season} />
       <ol className="co-list">
         {rankCoaches(data.coaches).map((c, i) => <CoachRow key={c.coach + c.team} c={c} season={data.season} rank={i + 1} />)}
       </ol>
       <p className="co-note">{AVG_LINE}</p>
-      <p className="co-src">Data: nflverse ({data.provenance.license}). Clear call: {data.qualifying_rule}.</p>
+      <p className="co-src">Data: nflverse ({data.provenance.license}). Clear call: {pctWording(data.qualifying_rule)}.</p>
     </GamePage>
   );
 }
@@ -88,7 +88,7 @@ function CallList({ title, calls, team, best = false }: { title: string; calls: 
           {shown.map((c, i) => (
             <li key={i}>
               <p className="co-sit">{callLine(c, team)}</p>
-              <p>{callVerdict(c, team)} {best ? <span>{bestNote(c)}</span> : <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{c.wp_cost_pts > 0 ? `Cost ${c.wp_cost_pts.toFixed(1)} win-chance pts.` : "No cost."}</span>}</p>
+              <p>{callVerdict(c, team)} {best ? <span>{bestNote(c)}</span> : <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{costNote(c.wp_cost_pts)}</span>}</p>
             </li>
           ))}
         </ol>
