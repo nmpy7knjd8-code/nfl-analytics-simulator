@@ -51,7 +51,7 @@ export type Coach = {
   decision_value_pts: number;
   outcome_vs_expected_pts: number;
   net_value_pts: number;
-  /** Ranked by alt_cost_pts. Data only: not shown on the site. */
+  /** Ranked by alt_cost_pts; shown as "Best calls". */
   best: CoachCall[];
   worst: CoachCall[];
 };
@@ -123,16 +123,27 @@ export function avgPerCall(c: Coach): number {
   return c.calls ? c.net_wp_pts / c.calls : 0;
 }
 
-/** Magnitude as a cost: "0.4 pts given up"; a positive average reads "0.2 pts gained". */
+/** Shared % wording for every win-chance number on coach screens (no "pts"/"points"). */
+export function wcPct(v: number): string {
+  return `${Math.abs(v).toFixed(1)}%`;
+}
+/** Average per call: "0.4% less chance to win per call"; positive reads "more"; zero reads "Same chance to win as the model". */
 export function avgAmount(v: number): string {
-  const a = Math.abs(v).toFixed(1);
-  if (a === "0.0") return "0.0 pts";
-  return v < 0 ? `${a} pts given up` : `${a} pts gained`;
+  if (wcPct(v) === "0.0%") return "Same chance to win as the model";
+  return `${wcPct(v)} ${v < 0 ? "less" : "more"} chance to win per call`;
+}
+/** Data-file copy (e.g. qualifying_rule) put into the same % wording: "2 win-chance points" -> "2% chance to win". */
+export function pctWording(t: string): string {
+  return t.replace(/(\d+(?:\.\d+)?)\s*win-chance (?:points|pts)\b/gi, "$1% chance to win");
 }
 export const avgText = (c: Coach) => avgAmount(avgPerCall(c));
+/** Costliest-calls row. */
+export function costNote(cost: number): string {
+  return wcPct(cost) === "0.0%" ? "No cost." : `${wcPct(cost)} less chance to win than the model's pick.`;
+}
 
 /** One plain line under the number. */
-export const AVG_LINE = "Average per call: win-chance points given up (or gained) on each 4th down compared with the model's pick. 0.0 means he always matched it.";
+export const AVG_LINE = "Average per call: how much chance to win he gave up (or gained) on each 4th down compared with the model's pick. Same chance means he always matched it.";
 
 /** Sorted by average per call, best first. */
 export function rankCoaches(cs: Coach[]): Coach[] {
@@ -161,6 +172,16 @@ export function callVerdict(c: CoachCall, team: string): string {
   return c.actual === c.recommendation
     ? `${team} ${CALL[c.actual]}, the model's call.`
     : `${team} ${CALL[c.actual]}. Model said ${REC[c.recommendation]}.`;
+}
+
+/** Best-calls note: how far the call beat the next-best choice (alt_cost_pts, win-chance points). */
+export function bestNote(c: CoachCall): string {
+  return `${wcPct(c.alt_cost_pts)} more chance to win than the next-best choice.`;
+}
+
+/** Best calls worth showing: regulation, and the call actually beat the other choices. */
+export function bestCalls(calls: CoachCall[]): CoachCall[] {
+  return regulationOnly(calls).filter((c) => c.alt_cost_pts > 0).sort((a, b) => b.alt_cost_pts - a.alt_cost_pts);
 }
 
 /** Overtime calls never show win chance (house rule); the coaches.v1 files carry none, this keeps it true. */
