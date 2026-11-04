@@ -30,9 +30,11 @@ test("shown rates are the real nflverse counts", () => {
   
 });
 
-test("no win chance is shown, and the UI never reads per_choice_win_chance", () => {
+test("win chance only via the flag-gated B1 row; the UI never reads per_choice_win_chance", () => {
   const src = readFileSync(resolve(HERE, "twoPoint.ts"), "utf8") + readFileSync(resolve(HERE, "../components/TwoPoint.tsx"), "utf8");
-  assert.ok(!/win chance|\bwp\b|\.wp\b/i.test(src.replace(/^\s*\/\/.*$/gm, "").replace(/^\s*\*.*$/gm, "")), "TwoPoint UI must not read or show win chance");
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+  assert.ok(!/win chance|\bwp\b|\.wp\b/i.test(code), "TwoPoint UI shows win chance only through winChanceRow (B1, CHECKER_ENABLED)");
+  assert.ok(readFileSync(resolve(HERE, "twoPointWinChance.ts"), "utf8").includes("CHECKER_ENABLED"));
   assert.ok(!src.includes("per_choice_win_chance"), "TwoPoint UI must not read per_choice_win_chance");
   const page = readFileSync(resolve(HERE, "../app/two-point/page.tsx"), "utf8");
   assert.ok(!/win chance|per_choice/i.test(page));
