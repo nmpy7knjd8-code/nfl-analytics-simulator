@@ -1,0 +1,4 @@
+/* Game Story keeps its own look and the top bar, but drops the old Today / Practice / Games bottom tabs (as /games did in #232).
+   Done in CSS, not in AppNav's route list, so unbuilt /games/<id> URLs (served by 404.html) don't hydrate differently. */
+body:has(.gs-no-tabs) .app-nav { display: none; }
+body:has(.gs-no-tabs) .app-stage { padding-bottom: var(--safe-bottom); }

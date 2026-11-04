@@ -11,6 +11,7 @@ import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
 import { PlayFeed } from "../../../components/PlayFeed";
 import type { FeedRow } from "../../../lib/gameFileV2";
 import { openingWinChance } from "../../../lib/wpFixtures";
+import "./no-tabs.css";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -78,7 +79,7 @@ export default async function GameReplayPage({ params }: Props) {
 
 
   return (
-    <main className="main page" id="main">
+    <main className="main page gs-no-tabs" id="main">
       <Link className="back-link" href="/games">
         ← Games
       </Link>
