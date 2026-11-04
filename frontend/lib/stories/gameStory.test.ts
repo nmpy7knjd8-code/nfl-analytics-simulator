@@ -44,6 +44,12 @@ test("chart is regulation only; shown text has no ids or stat jargon", () => {
   assert.equal(playText("(2:13) 3-J.Fox punts 40 yards, Center-47-S.Daly."), "J.Fox punts 40 yards, Center-S.Daly.");
 });
 
+test("C1 key 4th downs on DET_KC: regulation 4th downs that swung win chance 10%+, in game order", () => {
+  const s = buildStory(detKc);
+  assert.ok(s.keys.length >= 1);
+  for (const k of s.keys) { assert.ok(k.qtr <= 4); assert.ok(k.swing >= 10); assert.ok(s.rows.has(k.playId)); }
+});
+
 test("copy: regulation swings are in percent, never 'points'", () => {
   for (const b of buildStory(detKc).beats) assert.ok(!/\bpoints?\b/i.test(b.sentence), b.sentence);
 });

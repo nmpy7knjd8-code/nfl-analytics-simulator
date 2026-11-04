@@ -1,3 +1,4 @@
+import { keyFourths, type KeyFourth, type KeyRow } from "./keyFourths";
 /** Game Story page helpers (Stories lane). Reads the live game file /data/games/<id>.json via expandGameV2. */
 import { expandGameV2, type GameFileV2 } from "../gameFileV2";
 import { gameWeekLabel } from "../playFeed";
@@ -6,7 +7,7 @@ import { sentence, storyRows, type NarrRow } from "./narrator";
 export type StoryGame = { id: string; season: number; week: number; seasonType: string; home: string; away: string; homeScore: number; awayScore: number; overtime: boolean };
 export type StoryBeat = { playId: number; qtr: number; clock: string; team: string; sentence: string; text: string };
 export type StoryPoint = { t: number; wp: number };
-export type Story = { game: StoryGame; beats: StoryBeat[]; points: StoryPoint[]; rows: Map<number, StoryBeat> };
+export type Story = { game: StoryGame; beats: StoryBeat[]; points: StoryPoint[]; rows: Map<number, StoryBeat>; keys: KeyFourth[] };
 
 const NON_PLAY = /^(GAME|END (QUARTER \d|GAME)|Two-Minute Warning|Timeout #\d)/i;
 
@@ -51,5 +52,6 @@ export function buildStory(doc: GameFileV2): Story {
   const points = plays
     .filter((p) => p.qtr <= 4 && p.home_wp != null && p.clock)
     .map((p) => { const [m, s] = p.clock!.split(":").map(Number); return { t: (p.qtr - 1) * 900 + 900 - (m * 60 + s), wp: p.home_wp as number }; });
-  return { game, beats, points, rows };
+  const keys = keyFourths(plays as unknown as KeyRow[], game.home, game.away);
+  return { game, beats, points, rows, keys };
 }
