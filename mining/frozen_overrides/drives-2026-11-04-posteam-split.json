@@ -1,6 +1,9 @@
 {
   "reason": "Research QA 2026-11-04-0120 D5/D6: nflverse fixed_drive holds two possessions (posteam changes). Split it; each part takes its own nflverse drive start, ydsnet and drive_end_transition. Only these 2 games change in 2019-2025.",
   "rule": "posteam_split",
-  "games": ["2019_02_TB_CAR", "2023_12_PIT_CIN"],
-  "approved_by": "PENDING HGIC"
+  "games": [
+    "2019_02_TB_CAR",
+    "2023_12_PIT_CIN"
+  ],
+  "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #288 D5/D6 posteam split, 2 games only (2019_02_TB_CAR, 2023_12_PIT_CIN), override drives-2026-11-04-posteam-split.json, Nov 4, 2026 1:38 AM ET."
 }
