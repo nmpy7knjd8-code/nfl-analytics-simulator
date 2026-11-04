@@ -1,6 +1,6 @@
 {
  "file": "data/site/onthisday.json",
  "rule": "ot_append",
- "approved_by": "PENDING HGIC",
+ "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #313 append-only onthisday ot column, 4 to 5 cols, existing values unchanged, under 80 KB, Nov 4, 2026 3:33 AM ET.",
  "reason": "Analyte 2026-11-04: append ot (true if the game had any nflverse play with qtr >= 5) as the last col of every game row. Append-only: cols must be exactly the old 4 + [ot] and the first 4 values of every row must stay identical (ot_append_ok + strip_ot)."
 }
