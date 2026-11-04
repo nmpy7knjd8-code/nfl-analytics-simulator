@@ -31,3 +31,11 @@ test("B1: real data carries wp for the trying team on regulation tries", () => {
   assert.ok(tries.length > 900);
   assert.ok(tries.filter((t) => winChanceRow(t, true)).length > 900);
 });
+
+test("B1: WinChanceLine renders nothing when CHECKER_ENABLED is false", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { WinChanceLine } = await import("../components/TwoPoint");
+  assert.equal(CHECKER_ENABLED, false);
+  assert.equal(renderToStaticMarkup(createElement(WinChanceLine, { t: base })), "");
+});

@@ -168,7 +168,7 @@ export function TwoPoint() {
 }
 
 /** B1: real before/after win chance for the trying team, with a thin mini-bar. Renders nothing when off, null or OT. */
-function WinChanceLine({ t }: { t: Try }) {
+export function WinChanceLine({ t }: { t: Try }) {
   const r = winChanceRow(t);
   if (!r) return null;
   const lo = Math.min(r.before, r.after), hi = Math.max(r.before, r.after);
