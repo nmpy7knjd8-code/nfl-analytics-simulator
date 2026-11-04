@@ -94,7 +94,7 @@ test("plain text", () => {
   assert.equal(marginText(-22), "down 22");
   assert.equal(marginText(5), "up 5");
   const t = { ...tries[0], clock: "09:19", qtr: 4, diff: -22, team: "ATL", kind: "pass" as const, made: false };
-  assert.equal(situationText(t), "ATL just scored a touchdown. They're down 22 with 9:19 left in the 4th.");
+  assert.equal(situationText(t), "ATL just scored a touchdown. They're down 22 before the try with 9:19 left in the 4th.");
   assert.equal(coachText(t), "Went for two with a pass. No good.");
 });
 
@@ -115,6 +115,71 @@ test("QA copy: League labels, match header, result line, league match line", asy
   for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
 });
 
+// Claim checker for the Q4 lines: [after "two" | "kick", points the trailing side scores next, result for that side].
+// "2sc" = no single score (max 8) catches up; "3sc" = two scores (max 16) can't catch up.
+type Claim = ["two" | "kick", number | "2sc" | "3sc", "win" | "tie" | "short"];
+const FG = 3, TD = 6, TDK = 7, TD2 = 8;
+const CLAIMS: Record<number, Claim[]> = {
+  [-16]: [["two", TDK + TDK, "tie"]],
+  [-15]: [["two", TDK + TDK, "win"], ["kick", TDK + TDK, "tie"]],
+  [-14]: [["two", TDK + TDK, "win"], ["kick", TDK + TDK, "win"]],
+  [-13]: [["two", TD + TD, "win"], ["kick", TD + TD, "tie"], ["kick", TDK + TD, "win"]],
+  [-12]: [["two", TDK + FG, "tie"]],
+  [-11]: [["two", TD + FG, "tie"], ["kick", TD + FG, "short"], ["kick", TDK + FG, "tie"]],
+  [-10]: [["two", TD2, "tie"], ["kick", "2sc", "short"]],
+  [-9]: [["two", TDK, "tie"], ["kick", TDK, "short"]],
+  [-8]: [["two", TD, "tie"], ["kick", TD, "short"], ["kick", TDK, "tie"]],
+  [-7]: [["two", TD, "win"], ["kick", TD, "tie"]],
+  [-6]: [["two", TD, "win"], ["kick", TD, "win"], ["two", FG, "short"], ["kick", FG, "short"]],
+  [-5]: [["two", FG, "tie"], ["kick", FG, "short"]],
+  [-4]: [["two", FG, "win"], ["kick", FG, "tie"]],
+  [-3]: [["two", FG, "win"], ["kick", FG, "win"]],
+  [-2]: [["two", 0, "tie"], ["kick", 0, "short"]],
+  [-1]: [["kick", 0, "tie"]],
+  [0]: [["two", FG, "win"], ["kick", FG, "win"]],
+  [1]: [["two", FG, "tie"]],
+  [2]: [["two", FG, "short"]],
+  [3]: [["two", FG, "short"], ["kick", FG, "short"], ["two", TD, "win"], ["kick", TD, "win"]],
+  [4]: [["two", TD, "tie"], ["two", TDK, "win"]],
+  [5]: [["two", TDK, "tie"], ["kick", TDK, "win"]],
+  [6]: [["two", TD2, "tie"], ["two", TDK, "short"]],
+  [7]: [["two", "2sc", "short"], ["kick", TD2, "tie"]],
+  [8]: [["two", "2sc", "short"], ["kick", "2sc", "short"]],
+  [9]: [["two", "2sc", "short"], ["kick", "2sc", "short"]],
+  [10]: [["two", TD + TD, "tie"], ["kick", TD + TD, "win"]],
+  [11]: [["two", TD + TD, "short"], ["two", TDK + TD, "tie"], ["kick", TD + TD, "tie"]],
+  [12]: [["two", TDK + TDK, "tie"], ["kick", TDK + TDK, "win"]],
+  [13]: [["two", TDK + TDK, "short"], ["kick", TDK + TDK, "tie"]],
+  [14]: [["two", TDK + TDK, "short"], ["kick", TDK + TDK, "short"]],
+  [15]: [["two", "3sc", "short"], ["kick", TD2 + TD2, "tie"]],
+  [16]: [["two", "3sc", "short"], ["kick", "3sc", "short"]],
+};
+/** Result for whichever side trails after the try when it scores `pts`. */
+function judge(diff: number, after: "two" | "kick", pts: Claim[1]): Claim[2] {
+  const gap = Math.abs(diff + (after === "two" ? 2 : 1));
+  const p = pts === "2sc" ? TD2 : pts === "3sc" ? 2 * TD2 : pts;
+  return p > gap ? "win" : p === gap ? "tie" : "short";
+}
+
+test("Q4 margin lines: every claim checks out arithmetically", async () => {
+  const m = await import("./twoPoint");
+  for (let d = -16; d <= 16; d++) {
+    const line = m.MARGIN_LINES[d];
+    assert.ok(line, `missing ${d}`);
+    assert.ok(line.startsWith(d === 0 ? "Tied:" : `${d > 0 ? "Up" : "Down"} ${Math.abs(d)}:`), line);
+    assert.ok(CLAIMS[d]?.length, `no claims for ${d}`);
+    for (const [after, pts, want] of CLAIMS[d]) assert.equal(judge(d, after, pts), want, `${d} ${after} ${pts}: ${line}`);
+    // Any stated score after the try matches the arithmetic.
+    const sgn = (w: string) => (w === "up" ? 1 : -1);
+    const two = /two (?:leaves|puts) them (up|down) (\d+)/.exec(line);
+    if (two) assert.equal(sgn(two[1]) * Number(two[2]), d + 2, line);
+    const kick = /[Aa] kick (?:leaves them )?(up|down) (\d+)/.exec(line);
+    if (kick) assert.equal(sgn(kick[1]) * Number(kick[2]), d + 1, line);
+    if (Math.abs(d) >= 4 && d !== -5) assert.ok(two && kick, `states both scores: ${line}`);
+  }
+  assert.deepEqual(Object.keys(m.MARGIN_LINES).map(Number).sort((a, b) => a - b), Array.from({ length: 33 }, (_, i) => i - 16));
+});
+
 test("verdict line: Q4 score margin only, no win chance or points-per-try", async () => {
   const m = await import("./twoPoint");
   const base = tries.find((x) => x.qtr === 4)!;
@@ -124,10 +189,18 @@ test("verdict line: Q4 score margin only, no win chance or points-per-try", asyn
   assert.equal(at(4, 1), "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.");
   assert.equal(at(4, 4), "Up 4: two puts them up 6, so the other team needs a touchdown and the extra point to win. A kick leaves them up 5.");
   assert.equal(at(4, 0), "Tied: two puts them up 2, a kick up 1. A field goal beats either.");
-  // Q4, not a clear case.
-  for (const d of [-8, -7, -3, -1, 2, 3, 5, 7, 14]) assert.equal(at(4, d), m.NEUTRAL_LINE);
-  // Early game, even on a clear margin.
-  for (const q of [1, 2, 3]) for (const d of [-2, -5, 1, 4, 0, 6]) assert.equal(at(q, d), "Early on, both choices average about one point.");
+  assert.equal(at(4, -1), "Down 1: two takes the lead, a kick ties.");
+  assert.equal(at(4, 2), "Up 2: two puts them up 4, so a field goal can't tie. A kick leaves them up 3.");
+  assert.equal(at(4, 3), "Up 3: two makes it 5, a kick 4. Either way a field goal can't tie and a touchdown wins.");
+  assert.equal(at(4, -9), "Down 9: two leaves them down 7, so a touchdown and kick ties. A kick leaves them down 8.");
+  assert.equal(at(4, -3), "Down 3: two leaves them down 1, a kick down 2. A field goal wins either way.");
+  // Q4 beyond two-score-plus gaps: neutral.
+  for (const d of [-17, 17, -22, 30]) assert.equal(at(4, d), m.NEUTRAL_LINE);
+  // Early game: Q1, Q2 any clock; Q3 only with more than 5:00 left.
+  const atc = (qtr: number, clock: string, diff = -2) => m.verdictText(file, { ...base, qtr, clock, diff });
+  for (const q of [1, 2]) for (const d of [-2, -5, 1, 4, 0, 6]) assert.equal(atc(q, "00:30", d), "Early on, both choices average about one point.");
+  for (const c of ["14:59", "05:01", "10:00"]) assert.equal(atc(3, c), m.EARLY_LINE);
+  for (const c of ["05:00", "04:59", "00:03", "", "bad"]) assert.equal(atc(3, c), m.NEUTRAL_LINE);
   // Overtime: never a margin line, never "Early on".
   for (const d of [-2, 0, 1]) assert.equal(at(5, d), "Both choices average about one point.");
   // No score data.
