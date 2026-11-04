@@ -44,6 +44,9 @@ COLS = ["team", "qtr", "clock", "yards", "result", "tiles", "ret"]  # one space-
 # ret (appended 2026-11-03, Charts UI): OD drives only, a 7th field = how the opponent scored on the drive's last
 # play; every other drive keeps 6 fields. I pick-six, F fumble return, B blocked punt/FG, P punt return,
 # K kickoff return, M missed field goal return, - none of these.
+# K stays in RET_KEY only because its bytes are published; ret_code never produces it. A normal kickoff-return TD is
+# the receiving team's own drive (not OD), and the only kicking-team kickoff TD (2025_02_SEA_PIT drive 19) has no
+# snaps, so that drive is dropped.
 RET_KEY = {"I": "Pick-six", "F": "Fumble return TD", "B": "Blocked kick TD", "P": "Punt returned for TD",
            "K": "Kickoff return TD", "M": "Missed field goal returned for TD", "-": "Other"}
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive", "drive",
@@ -112,8 +115,6 @@ def ret_code(rows: list[dict[str, Any]]) -> str:
         return "B"
     if one("punt_attempt"):
         return "P"
-    if one("kickoff_attempt"):
-        return "K"
     if one("field_goal_attempt"):
         return "M"
     return "-"
