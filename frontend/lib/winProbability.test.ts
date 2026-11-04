@@ -90,8 +90,8 @@ test("2240 P2-A: BUF_NYJ overtime plays carry display_text, not raw feed text", 
 test("2240 P3-A + open item: swing meta reads as win chance; cards run in game order", () => {
   const sw = inGameOrder(findSwingPlays(WP_FIXTURES["2023_01_BUF_NYJ"].series));
   for (let i = 1; i < sw.length; i++) assert.ok(sw[i - 1].point.game_seconds_elapsed <= sw[i].point.game_seconds_elapsed);
-  for (const s of sw) assert.match(swingMeta(s), /^[A-Z]{2,3} win chance \+\d+$/);
-  assert.equal(swingMeta({ delta: -0.236, favored_team_id: "DET" }), "DET win chance +24");
+  for (const s of sw) { assert.match(swingMeta(s), /^[A-Z]{2,3} win chance \+\d+%$/); assert.ok(s.why.startsWith(`${s.favored_team_id}'s win chance swung ${swingMeta(s).split("+")[1]}`)); }
+  assert.equal(swingMeta({ delta: -0.236, favored_team_id: "DET" }), "DET win chance +24%");
 });
 
 test("clock labels from game_seconds_elapsed, including OT", () => {
@@ -284,9 +284,70 @@ test("article before yardage: 'an' for 8, 11, 18, 80–89; 'a' otherwise", () =>
 
 test("QA 0116 N8: safeties and blocked kicks name the real cause, not the sack or punt", () => {
   const w = (event: string, description: string) => whyText(0.2, { ...base(), event, description, yards_gained: 0 } as EventPoint, "DET");
-  assert.match(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /a safety gave the defense 2 points/);
+  assert.match(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /a safety gave the defense 2 and the ball back/);
   assert.doesNotMatch(w("other", "(5:01) J.Goff sacked in End Zone for -8 yards, SAFETY."), /sack lost yards/);
   assert.match(w("punt", "(2:00) M.Haack punt is BLOCKED by J.Doe, recovered by NE at IND 2."), /a blocked punt/);
   assert.match(w("field_goal", "(0:03) 44 yard field goal is BLOCKED."), /a blocked field goal/);
   assert.match(w("other", "(5:01) J.Goff sacked at DET 20 for -8 yards."), /a sack lost yards/);
+});
+
+test("W1: DET_KC Q4 5:51 3rd & 1 — KC had the ball, so the Why gives DET's defensive stop, in %", () => {
+  const sw = findSwingPlays(WP_FIXTURES["2023_01_DET_KC"].series);
+  const s = sw.find((x) => clockLabel(x.point) === "Q4 5:51")!;
+  assert.ok(s, "swing at Q4 5:51");
+  const p = s.point as EventPoint;
+  assert.equal(p.possession_team_id, "KC");
+  assert.equal(s.favored_team_id, "DET");
+  const n = Math.abs(Math.round(p.home_wp_post * 100) - Math.round(p.home_wp_pre * 100));
+  assert.equal(s.why.split(" because ")[0], `DET's win chance swung ${n}%`);
+  assert.match(s.why, /because the defense stopped KC short on 3rd & 1/);
+  assert.doesNotMatch(s.why, /moved the ball and the clock|points/);
+});
+
+test("W1: defense reasons for a stop, a sack and a turnover; offense wording unchanged", () => {
+  const d = (x: Partial<EventPoint>) => whyText(0.12, { ...base(), possession_team_id: "KC", home_wp_pre: 0.5, home_wp_post: 0.38, down: 3, distance: 1, yards_gained: 0, ...x } as EventPoint, "DET");
+  assert.match(d({ event: "other", description: "I.Pacheco up the middle for no gain" }), /^DET's win chance swung 12% because the defense stopped KC short on 3rd & 1/);
+  assert.match(d({ event: "other", description: "P.Mahomes sacked at KC 30 for -7 yards", yards_gained: -7 }), /because the defense sacked KC on 3rd & 1/);
+  assert.match(d({ event: "interception", description: "P.Mahomes pass INTERCEPTED by B.Branch" }), /because the defense intercepted KC/);
+  assert.match(d({ event: "fumble_lost", description: "I.Pacheco FUMBLES, RECOVERED by DET" }), /because the defense took the ball away from KC/);
+  // scoring plays keep their reason even when the defense gained
+  assert.match(d({ event: "interception", return_td: true, description: "INTERCEPTED ... TOUCHDOWN" }), /interception returned for a touchdown/);
+  // offense gainer keeps offense wording
+  assert.match(whyText(0.12, { ...base(), possession_team_id: "DET", home_wp_pre: 0.5, home_wp_post: 0.38, event: "other", description: "J.Goff pass short to A.St. Brown for 3 yards" } as EventPoint, "DET"), /moved the ball and the clock/);
+  // never 0%
+  assert.match(whyText(0.004, { ...base(), possession_team_id: "KC", home_wp_pre: 0.501, home_wp_post: 0.497, event: "other", description: "x" } as EventPoint, "DET"), /swung <1%/);
+});
+
+test("W1 nit: 'stopped short' only on 3rd/4th down; early downs say 'held'; a flag gets a penalty reason", () => {
+  const d = (x: Partial<EventPoint>) => whyText(0.12, { ...base(), possession_team_id: "KC", home_wp_pre: 0.5, home_wp_post: 0.38, event: "other", description: "I.Pacheco up the middle for 2 yards", yards_gained: 2, distance: 8, ...x } as EventPoint, "DET");
+  assert.match(d({ down: 2 }), /because the defense held KC to a short gain on 2nd & 8/);
+  assert.match(d({ down: 1, distance: 10 }), /held KC to a short gain on 1st & 10/);
+  assert.match(d({ down: 3 }), /stopped KC short on 3rd & 8/);
+  assert.match(d({ down: 3, penalty_text: "PENALTY on KC-T.Kelce, Offensive Holding, 10 yards" }), /because a penalty on the play went against KC/);
+  assert.doesNotMatch(d({ down: 2 }), /stopped/);
+});
+
+test("#285 review: an offense-recovered fumble is not a takeaway; a lost one is", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "KC", event: "other", return_td: false, kick_return_td: false } as EventPoint;
+  const own = whyText(0.12, { ...base, description: "I.Pacheco FUMBLES, RECOVERED by KC-T.Kelce" } as EventPoint, "DET");
+  assert.doesNotMatch(own, /took the ball away/);
+  assert.match(whyText(0.12, { ...base, description: "I.Pacheco FUMBLES, RECOVERED by DET-A.Hutchinson" } as EventPoint, "DET"), /the defense took the ball away from KC/);
+});
+
+test("#285 review: no Why ever says pts or points", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "DET", return_td: false, kick_return_td: false } as EventPoint;
+  const cases: Partial<EventPoint>[] = [
+    { event: "safety" }, { description: "Field goal attempt is BLOCKED" }, { event: "field_goal" }, { event: "other", description: "41 yard field goal is GOOD" },
+    { event: "touchdown" }, { event: "punt" }, { event: "interception" }, { event: "fumble_lost" }, { event: "other", description: "sacked" },
+  ];
+  for (const c of cases) assert.doesNotMatch(whyText(0.2, { ...base, ...c } as EventPoint, "DET"), /\b(pts|points)\b/i);
+  for (const g of Object.values(WP_FIXTURES)) for (const s of findSwingPlays(g.series)) assert.doesNotMatch(s.why, /\b(pts|points)\b/i);
+});
+
+test("#285 nit: an offense-recovered fumble never falls through to the generic turnover reason", () => {
+  const base = { ...WP_FIXTURES["2023_01_DET_KC"].series.points[0], possession_team_id: "KC", return_td: false, kick_return_td: false, yards_gained: 3 } as EventPoint;
+  const own = { ...base, event: undefined, description: "I.Pacheco FUMBLES, RECOVERED by KC-T.Kelce" } as unknown as EventPoint;
+  assert.doesNotMatch(whyText(0.12, own, "KC"), /turnover|took the ball away/);
+  const lost = { ...own, description: "I.Pacheco FUMBLES, RECOVERED by DET-A.Hutchinson" } as EventPoint;
+  assert.match(whyText(0.12, lost, "KC"), /a turnover handed the ball/);
 });

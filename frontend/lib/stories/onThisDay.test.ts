@@ -33,3 +33,24 @@ test("old team codes read as today's names", () => {
   const all = Object.keys(doc.days).flatMap((k) => games(doc, k));
   assert.ok(all.every((g) => !["OAK", "SD", "STL"].includes(g.away) && !["OAK", "SD", "STL"].includes(g.home)));
 });
+
+test("QA C4: '(OT)' after the score when the row's ot flag is set; works with or without the column", () => {
+  const base = { schema: "onthisday/v1" as const, days: {}, fallback: {} };
+  const withOt = { ...base, cols: ["game_id", "year", "away_score", "home_score", "ot"],
+    days: { "11-04": [["2024_09_TB_KC", 2024, 24, 30, 1], ["2021_09_NYJ_IND", 2021, 30, 45, 0]] } };
+  const g = games(withOt, "11-04");
+  assert.equal(scoreLine(g.find((x) => x.year === 2024)!), "TB 24, KC 30 (OT)");
+  assert.equal(scoreLine(g.find((x) => x.year === 2021)!), "NYJ 30, IND 45");
+  const noOt = { ...base, cols: ["game_id", "year", "away_score", "home_score"], days: { "11-04": [["2024_09_TB_KC", 2024, 24, 30]] } };
+  assert.equal(scoreLine(games(noOt, "11-04")[0]), "TB 24, KC 30");
+});
+
+test("QA C4 on real data (#313): 2024_09_TB_KC has ot=true in column 5 and reads '(OT)', no win chance", () => {
+  assert.equal(doc.cols[4], "ot");
+  const g = games(doc, "11-04").find((x) => x.gameId === "2024_09_TB_KC")!;
+  assert.equal(g.ot, true);
+  assert.equal(scoreLine(g), "TB 24, KC 30 (OT)");
+  assert.doesNotMatch(scoreLine(g), /%|win chance/i);
+  const ots = Object.values(doc.days as Record<string, unknown[][]>).flat().filter((r) => r[4] === true).length;
+  assert.equal(ots, 110);
+});

@@ -1,0 +1,7 @@
+{
+  "file": "data/site/comebacks.json",
+  "reason": "UI Critic recheck 2026-11-04-0335 (after #307): in 2023_08_NYJ_NYG (OT) the stated low (Q4 0:28) overwrote the final sample, so the line ended at 2 instead of 47 (end-of-regulation win chance). The low now never replaces the final index; if nearest is the last sample it goes at index 22. Listed games may change only their spark array.",
+  "rule": "spark_final_index",
+  "games": ["2023_08_NYJ_NYG"],
+  "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #314 keeps the final sparkline point. It changes 1 row (2023_08_NYJ_NYG), spark only, and the copies stay byte-identical. Nov 4, 2026 3:38 AM ET."
+}

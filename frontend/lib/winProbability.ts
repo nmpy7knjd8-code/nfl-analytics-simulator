@@ -142,8 +142,39 @@ function bigGain(yards: number, yardline100: number | null | undefined): string 
   return `${g} flipped field position`;
 }
 
+/** A fumble is a takeaway only when it was lost: nflverse says so, or the recovering team is not the offense. */
+function fumbleLost(p: EventPoint, offense: string): boolean {
+  if (p.event === "fumble_lost") return true;
+  const m = /recovered by ([A-Z]{2,3})-/i.exec(p.description ?? "");
+  return /fumble/i.test(p.description ?? "") && !!m && m[1].toUpperCase() !== offense.toUpperCase();
+}
+
+/** W1: the side that gained is on defense (the other team had the ball). */
+function defenseCause(p: EventPoint, d: string, offense: string): string | null {
+  const ord = ["", "1st", "2nd", "3rd", "4th"];
+  const sit = p.down && p.distance != null ? ` on ${ord[p.down]} & ${p.distance}` : "";
+  if (p.event === "interception" || /intercept/.test(d)) return `the defense intercepted ${offense}`;
+  if (fumbleLost(p, offense)) return `the defense took the ball away from ${offense}`;
+  if (/sack/.test(d)) return `the defense sacked ${offense}${sit}`;
+  // Product UI nit: a flag, not the defense, decided these swings.
+  if (p.penalty_text || /\bpenalty\b|no play/.test(d)) return `a penalty on the play went against ${offense}`;
+  if (p.down && p.distance != null && (p.yards_gained ?? 0) < p.distance) {
+    // "Stopped short" only means something on 3rd or 4th down; earlier downs say the defense held.
+    return p.down >= 3 ? `the defense stopped ${offense} short${sit}` : `the defense held ${offense} to a short gain${sit}`;
+  }
+  return null;
+}
+
+/** Shown swing, from the rounded before/after values (as #269): never "0%". */
+function shownSwing(delta: number, p: EventPoint): string {
+  const n = Number.isFinite(p.home_wp_pre) && Number.isFinite(p.home_wp_post)
+    ? Math.abs(Math.round(p.home_wp_post * 100) - Math.round(p.home_wp_pre * 100))
+    : Math.round(Math.abs(delta) * 100);
+  return n < 1 ? "<1" : String(n);
+}
+
 export function whyText(delta: number, p: EventPoint, favored: string): string {
-  const pts = Math.round(Math.abs(delta) * 100);
+  const pts = shownSwing(delta, p);
   const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
@@ -156,23 +187,28 @@ export function whyText(delta: number, p: EventPoint, favored: string): string {
     ? "a kickoff returned for a touchdown gave the return team a score"
     : "a punt returned for a touchdown gave the return team a score";
   // QA 0116 N8: a safety (often on a sack) or a blocked kick is the cause, not the sack or the punt.
-  else if (p.event === "safety" || /\bsafety\b/.test(d)) cause = "a safety gave the defense 2 points and the ball back";
+  else if (p.event === "safety" || /\bsafety\b/.test(d)) cause = "a safety gave the defense 2 and the ball back";
   else if (/\bblocked\b/.test(d) && /punt/.test(d)) cause = "a blocked punt gave the defense the ball in great field position";
-  else if (/\bblocked\b/.test(d) && /field goal/.test(d)) cause = "a blocked field goal took points off the board";
+  else if (/\bblocked\b/.test(d) && /field goal/.test(d)) cause = "a blocked field goal kept 3 off the board";
   else if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down handed the ball over";
   else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover handed the ball and field position to the other side";
   else if (p.event === "touchdown") cause = "a touchdown changed the score in one snap";
-  else if (p.event === "field_goal") cause = "points went on the board";
+  else if (p.event === "field_goal") cause = "the kick put 3 on the board";
   else if (p.event === "punt") cause = "a punt flipped field position";
   // QA L6 / P3-K: a 20+ yard gain (#97 yards_gained) is about field position, not the score.
   else if ((p.yards_gained ?? 0) >= 20) cause = bigGain(p.yards_gained as number, p.yardline_100);
   else if (p.event === "other") cause = /sack/.test(d) ? "a sack lost yards and could have killed the drive" : "it moved the ball and the clock";
-  else if (/intercept|fumble/.test(d)) cause = "a turnover handed the ball and field position to the other side";
+  else if (/intercept/.test(d) || (/fumble/.test(d) && fumbleLost(p, p.possession_team_id ?? ""))) cause = "a turnover handed the ball and field position to the other side";
   else if (/touchdown/.test(d)) cause = "a touchdown changed the score in one snap";
-  else if (/field goal|fg/.test(d)) cause = "points went on the board";
+  else if (/field goal|fg/.test(d)) cause = "the kick put 3 on the board";
   else if (/fourth-and|fourth down|4th/.test(d)) cause = "a fourth-down call decided who kept the ball";
   else if (/sack/.test(d)) cause = "a sack lost yards and could have killed the drive";
-  return `${favored} gained ${pts} points of win chance because ${cause}${
+  // W1: on a non-scoring play where the gainer did not have the ball, give the defense's reason.
+  const offense = p.possession_team_id;
+  const scoring = p.return_td || p.kick_return_td || p.event === "safety" || p.event === "touchdown" || p.event === "field_goal"
+    || /\bsafety\b|touchdown|field goal/.test(d) || /\bblocked\b/.test(d) || p.fourth_down_failed || p.event === "turnover_on_downs" || p.event === "punt";
+  if (offense && offense !== favored && !scoring) cause = defenseCause(p, d, offense) ?? cause;
+  return `${favored}'s win chance swung ${pts}% because ${cause}${
     late || p.is_overtime ? ", and with little time left there was less chance to answer" : ""
   }.`;
 }
@@ -192,9 +228,9 @@ export function inGameOrder(swings: SwingPlay[]): SwingPlay[] {
   return [...swings].sort((a, b) => a.point.game_seconds_elapsed - b.point.game_seconds_elapsed || a.point.play_index - b.point.play_index);
 }
 
-/** "DET win chance +24" (UI Critic 2240 P3-A: not "gains 24 pts", which reads like game points). */
-export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id">): string {
-  return `${s.favored_team_id} win chance +${Math.round(Math.abs(s.delta) * 100)}`;
+/** "DET win chance +24%" (UI Critic 2240 P3-A: not "gains 24 pts"). Same shown rounding as the Why (#269). */
+export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id"> & { point?: EventPoint }): string {
+  return `${s.favored_team_id} win chance +${s.point ? shownSwing(s.delta, s.point) : (Math.round(Math.abs(s.delta) * 100) || "<1")}%`;
 }
 
 /** Swing plays, largest first, capped at `limit`. */

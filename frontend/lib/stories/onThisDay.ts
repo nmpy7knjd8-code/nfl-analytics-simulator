@@ -1,6 +1,6 @@
 /** G4 On this day: real nflverse final scores played on today's month-day (onthisday/v1, US Eastern dates). */
 export type OnThisDayDoc = { schema: "onthisday/v1"; cols: string[]; days: Record<string, unknown[][]>; fallback: Record<string, number> };
-export type DayGame = { gameId: string; year: number; away: string; home: string; awayScore: number; homeScore: number };
+export type DayGame = { gameId: string; year: number; away: string; home: string; awayScore: number; homeScore: number; ot: boolean };
 
 const RENAME: Record<string, string> = { OAK: "LV", SD: "LAC", STL: "LA" };
 const team = (t: string) => RENAME[t] ?? t;
@@ -28,10 +28,11 @@ export function games(d: OnThisDayDoc, key: string): DayGame[] {
   return (d.days[key] ?? []).map((r) => {
     const id = r[i("game_id")] as string;
     const p = id.split("_");
-    return { gameId: id, year: r[i("year")] as number, away: team(p[2]), home: team(p[3]), awayScore: r[i("away_score")] as number, homeScore: r[i("home_score")] as number };
+    const o = i("ot"); // QA C4: Data Builders' optional overtime flag; files without the column read as regulation
+    return { gameId: id, year: r[i("year")] as number, away: team(p[2]), home: team(p[3]), awayScore: r[i("away_score")] as number, homeScore: r[i("home_score")] as number, ot: o >= 0 && !!r[o] };
   }).sort((a, b) => b.year - a.year || Math.abs(a.awayScore - a.homeScore) - Math.abs(b.awayScore - b.homeScore));
 }
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 export const dayLabel = (key: string): string => { const [m, d] = key.split("-").map(Number); return `${MONTHS[m - 1]} ${d}`; };
-export const scoreLine = (g: DayGame): string => `${g.away} ${g.awayScore}, ${g.home} ${g.homeScore}`;
+export const scoreLine = (g: DayGame): string => `${g.away} ${g.awayScore}, ${g.home} ${g.homeScore}${g.ot ? " (OT)" : ""}`;
