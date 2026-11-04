@@ -264,5 +264,8 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .ds-sub{font-size:12px;color:var(--sg-g)}
 .pf-gain{display:block;font-size:14px;font-weight:800;color:var(--sg-b);margin:2px 0 4px}
 
+.pf-wx { display: inline-block; align-self: flex-start; width: fit-content; margin-top: 4px; padding: 2px 10px; border: 1.5px solid #111; border-radius: 999px; font-size: 13px; font-weight: 700; }
+
+.pf-wx-note { display: block; font-size: 13px; color: #555; margin-top: 2px; }
 .pf-gl-note { display: block; font-size: 13px; color: #555; margin-top: 2px; }
 .sg-end .sg-pair-end{margin-top:8px}.sg-pair-end .sg-keep{min-height:48px}

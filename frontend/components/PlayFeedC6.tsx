@@ -11,6 +11,7 @@ import { Header, Trademark } from "./SimpleGame";
 import { TeamLogo } from "./TeamLogo";
 import { GamePicker } from "./GamePicker";
 import { DriveStrips } from "./DriveStrips";
+import { gameWeather, isWeatherDoc, type WeatherDoc } from "../lib/stories/weather";
 import { badgeLabel, isGoalLineDoc, stopKey, stopSet } from "../lib/stories/goalLine";
 import { DEFAULT_FEED_GAME, feedUrlToWrite, gameFromQuery, seasonOf } from "../lib/gamePicker";
 
@@ -112,6 +113,13 @@ function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay; onClose: () 
 export function PlayFeedC6() {
   // Static export: the chosen game lives in ?game=<id> and is read on the client (shareable, survives reload).
   const [gameId, setGameId] = useState<string | null>(null);
+  // G6: weather badge in the game header. Decorative: loading, empty or error shows no badge.
+  const [wx, setWx] = useState<WeatherDoc | null>(null);
+  useEffect(() => {
+    fetch(`${BASE}/data/stories/weather.json`).then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (isWeatherDoc(d)) setWx(d); }).catch(() => {});
+  }, []);
+  const weather = wx && gameId ? gameWeather(wx, gameId) : null;
   // C4: goal-line stop badge. Decorative: while loading or on error, plays simply show no badge.
   const [goal, setGoal] = useState<{ stops: Set<string>; label: string } | null>(null);
   useEffect(() => {
@@ -179,6 +187,8 @@ export function PlayFeedC6() {
               <TeamLogo abbr={g.home} size={22} /><b>{g.home} {g.homeScore}</b>
             </div>
             <span className="pf-wk">{g.label}</span>
+            {weather ? <span className={`pf-wx pf-wx-${weather.kind}`}>{weather.text}</span> : null}
+            {weather?.note ? <span className="pf-wx-note">{weather.note}</span> : null}
           </div>
           <button type="button" className="pf-change" onClick={() => setPicking(true)}>Change game</button>
         </div>
