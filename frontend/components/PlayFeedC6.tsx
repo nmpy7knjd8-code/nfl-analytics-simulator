@@ -236,8 +236,9 @@ export function PlayFeedC6() {
                         </div>
                       ) : (
                       <button type="button" id={`pf-${p.id}`} className={`pf-row${p.big ? " is-big" : ""}`} onClick={() => setOpen(p.id)}>
-                        <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}{gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <em className="pf-tag pf-tag-gl" title={goal!.label} aria-label={goal!.label}>Goal-line stop</em> : null}</span>
+                        <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}{gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <em className="pf-tag pf-tag-gl">Goal-line stop</em> : null}</span>
                         <span className="pf-text">{p.text}</span>
+                        {gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <span className="pf-gl-note">{goal!.label}</span> : null}
                         {p.big ? <span className="pf-gain">{bigPlayGain(g!, p)}</span> : null}
                         <WinBar g={g!} wp={p.homeWp} />
                       </button>

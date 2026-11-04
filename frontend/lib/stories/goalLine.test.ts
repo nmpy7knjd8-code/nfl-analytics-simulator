@@ -29,5 +29,7 @@ test("badge reads in percent from 229 tries, no ids or stat names", () => {
 test("the feed mounts the badge on plays only (no /goal-line/ page)", () => {
   const src = readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8");
   assert.match(src, /goalStops\.has\(stopKey\(/);
+  assert.match(src, /pf-gl-note">\{goal!\.label\}/, "note shows inline on phones, not as hover text");
+  assert.doesNotMatch(src, /title=\{goal/);
   assert.throws(() => readFileSync(new URL("../../app/goal-line/page.tsx", import.meta.url)));
 });
