@@ -89,3 +89,18 @@ for (const { file, route } of ROUTES) {
     assert.deepEqual(problems, [], `${route} (${relative(FRONTEND, file)}):\n  - ${problems.join("\n  - ")}`);
   });
 }
+
+// React #418 (Teams & Games UI, Nov 3): one exported 404.html serves every unknown URL, so useGameRoute()
+// must not hide the old chrome by path prefix (static HTML and client render would differ on /team/ZZZ/).
+// Light-header pages hide the old bars in CSS instead.
+test("useGameRoute has no path-prefix hide; light pages hide old chrome in CSS (#418)", () => {
+  assert.ok(!/startsWith\(/.test(gameRouteBody), "useGameRoute() must not use a path-prefix check");
+  const globals = readFileSync(join(APP, "globals.css"), "utf8");
+  assert.match(globals, /body:has\(\.sg-app\) \.fd-top,\s*body:has\(\.sg-app\) \.app-nav\s*\{\s*display:\s*none/);
+});
+
+test("brand link keeps the spaces in 'Fourth & Daily'", () => {
+  const sg = readFileSync(join(FRONTEND, "components", "SimpleGame.tsx"), "utf8");
+  assert.match(sg, /className="sg-brand">Fourth\{" "\}<span>&amp;<\/span>\{" "\}Daily</);
+  assert.match(readFileSync(join(APP, "simple-game.css"), "utf8"), /\.sg-brand\{[^}]*column-gap:/);
+});

@@ -21,9 +21,12 @@ const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/
 function useGameRoute(): boolean {
   // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
   const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games"]);
-  const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/"];
+  // Prefix routes "/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/" are NOT hidden here: one exported
+  // 404.html serves every unknown URL, so a path-prefix check made the client render differ from the static
+  // HTML on e.g. /team/ZZZ/ (React #418). Their old bars are hidden in CSS instead (globals.css: body:has(.sg-app)),
+  // which also covers the light 404 page.
   const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
-  return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
+  return GAME_EXACT.has(p) || p === "/coaches";
 }
 
 export function TopBar() {
