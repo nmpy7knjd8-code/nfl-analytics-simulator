@@ -149,7 +149,12 @@ function defenseCause(p: EventPoint, d: string, offense: string): string | null 
   if (p.event === "interception" || /intercept/.test(d)) return `the defense intercepted ${offense}`;
   if (p.event === "fumble_lost" || (/fumble/.test(d) && /recovered by/.test(d))) return `the defense took the ball away from ${offense}`;
   if (/sack/.test(d)) return `the defense sacked ${offense}${sit}`;
-  if (p.down && p.distance != null && (p.yards_gained ?? 0) < p.distance) return `the defense stopped ${offense} short${sit}`;
+  // Product UI nit: a flag, not the defense, decided these swings.
+  if (p.penalty_text || /\bpenalty\b|no play/.test(d)) return `a penalty on the play went against ${offense}`;
+  if (p.down && p.distance != null && (p.yards_gained ?? 0) < p.distance) {
+    // "Stopped short" only means something on 3rd or 4th down; earlier downs say the defense held.
+    return p.down >= 3 ? `the defense stopped ${offense} short${sit}` : `the defense held ${offense} to a short gain${sit}`;
+  }
   return null;
 }
 

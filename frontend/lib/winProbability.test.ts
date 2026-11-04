@@ -317,3 +317,12 @@ test("W1: defense reasons for a stop, a sack and a turnover; offense wording unc
   // never 0%
   assert.match(whyText(0.004, { ...base(), possession_team_id: "KC", home_wp_pre: 0.501, home_wp_post: 0.497, event: "other", description: "x" } as EventPoint, "DET"), /swung <1%/);
 });
+
+test("W1 nit: 'stopped short' only on 3rd/4th down; early downs say 'held'; a flag gets a penalty reason", () => {
+  const d = (x: Partial<EventPoint>) => whyText(0.12, { ...base(), possession_team_id: "KC", home_wp_pre: 0.5, home_wp_post: 0.38, event: "other", description: "I.Pacheco up the middle for 2 yards", yards_gained: 2, distance: 8, ...x } as EventPoint, "DET");
+  assert.match(d({ down: 2 }), /because the defense held KC to a short gain on 2nd & 8/);
+  assert.match(d({ down: 1, distance: 10 }), /held KC to a short gain on 1st & 10/);
+  assert.match(d({ down: 3 }), /stopped KC short on 3rd & 8/);
+  assert.match(d({ down: 3, penalty_text: "PENALTY on KC-T.Kelce, Offensive Holding, 10 yards" }), /because a penalty on the play went against KC/);
+  assert.doesNotMatch(d({ down: 2 }), /stopped/);
+});
