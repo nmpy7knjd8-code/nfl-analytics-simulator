@@ -59,7 +59,7 @@ def trow(**k):
 
 def test_twopoint_rates_and_ot():
     rows = [trow(), trow(time="01:00", play_type="run", two_point_conv_result="failure"),
-            trow(time="00:30", play_type="no_play"), trow(qtr=5, time="05:00"),
+            trow(time="00:30", play_type="no_play", pass_attempt=1), trow(qtr=5, time="05:00"),
             trow(two_point_attempt=0, play_type="extra_point", extra_point_result="good", time="09:00"),
             trow(two_point_attempt=0, play_type="extra_point", extra_point_result="blocked", time="08:00")]
     out = bt.build(rows)
@@ -96,9 +96,9 @@ def test_committed_files():
     assert f["count"] == 162 == len(f["plays"]) and f["first_downs"] == 90
     assert sum(f["by_season"].values()) == 162 and f["by_season"]["2019"] == 28 and f["by_season"]["2025"] == 12
     assert t["two_point"]["tries"] == 960 and t["two_point"]["made"] == 456
-    assert (t["two_point"]["run"]["tries"], t["two_point"]["pass"]["tries"]) == (266, 681)
+    assert (t["two_point"]["run"]["tries"], t["two_point"]["pass"]["tries"]) == (268, 692)  # = 960, no no_play
     assert t["extra_point"] == {"tries": 9119, "made": 8606, "rate": 0.9437}
-    assert t["two_point"]["run"]["made"] == 145 and t["two_point"]["pass"]["made"] == 301
+    assert t["two_point"]["run"]["made"] == 147 and t["two_point"]["pass"]["made"] == 309
     w = t["per_choice_win_chance"]
     assert w["cols"] == ["go", "kick"] and set(w["by_try"]) == {bt.wc_key(dict(zip(t["cols"], r))) for r in t["tries"]}
     assert w["go_rate"] == t["two_point"]["rate"] == 0.475 and 0.9 < w["kick_rate"] < 0.97
@@ -191,3 +191,27 @@ def test_committed_late_q4_is_null():
         x = dict(zip(t["cols"], r))
         s = bt._clock_secs(x["clock"])
         assert (by[bt.wc_key(x)] is None) == (x["qtr"] > 4 or (x["qtr"] == 4 and 0 < s <= 120))
+
+
+def test_no_play_kind_from_nflverse_and_override_is_narrow():
+    rows = [trow(time="00:30", play_type="no_play", pass_attempt=1), trow(time="00:20", play_type="no_play", pass_attempt=0)]
+    out = bt.build(rows)
+    assert [r[out["cols"].index("kind")] for r in out["tries"]] == ["pass", "run"]
+    t = json.loads(TWO.read_text())
+    ci = t["cols"].index("kind")
+    assert {r[ci] for r in t["tries"]} == {"run", "pass"}
+    ov = bt.load_override()
+    assert len(ov) == 13
+    old = json.loads(json.dumps(t))
+    hit = [r for r in old["tries"] if "|".join(map(str, bt.key(dict(zip(t["cols"], r))))) in ov]
+    assert len(hit) == 13
+    for r in hit:
+        r[ci] = "no_play"
+    old["two_point"] = {**old["two_point"], "run": {"tries": 266, "made": 145, "rate": 0.5451},
+                        "pass": {"tries": 681, "made": 301, "rate": 0.442}}
+    assert bt.check_frozen(old, t) == []  # the published file -> the relabelled one is allowed
+    assert bt.check_frozen(old, t, set()) != []  # without the override it is blocked
+    bad = json.loads(json.dumps(old)); bad["tries"][0][ci] = "no_play"  # an unlisted row may not change
+    assert bt.check_frozen(bad, t) != []
+    bad = json.loads(json.dumps(old)); bad["two_point"]["made"] = 455  # headline totals stay frozen
+    assert bt.check_frozen(bad, t) != []
