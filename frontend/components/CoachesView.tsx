@@ -5,7 +5,7 @@ import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
 import {
   type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
-  rankCoaches, regulationOnly, avgText, AVG_LINE, avgPerCall, seasonHref, signedPts, wentWhenShould,
+  rankCoaches, regulationOnly, avgText, AVG_LINE, avgPerCall, seasonHref, wentWhenShould,
 } from "../lib/coaches";
 
 /** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
@@ -55,7 +55,7 @@ function CoachRow({ c, season, rank }: { c: Coach; season: number; rank: number 
         <span className="co-rank">{rank}</span>
         <TeamLogo abbr={c.team} size={28} />
         <span className="co-who"><b>{c.coach}</b><small>{c.team} · {c.qualifying_calls} clear calls · went {pctText(wentWhenShould(c))} when he should</small></span>
-        <span className={`co-net${avgPerCall(c) < -0.05 ? " is-neg" : ""}`}>{signedPts(avgPerCall(c))}</span>
+        <span className={`co-net${avgPerCall(c) < -0.05 ? " is-neg" : ""}`}>{avgText(c)}</span>
       </Link>
     </li>
   );
@@ -85,8 +85,8 @@ function CallList({ title, calls, team }: { title: string; calls: CoachCall[]; t
       <h2 className="co-h2">{title}</h2>
       {shown.length === 0 ? <p className="co-sub">No calls.</p> : (
         <ol className="co-calls">
-          {shown.map((c) => (
-            <li key={`${c.game_id}-${c.play_id}`}>
+          {shown.map((c, i) => (
+            <li key={i}>
               <p className="co-sit">{callLine(c, team)}</p>
               <p>{callVerdict(c, team)} <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{c.wp_cost_pts > 0 ? `Cost ${c.wp_cost_pts.toFixed(1)} win-chance pts.` : "No cost."}</span></p>
             </li>
