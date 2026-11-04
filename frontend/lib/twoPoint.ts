@@ -151,3 +151,24 @@ export function shareText(results: boolean[]): string {
   const n = results.filter(Boolean).length;
   return `Kick or go for two? Same call as the coach ${n}/${results.length}\n${results.map((r) => (r ? "✅" : "⬜")).join("")}`;
 }
+
+/** Clear Q4 cases by the margin after the touchdown, before the try (trying team's side). */
+export const MARGIN_LINES: Record<number, string> = {
+  [-2]: "Down 2: going for two ties it, a kick doesn't.",
+  [-5]: "Down 5: two makes it a field-goal game, a kick leaves them down 4.",
+  [1]: "Up 1: two puts them up 3, so a field goal only ties. A kick leaves them up 2.",
+  [4]: "Up 4: two puts them up 6, so the other team needs a touchdown and the extra point to win. A kick leaves them up 5.",
+  [0]: "Tied: two puts them up 2, a kick up 1. A field goal beats either.",
+};
+export const EARLY_LINE = "Early on, both choices average about one point.";
+export const NEUTRAL_LINE = "Both choices average about one point.";
+
+/** One plain line on the try from the score alone (no rates, no model numbers).
+ * Before Q4: EARLY_LINE. Q4 regulation with a clear margin: MARGIN_LINES. Otherwise (Q4 other
+ * margins, OT, missing score): NEUTRAL_LINE, since "Early on" would be false there. */
+export function verdictText(_file: TwoPointFile, t: Try): string {
+  const q = Number(t.qtr);
+  if (Number.isFinite(q) && q >= 1 && q < 4) return EARLY_LINE;
+  if (q === 4 && Number.isInteger(t.diff) && t.diff in MARGIN_LINES) return MARGIN_LINES[t.diff];
+  return NEUTRAL_LINE;
+}
