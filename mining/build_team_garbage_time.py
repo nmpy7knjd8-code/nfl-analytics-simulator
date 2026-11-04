@@ -9,7 +9,9 @@ Two views of the same nflverse regular-season team stats:
              at the snap) is between 0.10 and 0.90 inclusive. Overtime snaps are never "close"
              (house rule: no win chance in OT). A red-zone trip is "close" when its FIRST red-zone
              snap is close.
-Stats per team (offense): rz = [trips, td, rank]  (rank by TD rate);
+Stats per team (offense): rz = [trips, td, rank, fg, no_score]  (rank by TD rate; fg = drive ended in a
+                          made field goal, no_score = trips - td - fg; fg/no_score appended in schema 1 so
+                          existing readers of [0..2] keep working);
                           ypp = [plays, yards, rank]  (run+pass plays, nflverse yards_gained);
                           third = [att, conv, rank]  (3rd-down run+pass, nflverse third_down_converted).
 Ranks are computed inside each view (and each season); ties share the better rank.
@@ -60,6 +62,8 @@ def is_play(r: dict[str, Any]) -> bool:
 def tally(rows: list[dict[str, Any]], keep: Callable[[dict[str, Any]], bool]) -> dict[str, dict[str, list[int]]]:
     """team -> {rz:[trips,td], ypp:[plays,yards], third:[att,conv]} over rows passing keep."""
     c = {t: {s: [0, 0] for s in STATS} for t in TEAMS}
+    for t in TEAMS:
+        c[t]["rz"] = [0, 0, 0]  # trips, td, fg
     first: dict[tuple, dict[str, Any]] = {}
     for r in rows:
         if rz.is_rz_snap(r):
@@ -77,6 +81,7 @@ def tally(rows: list[dict[str, Any]], keep: Callable[[dict[str, Any]], bool]) ->
                 raise ValueError(f"unknown nflverse team {r['posteam']!r}")
             c[r["posteam"]]["rz"][0] += 1
             c[r["posteam"]]["rz"][1] += r.get("fixed_drive_result") == "Touchdown"
+            c[r["posteam"]]["rz"][2] += r.get("fixed_drive_result") == "Field goal"
     return c
 
 
@@ -86,12 +91,16 @@ def view(c: dict[str, dict[str, list[int]]]) -> dict[str, Any]:
     for t in sorted(c):
         row: dict[str, Any] = {"team": t}
         for s in STATS:
-            row[s] = [*c[t][s], 1 + sum(1 for u in c if rate[s][u] > rate[s][t])]
+            row[s] = [*c[t][s][:2], 1 + sum(1 for u in c if rate[s][u] > rate[s][t])]
+        trips, td, fg = c[t]["rz"]
+        row["rz"] += [fg, trips - td - fg]
         teams.append(row)
     league: dict[str, Any] = {}
     for s in STATS:
         n, k = sum(v[s][0] for v in c.values()), sum(v[s][1] for v in c.values())
         league[s] = [n, k, round(k / n, 4) if n else 0.0]
+    fg = sum(v["rz"][2] for v in c.values())
+    league["rz"] += [fg, league["rz"][0] - league["rz"][1] - fg]
     return {"league": league, "teams": teams}
 
 
@@ -109,9 +118,9 @@ def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
         "season_type": "REG",
         "season_list": seasons,
         "close_def": CLOSE_DEF,
-        "stats": {"rz": "[red-zone trips, TDs, rank by TD rate]", "ypp": "[plays, yards, rank by yards/play]",
+        "stats": {"rz": "[red-zone trips, TDs, rank by TD rate, field goals, no points]", "ypp": "[plays, yards, rank by yards/play]",
                   "third": "[3rd-down plays, conversions, rank by conversion rate]",
-                  "league": "[count, made/yards, rate]"},
+                  "league": "[count, made/yards, rate]; league rz adds [.., field goals, no points]"},
         **both(reg),
         "by_season": {str(y): both([r for r in reg if int(r["season"]) == y]) for y in seasons},
     }
@@ -122,15 +131,21 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
         return []
     out: list[str] = []
 
+    def pre(o: dict[str, Any], n: dict[str, Any] | None) -> bool:
+        """Old values must be an unchanged prefix of the new ones (new fields are append-only)."""
+        if n is None or set(o) - set(n):
+            return False
+        return all(n[k][:len(v)] == v if isinstance(v, list) else n[k] == v for k, v in o.items())
+
     def diff(label: str, o: dict[str, Any], n: dict[str, Any] | None) -> None:
         for v in ("all", "close"):
             if n is None or v not in n:
                 out.append(f"{label}:{v}:missing")
                 continue
-            if o[v]["league"] != n[v]["league"]:
+            if not pre(o[v]["league"], n[v]["league"]):
                 out.append(f"{label}:{v}:league")
             nt = {t["team"]: t for t in n[v]["teams"]}
-            out.extend(f"{label}:{v}:{t['team']}" for t in o[v]["teams"] if nt.get(t["team"]) != t)
+            out.extend(f"{label}:{v}:{t['team']}" for t in o[v]["teams"] if not pre(t, nt.get(t["team"])))
 
     for y, o in old.get("by_season", {}).items():
         diff(y, o, new["by_season"].get(y))

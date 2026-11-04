@@ -2,10 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { SEASONS, readSeason, gradeCell, wentWhenShould, regulationOnly, coachHref, signedPts, MIN_CALLS } from "./coaches";
 
-test("every season file is coaches.v1 with min 20 calls", () => {
+test("every season file is coaches.v1.2 with min 20 calls", () => {
   for (const s of SEASONS) {
     const d = readSeason(s);
-    assert.equal(d.schema_version, "coaches.v1");
+    assert.equal(d.schema_version, "coaches.v1.2");
+    for (const c of d.coaches)
+      for (const call of [...c.best, ...c.worst]) {
+        assert.ok(!("play_id" in call), "no play_id in published calls");
+        assert.match(call.clock, /^\d{1,2}:\d{2}$/);
+      }
     assert.equal(d.season, s);
     assert.equal(d.min_calls_for_grade, MIN_CALLS);
     assert.ok(d.coaches.length >= 30);

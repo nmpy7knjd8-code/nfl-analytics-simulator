@@ -77,3 +77,8 @@ export function feedUrlToWrite(current: string, id: string, basePath = ""): stri
   const href = feedHref(id, basePath);
   return current === href ? null : href;
 }
+
+/** Link for a game card: its Game Story page when one is built (ids in `built`), otherwise the play feed for that game. */
+export function gameCardHref(id: string, built: ReadonlySet<string>): string {
+  return built.has(id) ? `/games/${encodeURIComponent(id)}` : feedHref(id);
+}

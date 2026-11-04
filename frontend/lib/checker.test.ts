@@ -81,3 +81,36 @@ test("field position reads own/opp; what-could-change lists only real flips", ()
   const r = checkSituation(sit, grid, [])!;
   for (const line of whatCouldChange(sit, grid, r.best)) assert.match(line, /becomes the call\.$/);
 });
+
+test("checker header score wording", async () => {
+  const { scoreText } = await import("./checker");
+  assert.equal(scoreText(-3), "trailing by 3");
+  assert.equal(scoreText(7), "leading by 7");
+  assert.equal(scoreText(0), "tied");
+});
+
+test("Why line: the gap always equals the shown rounded subtraction", async () => {
+  const { whyText } = await import("./checker");
+  assert.equal(whyText(["go", 0.30694], ["fg", 0.24646]), "Go: 30.7% chance to win, 6.1% more than kicking (24.6%)");
+  assert.equal(whyText(["punt", 0.5], ["go", 0.4]), "Punt: 50.0% chance to win, 10.0% more than going for it (40.0%)");
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  for (let i = 0; i < 5000; i++) {
+    const hi = rnd(), lo = hi * rnd();
+    const m = /: ([\d.]+)% chance to win, ([\d.]+)% more than \w+(?: \w+ \w+)? \(([\d.]+)%\)$/.exec(whyText(["go", hi], ["fg", lo]))!;
+    assert.ok(m, whyText(["go", hi], ["fg", lo]));
+    assert.equal(Math.round(Number(m[1]) * 10) - Math.round(Number(m[3]) * 10), Math.round(Number(m[2]) * 10));
+  }
+});
+
+test("kick respects the 64-yard cap: opp 46 (64 yd) can be offered, opp 47 (65 yd) never", () => {
+  const at = (yl: number) => checkSituation({ distance: 5, yardline_100: yl, posteam_score: 17, defteam_score: 20, qtr: 4, quarter_seconds_remaining: 300, posteam_timeouts: 3, defteam_timeouts: 3 }, grid, [])!;
+  for (const yl of [47, 48, 55]) {
+    const fg = at(yl).options.find((o) => o.id === "fg")!;
+    assert.ok(fg.disabled, `opp ${yl}`);
+    assert.equal(at(yl).item.reveal.values.fg, undefined);
+  }
+  assert.equal(MAX_FG_YARDS, 64);
+  const ok = at(46).options.find((o) => o.id === "fg")!;
+  assert.equal(ok.note, "64-yd kick");
+});
