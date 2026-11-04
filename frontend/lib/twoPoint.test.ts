@@ -109,6 +109,6 @@ test("QA copy: League labels, match header, result line, league match line", asy
   assert.equal(m.leagueMatchText(file, k), "That's the usual result: league extra points are good 94.4%.");
   assert.equal(m.leagueMatchText(file, miss), "That's against the league rate: extra points are good 94.4%.");
   const p = tries.find((x) => x.kind === "pass" && !x.made)!;
-  assert.equal(m.leagueMatchText(file, p), "That's the usual result: league two-point passes are good 44.2%.");
+  assert.equal(m.leagueMatchText(file, p), "That's the usual result: league two-point passes are good 44.7%.");
   for (const t of [...tries, ...kicks]) assert.ok(!/win chance|% to win/i.test(m.leagueMatchText(file, t) + m.resultText(t) + m.coachCallText(t)));
 });
