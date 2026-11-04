@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
 import { shieldStreak } from "../lib/shields";
 import {
-  dailySet, dateKey, dayNumber, formatScore, loadStreak, practiceSet, recordDaily, saveStreak, scoreCall,
+  dateKey, dayNumber, formatScore, loadStreak, recordDaily, saveStreak, scoreCall,
   type DailyItem, type ScoredCall,
 } from "../lib/daily";
 import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntry } from "../lib/coachTally";
@@ -25,7 +25,7 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
-import { CONFIDENCE_STEPS, calibrationLine, calibrationScore, readHard, writeHard } from "../lib/hardMode";
+import { CONFIDENCE_STEPS, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const nick = (a: string) => teamNickname(a);
@@ -51,7 +51,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const [key, setKey] = useState<string | null>(null);
   const [seed, setSeed] = useState("0");
   useEffect(() => { setKey(dateKey()); setSeed(String(Date.now())); }, []);
-  const items: DailyItem[] = useMemo(() => (key == null ? [] : mode === "daily" ? dailySet(key) : practiceSet(seed)), [key, mode, seed]);
+  const items: DailyItem[] = useMemo(() => gameItems(mode, key, seed), [key, mode, seed]);
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [idx, setIdx] = useState(0);
@@ -68,9 +68,10 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   }, [key, mode, items.length]);
   // E6 Hard mode: daily only, chosen before call 1; confidence before each reveal.
   const [hard, setHard] = useState(false);
-  const [confs, setConfs] = useState<number[]>([]);
+  const [confs, setConfs] = useState<(number | null)[]>([]);
   const [pending, setPending] = useState<QuizChoice | null>(null);
   useEffect(() => { if (mode === "daily") setHard(readHard(typeof window === "undefined" ? null : window.localStorage)); }, [mode]);
+  useEffect(() => { if (mode === "daily" && key != null) setConfs(readConfs(window.localStorage, key)); }, [mode, key]);
   const toggleHard = () => { const v = !hard; setHard(v); writeHard(window.localStorage, v); };
   const [already, setAlready] = useState<{ score: string; answered: number } | null>(null);
   useEffect(() => {
@@ -118,7 +119,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const choose = useCallback((c: QuizChoice) => { if (isHard) setPending(c); else commit(c); }, [isHard, commit]);
   const lockConfidence = (v: number) => {
     if (pending == null) return;
-    setConfs((cs) => { const n = [...cs]; n[idx] = v; return n; });
+    setConfs((cs) => { const n = [...cs]; n[idx] = v; if (key != null) writeConfs(window.localStorage, key, n); return n; });
     commit(pending); setPending(null);
   };
 
@@ -181,9 +182,8 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
           ? <div className="sg-streak">Same pick as your friend: {agreedCount(picks.map((x) => x.pick), dare.picks)} of {n}</div>
           : mode === "daily" ? <div className="sg-streak">{streakLine(streak)}</div> : null}
         {(() => {
-          const sc = isHard && confs.filter((c) => c != null).length === picks.length
-            ? calibrationScore(picks.map((x, i) => ({ confidence: confs[i], credit: x.scored.credit }))) : null;
-          return sc != null ? <p className="sg-calib">{calibrationLine(sc)}</p> : null;
+          const line = isHard ? calibrationText(confs, picks.map((x) => x.scored.credit)) : null;
+          return line ? <p className="sg-calib">{line}</p> : null;
         })()}
         {mode === "daily" && coach && coach.today.length ? <CoachLine today={coach.today} season={coach.season} /> : null}
         <div className="sg-recap">
@@ -244,7 +244,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         <p className="sg-lbl">Hard mode</p>
         <h1 className="sg-sent sg-conf-q">How sure are you about <b>{CHOICE_LABEL[pending]}</b>?</h1>
         <div className="sg-conf" role="group" aria-label="Your confidence">
-          {CONFIDENCE_STEPS.map((c) => <button key={c} type="button" className="sg-btn sg-conf-b" onClick={() => lockConfidence(c)}>{c}%</button>)}
+          {CONFIDENCE_STEPS.map((c) => <button key={c} type="button" className="sg-btn sg-conf-b" aria-pressed={confs[idx] === c} onClick={() => lockConfidence(c)}>{c}%</button>)}
         </div>
         <button type="button" className="sg-keep" onClick={() => setPending(null)}>Change my pick</button>
         <Trademark />
@@ -252,7 +252,7 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     );
   }
   const hardToggle = mode === "daily" && idx === 0 && !p ? (
-    <label className="sg-hard"><input type="checkbox" checked={hard} onChange={toggleHard} /><span>Hard mode: say how sure you are before each reveal</span></label>
+    <label className="sg-hard"><input type="checkbox" checked={hard} onChange={toggleHard} /><span>Hard mode: rate how sure you are</span></label>
   ) : null;
   if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={<>{banner}{hardToggle}</>} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {

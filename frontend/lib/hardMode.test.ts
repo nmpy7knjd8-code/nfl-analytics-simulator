@@ -41,3 +41,34 @@ test("published daily 5 are byte-identical with hard mode on", () => {
     }
   } finally { delete (globalThis as { localStorage?: unknown }).localStorage; }
 });
+
+import { readFileSync } from "node:fs";
+import { gameItems, readConfs, writeConfs, calibrationText, HARD_CONFS_KEY } from "./hardMode";
+
+test("rendered set: gameItems (what SimpleGame renders) matches the published hashes with Hard mode on and off", () => {
+  const src = readFileSync(new URL("../components/SimpleGame.tsx", import.meta.url), "utf8");
+  assert.match(src, /useMemo\(\(\) => gameItems\(mode, key, seed\), \[key, mode, seed\]\)/, "SimpleGame must render gameItems with no Hard-mode input");
+  assert.equal(gameItems.length, 3);
+  const m = new Map<string, string>();
+  (globalThis as { localStorage?: unknown }).localStorage = { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem() {} };
+  try {
+    for (const on of ["0", "1"]) {
+      m.set(HARD_MODE_KEY, on);
+      for (const [d, h] of Object.entries(PUBLISHED)) {
+        assert.equal(createHash("sha256").update(JSON.stringify(gameItems("daily", d, ""))).digest("hex"), h, `daily ${d} changed (hard=${on})`);
+      }
+    }
+  } finally { delete (globalThis as { localStorage?: unknown }).localStorage; }
+});
+
+test("confidence answers survive a reload (saved per day) and need all 5 for a score", () => {
+  const m = new Map<string, string>();
+  const st = { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v) };
+  writeConfs(st, "2026-11-03", [80, 60, 100]);
+  assert.deepEqual(readConfs(st, "2026-11-03"), [80, 60, 100]);
+  assert.deepEqual(readConfs(st, "2026-11-04"), [], "a new day starts fresh");
+  m.set(HARD_CONFS_KEY, "{bad"); assert.deepEqual(readConfs(st, "2026-11-03"), []);
+  assert.deepEqual(readConfs({ getItem: () => { throw new Error("x"); } }, "2026-11-03"), []);
+  assert.equal(calibrationText([80, 60, 100], [1, 1, 1, 1, 1]), "Calibration needs all 5 answers.");
+  assert.match(calibrationText([100, 100, 100, 100, 100], [1, 1, 1, 1, 1])!, /^Hard mode calibration: 100\/100/);
+});
