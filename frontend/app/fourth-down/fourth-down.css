@@ -27,4 +27,4 @@
 .fd4-num { text-align: right; font-variant-numeric: tabular-nums; }
 .fd4-why, .fd4-muted { margin: 0; font-size: 14px; line-height: 1.35; color: var(--sg-g); }
 .fd4-muted a { color: var(--sg-b); font-weight: 700; display: inline-flex; min-height: 48px; align-items: center; }
-@media (max-width: 375px) { .fd4-h1 { font-size: 21px; } .fd4-steps { gap: 4px 8px; } .fd4-rec { font-size: 20px; } .fd4-why { font-size: 13px; } .fd4-sv { font-size: 15px; letter-spacing: -0.02em; } }
+@media (max-width: 375px) { .fd4-h1 { font-size: 21px; } .fd4-steps { gap: 4px 8px; } .fd4-rec { font-size: 20px; } .fd4-why { font-size: 13px; } .fd4-step { grid-template-columns: 44px 1fr 44px; } .fd4-sb { width: 44px; } .fd4-sv { font-size: 14px; letter-spacing: -0.01em; } }

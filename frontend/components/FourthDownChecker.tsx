@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { QuizChoice } from "../lib/quiz";
 import { DAILY_ITEMS } from "../lib/daily";
 import {
-  checkSituation, clock, fieldText, marginText, MAX_DISTANCE, MIN_DISTANCE, situationFromItem, whatCouldChange,
+  checkSituation, clock, fieldText, scoreText, whyText, MAX_DISTANCE, MIN_DISTANCE, situationFromItem, whatCouldChange,
   type CheckSituation, type FourthDownGrid,
 } from "../lib/checker";
 import { gameText } from "../lib/dailyView";
@@ -88,7 +88,7 @@ export function FourthDownChecker() {
       <h1 className="fd4-h1">Go, kick, or punt?</h1>
       <section className="fd4-card" aria-label="The situation">
         <p className="fd4-sum">
-          4th &amp; {sit.distance} at {fieldText(sit.yardline_100)} · {marginText(sit.posteam_score - sit.defteam_score)} · Q{sit.qtr} {clock(sit.quarter_seconds_remaining)}
+          4th &amp; {sit.distance} at {fieldText(sit.yardline_100)} · {scoreText(sit.posteam_score - sit.defteam_score)} · Q{sit.qtr} {clock(sit.quarter_seconds_remaining)}
         </p>
         <div className="fd4-steps">
           <Stepper label="Yards to go" value={String(sit.distance)}
@@ -142,7 +142,7 @@ export function FourthDownChecker() {
             </ul>
             {result.ranked.length > 1 ? (
               <p className="fd4-why">
-                {(result.ranked[0][1] * 100).toFixed(1)}% chance to win, {(result.gap * 100).toFixed(1)} points better than {SHORT[result.ranked[1][0]].toLowerCase()}.
+                {whyText(result.ranked[0], result.ranked[1])}.
                 {fgOff ? ` No kick: ${fgOff} is too long.` : ""}
                 {changes.length ? ` ${changes[0]}` : ""}
               </p>
