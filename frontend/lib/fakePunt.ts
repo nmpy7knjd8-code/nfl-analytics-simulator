@@ -88,7 +88,11 @@ export function plainDesc(desc: string, max = 150): string {
     .replace(/\b\d{1,2}-(?=[A-Z])/g, "")
     .replace(/\s+/g, " ")
     .trim();
-  if (s.length > max) s = s.slice(0, s.lastIndexOf(" ", max - 1)).replace(/[,;.]$/, "") + "…";
+  if (s.length > max) {
+    // Prefer the last full sentence that fits; only fall back to a word cut + "…" if there is none.
+    const end = [...s.slice(0, max + 1).matchAll(/[.!?](?=\s|$)/g)].pop();
+    s = end ? s.slice(0, end.index! + 1) : s.slice(0, s.lastIndexOf(" ", max - 1)).replace(/[,;.]$/, "") + "…";
+  }
   return s;
 }
 
@@ -102,7 +106,7 @@ export function playText(p: PuntPlay, max = 150): string {
 /** "Ravens vs Dolphins" for the card's setup line. */
 export const matchupText = (p: PuntPlay) => `${teamNickname(p.team)} vs ${teamNickname(p.opp)}`;
 
-/** Short "Why" line for the reveal. Uses only counts in the file. */
+/** "Why" line for the reveal. Real punts show the cleaned play text, cut only at a sentence end. */
 export function whyText(card: Card): string {
   const p = card.play;
   if (card.answer === "fake") {
@@ -110,7 +114,7 @@ export function whyText(card: Card): string {
     const res = p.first_down ? "and got the first down" : "and came up short";
     return `It was ${how} out of punt formation, ${res}.`;
   }
-  return `A real punt: ${playText(p, 90)}`;
+  return `A real punt: ${playText(p)}`;
 }
 
 export const pct = (n: number, d: number) => (d ? Math.round((100 * n) / d) : 0);
