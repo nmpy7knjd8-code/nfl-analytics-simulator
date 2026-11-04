@@ -43,7 +43,7 @@ export function CalibrationChart() {
         <ul className="era-rows">
           <li>Model said, on average<strong>{cur.predicted.toFixed(1)}%</strong></li>
           <li>Home team actually won<strong>{cur.actual.toFixed(1)}%</strong></li>
-          <li className="era-all">Plays in this group<strong>{cur.plays.toLocaleString()}</strong></li>
+          <li className="era-all">Moments in this group<strong>{cur.moments.toLocaleString()}</strong></li>
         </ul>
         <div className="pf-chips ch-chips" role="group" aria-label="Pick a group">
           {b.map((x, i) => (
