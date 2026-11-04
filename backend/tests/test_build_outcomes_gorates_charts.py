@@ -169,3 +169,31 @@ def test_full_rebuild_matches_committed_files():
     assert strip(bg.build(bg.load_rows(paths))) == strip(_site("gorates.json")[1])
     for s, new in bm.build(bm.load_rows(paths)).items():
         assert strip(new) == strip(_site(f"charts/{s}.json")[1])
+
+
+def test_charts_last_point_on_winner_side():
+    """Every non-overtime, non-tie game ends at 1.0 (home won) or 0.0 (home lost); OT games keep regulation's end."""
+    n = 0
+    for f in sorted((SITE / "charts").glob("*.json")):
+        for g in json.loads(f.read_text())["games"]:
+            if g["ot"] or g["homeScore"] == g["awayScore"]:
+                continue
+            assert g["wp"][-1] == (1.0 if g["homeScore"] > g["awayScore"] else 0.0), g["gameId"]
+            n += 1
+    assert n > 1800
+    built = {g["gameId"]: g for g in bm.build(C_ROWS)[2023]["games"]}
+    reg = built["2023_01_ARI_WAS"]
+    assert reg["wp"][-1] == (1.0 if reg["homeScore"] > reg["awayScore"] else 0.0)
+
+
+def test_charts_final_point_override_is_narrow():
+    built = bm.build(C_ROWS)[2023]
+    old = json.loads(bm.dumps(built))
+    gid = old["games"][0]["gameId"]
+    old["games"][0]["wp"][-1] = 0.5
+    assert bm.check_frozen(old, built) == [gid]
+    assert bm.check_frozen(old, built, {gid}) == []
+    old["games"][0]["wp"][10] = 0.123  # any other point is still frozen
+    assert bm.check_frozen(old, built, {gid}) == [gid]
+    ov = bm.load_override()
+    assert len(ov) == 30 and {"2019_15_JAX_OAK", "2021_05_DEN_PIT", "2022_18_CAR_NO"} <= ov

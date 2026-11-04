@@ -8,11 +8,10 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { DAILY_ITEMS, DAILY_SCHEDULE, bestCalls, dateKey, type DailyItem } from "../lib/daily";
+import { parseSnapshotArgs } from "../lib/snapshotArgs";
 
-const args = process.argv.slice(2);
-const packAt = args.indexOf("--pack");
-const items: DailyItem[] = packAt >= 0 ? JSON.parse(readFileSync(args[packAt + 1], "utf8")).items : DAILY_ITEMS;
-const until = args.find((a, i) => /^\d{4}-\d{2}-\d{2}$/.test(a) && i !== packAt + 1) ?? new Date(Date.parse(`${dateKey()}T12:00:00Z`) + 2 * 86_400_000).toISOString().slice(0, 10);
+const { packPath, until } = parseSnapshotArgs(process.argv.slice(2), new Date(Date.parse(`${dateKey()}T12:00:00Z`) + 2 * 86_400_000).toISOString().slice(0, 10));
+const items: DailyItem[] = packPath !== undefined ? JSON.parse(readFileSync(packPath, "utf8")).items : DAILY_ITEMS;
 const byId = new Map(items.map((i) => [i.id, i]));
 
 const file = new URL("../lib/dailySnapshot.json", import.meta.url);
