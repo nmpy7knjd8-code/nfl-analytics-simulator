@@ -91,7 +91,8 @@ test("F7: exact opponent-TD labels from the return-type letter, with fallbacks",
   assert.equal(lab("ARI 2 10:00 5 OD GX F"), "Fumble return TD");
   assert.equal(lab("ARI 2 10:00 5 OD GK B"), "Blocked kick TD");
   assert.equal(lab("ARI 2 10:00 5 OD GK P"), "Punt returned for TD");
-  assert.equal(lab("ARI 2 10:00 5 OD GK K"), "Kickoff return TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GK K"), "Special teams TD");
+  assert.equal(lab("ARI 2 10:00 5 OD GX K"), "Turnover returned for TD");
   assert.equal(lab("ARI 2 10:00 5 OD GK M"), "Special teams TD");
   assert.equal(lab("ARI 2 10:00 5 OD GX -"), "Turnover returned for TD");
   assert.equal(lab("ARI 2 10:00 5 OD GX"), "Turnover returned for TD");

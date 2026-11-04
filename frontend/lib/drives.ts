@@ -47,9 +47,9 @@ export const qtrLabel = (q: number) => (q > 4 ? "OT" : `Q${q}`);
  * X = the offense turned it over and it was returned for a TD; K = a special teams TD (punt or kick try returned).
  * The data can't tell an interception from a fumble, or a punt from a blocked field goal, so we stop there.
  */
-/** Exact opponent-TD wording from the return-type letter. M and "-" fall back to the last square. */
+/** Exact opponent-TD wording from the return-type letter. M, "-" and any other letter (incl. K) fall back to the last square. */
 export const RET_LABEL: Partial<Record<RetCode, string>> = {
-  I: "Pick-six", F: "Fumble return TD", B: "Blocked kick TD", P: "Punt returned for TD", K: "Kickoff return TD",
+  I: "Pick-six", F: "Fumble return TD", B: "Blocked kick TD", P: "Punt returned for TD",
 };
 export function resultLabel(r: string, qtr = 0, last?: TileCode, ret?: RetCode): string {
   if (r === "EH" && qtr >= 4) return "End of game";
