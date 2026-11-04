@@ -17,7 +17,7 @@ export function SiteMenuLinks() {
       <Link href="/feed/">Play feed</Link>
       <Link href="/games/">Games</Link>
       <Link href="/daily/stats/">Stats</Link>
-      {/* Explore: only routes with an index page on main (/team, /rivalry, /playoffs are per-slug only, reached from Games). Includes /fake-punt/ and /two-point/. */}
+      {/* Explore: only routes with an index page on main (/team, /rivalry, /playoffs are per-slug only, reached from Games). Includes /fake-punt/, /two-point/, /comebacks/ and /on-this-day/. */}
       <span className="sg-menu-group" aria-hidden="true">Explore</span>
       <Link href="/kicks/">Kicks</Link>
       <Link href="/fake-punt/">Real punt or fake?</Link>
@@ -28,6 +28,8 @@ export function SiteMenuLinks() {
       <Link href="/heatmap/">Where coaches go for it</Link>
       <Link href="/match-chart/">Match the chart</Link>
       <Link href="/wheres-the-ball/">Where&apos;s the ball?</Link>
+      <Link href="/comebacks/">Biggest comebacks</Link>
+      <Link href="/on-this-day/">On this day</Link>
       <span className="sg-menu-group" aria-hidden="true" />
       <Link href="/about/">About</Link>
     </>
