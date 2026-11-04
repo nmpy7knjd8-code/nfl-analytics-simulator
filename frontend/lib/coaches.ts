@@ -107,11 +107,16 @@ export function avgPerCall(c: Coach): number {
   return c.calls ? c.net_wp_pts / c.calls : 0;
 }
 
-/** "−0.4 pts" style, one decimal. */
-export const avgText = (c: Coach) => `${signedPts(avgPerCall(c))} pts`;
+/** Magnitude as a cost: "0.4 pts given up"; a positive average reads "0.2 pts gained". */
+export function avgAmount(v: number): string {
+  const a = Math.abs(v).toFixed(1);
+  if (a === "0.0") return "0.0 pts";
+  return v < 0 ? `${a} pts given up` : `${a} pts gained`;
+}
+export const avgText = (c: Coach) => avgAmount(avgPerCall(c));
 
 /** One plain line under the number. */
-export const AVG_LINE = "Average per call: the win chance given up on each 4th down by not making the model's pick. 0.0 means he always matched it.";
+export const AVG_LINE = "Average per call: win-chance points given up (or gained) on each 4th down compared with the model's pick. 0.0 means he always matched it.";
 
 /** Sorted by average per call, best first. */
 export function rankCoaches(cs: Coach[]): Coach[] {

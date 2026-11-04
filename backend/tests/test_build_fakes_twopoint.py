@@ -66,7 +66,7 @@ def test_twopoint_rates_and_ot():
     assert out["two_point"]["tries"] == 4 and out["two_point"]["made"] == 3
     assert out["two_point"]["run"] == {"tries": 1, "made": 0, "rate": 0.0}
     assert out["extra_point"] == {"tries": 2, "made": 1, "rate": 0.5}
-    assert len(out["tries"]) == 3 and all(t[out["cols"].index("qtr")] <= 4 for t in out["tries"])
+    assert len(out["tries"]) == out["two_point"]["tries"] == 4  # one rule: rows = headline, OT included
     assert out["per_choice_win_chance"] is None
     assert bt.check_frozen(out, bt.build(rows)) == []
     assert bt.check_frozen(out, bt.build([trow(two_point_conv_result="failure")] + rows[1:]))
@@ -84,6 +84,9 @@ def test_kick_filter_and_frozen():
                                                                           ("00:10", -8, 0, "extra_point")]
     assert bt.check_frozen(out, bt.build(rows)) == []
     assert bt.check_frozen(out, bt.build(rows[1:]))  # a published kick may not disappear
+    twin = bt.build(rows + [xp(time="00:10", score_differential=-8)])  # same spot, re-kick after a penalty
+    assert len(twin["kicks"]) == 3 and bt.check_frozen(twin, twin) == []
+    assert bt.check_frozen(twin, out)  # dropping either twin is caught
     legacy = {**out, "cols": out["cols"] + ["wp"], "kicks": [r + [0.5] for r in out["kicks"]]}
     assert bt.check_frozen(legacy, out) == []  # dropping wp on purpose is allowed
 
@@ -100,13 +103,18 @@ def test_committed_files():
     assert w["cols"] == ["go", "kick"] and set(w["by_try"]) == {bt.wc_key(dict(zip(t["cols"], r))) for r in t["tries"]}
     assert w["go_rate"] == t["two_point"]["rate"] == 0.475 and 0.9 < w["kick_rate"] < 0.97
     assert all(v is None or (len(v) == 2 and all(0 <= x <= 1 for x in v)) for v in w["by_try"].values())
-    assert sum(v is None for v in w["by_try"].values()) == 146 and len(w["by_try"]) == 957
+    assert sum(v is None for v in w["by_try"].values()) == 149 and len(w["by_try"]) == 960
     qi = t["cols"].index("qtr")
     assert t["schema_version"] == 2 and "wp" not in t["cols"] and "win_chance" not in t
     k = [dict(zip(t["cols"], r)) for r in t["kicks"]]
     assert len(k) == 439 and sum(r["made"] for r in k) == 412
     assert all(r["qtr"] == 4 and abs(r["diff"]) <= 8 and r["kind"] == "extra_point" for r in k)
-    assert len(t["tries"]) == 957 and all(r[qi] <= 4 for r in t["tries"])
+    assert len(t["tries"]) == t["two_point"]["tries"] == 960
+    ot = [r for r in t["tries"] if r[qi] > 4]
+    assert len(ot) == 3 and all(w["by_try"][bt.wc_key(dict(zip(t["cols"], r)))] is None for r in ot)  # no OT win chance
+    kk = [bt.kick_key(r) for r in k]
+    assert len(set(kk)) == len(kk) == 439  # frozen key is unique (2020_12_CAR_MIN 00:46 pair)
+    assert bt.check_frozen(t, t) == []
     assert all(p["wp"] is None or p["qtr"] <= 4 for p in f["plays"])
     d = f["real_punts"]
     assert 290 <= len(d) <= 300 and all(p["first_down"] is None and p["qtr"] <= 4 and p["kind"] == "punt" for p in d)
@@ -182,4 +190,4 @@ def test_committed_late_q4_is_null():
     for r in t["tries"]:
         x = dict(zip(t["cols"], r))
         s = bt._clock_secs(x["clock"])
-        assert (by[bt.wc_key(x)] is None) == (x["qtr"] == 4 and 0 < s <= 120)
+        assert (by[bt.wc_key(x)] is None) == (x["qtr"] > 4 or (x["qtr"] == 4 and 0 < s <= 120))
