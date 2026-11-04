@@ -70,7 +70,7 @@ test("F7 W3: opponent touchdowns name how they happened from the last tile", asy
   const { resultLabel } = await import("./drives");
   for (const code of ["OD", "OT"]) {
     assert.equal(resultLabel(code, 2, "X"), "Turnover returned for TD");
-    assert.equal(resultLabel(code, 2, "K"), "Kick returned for TD");
+    assert.equal(resultLabel(code, 2, "K"), "Special teams TD");
     assert.equal(resultLabel(code, 2, "G"), "Other team scored");
     assert.equal(resultLabel(code), "Other team scored");
   }

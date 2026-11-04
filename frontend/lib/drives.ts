@@ -40,12 +40,12 @@ export function gameDrives(f: DrivesFile, gameId: string): Drive[] {
 export const qtrLabel = (q: number) => (q > 4 ? "OT" : `Q${q}`);
 /**
  * Drive result in fan words. For an opponent touchdown (OD, formerly OT) the drive's last tile says how:
- * X = the offense turned it over and it was returned for a TD; K = a punt or kick try returned for a TD.
+ * X = the offense turned it over and it was returned for a TD; K = a special teams TD (punt or kick try returned).
  * The data can't tell an interception from a fumble, or a punt from a blocked field goal, so we stop there.
  */
 export function resultLabel(r: string, qtr = 0, last?: TileCode): string {
   if (r === "EH" && qtr >= 4) return "End of game";
-  if (r === "OD" || r === "OT") return last === "X" ? "Turnover returned for TD" : last === "K" ? "Kick returned for TD" : "Other team scored";
+  if (r === "OD" || r === "OT") return last === "X" ? "Turnover returned for TD" : last === "K" ? "Special teams TD" : "Other team scored";
   return RESULT_LABEL[r] ?? r;
 }
 
