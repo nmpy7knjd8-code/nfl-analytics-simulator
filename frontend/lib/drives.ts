@@ -66,7 +66,7 @@ export function humanDate(iso: string): string {
   return m ? `${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}` : iso;
 }
 export const seasonNote = (dataThrough: string) => `Season data through ${humanDate(dataThrough)}.`;
-export const yardsLabel = (y: number) => `${y} ${Math.abs(y) === 1 ? "yard" : "yards"}`;
+export const yardsLabel = (y: number) => (y < 0 ? `lost ${-y} ${y === -1 ? "yard" : "yards"}` : `${y} ${y === 1 ? "yard" : "yards"}`);
 export const playsLabel = (n: number) => `${n} ${n === 1 ? "play" : "plays"}`;
 
 /** Screen-reader line for one strip. */
