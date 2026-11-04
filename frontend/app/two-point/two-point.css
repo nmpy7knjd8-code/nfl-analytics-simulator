@@ -22,9 +22,10 @@
 /* B1 win-chance row */
 .tp .tp-wc { margin: 4px 0 12px; }
 .tp .tp-wc-text { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
-.tp .tp-wc-bar { position: relative; height: 6px; border-radius: 3px; background: #e6e8ec; overflow: hidden; }
+.tp .tp-wc-bar { position: relative; height: 8px; border-radius: 4px; background: #fff; border: 1px solid #000; overflow: hidden; }
 .tp .tp-wc-bar > span { position: absolute; top: 0; bottom: 0; }
-.tp .tp-wc-base { left: 0; background: #9aa3b2; }
-.tp .tp-wc-delta.is-up { background: #1f5eff; }
-.tp .tp-wc-delta.is-down { background: #d14b3c; }
-.tp .tp-wc-tick { width: 2px; margin-left: -1px; background: #111; }
+/* Palette only (sg tokens): black = kept, blue = gained, blue outline = lost. */
+.tp .tp-wc-base { left: 0; background: #000; }
+.tp .tp-wc-delta.is-up { background: var(--sg-b); }
+.tp .tp-wc-delta.is-down { background: #fff; box-shadow: inset 0 0 0 2px var(--sg-b); }
+.tp .tp-wc-tick { width: 2px; margin-left: -1px; background: var(--sg-b); }
