@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import type { GameFileV2 } from "./gameFileV2";
-import { NO_FILTER, buildFeed, gameWeekLabel, canChart, chartPoints, elapsed, filterFeed, metaLine, swingText, toggle, winLine } from "./playFeed";
+import { NO_FILTER, bigPlayGain, buildFeed, gameWeekLabel, canChart, chartPoints, elapsed, filterFeed, metaLine, swingText, toggle, winLine } from "./playFeed";
 
 const doc = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_DET_KC.json", import.meta.url), "utf8")) as GameFileV2;
 const g = buildFeed(doc);
@@ -151,4 +151,15 @@ test("Overtime rows never get the Big play tag", () => {
   const td = cw.plays[cw.plays.length - 1];
   assert.equal(td.big, true, "Daniels' game-winning TD (+90 pts) is still a big play");
   assert.ok(buildFeed(doc).plays.concat(cw.plays).filter((p) => p.ot).every((p) => !p.big));
+});
+
+test("S7: Big-play cards show the gaining team's +X% win chance from the shown numbers", () => {
+  const big = g.plays.filter((p) => p.big);
+  assert.ok(big.length > 0);
+  for (const p of big) {
+    const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
+    assert.equal(bigPlayGain(g, p), `${d >= 0 ? g.home : g.away} +${Math.abs(d)}% win chance`);
+    assert.ok(!p.ot);
+    assert.doesNotMatch(bigPlayGain(g, p), /pts?\b|EPA|WPA/);
+  }
 });

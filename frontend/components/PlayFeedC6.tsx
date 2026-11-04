@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import {
-  KIND_LABEL, NO_FILTER, buildFeed, canChart, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
+  KIND_LABEL, NO_FILTER, bigPlayGain, buildFeed, canChart, chartPoints, filterFeed, metaLine, swingText, toggle, winLine,
   type FeedFilter, type FeedGame, type FeedPlay, type KindFilter,
 } from "../lib/playFeed";
 import { Header, Trademark } from "./SimpleGame";
@@ -204,6 +204,7 @@ export function PlayFeedC6() {
                       <button type="button" id={`pf-${p.id}`} className={`pf-row${p.big ? " is-big" : ""}`} onClick={() => setOpen(p.id)}>
                         <span className="pf-meta">{metaLine(p)}{p.big ? <em className="pf-tag">Big play</em> : null}{p.scoring ? <em className="pf-tag">Score</em> : null}</span>
                         <span className="pf-text">{p.text}</span>
+                        {p.big ? <span className="pf-gain">{bigPlayGain(g!, p)}</span> : null}
                         <WinBar g={g!} wp={p.homeWp} />
                       </button>
                       )}

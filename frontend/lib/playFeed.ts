@@ -131,6 +131,13 @@ export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): stri
   return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${n} ${n === 1 ? "pt" : "pts"}`;
 }
 
+/** S7 Big-play card tag: the team that gained and its swing in percent, from the same rounded numbers shown, e.g. "KC +12% win chance". */
+export function bigPlayGain(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
+  const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
+  const n = Math.abs(d);
+  return `${d >= 0 ? g.home : g.away} +${n < 1 ? "<1" : n}% win chance`;
+}
+
 /** Points for the chart: start of game, then each play's chance after it. */
 /** Regulation only: overtime plays never appear on the chart (house rule). */
 export function chartPoints(plays: FeedPlay[]): { t: number; wp: number; id: string | null }[] {
