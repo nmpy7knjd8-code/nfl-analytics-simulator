@@ -47,6 +47,11 @@ export function TeamRedzone({ abbr }: { abbr: string }) {
               <div className="tm-row"><span>{abbr}</span><div className="tm-bar"><i style={{ width: pct(st.rz.rate) }} /></div></div>
               <div className="tm-row"><span>NFL</span><div className="tm-bar tm-bar-lg"><i style={{ width: pct(st.rz.league) }} /></div></div>
             </div>
+            <ul className="tm-tiles">
+              <li><span>Touchdown</span><b>{st.rz.td.toLocaleString()}</b></li>
+              <li><span>Field goal</span><b>{st.rz.fg.toLocaleString()}</b></li>
+              <li><span>No points</span><b>{st.rz.noScore.toLocaleString()}</b></li>
+            </ul>
           </section>
         )
       ) : !row ? (

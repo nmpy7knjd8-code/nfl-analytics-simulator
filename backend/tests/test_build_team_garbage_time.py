@@ -42,7 +42,7 @@ def test_views_count_nflverse_fields():
     a, c = kc(out["all"]), kc(out["close"])
     assert a["rz"][:2] == [3, 2] and a["ypp"][:2] == [5, 23] and a["third"][:2] == [3, 2]
     assert c["rz"][:2] == [1, 1] and c["ypp"][:2] == [2, 15] and c["third"][:2] == [1, 1]
-    assert out["close"]["league"]["rz"] == [1, 1, 1.0]
+    assert out["close"]["league"]["rz"] == [1, 1, 1.0, 0, 0]
     assert out["by_season"]["2024"]["all"] == out["all"] and out["season_type"] == "REG"
 
 
@@ -85,3 +85,35 @@ def test_site_file_matches_redzone_and_is_clean():
     walk(site)
     assert not [k for k in keys if BANNED_KEY.search(k)]
     assert SITE.stat().st_size < 60_000
+
+
+def test_rz_fg_and_no_score_appended():
+    out = gt.build(ROWS + [row(9, 10, 0.5, team="BUF", result="Punt"), row(8, 10, 0.5, team="BUF", result="Field goal")])
+    assert kc(out["all"])["rz"] == [3, 2, kc(out["all"])["rz"][2], 1, 0]
+    buf = next(t for t in out["close"]["teams"] if t["team"] == "BUF")
+    assert buf["rz"][:2] == [2, 0] and buf["rz"][3:] == [1, 1]
+    assert out["close"]["league"]["rz"] == [3, 1, round(1 / 3, 4), 1, 1]
+
+
+def test_rz_parts_sum_to_trips_and_match_redzone():
+    site, redz = json.loads(SITE.read_text()), json.loads(REDZONE.read_text())
+    for b in [site, *site["by_season"].values()]:
+        for v in ("all", "close"):
+            for r in [t["rz"] for t in b[v]["teams"]] + [b[v]["league"]["rz"]]:
+                assert len(r) == 5 and r[1] + r[3] + r[4] == r[0]
+            assert b[v]["league"]["rz"][3] == sum(t["rz"][3] for t in b[v]["teams"])
+    assert {t["team"]: t["rz"][3:] for t in site["all"]["teams"]} == \
+        {t["team"]: [t["fg"], t["no_score"]] for t in redz["teams"]}
+
+
+def test_frozen_allows_appended_fields_only():
+    new = gt.build(ROWS)
+    old = json.loads(json.dumps(new))
+    for b in [old, *old["by_season"].values()]:
+        for v in ("all", "close"):
+            b[v]["league"]["rz"] = b[v]["league"]["rz"][:3]
+            for t in b[v]["teams"]:
+                t["rz"] = t["rz"][:3]
+    assert gt.check_frozen(old, new) == []
+    old["close"]["teams"][0]["rz"][0] += 1
+    assert gt.check_frozen(old, new) == ["all:close:" + old["close"]["teams"][0]["team"]]
