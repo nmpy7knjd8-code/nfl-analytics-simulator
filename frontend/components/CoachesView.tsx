@@ -5,7 +5,7 @@ import { Header, Trademark } from "./SimpleGame";
 import { CHECKER_PAUSED } from "../lib/features";
 import {
   type Coach, type CoachCall, type CoachSeason, SEASONS, callLine, callVerdict, coachHref, gradeCell, pctText,
-  rankCoaches, regulationOnly, avgText, AVG_LINE, avgPerCall, seasonHref, wentWhenShould,
+  rankCoaches, regulationOnly, bestCalls, bestNote, avgText, AVG_LINE, avgPerCall, seasonHref, wentWhenShould,
 } from "../lib/coaches";
 
 /** Shown instead of any engine number while CHECKER_ENABLED is false (H6). */
@@ -78,8 +78,8 @@ export function CoachesSeasonPage({ data }: { data: CoachSeason }) {
   );
 }
 
-function CallList({ title, calls, team }: { title: string; calls: CoachCall[]; team: string }) {
-  const shown = regulationOnly(calls);
+function CallList({ title, calls, team, best = false }: { title: string; calls: CoachCall[]; team: string; best?: boolean }) {
+  const shown = best ? bestCalls(calls) : regulationOnly(calls);
   return (
     <section className="co-card" aria-label={title}>
       <h2 className="co-h2">{title}</h2>
@@ -88,7 +88,7 @@ function CallList({ title, calls, team }: { title: string; calls: CoachCall[]; t
           {shown.map((c, i) => (
             <li key={i}>
               <p className="co-sit">{callLine(c, team)}</p>
-              <p>{callVerdict(c, team)} <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{c.wp_cost_pts > 0 ? `Cost ${c.wp_cost_pts.toFixed(1)} win-chance pts.` : "No cost."}</span></p>
+              <p>{callVerdict(c, team)} {best ? <span>{bestNote(c)}</span> : <span className={c.wp_cost_pts > 0 ? "is-neg" : undefined}>{c.wp_cost_pts > 0 ? `Cost ${c.wp_cost_pts.toFixed(1)} win-chance pts.` : "No cost."}</span>}</p>
             </li>
           ))}
         </ol>
@@ -113,6 +113,7 @@ export function CoachBlock({ c }: { c: Coach }) {
         </dl>
         <p className="co-note">{AVG_LINE}</p>
       </section>
+      <CallList title="Best calls" calls={c.best} team={c.team} best />
       <CallList title="Costliest calls" calls={c.worst} team={c.team} />
     </>
   );

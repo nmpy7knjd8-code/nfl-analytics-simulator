@@ -51,7 +51,7 @@ export type Coach = {
   decision_value_pts: number;
   outcome_vs_expected_pts: number;
   net_value_pts: number;
-  /** Ranked by alt_cost_pts. Data only: not shown on the site. */
+  /** Ranked by alt_cost_pts; shown as "Best calls". */
   best: CoachCall[];
   worst: CoachCall[];
 };
@@ -161,6 +161,16 @@ export function callVerdict(c: CoachCall, team: string): string {
   return c.actual === c.recommendation
     ? `${team} ${CALL[c.actual]}, the model's call.`
     : `${team} ${CALL[c.actual]}. Model said ${REC[c.recommendation]}.`;
+}
+
+/** Best-calls note: how far the call beat the next-best choice (alt_cost_pts, win-chance points). */
+export function bestNote(c: CoachCall): string {
+  return `Beat the next-best choice by ${c.alt_cost_pts.toFixed(1)} win-chance pts.`;
+}
+
+/** Best calls worth showing: regulation, and the call actually beat the other choices. */
+export function bestCalls(calls: CoachCall[]): CoachCall[] {
+  return regulationOnly(calls).filter((c) => c.alt_cost_pts > 0).sort((a, b) => b.alt_cost_pts - a.alt_cost_pts);
 }
 
 /** Overtime calls never show win chance (house rule); the coaches.v1 files carry none, this keeps it true. */

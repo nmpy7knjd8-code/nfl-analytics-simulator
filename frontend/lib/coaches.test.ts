@@ -78,3 +78,14 @@ test("playoff weeks show the round, not the week number", () => {
   const kc = readSeason(2023).coaches.find((c) => c.team === "KC")!;
   assert.ok(kc.worst.some((c) => c.week === 19));
 });
+
+test("best calls: regulation only, ranked by alt_cost_pts, plain wording", async () => {
+  const { bestCalls, bestNote, readSeason } = await import("./coaches");
+  const kc = readSeason(2023).coaches.find((c) => c.team === "KC")!;
+  const b = bestCalls(kc.best);
+  assert.ok(b.length > 0);
+  assert.ok(b.every((c) => c.qtr <= 4 && c.alt_cost_pts > 0));
+  for (let i = 1; i < b.length; i++) assert.ok(b[i - 1].alt_cost_pts >= b[i].alt_cost_pts);
+  assert.equal(bestNote(b[0]), "Beat the next-best choice by 10.7 win-chance pts.");
+  assert.doesNotMatch(bestNote(b[0]), /EPA|WPA|odds|bet/i);
+});
