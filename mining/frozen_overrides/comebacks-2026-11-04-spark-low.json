@@ -41,5 +41,5 @@
     "2025_16_LA_SEA",
     "2025_19_GB_CHI"
   ],
-  "approved_by": "PENDING HGIC"
+  "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #307 comebacks sparkline low fix. It changes spark arrays only. lows and every other field stay unchanged, and the two copies stay byte-identical."
 }
