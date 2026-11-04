@@ -40,3 +40,29 @@ def test_assert_split_integrity_rejects():
         assert_split_integrity([2023], purpose="val")
     with pytest.raises(ValueError):
         assert_split_integrity([2021], purpose="test")
+
+
+def test_2024_2025_are_holdout_never_fit():
+    import pytest
+
+    from nfl_sim.models.split import forbid_test_season_in_fit
+
+    assert season_to_split(2024) == "test"
+    assert season_to_split(2025) == "test"
+    for s in (2024, 2025):
+        with pytest.raises(ValueError):
+            forbid_test_season_in_fit([2021, s], context="train_fit")
+
+
+def test_ingest_registry_has_pins_for_every_season():
+    from nfl_sim.config import settings
+    from nfl_sim.ingest.__main__ import _parse_seasons
+    from nfl_sim.ingest.manifest import PINNED_SEASON_ROW_COUNTS, PINNED_SEASON_SHA256
+
+    import argparse
+
+    seasons = _parse_seasons(argparse.Namespace(seasons="all", season=2023))
+    assert seasons == list(settings.ingest_seasons)
+    assert {2024, 2025} <= set(seasons)
+    for s in seasons:
+        assert s in PINNED_SEASON_SHA256 and s in PINNED_SEASON_ROW_COUNTS

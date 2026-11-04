@@ -15,12 +15,13 @@ import pandas as pd
 from nfl_sim.ingest.derive import derive_receive_2h_ko
 from nfl_sim.models.dataset import load_raw_seasons
 from nfl_sim.models.fourth_down import (
+    FG_SNAP_YARDS,
     FourthDownAnalyzer,
     FourthDownResult,
     FourthDownSituation,
     sensitivity_example,
 )
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, TransitionMode
 
 # Provenance + state columns surfaced to the lab (when present in PBP).
 PROVENANCE_COLUMNS: tuple[str, ...] = (
@@ -226,7 +227,7 @@ def freeze_play(row: pd.Series | dict[str, Any]) -> HistoricalFourthDown:
         "posteam_timeouts": sit.posteam_timeouts,
         "defteam_timeouts": sit.defteam_timeouts,
         "is_home_possession": sit.is_home_possession,
-        "kick_distance_if_fg": sit.yardline_100 + 17,
+        "kick_distance_if_fg": sit.yardline_100 + FG_SNAP_YARDS,
     }
     for col in STATE_COLUMNS:
         if col in data:
@@ -353,7 +354,9 @@ def compare_empirics_modes(
         },
         "recommendation_changed": sp["recommendation"] != ss["recommendation"],
         "value_deltas": {
-            k: float(ss["values"][k] - sp["values"][k]) for k in ("go", "fg", "punt")
+            k: float(ss["values"][k] - sp["values"][k])
+            for k in ("go", "fg", "punt")
+            if k in ss["values"] and k in sp["values"]
         },
     }
 
@@ -405,7 +408,9 @@ def compare_transition_modes(
         "pooled_improved": {"summary": si, "analysis": improved.analysis.to_dict()},
         "recommendation_changed_legacy_to_improved": sl["recommendation"] != si["recommendation"],
         "value_deltas_legacy_to_improved": {
-            k: float(si["values"][k] - sl["values"][k]) for k in ("go", "fg", "punt")
+            k: float(si["values"][k] - sl["values"][k])
+            for k in ("go", "fg", "punt")
+            if k in si["values"] and k in sl["values"]
         },
         "clock_deltas_improved": (improved.analysis.empirics_meta or {}).get("clock_deltas_used"),
     }
@@ -463,5 +468,6 @@ def summarize_lab(result: DecisionLabResult) -> dict[str, Any]:
         "transition_mode": a.empirics_meta.get("transition_mode"),
         "clock_deltas_used": a.empirics_meta.get("clock_deltas_used"),
         "p_convert": a.actions["go"].components.get("p_convert"),
-        "p_make": a.actions["fg"].components.get("p_make"),
+        "p_make": a.actions["fg"].components.get("p_make") if "fg" in a.actions else 0.0,
+        "fg_in_range": "fg" in a.actions,
     }

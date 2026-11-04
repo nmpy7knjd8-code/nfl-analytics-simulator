@@ -1,0 +1,14 @@
+{
+  "file": "data/site/swings.json",
+  "reviewed_in": "PR #184 (2026-10-28 QA run, Analyte approved)",
+  "reason": "Q3: wp_after/swing now come from the next clocked, later-play_id row or the final result; this re-picks 2019-w01 (PIT at NE artifact -> HOU at NO Lutz 58-yd FG) and 2024-w19 (WAS at TB McLaughlin FG artifact -> Mayfield fumble). All other weeks may change only desc (Q4: games-v4 display_text) and the new final home_score/away_score; play identity, wp_before, wp_after and swing must stay identical.",
+  "weeks": [
+    "2019-w01",
+    "2024-w19"
+  ],
+  "text_fields_all_weeks": [
+    "desc",
+    "home_score",
+    "away_score"
+  ]
+}

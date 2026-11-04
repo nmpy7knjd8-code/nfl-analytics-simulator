@@ -52,8 +52,8 @@ def synthetic_pbp() -> pd.DataFrame:
                 "surface": "grass",
                 "stadium": "GEHA Field at Arrowhead Stadium",
                 "home_opening_kickoff": 1,
-                "home_score": 21,
-                "away_score": 20,
+                "home_score": 20,  # final: DET 21, KC 20
+                "away_score": 21,
                 "qtr": 1,
                 "half_seconds_remaining": 1800 - i * 40,
                 "game_seconds_remaining": 3600 - i * 40,

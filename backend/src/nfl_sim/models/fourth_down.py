@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
+
+import json
+from functools import lru_cache
 
 import numpy as np
 import pandas as pd
 
-from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FourthDownEmpirics, TransitionMode
+from nfl_sim.models.fourth_down_empirics import EmpiricsMode, FG_SNAP_YARDS, FourthDownEmpirics, TransitionMode
 from nfl_sim.models.wp_model import WPModel
 
 INCONCLUSIVE_EPS = 0.01
@@ -39,6 +42,10 @@ class FourthDownSituation:
         if not (1 <= int(self.yardline_100) <= 99):
             raise ValueError("yardline_100 out of range")
 
+
+
+# nflverse 2019–2025: kick_distance − yardline_100 is 18 on 89% of FG attempts (17 on 1%).
+FG_SNAP_YARDS = 18
 
 def _clip_clock(game: int, half: int, delta: int = CLOCK_DELTA) -> tuple[int, int]:
     d = max(0, int(delta))
@@ -107,7 +114,11 @@ def _flip_possession_state(
         posteam_timeouts=sit.defteam_timeouts,
         defteam_timeouts=sit.posteam_timeouts,
         is_home_possession=not sit.is_home_possession,
-        receive_2h_ko=0,
+        # H6: in the first half exactly one team receives the 2H kickoff, so the
+        # new possession team's flag is the complement (was hard-coded 0, which
+        # told the model *neither* team gets the ball back and cost the opponent
+        # ~9 pts of win chance in Q1).
+        receive_2h_ko=(1 - int(sit.receive_2h_ko)) if sit.qtr <= 2 else 0,
         season=sit.season,
     )
 
@@ -126,7 +137,9 @@ def state_go_convert(sit: FourthDownSituation, *, clock_delta: int = CLOCK_DELTA
     new_yl = max(1, sit.yardline_100 - sit.distance)
     return _row_from_state(
         yardline_100=new_yl,
-        distance=10,
+        # H6: inside the 10 a first down is 1st-and-goal (was 1st & 10 at the 1,
+        # a state that never occurs and that the WP model under-credits).
+        distance=min(10, new_yl),
         down=1,
         score_differential=sit.score_differential,
         game_seconds_remaining=g,
@@ -181,8 +194,70 @@ def state_punt(
     )
 
 
+SCORING_ZONE_FULL = 20  # post-conversion yardline at or inside which the drive mix is used alone
+SCORING_ZONE_MAX = 40  # …tapering linearly to the plain WP model by here
+_RATES_PATH = Path(__file__).with_name("scoring_zone_rates.json")
+
+
+@lru_cache(maxsize=1)
+def scoring_zone_rates() -> dict[str, Any]:
+    return json.loads(_RATES_PATH.read_text())
+
+
+def _needs_td(sit: FourthDownSituation) -> bool:
+    return sit.qtr >= 4 and sit.game_seconds_remaining <= 300 and -8 <= sit.score_differential <= -4
+
+
+def scoring_zone_weight(new_yl: int) -> float:
+    if new_yl <= SCORING_ZONE_FULL:
+        return 1.0
+    if new_yl >= SCORING_ZONE_MAX:
+        return 0.0
+    return (SCORING_ZONE_MAX - new_yl) / (SCORING_ZONE_MAX - SCORING_ZONE_FULL)
+
+
+def late_game_weight(game_seconds_remaining: int) -> float:
+    """0 in the first half, ramping to 1 across Q3, 1 in Q4.
+
+    Checked against nflverse 2022–23 (and real results) on first downs inside the 40:
+    in Q1–Q2 the plain WP model matches nflverse within ~1 pt while the drive mix runs
+    ~3–4 pts low; in Q4 the model runs 6–25 pts low for trailing teams and the drive
+    mix is within a few pts. Q3 both are close. So the mix takes over across Q3.
+    """
+    return float(np.clip((1800 - int(game_seconds_remaining)) / 900.0, 0.0, 1.0))
+
+
+def drive_outcome_states(
+    sit: FourthDownSituation, new_yl: int, *, clock_delta: int
+) -> list[tuple[float, dict[str, Any]]]:
+    """(probability, post-drive state) for a first down at ``new_yl`` (goal-line fix).
+
+    The linear WP model under-reads first downs in the scoring zone late in games
+    (down 7, 1st & goal at the 1, 0:55: model 10% vs nflverse ~42%) because it can't
+    see that the drive almost always ends in points. Instead, value that first down by
+    how such drives actually end in 2019–21 nflverse (touchdown / field goal / nothing,
+    smoothed by yardline), and let the WP model score only the post-drive kickoff or
+    turnover states, which it reads well (see test_engine_vs_nflverse post-event checks).
+    """
+    r = scoring_zone_rates()
+    i = int(np.clip(new_yl, 1, len(r["yardline_100"]))) - 1
+    p_td, p_fg = float(r["all"]["p_td"][i]), float(r["all"]["p_fg"][i])
+    secs = float(r["need_td" if _needs_td(sit) else "all"]["drive_seconds"][i])
+    d = int(clock_delta + round(secs))
+    at = replace(sit, yardline_100=int(new_yl), distance=int(new_yl))
+    td = state_go_convert(at, clock_delta=d)
+    fg = state_fg_make(at, clock_delta=d)
+    # no points: turnover on downs / missed FG near the spot; past the 20 it's a punt-like
+    # change of possession, which leaves the opponent around its own 20.
+    none = _flip_possession_state(
+        at, opp_yardline_100=max(100 - int(new_yl), 80), score_differential_for_new_posteam=-sit.score_differential,
+        clock_delta=d,
+    )
+    return [(p_td, td), (p_fg, fg), (max(0.0, 1.0 - p_td - p_fg), none)]
+
+
 def kick_distance(sit: FourthDownSituation) -> int:
-    return int(sit.yardline_100 + 17)
+    return int(sit.yardline_100 + FG_SNAP_YARDS)
 
 
 @dataclass
@@ -231,8 +306,26 @@ class FourthDownAnalyzer:
         return FourthDownAnalyzer(model, emp)
 
     def _wp(self, row: dict[str, Any]) -> float:
-        df = pd.DataFrame([row])
-        return float(self.model.predict_wp(df)[0])
+        # Real game with a known pregame spread (spread model only): rows carry it from the
+        # home side, so the model's posteam_spread flips sign with possession automatically.
+        hs = self.__dict__.get("_home_spread")
+        if hs is not None:
+            row = {**row, "spread_line": float(hs)}
+        key = tuple(sorted(row.items()))
+        cache = self.__dict__.setdefault("_wp_cache", {})
+        if key not in cache:
+            if len(cache) > 200_000:
+                cache.clear()
+            cache[key] = float(self.model.predict_wp(pd.DataFrame([row]))[0])
+        return cache[key]
+
+    def scoring_zone_value(self, sit: FourthDownSituation, new_yl: int, *, clock_delta: int = 0) -> float:
+        """Win chance (for ``sit``'s offense) of a first down at ``new_yl``, by drive outcome."""
+        own = "H" if sit.is_home_possession else "A"
+        return float(sum(
+            p * (self._wp(row) if row["posteam"] == own else 1.0 - self._wp(row))
+            for p, row in drive_outcome_states(sit, new_yl, clock_delta=clock_delta)
+        ))
 
     def analyze(
         self,
@@ -243,6 +336,26 @@ class FourthDownAnalyzer:
         inconclusive_eps: float = INCONCLUSIVE_EPS,
         empirics_mode: EmpiricsMode = "pooled",
         transition_mode: TransitionMode = "legacy",
+        home_spread: float | None = None,
+    ) -> FourthDownResult:
+        """``home_spread``: internal pregame input for real games (ignored by no-spread models)."""
+        self.__dict__["_home_spread"] = home_spread
+        try:
+            return self._analyze(sit, p_convert_override=p_convert_override, p_make_override=p_make_override,
+                                 inconclusive_eps=inconclusive_eps, empirics_mode=empirics_mode,
+                                 transition_mode=transition_mode)
+        finally:
+            self.__dict__["_home_spread"] = None
+
+    def _analyze(
+        self,
+        sit: FourthDownSituation,
+        *,
+        p_convert_override: float | None,
+        p_make_override: float | None,
+        inconclusive_eps: float,
+        empirics_mode: EmpiricsMode,
+        transition_mode: TransitionMode,
     ) -> FourthDownResult:
         p_conv, conv_meta = self.empirics.p_convert(
             sit.distance, season=sit.season, mode=empirics_mode
@@ -251,7 +364,8 @@ class FourthDownAnalyzer:
             p_conv = float(np.clip(p_convert_override, 0.0, 1.0))
         kd = kick_distance(sit)
         p_make, fg_meta = self.empirics.p_make(kd, season=sit.season, mode=empirics_mode)
-        if p_make_override is not None:
+        fg_in_range = not fg_meta.get("out_of_range", False)
+        if p_make_override is not None and fg_in_range:
             p_make = float(np.clip(p_make_override, 0.0, 1.0))
         punt_yl, punt_meta = self.empirics.punt_opp_yardline(
             sit.yardline_100, season=sit.season, mode=empirics_mode
@@ -280,6 +394,18 @@ class FourthDownAnalyzer:
         wp_fail = for_original(s_fail, self._wp(s_fail))
         wp_make = for_original(s_make, self._wp(s_make))
         wp_miss = for_original(s_miss, self._wp(s_miss))
+
+        if sit.distance < sit.yardline_100:
+            new_yl = max(1, sit.yardline_100 - sit.distance)
+            w = scoring_zone_weight(new_yl) * late_game_weight(sit.game_seconds_remaining)
+            if w > 0.0:
+                v_drive = self.scoring_zone_value(sit, new_yl, clock_delta=clk["go_convert"])
+                wp_conv = w * v_drive + (1.0 - w) * wp_conv
+            # H6 dominance bound: a first down short of the goal line can't be worth
+            # more than scoring the TD from here (+7, kickoff). The WP model alone
+            # sometimes reads 1st-and-goal at the 1 slightly above the post-TD state.
+            s_td = state_go_convert(replace(sit, distance=sit.yardline_100), clock_delta=clk["go_convert"])
+            wp_conv = min(wp_conv, for_original(s_td, self._wp(s_td)))
 
         v_go = p_conv * wp_conv + (1.0 - p_conv) * wp_fail
         v_fg = p_make * wp_make + (1.0 - p_make) * wp_miss
@@ -345,7 +471,11 @@ class FourthDownAnalyzer:
                     "clock_delta_fail": clk["go_fail"],
                 },
             ),
-            "fg": ActionValue(
+            "punt": ActionValue("punt", float(v_punt), punt_components),
+        }
+        # Out-of-range FG (> MAX_FG_DISTANCE) is not an option at all.
+        if fg_in_range:
+            actions["fg"] = ActionValue(
                 "fg",
                 float(v_fg),
                 {
@@ -357,9 +487,7 @@ class FourthDownAnalyzer:
                     "clock_delta_make": clk["fg_make"],
                     "clock_delta_miss": clk["fg_miss"],
                 },
-            ),
-            "punt": ActionValue("punt", float(v_punt), punt_components),
-        }
+            )
         ordered = sorted(actions.values(), key=lambda a: a.value_wp, reverse=True)
         best, second = ordered[0], ordered[1]
         margin = float(best.value_wp - second.value_wp)
@@ -398,7 +526,7 @@ class FourthDownAnalyzer:
             assumptions=[
                 "Path A uncalibrated WP only (no isotonic)",
                 clock_note,
-                f"FG distance = yardline_100 + 17; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
+                f"FG distance = yardline_100 + {FG_SNAP_YARDS}; kickoff TB → yardline_100={KICKOFF_TOUCHBACK_YARDLINE}",
                 "Go fail / FG miss → opponent at 100−yardline_100",
                 punt_note,
                 "Empirics fit REG train 2019–2021 only (never 2023+)",
@@ -421,7 +549,7 @@ def sensitivity_example(
     """Baseline vs alternate probs; report whether recommendation changes."""
     base = analyzer.analyze(sit, empirics_mode=empirics_mode, transition_mode=transition_mode)
     p0 = base.actions["go"].components["p_convert"]
-    m0 = base.actions["fg"].components["p_make"]
+    m0 = base.actions["fg"].components["p_make"] if "fg" in base.actions else 0.0
     alt = analyzer.analyze(
         sit,
         p_convert_override=float(np.clip(p0 + convert_delta, 0.0, 1.0)),

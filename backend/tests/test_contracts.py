@@ -141,3 +141,19 @@ def test_simulation_result_shape():
         distributions={"terminal": []},
     )
     assert result.provenance.seed == 7
+
+
+def test_frontend_json_schemas_are_current():
+    """frontend/contracts/schema/*.json must match the Pydantic models.
+    Regenerate with: python backend/scripts/export_contracts.py"""
+    import importlib.util
+    from pathlib import Path
+
+    script = Path(__file__).resolve().parents[1] / "scripts" / "export_contracts.py"
+    spec = importlib.util.spec_from_file_location("export_contracts", script)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    for fname, text in mod.render().items():
+        path = mod.SCHEMA_DIR / fname
+        assert path.exists(), f"missing {path}; run export_contracts.py"
+        assert path.read_text() == text, f"{fname} drifted; run export_contracts.py"

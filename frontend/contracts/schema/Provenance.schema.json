@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "DataMode": {
+      "enum": [
+        "historical",
+        "live",
+        "demo"
+      ],
+      "title": "DataMode",
+      "type": "string"
+    },
+    "TruthLabel": {
+      "enum": [
+        "historical",
+        "predicted",
+        "counterfactual"
+      ],
+      "title": "TruthLabel",
+      "type": "string"
+    }
+  },
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "data_mode": {
+      "$ref": "#/$defs/DataMode"
+    },
+    "model_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Id"
+    },
+    "model_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Version"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "ruleset_id": {
+      "default": "nfl-standard-v1",
+      "title": "Ruleset Id",
+      "type": "string"
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Seed"
+    },
+    "snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snapshot Id"
+    },
+    "source_id": {
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_version": {
+      "title": "Source Version",
+      "type": "string"
+    },
+    "truth_label": {
+      "$ref": "#/$defs/TruthLabel"
+    }
+  },
+  "required": [
+    "truth_label",
+    "data_mode",
+    "source_id",
+    "source_version"
+  ],
+  "title": "Provenance",
+  "type": "object"
+}

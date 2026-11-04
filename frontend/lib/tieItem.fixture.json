@@ -1,0 +1,34 @@
+{
+  "id": "2022_03_NO_CAR-2560",
+  "kind": "historical",
+  "source": {
+    "season": 2022,
+    "week": 3,
+    "game_date": "2022-09-25",
+    "game_id": "2022_03_NO_CAR"
+  },
+  "situation": {
+    "posteam": "CAR",
+    "defteam": "NO",
+    "home_team": "CAR",
+    "away_team": "NO",
+    "posteam_score": 13,
+    "defteam_score": 0,
+    "qtr": 3,
+    "quarter_seconds_remaining": 311,
+    "yardline_100": 38,
+    "down": 4,
+    "distance": 4,
+    "posteam_timeouts": 2,
+    "defteam_timeouts": 3
+  },
+  "historical_action": "go",
+  "reveal": {
+    "recommendation": "inconclusive",
+    "values": {
+      "go": 0.918667,
+      "punt": 0.908265,
+      "fg": 0.919462
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "League": {
+      "description": "Reserved for later; product scope is NFL-only.",
+      "enum": [
+        "NFL"
+      ],
+      "title": "League",
+      "type": "string"
+    }
+  },
+  "description": "Game metadata. Team IDs are nflverse abbreviations (MVP).",
+  "properties": {
+    "away_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Away Score"
+    },
+    "away_team_id": {
+      "title": "Away Team Id",
+      "type": "string"
+    },
+    "game_date": {
+      "title": "Game Date",
+      "type": "string"
+    },
+    "game_id": {
+      "title": "Game Id",
+      "type": "string"
+    },
+    "game_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Game Type"
+    },
+    "home_opening_kickoff": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "0/1 from source; used to derive receive_2h_ko",
+      "title": "Home Opening Kickoff"
+    },
+    "home_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Home Score"
+    },
+    "home_team_id": {
+      "title": "Home Team Id",
+      "type": "string"
+    },
+    "league": {
+      "$ref": "#/$defs/League",
+      "default": "NFL"
+    },
+    "roof": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Roof"
+    },
+    "season": {
+      "maximum": 2100,
+      "minimum": 1999,
+      "title": "Season",
+      "type": "integer"
+    },
+    "season_type": {
+      "description": "REG or POST",
+      "title": "Season Type",
+      "type": "string"
+    },
+    "stadium": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stadium"
+    },
+    "surface": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Surface"
+    },
+    "week": {
+      "maximum": 30,
+      "minimum": 0,
+      "title": "Week",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "game_id",
+    "season",
+    "week",
+    "season_type",
+    "game_date",
+    "home_team_id",
+    "away_team_id"
+  ],
+  "title": "GameSummary",
+  "type": "object"
+}

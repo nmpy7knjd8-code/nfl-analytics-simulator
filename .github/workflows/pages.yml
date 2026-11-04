@@ -1,8 +1,8 @@
 name: Pages
 
 # Builds the Pages site from source: a fresh frontend static export (build:pages)
-# at the site root, plus static files from docs/ and redirects from old /demo/ paths
-# (scripts/pages/assemble.py).
+# at the site root, plus static files from docs/ and redirects from old /demo/,
+# /quiz/ and /decide/ paths (scripts/pages/assemble.py).
 # The build job runs on every PR and push. The deploy job only runs on main
 # once the repo variable PAGES_VIA_ACTIONS is "true" (set it after switching
 # Settings > Pages > Source to "GitHub Actions"), so it can't fail or race
@@ -35,6 +35,11 @@ jobs:
       - name: Install frontend
         working-directory: frontend
         run: npm ci
+      - name: Game files from release asset (repo variable GAMES_RELEASE_TAG; sha256-verified)
+        env:
+          GAMES_RELEASE_TAG: ${{ vars.GAMES_RELEASE_TAG }}
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/pages/game_files_release.sh fetch
       - name: Prebuild share cards (1200x675 OG / X images)
         working-directory: frontend
         run: |
@@ -48,19 +53,27 @@ jobs:
         run: python3 scripts/pages/assemble.py
       - name: Verify site
         run: |
-          for f in index.html daily/index.html fourth-down/index.html games/index.html 404.html favicon.svg \
+          for f in index.html daily/index.html daily/stats/index.html practice/index.html about/index.html \
+                   fourth-down/index.html games/index.html 404.html favicon.svg icon.svg \
                    demo/index.html demo/quiz/index.html demo/decide/index.html demo/games/index.html \
                    quiz/index.html decide/index.html; do
             test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }
             echo "ok $f"
           done
           grep -q '/nfl-analytics-simulator/_next/' _site/index.html
+          # QA2 H5: the old hand-made win-chance swing text must never ship.
+          if grep -rlE 'Mahomes touchdown pass\.|Lions touchdown run\.|Chiefs field goal\.|Jets field goal ties the game' _site; then echo 'made-up swing text in _site'; exit 1; fi
+          # Game pages show real nflverse plays: never call them example data.
+          if grep -lE 'Example data|Example chart|Example game page' _site/games/index.html _site/games/*/index.html; then echo 'example label on a real game page'; exit 1; fi
+          grep -q 'Real plays and win chance from nflverse (not our model).' _site/games/index.html
           grep -q 'url=/nfl-analytics-simulator/daily/' _site/quiz/index.html
           grep -q 'url=/nfl-analytics-simulator/"' _site/demo/index.html
           for f in og/home.png og/daily.png og/fourth-down.png og/games.png; do test -s "_site/$f" || { echo "missing _site/$f"; exit 1; }; done
           grep -q 'name="twitter:card" content="summary_large_image"' _site/index.html
           grep -q 'property="og:image" content="https://nmpy7knjd8-code.github.io/nfl-analytics-simulator/og/daily.png"' _site/daily/index.html
-          for g in _site/games/*/index.html; do id=$(basename "$(dirname "$g")"); test -s "_site/og/games/$id.png" || { echo "missing card for $id"; exit 1; }; grep -q "og/games/$id.png" "$g" || { echo "no og:image on $g"; exit 1; }; done
+          # Game pages come from the Next export (frontend/out), i.e. generateStaticParams over the
+          # game list; redirect stubs for renamed ids (assemble.py GAME_ID_MOVES) are not game pages.
+          n=0; for g in frontend/out/games/*/index.html; do id=$(basename "$(dirname "$g")"); n=$((n+1)); test -s "_site/og/games/$id.png" || { echo "missing card for $id"; exit 1; }; grep -q "og/games/$id.png" "_site/games/$id/index.html" || { echo "no og:image on games/$id"; exit 1; }; echo "ok card games/$id"; done; test "$n" -gt 0 || { echo "no game pages built"; exit 1; }
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

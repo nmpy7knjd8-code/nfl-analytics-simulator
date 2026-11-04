@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { ExampleBanner } from "../../components/ExampleBanner";
+import { GAME_SOURCE_LINE } from "../../lib/fixtures";
 import { TruthChip } from "../../components/TruthChip";
+import { TeamLogo } from "../../components/TeamLogo";
 import { shareMetadata } from "../../lib/share";
 import { fetchGames } from "../../lib/api";
 
 export const metadata = shareMetadata({
-  title: "Games — NFL Analytics Simulator",
+  title: "Games · Fourth & Daily",
   description: "Replay NFL games play by play with the win-chance swing of every play.",
   path: "/games/",
   card: "games",
@@ -14,7 +15,7 @@ export const metadata = shareMetadata({
 
 export default async function GamesPage() {
   const result = await fetchGames(2023);
-  const { data: games, source, banner } = result;
+  const { data: games } = result;
 
   return (
     <main className="main page" id="main">
@@ -24,13 +25,13 @@ export default async function GamesPage() {
           <span className="muted">2023</span>
         </div>
         <h1>Games</h1>
-        <p>Pick a matchup — walk the story play by play.</p>
+        <p className="games-intro">Pick a matchup and see the plays that swung it.</p>
       </header>
 
-      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
+      <p className="wp-source game-source">{GAME_SOURCE_LINE}</p>
 
       <p className="list-count">
-        {games.total} {source === "live" ? "from your lake" : "examples"}
+        {games.total} games
       </p>
 
       <ul className="game-list">
@@ -39,7 +40,7 @@ export default async function GamesPage() {
             <Link className="game-row" href={`/games/${encodeURIComponent(g.game_id)}`}>
               <span className="game-row-main">
                 <span className="game-row-matchup">
-                  {g.away_team_id} @ {g.home_team_id}
+                  <TeamLogo abbr={g.away_team_id} size={22} /> {g.away_team_id} @ <TeamLogo abbr={g.home_team_id} size={22} /> {g.home_team_id}
                 </span>
                 <span className="game-row-meta">
                   Week {g.week} · {g.game_date}

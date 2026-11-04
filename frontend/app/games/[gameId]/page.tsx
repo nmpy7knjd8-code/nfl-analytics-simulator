@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { shareMetadata } from "../../../lib/share";
-import { ExampleBanner } from "../../../components/ExampleBanner";
 import { TruthChip } from "../../../components/TruthChip";
-import { fetchGame, fetchPlays } from "../../../lib/api";
+import { TeamLogo } from "../../../components/TeamLogo";
+import { fetchGame, fetchPlays, fetchWinProbability } from "../../../lib/api";
 import { FIXTURE_GAMES } from "../../../lib/fixtures";
-import { SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
-import { findSwingPlays, seriesFromPlays } from "../../../lib/winProbability";
-import { fixtureWinProbability } from "../../../lib/wpFixtures";
+import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../components/WinProbabilityChart";
+import { findSwingPlays, inGameOrder } from "../../../lib/winProbability";
+import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
+import { PlayFeed } from "../../../components/PlayFeed";
+import type { FeedRow } from "../../../lib/gameFileV2";
+import { openingWinChance } from "../../../lib/wpFixtures";
 
 type Props = { params: Promise<{ gameId: string }> };
 
@@ -21,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const matchup = g ? `${g.away_team_id} ${g.away_score ?? ""} @ ${g.home_team_id} ${g.home_score ?? ""}`.replace(/ +/g, " ").trim() : id;
   const when = g ? `Week ${g.week}, ${g.season}` : "";
   return shareMetadata({
-    title: `${matchup} — game story`,
+    title: `${matchup} game story · Fourth & Daily`,
     description: `Every play of ${matchup}${when ? ` (${when})` : ""} with its win-chance swing.`,
     path: `/games/${id}/`,
     card: `games/${id}`,
@@ -29,17 +32,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-function formatClock(halfSeconds: number | null | undefined): string {
-  if (halfSeconds == null) return "—";
-  const m = Math.floor(halfSeconds / 60);
-  const s = halfSeconds % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
+
+/** Whole percents (UI Critic 2240 P3-B): the chart axis is whole percents too. */
+function pct(v: number): string {
+  return `${Math.round(v * 100)}%`;
 }
 
-function winChanceLabel(wp: number | null | undefined): string | null {
-  if (wp == null || Number.isNaN(wp)) return null;
-  return `${Math.round(wp * 100)}% win chance`;
-}
 
 export default async function GameReplayPage({ params }: Props) {
   const { gameId } = await params;
@@ -54,17 +52,30 @@ export default async function GameReplayPage({ params }: Props) {
     error = e instanceof Error ? e.message : "Failed to load game";
   }
 
-  // Live API data with reference WP wins; otherwise the clearly labeled example series.
-  const liveSeries =
-    game && plays && plays.source === "live"
-      ? seriesFromPlays(id, game.data.home_team_id, game.data.away_team_id, plays.data.items)
-      : null;
-  const wpSeries =
-    liveSeries && liveSeries.points.length >= 2 ? liveSeries : fixtureWinProbability(id);
-  const swings = wpSeries ? findSwingPlays(wpSeries) : [];
+  // Contract endpoint first; otherwise the clearly labeled example series.
+  const wpSeries = game ? await fetchWinProbability(id) : null;
+  // Biggest three swings, shown in game order so card and dot numbers read left to right.
+  const swings = wpSeries ? inGameOrder(findSwingPlays(wpSeries.series)) : [];
+  const swingRank = new Map(swings.map((s, i) => [s.point.play_id, i + 1]));
+  // UI Critic 2240 P2-A: OT plays use the plays file's fan text when the OT export lacks it.
+  const fileRows = new Map((GAME_PLAY_LISTS[id]?.plays ?? []).map((r) => [r.play_id, r]));
+  const overtimePlays = (wpSeries?.overtimePlays ?? []).map((p) => {
+    const r = fileRows.get(p.play_id);
+    return { ...p, display_text: p.display_text || r?.display_text, penalty_text: p.penalty_text ?? r?.penalty_text ?? null, raw_desc: p.raw_desc || r?.raw_desc };
+  });
+  // Committed lib/plays rows: static fallback and display_text source for the live game.v2 file.
+  const fallbackRows: FeedRow[] = (plays?.data.items ?? []).map((p) => ({
+    id: p.play_id,
+    quarter: p.quarter,
+    clock_seconds:
+      p.half_seconds_remaining == null ? null : p.quarter > 4 || p.quarter % 2 === 0 ? p.half_seconds_remaining : p.half_seconds_remaining - 900,
+    down: p.down ?? null,
+    distance: p.distance ?? null,
+    text: p.description ?? "",
+    penalty_text: fileRows.get(p.play_id)?.penalty_text ?? null,
+  }));
+  const opening = game ? openingWinChance(id) : null;
 
-  const source = game?.source ?? plays?.source;
-  const banner = game?.banner ?? plays?.banner;
 
   return (
     <main className="main page" id="main">
@@ -78,7 +89,7 @@ export default async function GameReplayPage({ params }: Props) {
         </div>
       ) : null}
 
-      {source === "example" && banner ? <ExampleBanner message={banner} /> : null}
+      
 
       {game && plays ? (
         <>
@@ -91,62 +102,46 @@ export default async function GameReplayPage({ params }: Props) {
             </div>
             <div className="scoreboard">
               <h1 className="scoreboard-matchup">
-                {game.data.away_team_id} @ {game.data.home_team_id}
+                <TeamLogo abbr={game.data.away_team_id} size={32} /> {game.data.away_team_id} @ <TeamLogo abbr={game.data.home_team_id} size={32} /> {game.data.home_team_id}
               </h1>
               <span className="scoreboard-final">
                 {game.data.away_score ?? "—"}–{game.data.home_score ?? "—"}
               </span>
             </div>
-            <p>Scroll the story.</p>
           </header>
 
           {wpSeries ? (
             <section aria-labelledby="wp-head">
               <h2 id="wp-head">Win chance</h2>
-              {wpSeries.source === "example" ? (
-                <p className="muted">Example chart — not model output.</p>
+              {opening ? (
+                <p className="wp-opening">
+                  At kickoff: {game.data.away_team_id} {pct(opening.away)} · {game.data.home_team_id} {pct(opening.home)}
+                </p>
               ) : null}
-              <WinProbabilityChart series={wpSeries} swings={swings} />
+              <WinProbabilityChart series={wpSeries.series} swings={swings} note={wpSeries.note} />
               {swings.length ? <h3>Swing plays</h3> : null}
-              <SwingPlayList swings={swings} />
+              <SwingPlayList swings={swings} series={wpSeries.series} />
+              {overtimePlays.length ? <h3>Overtime</h3> : null}
+              <OvertimePlayList
+                plays={overtimePlays}
+                winner={
+                  game.data.home_score == null || game.data.away_score == null || game.data.home_score === game.data.away_score
+                    ? null
+                    : game.data.home_score > game.data.away_score
+                      ? game.data.home_team_id
+                      : game.data.away_team_id
+                }
+              />
             </section>
           ) : null}
 
-          <p className="list-count">{plays.data.total} plays</p>
-
-          <div className="play-feed" role="list">
-            {plays.data.items.map((p) => {
-              const chance = winChanceLabel(p.reference?.wp ?? null);
-              return (
-                <article className="play-card" role="listitem" key={`${p.game_id}-${p.play_id}`}>
-                  <div className="play-top">
-                    <span className="play-meta">
-                      Q{p.quarter}
-                      {p.down != null ? ` · ${p.down}&${p.distance}` : ""} ·{" "}
-                      {formatClock(p.half_seconds_remaining ?? null)}
-                    </span>
-                    <span className="play-meta">#{p.play_index}</span>
-                  </div>
-                  <p className="play-desc">
-                    {p.description ? (
-                      p.description
-                    ) : (
-                      <>
-                        <strong>{p.play_type}</strong>
-                        {p.possession_team_id ? ` · ${p.possession_team_id}` : ""}
-                      </>
-                    )}
-                  </p>
-                  {chance ? <div className="win-chance">{chance}</div> : null}
-                </article>
-              );
-            })}
-          </div>
+          <section aria-labelledby="pbp-head">
+            <h2 id="pbp-head">Play by play</h2>
+            <PlayFeed gameId={id} fallback={fallbackRows} swingRanks={[...swingRank]} />
+          </section>
 
           <aside className="disclaimer">
-            {source === "example"
-              ? "Short example replay — connect the API for full 2023 play-by-play."
-              : "Win chance is an estimate at the snap — not a bet."}
+            Win chance is an estimate of each side’s chances at the snap.
           </aside>
         </>
       ) : null}

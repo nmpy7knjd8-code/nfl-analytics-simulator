@@ -295,6 +295,18 @@ def cmd_wp_train(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_wp_train_spread(args: argparse.Namespace) -> int:
+    """WP + pregame spread: fit 2019–2023 (C tuned on 2023), holdout 2024–2025."""
+    from nfl_sim.models.dataset import build_wp_modeling_frame
+    from nfl_sim.models.wp_model import train_spread_wp
+
+    out = Path(args.out)
+    frame = build_wp_modeling_frame(ALL_MODEL_SEASONS)
+    m = train_spread_wp(frame, out_dir=out, command=f"python3 -m nfl_sim.models wp-train-spread --out {out}")
+    print(json.dumps({"out": str(out), "tune": m["tune"], "holdout": m["holdout"]}, indent=2))
+    return 0
+
+
 def cmd_wp_eval(args: argparse.Namespace) -> int:
     from nfl_sim.models.dataset import build_wp_modeling_frame
     from nfl_sim.models.wp_model import WPModel
@@ -1041,6 +1053,9 @@ def main(argv: list[str] | None = None) -> int:
     p_wp.add_argument("--include-test", action="store_true", help="Score report-only 2023 once")
     p_wp.set_defaults(func=cmd_wp_train)
 
+    p_wps = sub.add_parser("wp-train-spread", help="Train WP + pregame spread on 2019–2023; holdout 2024–2025")
+    p_wps.add_argument("--out", default=str(REPO_ROOT / "reports" / "wp"))
+    p_wps.set_defaults(func=cmd_wp_train_spread)
     p_wpe = sub.add_parser("wp-eval", help="Evaluate a saved WP model on a split")
     p_wpe.add_argument("--model", type=str, required=True)
     p_wpe.add_argument("--split", choices=["train", "val", "test"], default="val")

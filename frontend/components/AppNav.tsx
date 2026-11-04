@@ -2,31 +2,50 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteMenu } from "./SiteMenu";
+import { CHECKER_ENABLED } from "../lib/features";
 
-const TABS = [
-  { href: "/", label: "Home", match: (p: string) => p === "/" },
-  {
-    href: "/games",
-    label: "Games",
-    match: (p: string) => p.startsWith("/games"),
-  },
-  {
-    href: "/fourth-down",
-    label: "4th down",
-    match: (p: string) => p.startsWith("/fourth-down") || p.startsWith("/decide"),
-  },
-  {
-    href: "/daily",
-    label: "Quiz",
-    match: (p: string) => p.startsWith("/daily") || p.startsWith("/quiz"),
-  },
+const ALL_TABS = [
+  { href: "/", label: "Today", match: (p: string) => p === "/" || p.startsWith("/daily") && !p.startsWith("/daily/stats") },
+  { href: "/practice/", label: "Practice", match: (p: string) => p.startsWith("/practice") },
+  { href: "/games/", label: "Games", match: (p: string) => p.startsWith("/games") },
+  { href: "/fourth-down/", label: "4th down", match: (p: string) => p.startsWith("/fourth-down") },
 ] as const;
 
-export function AppNav() {
-  const pathname = usePathname() || "/";
+// H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
+const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
+/** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
+ * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
+ * "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
+function useGameRoute(): boolean {
+  // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point"]);
+  const GAME_PREFIX = ["/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/"];
+  const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  return GAME_EXACT.has(p) || p === "/coaches" || GAME_PREFIX.some((x) => p.startsWith(x));
+}
+
+export function TopBar() {
+  if (useGameRoute()) return null;
   return (
-    <nav className="app-nav app-nav-4" aria-label="Primary">
+    <header className="fd-top">
+      <Link href="/" className="fd-brand">
+        Fourth &amp; Daily
+      </Link>
+      <div className="fd-top-r">
+        <SiteMenu />
+      </div>
+    </header>
+  );
+}
+
+export function AppNav() {
+  const game = useGameRoute();
+  const pathname = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  if (game) return null;
+  return (
+    <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {
         const current = tab.match(pathname);
         return (

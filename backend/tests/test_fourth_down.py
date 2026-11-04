@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
@@ -61,7 +62,7 @@ def test_kick_distance_formula():
     sit = FourthDownSituation(
         yardline_100=33, distance=3, score_differential=0, game_seconds_remaining=120, half_seconds_remaining=120
     )
-    assert kick_distance(sit) == 50
+    assert kick_distance(sit) == 51  # nflverse: yardline_100 + 18
 
 
 def test_go_convert_and_fail_states():
@@ -142,7 +143,7 @@ def test_analyzer_recommendation_and_sensitivity():
             (30, 39): {"n": 50, "p_make": 0.90, "filter": "toy"},
             (40, 49): {"n": 50, "p_make": 0.75, "filter": "toy"},
             (50, 59): {"n": 50, "p_make": 0.60, "filter": "toy"},
-            (60, 80): {"n": 10, "p_make": 0.30, "filter": "toy"},
+            (60, 64): {"n": 10, "p_make": 0.30, "filter": "toy"},
         },
         punt_by_yardline={
             (1, 40): {"n": 20, "mean_opp_yardline_100": 88.0, "filter": "toy"},
@@ -163,7 +164,8 @@ def test_analyzer_recommendation_and_sensitivity():
         qtr=4,
     )
     res = az.analyze(sit)
-    assert set(res.actions) == {"go", "fg", "punt"}
+    # yardline 55 → 72-yd kick: beyond MAX_FG_DISTANCE, so FG is not an option.
+    assert set(res.actions) == {"go", "punt"}
     assert all(0.0 <= a.value_wp <= 1.0 for a in res.actions.values())
     assert res.recommendation in {"go", "fg", "punt", "inconclusive"}
 
@@ -172,3 +174,118 @@ def test_analyzer_recommendation_and_sensitivity():
     assert "baseline" in sens and "alternate" in sens
     # With convert≈0, go value should drop toward fail WP
     assert sens["alternate"]["actions"]["go"]["value_wp"] <= sens["baseline"]["actions"]["go"]["value_wp"] + 1e-9
+
+
+from nfl_sim.models.fourth_down_empirics import CONVERT_BINS, PUNT_YARDLINE_BINS  # noqa: E402
+
+
+def _toy_empirics():
+    return FourthDownEmpirics(
+        convert_by_distance={b: {"n": 100, "p_convert": 0.5, "filter": "toy"} for b in CONVERT_BINS},
+        fg_by_kick_distance={
+            (18, 29): {"n": 50, "p_make": 0.95, "filter": "toy"},
+            (30, 39): {"n": 50, "p_make": 0.90, "filter": "toy"},
+            (40, 49): {"n": 50, "p_make": 0.75, "filter": "toy"},
+            (50, 59): {"n": 50, "p_make": 0.60, "filter": "toy"},
+            (60, 64): {"n": 10, "p_make": 0.30, "filter": "toy"},
+        },
+        punt_by_yardline={b: {"n": 20, "mean_opp_yardline_100": 80.0, "filter": "toy"} for b in PUNT_YARDLINE_BINS},
+        meta={"seasons": [2019]},
+    )
+
+
+def _toy_with_tail():
+    from nfl_sim.models.fourth_down_empirics import _build_fg_table
+
+    emp = _toy_empirics()
+    # Real-looking long-kick sample incl. makes past 64 (nflverse has 66–68 yd makes).
+    kd = pd.Series([50] * 40 + [55] * 30 + [60] * 10 + [63] * 6 + [66] * 2 + [68] * 2)
+    made = pd.Series([True] * 32 + [False] * 8 + [True] * 20 + [False] * 10 + [True] * 4 + [False] * 6
+                     + [True] * 2 + [False] * 4 + [True, False] + [True, False])
+    emp.fg_by_kick_distance = _build_fg_table(kd, made)
+    return emp
+
+
+def test_fg_make_rate_is_one_smooth_curve_by_distance():
+    """M12: per-yard logistic, no 10-yd steps: strictly falling, small change per yard."""
+    emp = _toy_with_tail()
+    ps = [emp.p_make(k)[0] for k in range(18, 69)]
+    assert all(x > y for x, y in zip(ps, ps[1:]))
+    assert max(x - y for x, y in zip(ps, ps[1:])) < 0.05
+
+
+@pytest.mark.parametrize("kd", [65, 66, 67, 68])
+def test_long_kicks_are_priced_from_data_but_not_offered(kd):
+    p, meta = _toy_with_tail().p_make(kd)
+    assert 0.0 < p < 0.5 and meta["out_of_range"] is True  # product cap, not a zero model
+
+
+def test_tail_is_monotone_and_ends_at_longest_attempt_in_data():
+    emp = _toy_with_tail()
+    ps = [emp.p_make(k)[0] for k in range(60, 69)]
+    assert all(x > y for x, y in zip(ps, ps[1:]))
+    assert max(k[1] for k in emp.fg_by_kick_distance) == 68  # derived, no hardcoded record
+    p, meta = emp.p_make(69)
+    assert p == 0.0 and meta["beyond_data"] and meta["out_of_range"]
+
+
+@pytest.mark.parametrize("kd,expected", [(18, 0.95), (59, 0.60)])
+def test_p_make_in_range_uses_bins(kd, expected):
+    p, meta = _toy_empirics().p_make(kd)
+    assert p == expected and not meta.get("out_of_range")
+
+
+def test_legacy_60_80_table_is_never_offered_past_64():
+    emp = _toy_empirics()
+    emp.fg_by_kick_distance = {**{k: v for k, v in emp.fg_by_kick_distance.items() if k[0] < 60},
+                               (60, 80): {"n": 10, "p_make": 0.30, "filter": "old pickle"}}
+    assert emp.p_make(62)[0] == 0.30 and not emp.p_make(62)[1].get("out_of_range")
+    assert emp.p_make(75)[1]["out_of_range"] is True
+    assert emp.p_make(90) == (0.0, emp.p_make(90)[1])
+
+
+def test_bin_rate_refuses_to_clamp_above_last_bin():
+    from nfl_sim.models.fourth_down_empirics import FG_BINS, MAX_FG_DISTANCE, _bin_rate
+
+    assert MAX_FG_DISTANCE == 64 and FG_BINS[-1][1] == 59
+    with pytest.raises(ValueError):
+        _bin_rate(FG_BINS, 70, {b: {} for b in FG_BINS})
+
+
+def test_fg_table_keeps_real_kicks_beyond_64():
+    from nfl_sim.models.fourth_down_empirics import _build_fg_table
+
+    kd = pd.Series([50] * 12 + [62, 63, 66, 70])
+    made = pd.Series([True] * 8 + [False] * 4 + [False, False, True, True])
+    tbl = _build_fg_table(kd, made)
+    assert tbl[(66, 66)]["n"] == 1 and tbl[(66, 66)]["made"] == 1
+    assert tbl[(70, 70)]["made"] == 1 and max(k[1] for k in tbl) == 70
+
+
+@pytest.mark.parametrize("yardline,has_fg", [(30, True), (46, True), (47, False), (60, False)])
+def test_analyzer_drops_fg_when_out_of_range(yardline, has_fg):
+    from nfl_sim.models.fourth_down import FourthDownAnalyzer, sensitivity_example
+
+    az = FourthDownAnalyzer(_toy_wp_model(), _toy_empirics())
+    sit = FourthDownSituation(yardline_100=yardline, distance=3, score_differential=-2,
+                              game_seconds_remaining=120, half_seconds_remaining=120, qtr=4)
+    res = az.analyze(sit)
+    assert ("fg" in res.actions) is has_fg
+    assert res.recommendation != "fg" or has_fg
+    sensitivity_example(az, sit, convert_delta=-0.1)  # must not KeyError without fg
+
+
+def test_fg_curve_tracks_observed_by_band_qa0217():
+    """QA 0217 E: the per-yard FG curve stays within 3 pts of the fit seasons' make rate in
+    40-49 and 50-55 (one logistic was +3 pts at 40-49 and -5 pts at 50-55), and stays monotone."""
+    import pickle
+    emp = pickle.loads((Path(__file__).parent / "fixtures" / "grid_engine" / "empirics.pkl").read_bytes())
+    t = emp.fg_by_kick_distance
+    for lo, hi in ((40, 49), (50, 55)):
+        rows = [t[(y, y)] for y in range(lo, hi + 1)]
+        n = sum(r["n"] for r in rows)
+        model = sum(r["p_make"] * r["n"] for r in rows) / n
+        obs = sum(r["made"] for r in rows) / n
+        assert abs(model - obs) < 0.03, (lo, hi, model, obs)
+    ps = [t[(y, y)]["p_make"] for y in range(18, max(k[1] for k in t) + 1)]
+    assert all(x > y for x, y in zip(ps, ps[1:]))

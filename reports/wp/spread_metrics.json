@@ -1,0 +1,54 @@
+{
+  "command": "python3 -m nfl_sim.models wp-train-spread --out /workspace/nfl-wp3/reports/wp",
+  "features": [
+    "score_differential",
+    "game_seconds_remaining",
+    "half_seconds_remaining",
+    "down",
+    "distance",
+    "yardline_100",
+    "posteam_timeouts",
+    "defteam_timeouts",
+    "is_home_possession",
+    "receive_2h_ko",
+    "score_time_ratio",
+    "posteam_spread",
+    "posteam_spread_decayed"
+  ],
+  "fit_seasons": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "holdout": {
+    "brier": 0.1480835661835104,
+    "brier_max": 0.15,
+    "brier_without_spread_same_split": 0.16458338904233588,
+    "log_loss": 0.44717751120778737,
+    "n": 78324,
+    "seasons": [
+      2024,
+      2025
+    ]
+  },
+  "model": "logistic WP + pregame spread (internal input)",
+  "n_fit": 195024,
+  "seed": 42,
+  "tune": {
+    "fit": [
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "log_loss_by_C": {
+      "0.25": 0.45965343222684657,
+      "1.0": 0.4596673571195304,
+      "4.0": 0.4596710256885579
+    },
+    "selected_C": 0.25,
+    "val": 2023
+  }
+}

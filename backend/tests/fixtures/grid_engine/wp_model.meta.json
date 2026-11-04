@@ -1,0 +1,59 @@
+{
+  "C": 0.25,
+  "data_hash": {
+    "combined_sha256": "69a1294d9649b26099fde409d94f93ea183ee40ff45ba2634760bff5146a4738",
+    "season_sha256": {
+      "2019": "a333ea2eb682727e38a0cf4cd3227ea87cde8968aa514787a9a8d3b5c1d61a89",
+      "2020": "a478532555ad09a1bfd146e8f2ff7487e809246a731f4560cb2b848fe917b76f",
+      "2021": "a5fc2665520582073b65dcc44058db6dc36f2b532bf8ca558e98eead87271d3a",
+      "2022": "96a5c375da47e7bb19be8d81d4bcc1074570651480bbdf7fb5f7dd7cfb4a395b",
+      "2023": "e258815943b9dbe7d561444681da87df8958a51444c1ba4b9336419540d51508"
+    }
+  },
+  "ep_model_loaded": null,
+  "feature_names": [
+    "num__score_differential",
+    "num__game_seconds_remaining",
+    "num__half_seconds_remaining",
+    "num__down",
+    "num__distance",
+    "num__yardline_100",
+    "num__posteam_timeouts",
+    "num__defteam_timeouts",
+    "num__is_home_possession",
+    "num__receive_2h_ko",
+    "num__score_time_ratio"
+  ],
+  "features": [
+    "score_differential",
+    "game_seconds_remaining",
+    "half_seconds_remaining",
+    "down",
+    "distance",
+    "yardline_100",
+    "posteam_timeouts",
+    "defteam_timeouts",
+    "is_home_possession",
+    "receive_2h_ko"
+  ],
+  "packages": {
+    "joblib": "1.6.0",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1"
+  },
+  "path": "A_no_ep_feature",
+  "seed": 42,
+  "selected_C": 0.25,
+  "train_n": 115646,
+  "train_seasons": [
+    2019,
+    2020,
+    2021
+  ],
+  "val_log_loss_by_C": {
+    "0.25": 0.5698440853868576,
+    "1.0": 0.5700162926222299,
+    "4.0": 0.5700612047943501
+  }
+}

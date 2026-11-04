@@ -36,6 +36,12 @@ OFFLINE_MAPPER_DISCLAIMER = (
 )
 
 
+def _join_or_and(parts: list[str], word: str) -> str:
+    if len(parts) <= 2:
+        return f" {word} ".join(parts)
+    return ", ".join(parts[:-1]) + f", {word} " + parts[-1]
+
+
 def layman_why_from_config(cfg: dict[str, Any]) -> str:
     """One-line plain-English why from existing summary fields only (no rescoring)."""
     rec = cfg.get("recommendation")
@@ -48,14 +54,17 @@ def layman_why_from_config(cfg: dict[str, Any]) -> str:
         m = None
     margin_txt = f" (edge ≈ {m:.3f} WP)" if m is not None else ""
 
+    labels_short = {"go": "going for it", "fg": "a field goal", "punt": "punting"}
     if inconclusive:
         return (
-            "Too close to call — go, field goal, and punt win chances are nearly tied"
+            "Too close to call — "
+            + _join_or_and([labels_short[a] for a in ("go", "fg", "punt") if not values or a in values], "and")
+            + " win chances are nearly tied"
             f"{margin_txt}."
         )
     labels = {"go": "going for it", "fg": "a field goal", "punt": "punting"}
     action = labels.get(str(rec), str(rec))
-    others = [a for a in ("go", "fg", "punt") if a != rec]
+    others = [a for a in ("go", "fg", "punt") if a != rec and (not values or a in values)]
     try:
         ranked = sorted(
             ((k, float(values[k])) for k in ("go", "fg", "punt") if k in values),
@@ -66,21 +75,21 @@ def layman_why_from_config(cfg: dict[str, Any]) -> str:
     except (TypeError, ValueError):
         best_wp = None
     wp_txt = f" (~{best_wp:.1%} win chance)" if best_wp is not None else ""
-    alt = " or ".join(labels.get(a, a) for a in others)
+    alt = _join_or_and([labels.get(a, a) for a in others], "or")
     return (
         f"{action[0].upper() + action[1:]} looks best here{wp_txt} — "
         f"higher modeled win chance than {alt}{margin_txt}."
     )
 
-# Documented flip is default; anchor included for contrast.
+# Long 4th down from own side is default (FG out of range); anchor included for contrast.
 PRESETS: list[dict[str, Any]] = [
     {
         "id": "flip-lac-den",
-        "label": "Flip: LAC@DEN 2022 W18 — 4th & 14 (inconclusive → punt)",
+        "label": "LAC@DEN 2022 W18 — 4th & 14 from their own 36 (punt)",
         "season": 2022,
         "game_id": "2022_18_LAC_DEN",
         "play_id": 3897,
-        "note": "Documented legacy→improved recommendation flip",
+        "note": "81-yard field goal is out of range, so the choice is go or punt",
         "default": True,
     },
     {

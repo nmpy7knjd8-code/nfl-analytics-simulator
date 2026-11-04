@@ -60,7 +60,7 @@ def _emp_with_buckets_and_clock() -> FourthDownEmpirics:
         (30, 39): {"n": 50, "p_make": 0.90, "filter": "toy"},
         (40, 49): {"n": 50, "p_make": 0.75, "filter": "toy"},
         (50, 59): {"n": 50, "p_make": 0.60, "filter": "toy"},
-        (60, 80): {"n": 10, "p_make": 0.30, "filter": "toy"},
+        (60, 64): {"n": 10, "p_make": 0.30, "filter": "toy"},
     }
     punt = {
         (1, 40): {

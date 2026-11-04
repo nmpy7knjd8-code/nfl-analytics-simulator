@@ -1,0 +1,18 @@
+.po{padding-bottom:16px}
+.po .po-h1{font-size:28px;line-height:1.15;margin:16px 0 4px}
+.po .po-sub{color:var(--sg-g);font-size:15px;margin:0 0 10px}
+.po .po-chips{margin-bottom:6px}
+.po .po-round{margin-top:16px}
+.po .po-h2{font-size:20px;margin:0 0 6px}
+.po .po-h3{font-size:14px;font-weight:700;color:var(--sg-g);margin:8px 0 6px;letter-spacing:.04em}
+.po .po-games{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.po .po-game{display:flex;flex-direction:column;gap:6px;min-height:48px;padding:10px 14px;border:1.5px solid #000;border-radius:16px;color:#000;text-decoration:none}
+.po a.po-game:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.po .po-side{display:flex;align-items:center;gap:8px;font-size:16px;color:var(--sg-g)}
+.po .po-side.is-w{color:#000;font-weight:800}
+.po .po-name{flex:1;min-width:0}
+.po .po-pts{font-variant-numeric:tabular-nums;font-size:18px}
+.po .po-meta{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--sg-g)}
+.po .po-ot{font-size:12px;font-weight:700;color:#000;border:1px solid #000;border-radius:999px;padding:1px 8px}
+.po .po-go{margin-left:auto;color:var(--sg-b);font-weight:700}
+.po .po-note{font-size:14px;color:var(--sg-g);margin:16px 0 6px}

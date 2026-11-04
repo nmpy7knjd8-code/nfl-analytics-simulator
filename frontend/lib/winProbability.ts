@@ -1,140 +1,214 @@
 /**
- * Win-probability series for Game Explorer charts.
+ * Win-probability helpers for Game Explorer charts, built on the shared contract
+ * (frontend/contracts, PR #39): GET /games/{id}/win-probability → WinProbabilitySeries.
  *
- * Frontend-local view model. NOT a shared contract: frontend/contracts does not yet
- * publish a WP-series shape (owned by NFL Data & Models, Phase 0). When it lands,
- * replace `WinProbabilitySeries` with the contract type and keep the adapters below.
- *
- * Conventions (match nflverse reference columns):
- *  - `home_wp` is the HOME team's win chance, in [0, 1].
- *  - Each point is PRE-SNAP: the chance at the snap of that play. The play at index i
- *    therefore "causes" points[i+1].home_wp − points[i].home_wp.
- *  - Swing plays: until the backend publishes a swing flag in frontend/contracts
- *    (planned rule |ΔWP| ≥ 0.08), the frontend applies the same 0.08 cutoff itself as a
- *    fixture fallback. Prefer the backend flag once it exists.
+ * Conventions (from the contract):
+ *  - home_wp_pre / home_wp_post = P(home team wins). Never chart CanonicalPlay.reference.wp
+ *    (that is the possession team's WP).
+ *  - home_wp_pre is before the snap; home_wp_post is the next play's pre-snap value, or the
+ *    final result (1 / 0 / 0.5) on the last play.
+ *  - Swing plays: use the backend's is_swing flags when present; otherwise fall back to
+ *    |delta_home_wp| >= DEFAULT_SWING_WP_THRESHOLD (0.08).
+ *  - game_seconds_elapsed keeps counting past 3600 in overtime (is_overtime / has_overtime).
  */
-export const SWING_THRESHOLD_FALLBACK = 0.08;
-import type { CanonicalPlay } from "../contracts";
+import {
+  DEFAULT_SWING_WP_THRESHOLD,
+  type WinProbabilityPoint,
+  type WinProbabilitySeries,
+} from "../contracts";
 
-export interface WinProbabilityPoint {
-  play_id: string;
-  play_index: number;
-  quarter: number;
-  /** Seconds left in regulation, 3600 → 0 (0 for overtime plays). */
-  game_seconds_remaining: number;
-  /** Overtime only: seconds left in the OT period. */
-  ot_seconds_remaining?: number | null;
-  home_wp: number;
-  possession_team_id?: string | null;
-  description?: string | null;
-}
+export { DEFAULT_SWING_WP_THRESHOLD };
+export type { WinProbabilityPoint, WinProbabilitySeries };
 
-export interface WinProbabilitySeries {
-  game_id: string;
-  home_team_id: string;
-  away_team_id: string;
-  points: WinProbabilityPoint[];
-  /** "example" = hand-made fixture, never real model output. */
-  source: "example" | "reference" | "model";
-  source_note: string;
+/** Where a series came from. The contract has no "example" source, so we carry it alongside. */
+export type ChartSeries = {
+  /** Regulation only (house rule: no overtime win chance anywhere). has_overtime still says whether OT was played. */
+  series: WinProbabilitySeries;
+  origin: "live" | "example";
+  note: string;
+  /** Overtime plays, kept for the play list, with no win-chance values. */
+  overtimePlays: OvertimePlay[];
+};
+
+export type OvertimePlay = Pick<
+  WinProbabilityPoint,
+  "play_id" | "play_index" | "quarter" | "is_overtime" | "game_seconds_elapsed" | "possession_team_id" | "description"
+> & { display_text?: string; penalty_text?: string | null; raw_desc?: string };
+
+/**
+ * House rule (creative-builds.md): win chance stops at the end of regulation.
+ * Drops OT points (and their swing ids) from the series and returns the OT plays without
+ * any win-chance fields, so callers can still list them.
+ */
+export function splitAtRegulation(series: WinProbabilitySeries): {
+  series: WinProbabilitySeries;
+  overtimePlays: OvertimePlay[];
+} {
+  const isOt = (p: WinProbabilityPoint) => p.is_overtime || p.quarter > 4;
+  const regulation = series.points.filter((p) => !isOt(p));
+  const overtimePlays = series.points.filter(isOt).map((p) => ({
+    play_id: p.play_id,
+    play_index: p.play_index,
+    quarter: p.quarter,
+    is_overtime: true,
+    game_seconds_elapsed: p.game_seconds_elapsed,
+    possession_team_id: p.possession_team_id,
+    description: p.description,
+    // UI Critic 2240 P2-A: the OT card shows the export's fan text like every other card.
+    display_text: (p as { display_text?: string }).display_text,
+    penalty_text: (p as { penalty_text?: string | null }).penalty_text ?? null,
+    raw_desc: (p as { raw_desc?: string }).raw_desc,
+  }));
+  const kept = new Set(regulation.map((p) => p.play_id));
+  return {
+    series: {
+      ...series,
+      has_overtime: series.has_overtime || overtimePlays.length > 0,
+      points: regulation,
+      swing_play_ids: series.swing_play_ids.filter((id) => kept.has(id)),
+    },
+    overtimePlays,
+  };
 }
 
 export interface SwingPlay {
   point: WinProbabilityPoint;
-  /** Change in home win chance caused by this play (−1..1). */
+  /** delta_home_wp for this play (−1..1). */
   delta: number;
   favored_team_id: string;
   why: string;
 }
 
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+export const REGULATION_SECONDS = 3600;
+const QUARTER_SECONDS = 900;
+const REG_OT_SECONDS = 600;
 
-/**
- * Build a series from CanonicalPlay reference columns (contract-shaped data).
- * Uses reference.home_wp when present, else converts possession-team `wp`.
- * Plays without a usable WP or clock are skipped, never invented.
- */
-export function seriesFromPlays(
-  game_id: string,
-  home_team_id: string,
-  away_team_id: string,
-  plays: CanonicalPlay[],
-): WinProbabilitySeries {
-  const points: WinProbabilityPoint[] = [];
-  for (const p of plays) {
-    const r = p.reference;
-    let home: number | null = r?.home_wp ?? null;
-    if (home == null && r?.wp != null && p.possession_team_id) {
-      home = p.possession_team_id === home_team_id ? r.wp : 1 - r.wp;
-    }
-    const secs =
-      p.game_seconds_remaining ??
-      (p.quarter > 4
-        ? 0
-        : p.half_seconds_remaining != null
-          ? p.half_seconds_remaining + (p.quarter <= 2 ? 1800 : 0)
-          : null);
-    if (home == null || secs == null || Number.isNaN(home)) continue;
-    points.push({
-      play_id: p.play_id,
-      play_index: p.play_index,
-      quarter: p.quarter,
-      game_seconds_remaining: secs,
-      ot_seconds_remaining: p.quarter > 4 ? (p.half_seconds_remaining ?? null) : null,
-      home_wp: clamp01(home),
-      possession_team_id: p.possession_team_id,
-      description: p.description,
-    });
-  }
-  return {
-    game_id,
-    home_team_id,
-    away_team_id,
-    points,
-    source: "reference",
-    source_note: "Reference win chance from play-by-play columns.",
-  };
+/** Backend flag when it is a boolean; else the threshold fallback. */
+export function isSwing(
+  p: Pick<WinProbabilityPoint, "delta_home_wp"> & { is_swing?: boolean | null },
+  threshold = DEFAULT_SWING_WP_THRESHOLD,
+): boolean {
+  return typeof p.is_swing === "boolean" ? p.is_swing : Math.abs(p.delta_home_wp) >= threshold;
 }
 
-function whyText(delta: number, p: WinProbabilityPoint, favored: string): string {
+/** Fan fields carried on fixture points from lib/swingPlays.json (#86/#88). All optional: API points lack them. */
+export type EventPoint = WinProbabilityPoint & {
+  event?: string;
+  fourth_down_failed?: boolean;
+  display_text?: string;
+  /** flags after the play (null on "No play" rows and flag-free plays); render after display_text */
+  penalty_text?: string | null;
+  raw_desc?: string;
+  down?: number | null;
+  distance?: number | null;
+  yardline_100?: number | null;
+  home_score_before?: number;
+  away_score_before?: number;
+  /** nflverse yards_gained (#97). */
+  yards_gained?: number | null;
+  /** Interception or fumble returned for a TD by the defense (#97). */
+  return_td?: boolean;
+  /** #110: punt/kickoff returned for a TD. Never true with return_td; absent until #110 lands. */
+  kick_return_td?: boolean;
+};
+
+/** "4th & 7 · KC 35 · DET 14–13 KC" (UI Critic 2110 P1-B). Null when the situation fields are absent. */
+export function situationLine(p: EventPoint, home: string, away: string): string | null {
+  const parts: string[] = [];
+  const ord = ["", "1st", "2nd", "3rd", "4th"];
+  if (p.down && p.distance != null) parts.push(`${ord[p.down]} & ${p.distance}`);
+  const pos = p.possession_team_id;
+  if (p.yardline_100 != null && pos) {
+    const opp = pos === home ? away : home;
+    const y = p.yardline_100;
+    parts.push(y === 50 ? "midfield" : y > 50 ? `${pos} ${100 - y}` : `${opp} ${y}`);
+  }
+  if (p.home_score_before != null && p.away_score_before != null)
+    parts.push(`${away} ${p.away_score_before}–${p.home_score_before} ${home}`);
+  return parts.length ? parts.join(" · ") : null;
+}
+
+/** P3-K: where the gain started or ended decides the wording. */
+/** "an" before numbers read with a leading vowel sound: 8, 11, 18, 80–89 (and 8xx). */
+export function yardArticle(n: number): "a" | "an" {
+  const s = String(Math.abs(Math.trunc(n)));
+  return s.startsWith("8") || s === "11" || s === "18" ? "an" : "a";
+}
+
+function bigGain(yards: number, yardline100: number | null | undefined): string {
+  const g = `${yardArticle(yards)} ${yards}-yard gain`;
+  if (yardline100 != null && yardline100 >= 80) return `${g} moved the ball from deep in its own end`;
+  if (yardline100 != null && yardline100 - yards <= 20) return `${g} moved the ball into scoring range`;
+  return `${g} flipped field position`;
+}
+
+export function whyText(delta: number, p: EventPoint, favored: string): string {
   const pts = Math.round(Math.abs(delta) * 100);
-  const late = p.game_seconds_remaining <= 300;
+  const late = !p.is_overtime && REGULATION_SECONDS - p.game_seconds_elapsed <= 300;
   const d = (p.description ?? "").toLowerCase();
   let cause = "it changed field position and the score picture";
-  if (/intercept|fumble/.test(d)) cause = "a turnover hands the ball and field position to the other side";
-  else if (/touchdown/.test(d)) cause = "a touchdown changes the score in one snap";
+  // QA M10 / UI P1-B: the event tag from nflverse (#86) decides the cause before any text match.
+  // QA L5 / recheck 2350 P3-L: name the return TD without assuming the point count.
+  if (p.return_td && p.event === "fumble_lost") cause = "a fumble returned for a touchdown gave the defense a score";
+  else if (p.return_td) cause = "an interception returned for a touchdown gave the defense a score";
+  // #110 kick_return_td: punt and kickoff return TDs (turnover-only return_td stays separate).
+  else if (p.kick_return_td) cause = /kickoff|kicks/.test(d) && !/punts/.test(d)
+    ? "a kickoff returned for a touchdown gave the return team a score"
+    : "a punt returned for a touchdown gave the return team a score";
+  // QA 0116 N8: a safety (often on a sack) or a blocked kick is the cause, not the sack or the punt.
+  else if (p.event === "safety" || /\bsafety\b/.test(d)) cause = "a safety gave the defense 2 points and the ball back";
+  else if (/\bblocked\b/.test(d) && /punt/.test(d)) cause = "a blocked punt gave the defense the ball in great field position";
+  else if (/\bblocked\b/.test(d) && /field goal/.test(d)) cause = "a blocked field goal took points off the board";
+  else if (p.fourth_down_failed || p.event === "turnover_on_downs") cause = "a failed fourth down handed the ball over";
+  else if (p.event === "interception" || p.event === "fumble_lost") cause = "a turnover handed the ball and field position to the other side";
+  else if (p.event === "touchdown") cause = "a touchdown changed the score in one snap";
+  else if (p.event === "field_goal") cause = "points went on the board";
+  else if (p.event === "punt") cause = "a punt flipped field position";
+  // QA L6 / P3-K: a 20+ yard gain (#97 yards_gained) is about field position, not the score.
+  else if ((p.yards_gained ?? 0) >= 20) cause = bigGain(p.yards_gained as number, p.yardline_100);
+  else if (p.event === "other") cause = /sack/.test(d) ? "a sack lost yards and could have killed the drive" : "it moved the ball and the clock";
+  else if (/intercept|fumble/.test(d)) cause = "a turnover handed the ball and field position to the other side";
+  else if (/touchdown/.test(d)) cause = "a touchdown changed the score in one snap";
   else if (/field goal|fg/.test(d)) cause = "points went on the board";
-  else if (/fourth-and|4th/.test(d)) cause = "a fourth-down call decides who keeps the ball";
-  else if (/sack/.test(d)) cause = "a sack loses yards and can kill a drive";
+  else if (/fourth-and|fourth down|4th/.test(d)) cause = "a fourth-down call decided who kept the ball";
+  else if (/sack/.test(d)) cause = "a sack lost yards and could have killed the drive";
   return `${favored} gained ${pts} points of win chance because ${cause}${
-    late ? ", and with little time left there is less chance to answer" : ""
+    late || p.is_overtime ? ", and with little time left there was less chance to answer" : ""
   }.`;
 }
 
-/** Clock label for a point: "Q3 12:05" or "OT 7:32". */
-export function clockLabel(p: WinProbabilityPoint): string {
+/** Clock label from game_seconds_elapsed: "Q3 12:05" or "OT 7:32" (regular-season OT). */
+export function clockLabel(p: Pick<WinProbabilityPoint, "quarter" | "is_overtime" | "game_seconds_elapsed">): string {
   const fmt = (t: number) => `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(2, "0")}`;
-  if (p.quarter > 4) return p.ot_seconds_remaining != null ? `OT ${fmt(p.ot_seconds_remaining)}` : "OT";
-  const inQuarter = p.game_seconds_remaining - (4 - p.quarter) * 900;
-  return `Q${p.quarter} ${fmt(Math.max(0, Math.min(900, inQuarter)))}`;
+  if (p.is_overtime) {
+    return `OT ${fmt(Math.max(0, REG_OT_SECONDS - (p.game_seconds_elapsed - REGULATION_SECONDS)))}`;
+  }
+  const left = p.quarter * QUARTER_SECONDS - p.game_seconds_elapsed;
+  return `Q${p.quarter} ${fmt(Math.max(0, Math.min(QUARTER_SECONDS, left)))}`;
 }
 
-/**
- * Biggest win-chance changes, largest first. Points are pre-snap, so the change between
- * point i and i+1 belongs to the play at i. Fallback cutoff: see SWING_THRESHOLD_FALLBACK.
- */
+/** The same swings in game order (cards and dot numbers read left to right; UI Critic open item). */
+export function inGameOrder(swings: SwingPlay[]): SwingPlay[] {
+  return [...swings].sort((a, b) => a.point.game_seconds_elapsed - b.point.game_seconds_elapsed || a.point.play_index - b.point.play_index);
+}
+
+/** "DET win chance +24" (UI Critic 2240 P3-A: not "gains 24 pts", which reads like game points). */
+export function swingMeta(s: Pick<SwingPlay, "delta" | "favored_team_id">): string {
+  return `${s.favored_team_id} win chance +${Math.round(Math.abs(s.delta) * 100)}`;
+}
+
+/** Swing plays, largest first, capped at `limit`. */
 export function findSwingPlays(
   series: WinProbabilitySeries,
   limit = 3,
-  minSwing = SWING_THRESHOLD_FALLBACK,
+  threshold = series.swing_threshold ?? DEFAULT_SWING_WP_THRESHOLD,
 ): SwingPlay[] {
-  const out: SwingPlay[] = [];
-  for (let i = 0; i + 1 < series.points.length; i++) {
-    const cur = series.points[i];
-    const delta = series.points[i + 1].home_wp - cur.home_wp;
-    if (Math.abs(delta) < minSwing) continue;
-    const favored = delta > 0 ? series.home_team_id : series.away_team_id;
-    out.push({ point: cur, delta, favored_team_id: favored, why: whyText(delta, cur, favored) });
-  }
-  return out.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, limit);
+  return series.points
+    .filter((p) => isSwing(p, threshold))
+    .map((p) => {
+      const favored = p.delta_home_wp > 0 ? series.home_team_id : series.away_team_id;
+      return { point: p, delta: p.delta_home_wp, favored_team_id: favored, why: whyText(p.delta_home_wp, p, favored) };
+    })
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+    .slice(0, limit);
 }

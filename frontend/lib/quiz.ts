@@ -20,6 +20,8 @@ export type QuizSituation = {
   qtr: number;
   game_seconds_remaining: number;
   half_seconds_remaining?: number;
+  /** Clock shown to fans: time left in the quarter (0:00–15:00). */
+  quarter_seconds_remaining: number;
   yardline_100: number;
   down: number;
   distance: number;
@@ -35,6 +37,7 @@ export type QuizReveal = {
   layman_why: string;
   transition_mode?: string;
   empirics_mode?: string;
+  /** Fan-language notes, safe to display. */
   assumptions?: string[];
   recommendation_changed_legacy_to_improved?: boolean;
 };
@@ -47,6 +50,8 @@ export type QuizItem = {
     season?: number | null;
     game_id?: string | null;
     play_id?: number | null;
+    week?: number | null;
+    game_date?: string | null;
     note?: string;
     report?: string;
   };
@@ -77,7 +82,7 @@ export const QUIZ_ITEMS: QuizItem[] = QUIZ_PACK.items;
 
 export const CHOICE_LABELS: Record<QuizChoice, string> = {
   go: "Go",
-  fg: "Field Goal",
+  fg: "Field goal",
   punt: "Punt",
 };
 
@@ -104,9 +109,29 @@ export function ballProgress(yardline100: number): number {
   return Math.max(0, Math.min(100, 100 - yardline100));
 }
 
+/** Longest field goal the game offers (house rule); kick distance = yards to the end zone + 18. */
+export const MAX_FG_YARDS = 64;
+
+export function fieldGoalYards(situation: Pick<QuizSituation, "yardline_100">): number {
+  return Math.round(situation.yardline_100 + 18);
+}
+
+/** The options a player may pick: only ones the reveal has a value for, never a kick over 64 yards. */
+export function availableChoices(item: { reveal: QuizReveal; situation: Pick<QuizSituation, "yardline_100"> }): QuizChoice[] {
+  return (["go", "fg", "punt"] as QuizChoice[]).filter((c) => {
+    const v = item.reveal.values[c];
+    if (typeof v !== "number" || Number.isNaN(v)) return false;
+    return c !== "fg" || fieldGoalYards(item.situation) <= MAX_FG_YARDS;
+  });
+}
+
+/** A close call: the top two offered options are within 2 points of win chance. */
+export const CLOSE_MARGIN = 0.02;
+
 export function scoreQuizChoice(
   choice: QuizChoice,
   reveal: QuizReveal,
+  situation?: Pick<QuizSituation, "yardline_100">,
 ): {
   result: QuizResult;
   credit: number;
@@ -118,10 +143,34 @@ export function scoreQuizChoice(
 } {
   const inconclusive =
     Boolean(reveal.inconclusive) || reveal.recommendation === "inconclusive";
-  if (inconclusive) {
+  // A choice the reveal has no value for (or a kick past 64 yd) never earns credit, close call or not.
+  const offered = situation
+    ? availableChoices({ reveal, situation }).includes(choice)
+    : typeof reveal.values[choice] === "number";
+  if (!offered) {
     return {
-      result: "near_tie",
-      credit: 0.5,
+      result: "incorrect",
+      credit: 0,
+      recommendation: reveal.recommendation,
+      inconclusive,
+      values: reveal.values,
+      layman_why: reveal.layman_why,
+      margin: reveal.margin,
+    };
+  }
+  if (inconclusive) {
+    // Recheck 2146 P2-G: the higher win chance always earns the full point; a pick within
+    // CLOSE_MARGIN of it earns ½ ("Close call"); anything further off earns 0.
+    const top = Math.max(
+      ...(["go", "fg", "punt"] as QuizChoice[])
+        .filter((c) => (situation ? availableChoices({ reveal, situation }).includes(c) : typeof reveal.values[c] === "number"))
+        .map((c) => reveal.values[c] as number),
+    );
+    const v = reveal.values[choice] as number;
+    const result: QuizResult = v >= top ? "correct" : top - v <= CLOSE_MARGIN + 1e-9 ? "near_tie" : "incorrect";
+    return {
+      result,
+      credit: result === "correct" ? 1 : result === "near_tie" ? 0.5 : 0,
       recommendation: reveal.recommendation,
       inconclusive: true,
       values: reveal.values,

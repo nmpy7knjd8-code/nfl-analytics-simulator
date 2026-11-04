@@ -1,0 +1,463 @@
+{
+  "$defs": {
+    "PlayType": {
+      "enum": [
+        "pass",
+        "rush",
+        "punt",
+        "field_goal",
+        "kickoff",
+        "extra_point",
+        "two_point",
+        "no_play",
+        "other"
+      ],
+      "title": "PlayType",
+      "type": "string"
+    },
+    "ReferenceModelColumns": {
+      "description": "Published nflfastR / nflverse model outputs \u2014 reference only, not observed state.",
+      "properties": {
+        "away_wp": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Away Wp"
+        },
+        "cp": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cp"
+        },
+        "ep": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ep"
+        },
+        "epa": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Epa"
+        },
+        "home_wp": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Home Wp"
+        },
+        "success": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Success"
+        },
+        "vegas_wp": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vegas Wp"
+        },
+        "vegas_wpa": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vegas Wpa"
+        },
+        "wp": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wp"
+        },
+        "wpa": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wpa"
+        }
+      },
+      "title": "ReferenceModelColumns",
+      "type": "object"
+    }
+  },
+  "description": "Observed play / post-play reconstruction row (DATA_EXPERIMENT \u00a73.3).",
+  "properties": {
+    "defense_team_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defense Team Id"
+    },
+    "defteam_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defteam Score"
+    },
+    "defteam_score_post": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defteam Score Post"
+    },
+    "defteam_timeouts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Defteam Timeouts"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "distance": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Distance"
+    },
+    "down": {
+      "anyOf": [
+        {
+          "maximum": 4,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Down"
+    },
+    "fixed_drive": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fixed Drive"
+    },
+    "fixed_drive_result": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fixed Drive Result"
+    },
+    "game_id": {
+      "title": "Game Id",
+      "type": "string"
+    },
+    "game_seconds_remaining": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Game Seconds Remaining"
+    },
+    "half_seconds_remaining": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Half Seconds Remaining"
+    },
+    "is_home_possession": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Is Home Possession"
+    },
+    "is_scoring_play": {
+      "default": false,
+      "title": "Is Scoring Play",
+      "type": "boolean"
+    },
+    "is_turnover": {
+      "default": false,
+      "title": "Is Turnover",
+      "type": "boolean"
+    },
+    "play_id": {
+      "title": "Play Id",
+      "type": "string"
+    },
+    "play_index": {
+      "minimum": 0,
+      "title": "Play Index",
+      "type": "integer"
+    },
+    "play_type": {
+      "$ref": "#/$defs/PlayType"
+    },
+    "possession_team_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Possession Team Id"
+    },
+    "posteam_score": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Posteam Score"
+    },
+    "posteam_score_post": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Posteam Score Post"
+    },
+    "posteam_timeouts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Posteam Timeouts"
+    },
+    "quarter": {
+      "maximum": 5,
+      "minimum": 1,
+      "title": "Quarter",
+      "type": "integer"
+    },
+    "receive_2h_ko": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Receive 2H Ko"
+    },
+    "reference": {
+      "$ref": "#/$defs/ReferenceModelColumns"
+    },
+    "roof": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Roof"
+    },
+    "score_differential": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Score Differential"
+    },
+    "score_differential_post": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Score Differential Post"
+    },
+    "yardline_100": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Yardline 100"
+    },
+    "yards_gained": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Yards Gained"
+    }
+  },
+  "required": [
+    "play_id",
+    "game_id",
+    "play_index",
+    "quarter",
+    "play_type"
+  ],
+  "title": "CanonicalPlay",
+  "type": "object"
+}

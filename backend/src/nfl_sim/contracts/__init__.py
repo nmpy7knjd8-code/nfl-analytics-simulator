@@ -22,8 +22,11 @@ from .simulation import (
     SimulationScope,
 )
 from .situation import GameSituation
+from .win_probability import WinProbabilityPoint, WinProbabilitySeries
 
 __all__ = [
+    "WinProbabilityPoint",
+    "WinProbabilitySeries",
     "CanonicalPlay",
     "DataMode",
     "DecisionAction",
