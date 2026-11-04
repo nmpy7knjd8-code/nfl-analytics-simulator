@@ -13,6 +13,7 @@ the winner's chance (whole percent). No play ids, EPA or betting fields; no over
 Frozen: published ``top`` rows and the decided-game count may not change unless a season is added.
 
 Usage: python mining/build_comebacks.py PBP_PARQUET [...] [--out data/site/comebacks.json]
+       [--allow-changes mining/frozen_overrides/<file>.json]  (listed games may change only spark)
 """
 from __future__ import annotations
 
@@ -80,6 +81,11 @@ def game_entry(rs: list[dict[str, Any]]) -> list[Any] | None:
     ot = any(_num(r.get("qtr")) == 5 for r in rs)
     if not ot:
         spark[-1] = 100  # regulation final: the winner's line ends at 100
+    # The stated low must show: the sample nearest the low's game time takes the low's value (length stays SPARK).
+    lt = REG - _num(low["game_seconds_remaining"])
+    last = SPARK - 1 if ot else SPARK - 2  # never the regulation-final 100
+    k = min(range(last + 1), key=lambda i: abs(i * REG / (SPARK - 1) - lt))
+    spark[k] = round(100 * w(low))
     win, lose = (f["home_team"], f["away_team"]) if home_won else (f["away_team"], f["home_team"])
     return [int(f["season"]), int(f["week"]), f["season_type"], f["game_id"], win, lose, max(hs, as_),
             min(hs, as_), ot, round(w(low), 4), int(_num(low["qtr"])), low["time"], spark]
@@ -113,11 +119,27 @@ def key(r: dict[str, Any]) -> tuple:
     return (r["game_id"],)
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset()) -> list[str]:
+    """`allowed` games (a reviewed override) may change only their spark array."""
     if not old or old.get("schema") != new["schema"]:
         return []
-    bad = _check(old, new, key, "top", ("decided_games", "lows"))
-    return bad
+    if allowed:
+        si = COLS.index("spark")
+        nk = {e[3]: e for e in new.get("top", [])}
+        bad = [f"{e[3]} (override: changed more than spark)" for e in old.get("top", [])
+               if e[3] in allowed and e[3] in nk and (e[:si] + e[si + 1:]) != (nk[e[3]][:si] + nk[e[3]][si + 1:])]
+        old = {**old, "top": [nk[e[3]] if e[3] in allowed and e[3] in nk else e for e in old.get("top", [])]}
+        return bad + _check(old, new, key, "top", ("decided_games", "lows"))
+    return _check(old, new, key, "top", ("decided_games", "lows"))
+
+
+def load_override(path: str | None) -> set[str]:
+    if not path:
+        return set()
+    o = json.loads(Path(path).read_text())
+    if not o.get("reason") or not o.get("approved_by") or not isinstance(o.get("games"), list):
+        raise SystemExit(f"override {path} needs reason, approved_by and a games list")
+    return set(o["games"])
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -136,11 +158,12 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("pbp", nargs="+")
     ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--allow-changes", default=None)
     a = ap.parse_args(argv)
     out = Path(a.out)
     new = build(load_rows(a.pbp))
     old = json.loads(out.read_text()) if out.exists() else None
-    bad = check_frozen(old, new)
+    bad = check_frozen(old, new, load_override(a.allow_changes))
     if bad:
         print("FAIL: published comebacks would change: " + "; ".join(bad[:10]), file=sys.stderr)
         return 1
