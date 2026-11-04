@@ -14,7 +14,7 @@ export const TILE_LABEL: Record<TileCode, string> = {
 };
 export const RESULT_LABEL: Record<string, string> = {
   TD: "Touchdown", FG: "Field goal", P: "Punt", TO: "Turnover", DN: "Turnover on downs",
-  MF: "Missed field goal", EH: "End of half", OT: "Other team scored", SF: "Safety",
+  MF: "Missed field goal", EH: "End of half", OT: "Other team scored", OD: "Other team scored", SF: "Safety",
 };
 
 export function drivesUrl(season: number, basePath = ""): string {
