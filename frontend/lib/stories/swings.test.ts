@@ -30,7 +30,7 @@ test("fan copy: no jersey numbers, no stat names", () => {
   assert.equal(playText(base.desc), "J.Daniels pass deep middle to N.Brown for 52 yards, TOUCHDOWN.");
   assert.equal(playText("9-M.Gay 34 yard field goal is No Good, Center-97-Z.Triner, Holder-8-B.Pinion."), "M.Gay 34 yard field goal is No Good, Center-Z.Triner, Holder-B.Pinion.");
   assert.equal(swingLine(base), "Win chance swung 90%");
-  assert.equal(points({ ...base, swing: -0.757 }), 76);
+  assert.equal(points({ ...base, swing: -0.757, wp_before: 0.9, wp_after: 0.143 }), 76);
   assert.equal(beforeAfter(base), "WAS 10% → 100% to win");
   assert.equal(situation(base), "Q4 · 0:02 · 1st & 10 · WAS ball");
   for (const s of doc.top as Swing[]) assert.ok(!/\b(EPA|WPA|xpass)\b|\d{1,2}-[A-Z]/.test(playText(s.desc)), playText(s.desc));
@@ -58,7 +58,7 @@ test("D3 4th downs only: only regulation 4th downs, deduped, biggest first", () 
 });
 
 test("copy: win chance in percent, never 'points'", () => {
-  const b = { swing: 0.902 } as Swing;
-  assert.equal(signedPct(b), "+90%"); assert.equal(signedPct({ swing: -0.757 } as Swing), "\u221276%");
+  const b = { swing: 0.902, wp_before: 0.05, wp_after: 0.952 } as Swing;
+  assert.equal(signedPct(b), "+90%"); assert.equal(signedPct({ swing: -0.757, wp_before: 0.9, wp_after: 0.143 } as Swing), "\u221276%");
   assert.ok(!/points?/i.test(swingLine(b)));
 });
