@@ -37,13 +37,13 @@ NO_RESULT_GAME = "2022_17_BUF_CIN"
 BAD_ROW_GAME = "2019_03_CIN_BUF"
 SNAPS = {"run", "pass", "punt", "field_goal", "qb_kneel", "qb_spike"}
 RESULTS = {"Touchdown": "TD", "Field goal": "FG", "Punt": "P", "Turnover": "TO", "Turnover on downs": "DN",
-           "Missed field goal": "MF", "End of half": "EH", "Opp touchdown": "OT", "Safety": "SF"}
+           "Missed field goal": "MF", "End of half": "EH", "Opp touchdown": "OD", "Safety": "SF"}
 RESULT_KEY = {"TD": "Touchdown", "FG": "Field goal", "P": "Punt", "TO": "Turnover", "DN": "Turnover on downs",
-              "MF": "Missed field goal", "EH": "End of half", "OT": "Opponent touchdown", "SF": "Safety"}
+              "MF": "Missed field goal", "EH": "End of half", "OD": "Opponent touchdown", "SF": "Safety"}
 COLS = ["team", "qtr", "clock", "yards", "result", "tiles"]  # one space-separated string per drive
-COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive",
+COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive", "drive",
            "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start",
-           "ydsnet", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "desc"]
+           "ydsnet", "yardline_100", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "desc"]
 
 
 def _num(v: Any) -> float | None:
@@ -69,6 +69,26 @@ def tile(r: dict[str, Any]) -> str:
     return "G" if (_num(r.get("yards_gained")) or 0) > 0 else "N"
 
 
+def drive_ydsnet(snaps: list[dict[str, Any]]) -> float | None:
+    """nflverse ydsnet for a fixed_drive. nflverse sometimes tags a snap with a neighbouring `drive` number whose
+    ydsnet belongs to another possession (e.g. 2021_02_DEN_JAX: first snap tagged with DEN's drive, ydsnet 13;
+    JAX went 25 -> 23, ydsnet -2). When the snaps carry more than one nflverse drive, keep the candidate ydsnet
+    closest to the snaps' own yardline_100 movement (ties: the first snap's)."""
+    cands: list[float] = []
+    for r in snaps:
+        y = _num(r.get("ydsnet"))
+        if y is not None and y not in cands:
+            cands.append(y)
+    if len(cands) < 2:
+        return cands[0] if cands else None
+    f, l = snaps[0], snaps[-1]
+    try:
+        moved = float(f["yardline_100"]) - float(l["yardline_100"]) + float(l.get("yards_gained") or 0)
+    except (TypeError, ValueError, KeyError):
+        return cands[0]
+    return min(cands, key=lambda c: (abs(c - moved), cands.index(c)))
+
+
 def game_drives(rs: list[dict[str, Any]]) -> list[str]:
     bad = set()
     for i, r in enumerate(rs):
@@ -85,7 +105,7 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
     for d in sorted(drives):
         snaps = drives[d]
         f = snaps[0]
-        y = _num(f.get("ydsnet"))
+        y = drive_ydsnet(snaps)
         q = int(_num(f.get("drive_quarter_start")) or _num(f.get("qtr")) or 0)
         res = RESULTS[f["fixed_drive_result"]]
         out.append(" ".join([f["posteam"], str(q), str(f.get("drive_game_clock_start") or "-"),
@@ -128,29 +148,53 @@ def two_point_fix_ok(old: list[str], new: list[str]) -> bool:
     return j == len(new)
 
 
-def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset()) -> list[str]:
+def od_rename_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with result code OT (opponent touchdown) renamed OD and nothing else changed."""
+    def ren(d: str) -> str:
+        f = d.split(" ")
+        return " ".join(f[:4] + ["OD" if f[4] == "OT" else f[4]] + f[5:])
+    return [ren(d) for d in old] == new
+
+
+def ydsnet_fix_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with only the yards field changed, in at least one drive."""
+    return len(old) == len(new) and old != new and all(
+        o.split(" ")[:3] + o.split(" ")[4:] == n.split(" ")[:3] + n.split(" ")[4:] for o, n in zip(old, new))
+
+
+RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok}
+
+
+def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset(),
+                 rule: str = "two_point") -> list[str]:
     """Published games may not change, except `allowed` games (a reviewed override), which may change only by
-    two_point_fix_ok and must change."""
+    RULES[rule] and must change. result_key may change only under od_rename."""
     if not old or old.get("schema") != new["schema"]:
         return []
     bad = []
     for g, v in old["games"].items():
         n = new["games"].get(g)
         if g in allowed:
-            if n == v or n is None or not two_point_fix_ok(v, n):
-                bad.append(f"{g} (override: not exactly the two-point tile fix)")
+            if n == v or n is None or not RULES[rule](v, n):
+                bad.append(f"{g} (override: not exactly the {rule} change)")
         elif n != v:
             bad.append(g)
-    return bad + (["cols"] if old["cols"] != new["cols"] else [])
+    bad += ["cols"] if old["cols"] != new["cols"] else []
+    if old.get("result_key") is not None and old.get("result_key") != new.get("result_key"):
+        ok = rule == "od_rename" and allowed and {k: v for k, v in old["result_key"].items() if k != "OT"} == {
+            k: v for k, v in new["result_key"].items() if k != "OD"} and old["result_key"].get("OT") == new[
+            "result_key"].get("OD")
+        bad += [] if ok else ["result_key"]
+    return bad
 
 
-def load_override(path: str | None) -> set[str]:
+def load_override(path: str | None) -> tuple[set[str], str]:
     if not path:
-        return set()
+        return set(), "two_point"
     o = json.loads(Path(path).read_text())
     if not o.get("reason") or not o.get("approved_by") or not isinstance(o.get("games"), list):
         raise SystemExit(f"override {path} needs reason, approved_by and a games list")
-    return set(o["games"])
+    return set(o["games"]), o.get("rule", "two_point")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
@@ -171,14 +215,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     ap.add_argument("--allow-changes", default=None)
     a = ap.parse_args(argv)
-    allowed = load_override(a.allow_changes)
+    allowed, rule = load_override(a.allow_changes)
     out_dir = Path(a.out_dir)
     built = build(load_rows(a.pbp))
     olds, fails = {}, []
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
-        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed)]
+        fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed, rule)]
     if fails:
         print("FAIL: published drives would change: " + ", ".join(fails[:10]), file=sys.stderr)
         return 1

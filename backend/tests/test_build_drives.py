@@ -87,4 +87,48 @@ def test_two_point_override_scope():
     base = {"schema": "drives/v1", "cols": [], "games": {"g": old, "h": old}}
     new = {"schema": "drives/v1", "cols": [], "games": {"g": good, "h": good}}
     assert bd.check_frozen(base, new, {"g"}) == ["h"]
-    assert bd.check_frozen(base, base, {"g"}) == ["g (override: not exactly the two-point tile fix)"]
+    assert bd.check_frozen(base, base, {"g"}) == ["g (override: not exactly the two_point change)"]
+
+
+def test_od_rename_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-od-rename.json").read_text())
+    assert o["rule"] == "od_rename" and len(o["games"]) == 425 == len(set(o["games"]))
+    old = ["AAA 1 15:00 -5 OT NX", "BBB 1 14:50 0 TD T", "AAA 5 10:00 3 P GK"]
+    new = ["AAA 1 15:00 -5 OD NX", "BBB 1 14:50 0 TD T", "AAA 5 10:00 3 P GK"]
+    assert bd.od_rename_ok(old, new)
+    assert not bd.od_rename_ok(old, ["AAA 1 15:00 -5 OD N", *new[1:]])
+    assert not bd.od_rename_ok(old, [new[0], "BBB 1 14:50 0 OD T", new[2]])
+    rk_o, rk_n = {"OT": "Opponent touchdown", "P": "Punt"}, {"OD": "Opponent touchdown", "P": "Punt"}
+    base = {"schema": "drives/v1", "cols": [], "result_key": rk_o, "games": {"g": old, "h": old}}
+    nxt = {"schema": "drives/v1", "cols": [], "result_key": rk_n, "games": {"g": new, "h": new}}
+    assert bd.check_frozen(base, nxt, {"g", "h"}, "od_rename") == []
+    assert bd.check_frozen(base, nxt, {"g"}, "od_rename") == ["h"]
+    assert bd.check_frozen(base, nxt, {"g", "h"}, "two_point")[-1] == "result_key"
+
+
+def test_no_ot_result_code_left():
+    for f in DIR.glob("*.json"):
+        d = json.loads(f.read_text())
+        assert "OT" not in d["result_key"] and d["result_key"]["OD"] == "Opponent touchdown"
+        assert not [s for v in d["games"].values() for s in v if s.split(" ")[4] == "OT"]
+
+
+def test_ydsnet_picks_candidate_matching_yardlines():
+    rows = [r(pt="kickoff", posteam="BBB", drive=4, ydsnet=13), r(drive=4, ydsnet=13, yardline_100=75, yards_gained=-2),
+            r(drive=3, ydsnet=-2, yardline_100=77, yards_gained=0), r(pt="punt", drive=3, ydsnet=-2, yardline_100=77,
+                                                                     yards_gained=0, fixed_drive_result="Punt")]
+    assert bd.build(rows)[2099]["games"]["2099_01_AAA_BBB"][0].split(" ")[3] == "-2"
+    assert bd.drive_ydsnet([r(ydsnet=75)]) == 75
+
+
+def test_ydsnet_override_scope():
+    o = json.loads((ROOT / "mining/frozen_overrides/drives-2026-11-03-ydsnet.json").read_text())
+    assert o["rule"] == "ydsnet" and len(o["games"]) == 11 == len(set(o["games"]))
+    old = ["AAA 1 15:00 13 P NNNK", "BBB 1 10:00 5 TD GT"]
+    assert bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 P NNNK", old[1]])
+    assert not bd.ydsnet_fix_ok(old, old)
+    assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 FG NNNK", old[1]])
+    assert not bd.ydsnet_fix_ok(old, ["AAA 1 15:00 -2 P NNK", old[1]])
+    d = {k: json.loads((DIR / f"{k}.json").read_text())["games"] for k in ("2021", "2020")}
+    assert "JAX 2 14:43 -2 P NNNK" in d["2021"]["2021_02_DEN_JAX"]
+    assert [s for s in d["2020"]["2020_09_CAR_KC"] if s.startswith("KC 4 07:40")][0].split(" ")[3] == "39"

@@ -4,7 +4,7 @@ import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { dateKey } from "../lib/daily";
 import {
-  CALL_LABEL, buildRound, readKicks, coachCallText, leagueLabel, leagueMatchText, matchHeader, resultText, otherTriesNote, ratesLines, readTries, sameAsCoach, shareText, situationText,
+  CALL_LABEL, buildRound, readKicks, coachCallText, leagueLabel, leagueMatchText, matchHeader, resultText, verdictText, otherTriesNote, ratesLines, readTries, sameAsCoach, shareText, situationText,
   type Call, type Try, type TwoPointFile,
 } from "../lib/twoPoint";
 import { teamLogo } from "./ScoreBug";
@@ -151,6 +151,7 @@ export function TwoPoint() {
         <div className="sg-ln"><div className="sg-lbl">Result</div><div className="sg-v tp-result">{resultText(t)}</div></div>
       </div>
       <p className="tp-league">{leagueMatchText(file, t)}</p>
+      <p className="tp-call">{verdictText(file, t)}</p>
       <ul className="tp-rates" aria-label={`Real rates, ${file.season_list[0]}–${file.season_list[file.season_list.length - 1]}`}>
         {ratesLines(file).map((l) => <li key={l}>{l}</li>)}
       </ul>
