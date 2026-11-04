@@ -129,3 +129,16 @@ test("QA 0217 B: curated items (no numeric id suffix) find their play via source
     assert.ok(outcomeFromGame(doc, it, (a) => a), `${id} has no outcome`);
   }
 });
+
+test("F2: Hard mode situation line matches the score bug data, frozen items untouched", async () => {
+  const { situationLine } = await import("./simpleGame");
+  const before = JSON.stringify(DAILY_ITEMS);
+  for (const it of DAILY_ITEMS) {
+    const s = it.situation;
+    const line = situationLine(it);
+    assert.match(line, /^[A-Z]{2,3} \d+, [A-Z]{2,3} \d+ · (Q[1-4]|OT) \d+:\d\d · 4th & (Goal|\d+) at (midfield|the [A-Z]{2,3} \d+)$/, line);
+    assert.ok(line.includes(`${s.posteam} ${s.posteam_score}`) && line.includes(`${s.defteam} ${s.defteam_score}`), line);
+    assert.ok(line.length <= 60, line);
+  }
+  assert.equal(JSON.stringify(DAILY_ITEMS), before);
+});
