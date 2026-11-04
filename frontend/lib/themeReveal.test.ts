@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { loadPacks, loadSchedule } from "./themeData";
-import { THEME_HOLDS, calls, situationLine, themeFact, themedSet } from "./themeReveal";
+import { THEME_HOLDS, calls, situationLine, themeFact, themedSet, hasThemedDay } from "./themeReveal";
 
 const packs = loadPacks();
 const days = loadSchedule().days;
@@ -29,4 +29,14 @@ test("fan text: no ids, win chance, or betting words", () => {
     assert.doesNotMatch(t, /\d{3,}-|%|EPA|WPA|spread|odds|vegas/i, t);
     assert.ok(calls(i).includes("go") && calls(i).includes("punt"));
   }
+});
+
+test("end-screen Bonus round button: shown on themed days, hidden otherwise", () => {
+  const days = loadSchedule().days as Record<string, { ids: string[] }>;
+  const themed = Object.keys(days)[0];
+  assert.ok(themed, "schedule has a themed day");
+  assert.equal(hasThemedDay(days, themed), true);
+  assert.equal(hasThemedDay(days, "1999-01-01"), false);
+  assert.equal(hasThemedDay(days, ""), false);
+  assert.equal(hasThemedDay({ "2026-01-01": { ids: [] } }, "2026-01-01"), false);
 });

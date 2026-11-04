@@ -55,3 +55,9 @@ export const matchedCoach = (i: ThemePackItem, c: Call) => i.historical_action =
 
 /** FG only within 64-yard tries (line of scrimmage + 17). */
 export const calls = (i: ThemePackItem): Call[] => (i.situation.yardline_100 + 17 <= 64 ? ["go", "punt", "fg"] : ["go", "punt"]);
+
+/** End-screen "Bonus round" button: shown only when the theme schedule has a set for this date. */
+export function hasThemedDay(days: Record<string, { ids: string[] } | undefined>, key: string): boolean {
+  const d = key ? days[key] : undefined;
+  return !!d && Array.isArray(d.ids) && d.ids.length > 0;
+}
