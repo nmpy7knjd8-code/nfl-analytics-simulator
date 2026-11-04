@@ -27,5 +27,8 @@
 .st-src{font-size:12px;color:var(--sg-g);text-align:center;margin:16px 0 4px}
 .st-filter{display:flex;gap:8px;margin:4px 0 8px}
 .st-filter .st-oval{flex:1}
+
+.otd-h { font-weight: 700; margin: 0 0 8px; }
+.otd .st-list { margin: 0; }
 .cb-head{font-size:16px;font-weight:700;margin:4px 0 8px}
 .cb-spark{display:block;margin:4px 0}
