@@ -121,3 +121,4 @@ One line per branch-protection, Actions or repo-settings change: `YYYY-MM-DD (ET
 * ~2026-10-31 | unknown | main began requiring 1 approving review (admins included) | not recorded; it blocked the nightly snapshot merge (#222)
 * by 2026-11-03 | unknown | 1-review requirement removed | not recorded
 * 2026-11-03 | HGIC | keep 0 required reviews; required checks stay backend, frontend, acceptance, build | HGIC decision (settings proposal item 4)
+* 2026-11-03 | HGIC | standing approval: the nightly daily-snapshot PR (7:30 PM routine) may auto-merge only if it adds future days only, changes no existing published day's bytes, and passes all 4 required checks; otherwise do not merge, ping HGIC | HGIC decision, Nov 3 2026 ~10:56 PM ET
