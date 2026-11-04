@@ -43,10 +43,16 @@ RESULT_KEY = {"TD": "Touchdown", "FG": "Field goal", "P": "Punt", "TO": "Turnove
 TRANSITIONS = {"TOUCHDOWN": "TD", "FIELD_GOAL": "FG", "PUNT": "P", "INTERCEPTION": "TO", "FUMBLE": "TO",
                "DOWNS": "DN", "MISSED_FG": "MF", "END_HALF": "EH", "END_GAME": "EH", "SAFETY": "SF",
                "OPP_TOUCHDOWN": "OD"}
-COLS = ["team", "qtr", "clock", "yards", "result", "tiles"]  # one space-separated string per drive
+COLS = ["team", "qtr", "clock", "yards", "result", "tiles", "ret"]  # one space-separated string per drive
+# ret (appended 2026-11-03, Charts UI): OD drives only, a 7th field = how the opponent scored on the drive's last
+# play; every other drive keeps 6 fields. I pick-six, F fumble return, B blocked punt/FG, P punt return,
+# K kickoff return, M missed field goal return, - none of these.
+RET_KEY = {"I": "Pick-six", "F": "Fumble return TD", "B": "Blocked kick TD", "P": "Punt returned for TD",
+           "K": "Kickoff return TD", "M": "Missed field goal returned for TD", "-": "Other"}
 COLUMNS = ["game_id", "season", "week", "season_type", "game_date", "home_team", "away_team", "fixed_drive", "drive",
-           "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start",
-           "ydsnet", "yardline_100", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "drive_end_transition", "desc"]
+           "fixed_drive_result", "posteam", "play_type", "drive_quarter_start", "drive_game_clock_start", "qtr", "time",
+           "ydsnet", "yardline_100", "punt_attempt", "kickoff_attempt", "field_goal_attempt",
+           "punt_blocked", "field_goal_result", "yards_gained", "first_down", "touchdown", "td_team", "interception", "fumble_lost", "two_point_attempt", "drive_end_transition", "desc"]
 
 
 def _num(v: Any) -> float | None:
@@ -92,6 +98,30 @@ def drive_ydsnet(snaps: list[dict[str, Any]]) -> float | None:
     return min(cands, key=lambda c: (abs(c - moved), cands.index(c)))
 
 
+def ret_code(rows: list[dict[str, Any]]) -> str:
+    """Return type of an OD drive from its last play where the defense/return team scored (touchdown, td_team
+    != posteam); nflverse interception, fumble_lost, punt_blocked, field_goal_result, punt_attempt,
+    kickoff_attempt, field_goal_attempt (return_touchdown is 0 on blocked kicks, so it is not required)."""
+    td = [r for r in rows if _num(r.get("touchdown")) == 1 and r.get("td_team") and r.get("td_team") != r.get("posteam")]
+    if not td:
+        return "-"
+    r = td[-1]
+    one = lambda k: _num(r.get(k)) == 1  # noqa: E731
+    if one("interception"):
+        return "I"
+    if one("fumble_lost"):
+        return "F"
+    if one("punt_blocked") or r.get("field_goal_result") == "blocked":
+        return "B"
+    if one("punt_attempt"):
+        return "P"
+    if one("kickoff_attempt"):
+        return "K"
+    if one("field_goal_attempt"):
+        return "M"
+    return "-"
+
+
 def game_drives(rs: list[dict[str, Any]]) -> list[str]:
     bad = set()
     for i, r in enumerate(rs):
@@ -99,8 +129,11 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
             bad |= {i, i - 1}
     drives: dict[tuple[int, int], list[dict[str, Any]]] = {}
     seg: dict[int, tuple[int, str]] = {}  # fixed_drive -> (segment index, posteam of its last snap)
+    every: dict[int, list[dict[str, Any]]] = {}
     for i, r in enumerate(rs):
         d = _num(r.get("fixed_drive"))
+        if i not in bad and d is not None:
+            every.setdefault(int(d), []).append(r)
         if (i in bad or d is None or r.get("play_type") not in SNAPS or not r.get("posteam")
                 or _num(r.get("two_point_attempt")) == 1):  # a two-point try is not a drive snap
             continue
@@ -116,11 +149,17 @@ def game_drives(rs: list[dict[str, Any]]) -> list[str]:
         f = snaps[0]
         y = drive_ydsnet(snaps)
         q = int(_num(f.get("drive_quarter_start")) or _num(f.get("qtr")) or 0)
+        clock = f.get("drive_game_clock_start")
+        if y is not None and y != _num(f.get("ydsnet")) and _num(f.get("qtr")) and f.get("time"):
+            # first snap stray-tagged (drive_ydsnet rejected its ydsnet): its drive_*_start belongs to another
+            # possession; use the first snap's own qtr and time
+            q, clock = int(_num(f.get("qtr"))), f.get("time")
         res = RESULTS[f["fixed_drive_result"]]
         if split:  # fixed_drive_result covers the whole fixed_drive; use this possession's own nflverse end
             res = TRANSITIONS[snaps[-1]["drive_end_transition"]]
-        out.append(" ".join([f["posteam"], str(q), str(f.get("drive_game_clock_start") or "-"),
-                             "-" if y is None else str(int(y)), res, "".join(tile(r) for r in snaps)]))
+        out.append(" ".join([f["posteam"], str(q), str(clock or "-"),
+                             "-" if y is None else str(int(y)), res, "".join(tile(r) for r in snaps)]
+                            + ([ret_code(every[d[0]])] if res == "OD" else [])))
     return out
 
 
@@ -138,7 +177,7 @@ def build(rows: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
     return {s: {"schema": SCHEMA, "season": s, "builtAt": "", "dataThrough": last[s],
                 "tile_key": {"T": "touchdown", "F": "first down", "G": "gain", "N": "no gain or loss",
                              "X": "turnover", "K": "kick", "Q": "kneel or spike"},
-                "result_key": RESULT_KEY, "cols": COLS, "games": g} for s, g in sorted(by_season.items())}
+                "result_key": RESULT_KEY, "ret_key": RET_KEY, "cols": COLS, "games": g} for s, g in sorted(by_season.items())}
 
 
 def two_point_fix_ok(old: list[str], new: list[str]) -> bool:
@@ -192,8 +231,20 @@ def posteam_split_ok(old: list[str], new: list[str]) -> bool:
     return j == len(new)
 
 
+def od_return_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with a 7th field (one RET_KEY letter) appended to every OD drive and nothing else."""
+    return len(old) == len(new) and any(o.split(" ")[4] == "OD" for o in old) and all(
+        n == o + " " + n[-1] and n[-1] in RET_KEY if o.split(" ")[4] == "OD" else n == o for o, n in zip(old, new))
+
+
+def qtr_clock_fix_ok(old: list[str], new: list[str]) -> bool:
+    """True when `new` is `old` with only the quarter and/or clock fields changed, in at least one drive."""
+    return len(old) == len(new) and old != new and all(
+        o.split(" ")[:1] + o.split(" ")[3:] == n.split(" ")[:1] + n.split(" ")[3:] for o, n in zip(old, new))
+
+
 RULES = {"two_point": two_point_fix_ok, "od_rename": od_rename_ok, "ydsnet": ydsnet_fix_ok,
-         "posteam_split": posteam_split_ok}
+         "qtr_clock": qtr_clock_fix_ok, "od_return": od_return_ok, "posteam_split": posteam_split_ok}
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[str] = frozenset(),
@@ -210,7 +261,8 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[s
                 bad.append(f"{g} (override: not exactly the {rule} change)")
         elif n != v:
             bad.append(g)
-    bad += ["cols"] if old["cols"] != new["cols"] else []
+    if old["cols"] != new["cols"] and not (rule == "od_return" and allowed and new["cols"] == old["cols"] + ["ret"]):
+        bad.append("cols")
     if old.get("result_key") is not None and old.get("result_key") != new.get("result_key"):
         ok = rule == "od_rename" and allowed and {k: v for k, v in old["result_key"].items() if k != "OT"} == {
             k: v for k, v in new["result_key"].items() if k != "OD"} and old["result_key"].get("OT") == new[
