@@ -6,8 +6,8 @@ export type DrivesFile = {
   games: Record<string, string[]>;
 };
 export type Drive = { team: string; qtr: number; clock: string; yards: number; result: string; tiles: TileCode[]; ret?: RetCode };
-/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, K kickoff return, M missed FG return, - other. */
-export type RetCode = "I" | "F" | "B" | "P" | "K" | "M" | "-";
+/** OD drives only: how the opponent scored (data ret_key). I pick-six, F fumble return, B blocked kick, P punt return, M missed FG return, - other. (Data ret_key also lists K, kickoff return, but no drive ever has it.) */
+export type RetCode = "I" | "F" | "B" | "P" | "M" | "-";
 
 export const TILE_ORDER: TileCode[] = ["T", "F", "G", "N", "X", "K", "Q"];
 /** Fan words for each tile; no model numbers. */
@@ -47,8 +47,14 @@ export const qtrLabel = (q: number) => (q > 4 ? "OT" : `Q${q}`);
  * X = the offense turned it over and it was returned for a TD; K = a special teams TD (punt or kick try returned).
  * The data can't tell an interception from a fumble, or a punt from a blocked field goal, so we stop there.
  */
-export function resultLabel(r: string, qtr = 0, last?: TileCode): string {
+/** Exact opponent-TD wording from the return-type letter. M, "-" and any other letter (incl. K) fall back to the last square. */
+export const RET_LABEL: Partial<Record<RetCode, string>> = {
+  I: "Pick-six", F: "Fumble return TD", B: "Blocked kick TD", P: "Punt returned for TD",
+};
+export function resultLabel(r: string, qtr = 0, last?: TileCode, ret?: RetCode): string {
   if (r === "EH" && qtr >= 4) return "End of game";
+  const exact = (r === "OD" || r === "OT") && ret ? RET_LABEL[ret] : undefined;
+  if (exact) return exact;
   if (r === "OD" || r === "OT") return last === "X" ? "Turnover returned for TD" : last === "K" ? "Special teams TD" : "Other team scored";
   return RESULT_LABEL[r] ?? r;
 }
@@ -65,5 +71,5 @@ export const playsLabel = (n: number) => `${n} ${n === 1 ? "play" : "plays"}`;
 
 /** Screen-reader line for one strip. */
 export function driveAria(d: Drive, name: (abbr: string) => string): string {
-  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1])}`;
+  return `${name(d.team)} drive, ${qtrLabel(d.qtr)} ${d.clock}: ${playsLabel(d.tiles.length)}, ${yardsLabel(d.yards)}, ${resultLabel(d.result, d.qtr, d.tiles[d.tiles.length - 1], d.ret)}`;
 }
