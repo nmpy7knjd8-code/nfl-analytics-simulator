@@ -1,0 +1,14 @@
+{
+  "file": "data/site/swings.json",
+  "reviewed_in": "PR #256: Approved by Head Grokka in Charge (speaks for Garrett on NFL merges): #256 approved Nov 3, 2026 10:48 PM ET, a/an text only.",
+  "reason": "Swing desc text copies games-v4 display_text, which writes 'a 11-yard' etc. Our swings.json copy now picks 'an' before 8, 11, 18, 80-89 (and 800s). Listed weeks may change only desc, and only to fix_article(old desc); games-v4 is untouched.",
+  "weeks": [],
+  "article_fix_weeks": [
+    "2019-w06",
+    "2020-w07",
+    "2020-w16",
+    "2020-w21",
+    "2021-w13",
+    "2024-w12"
+  ]
+}
