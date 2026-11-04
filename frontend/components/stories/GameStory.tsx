@@ -6,6 +6,7 @@ import { TeamLogo } from "../TeamLogo";
 import { feedHref } from "../../lib/gamePicker";
 import { gameFileUrl, isGameFileV2 } from "../../lib/gameFileV2";
 import { buildStory, gameIdFromQuery, playIdFromHash, weekLine, type Story, type StoryBeat } from "../../lib/stories/gameStory";
+import { KeyFourths } from "./KeyFourths";
 import "./game-story.css";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -106,6 +107,7 @@ export function GameStory() {
           <ol className="gs-beats">{beat(extra)}</ol>
         </section>
       ) : null}
+      <KeyFourths story={story} />
       <h1 className="gs-h1">How it swung</h1>
       {story.beats.length ? <ol className="gs-beats">{story.beats.map((b, i) => beat(b, i + 1))}</ol>
         : <div className="gs-empty"><p>No big swings in this game.</p></div>}

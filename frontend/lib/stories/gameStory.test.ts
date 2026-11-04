@@ -43,3 +43,9 @@ test("chart is regulation only; shown text has no ids or stat jargon", () => {
   for (const b of s.beats) assert.ok(!/\b(EPA|WPA|xpass)\b|\d{1,2}-[A-Z]|play_id/.test(b.sentence + b.text), b.text);
   assert.equal(playText("(2:13) 3-J.Fox punts 40 yards, Center-47-S.Daly."), "J.Fox punts 40 yards, Center-S.Daly.");
 });
+
+test("C1 key 4th downs on DET_KC: regulation 4th downs that swung 10+ points, in game order", () => {
+  const s = buildStory(detKc);
+  assert.ok(s.keys.length >= 1);
+  for (const k of s.keys) { assert.ok(k.qtr <= 4); assert.ok(k.swing >= 10); assert.ok(s.rows.has(k.playId)); }
+});
