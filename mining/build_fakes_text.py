@@ -58,7 +58,9 @@ def full_names(s: str, short_to_id: dict[str, str], names: dict[str, str]) -> st
     if not pairs:
         return s
     alt = "|".join(re.escape(k) for k in sorted(pairs, key=len, reverse=True))
-    return re.sub(rf"(?<![\w.'-])(?:{alt})(?![\w'-])", lambda m: pairs[m.group(0)], s)
+    s = re.sub(rf"(?<![\w.'-])(?:{alt})(?![\w'-])", lambda m: pairs[m.group(0)], s)
+    # 'to S.Franklin.' -> 'to Sam Franklin Jr..': a full name ending in a period meets the sentence's own period.
+    return re.sub(r"\b(Jr|Sr|[A-Z])\.\.(?=\s|$)", r"\1.", s)
 
 
 def load_names() -> dict:
