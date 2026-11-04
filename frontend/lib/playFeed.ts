@@ -121,14 +121,21 @@ export function winLine(g: Pick<FeedGame, "home" | "away">, wp: number): { team:
   return home >= 50 ? { team: g.home, pct: home } : { team: g.away, pct: 100 - home };
 }
 
-/** Change in that team's win chance on this play, in whole percentage points, e.g. "NYJ's win chance down 1%". */
+/** Change in that team's win chance on this play, in percent from the rounded shown values (as #269), e.g. "NYJ's win chance down 1%". */
 export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
   const lead = winLine(g, p.homeWp);
   const sign = lead.team === g.home ? 1 : -1;
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
   const v = d * sign;
   const n = Math.abs(v);
-  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${n} ${n === 1 ? "pt" : "pts"}`;
+  return v === 0 ? "No change" : `${lead.team}'s win chance ${v > 0 ? "up" : "down"} ${n}%`;
+}
+
+/** S7 Big-play card tag: the team that gained and its swing in percent, from the same rounded numbers shown, e.g. "KC +12% win chance". */
+export function bigPlayGain(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
+  const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
+  const n = Math.abs(d);
+  return `${d >= 0 ? g.home : g.away} +${n < 1 ? "<1" : n}% win chance`;
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
