@@ -127,7 +127,7 @@ test("H5: every displayed swing / chart play is a real export row (verified vs p
 test("game pages carry the one real-source line, not an example label", async () => {
   const { WP_FIXTURES } = await import("./wpFixtures");
   const { GAME_SOURCE_LINE } = await import("./fixtures");
-  assert.equal(GAME_SOURCE_LINE, "Real plays and win chance from nflverse (not our model).");
+  assert.equal(GAME_SOURCE_LINE, "Real plays and win chance from nflverse's model.");
   for (const s of Object.values(WP_FIXTURES)) assert.equal(s.note, GAME_SOURCE_LINE);
 });
 
