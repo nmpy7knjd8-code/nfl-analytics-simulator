@@ -176,6 +176,62 @@
      ]
     }
    }
+  },
+  "2026-11-07": {
+   "theme": "playoffs",
+   "items": {
+    "2022_21_CIN_KC-2166": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.719642,
+      "punt": 0.73862
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_20_DAL_SF-3860": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.79193,
+      "punt": 0.817156
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_19_NYG_MIN-2873": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.422396,
+      "punt": 0.338956,
+      "fg": 0.433058
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2022_19_DAL_TB-324": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.311363,
+      "punt": 0.344111
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_21_KC_BAL-1491": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.129669,
+      "punt": 0.128242
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
