@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { yardArticle, clockLabel, findSwingPlays, isSwing, whyText, DEFAULT_SWING_WP_THRESHOLD } from "./winProbability";
 import { fixturePlays, fixtureGame, FIXTURE_GAMES } from "./fixtures";
-import { GAME_PLAY_LISTS } from "./gamePlays";
+import { GAME_PLAY_LISTS, playText } from "./gamePlays";
 import { openingWinChance } from "./wpFixtures";
 import { situationLine, inGameOrder, swingMeta, type EventPoint } from "./winProbability";
 import { SWING_EXPORT, WP_FIXTURES } from "./wpFixtures";
@@ -171,7 +171,7 @@ test("#76: every rendered play row is a real row in lib/plays/<game_id>.json, in
     for (const it of items) {
       const r = rows.get(it.play_id);
       assert.ok(r, `${g.game_id} play ${it.play_id} not in plays file`);
-      assert.equal(it.description, r.display_text || r.raw_desc);
+      assert.equal(it.description, playText(r)); // display text, suffix "Jr.." collapsed
       assert.equal(it.quarter, r.qtr);
       const idx = file.plays.indexOf(r);
       assert.ok(idx > last, "game order");

@@ -20,7 +20,9 @@ export function playPenaltyText(gameId: string, playId: number | string): string
 
 /** display_text, else raw_desc; null when both fields are absent (then the page says "coming soon"). */
 export function playText(p: Pick<SwingPlay, "display_text" | "raw_desc">): string | null {
-  return p.display_text?.trim() || p.raw_desc?.trim() || null;
+  const t = p.display_text?.trim() || p.raw_desc?.trim() || null;
+  // Stopgap until the next games release: "Chris Godwin Jr.." -> "Chris Godwin Jr." (narrator fix in play_text.py)
+  return t && t.replace(/\b(Jr|Sr|II|III|IV|V)\.\./g, "$1.");
 }
 
 const PLAY_TYPES: Record<string, PlayType> = {
