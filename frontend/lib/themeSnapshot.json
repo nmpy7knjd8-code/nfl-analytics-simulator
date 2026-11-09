@@ -232,6 +232,66 @@
      ]
     }
    }
+  },
+  "2026-11-10": {
+   "theme": "goal-line",
+   "items": {
+    "2023_07_GB_DEN-3454": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.40047,
+      "punt": 0.248129,
+      "fg": 0.343839
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_03_LAC_MIN-1916": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.696357,
+      "punt": 0.58967,
+      "fg": 0.673577
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_14_IND_CIN-2670": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.86322,
+      "punt": 0.773545,
+      "fg": 0.844392
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_12_NO_SF-3864": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.123543,
+      "punt": 0.0630037,
+      "fg": 0.0964554
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_08_BAL_TB-268": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.531644,
+      "punt": 0.382697,
+      "fg": 0.496094
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }

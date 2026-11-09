@@ -827,6 +827,60 @@
      "punt"
     ]
    }
+  },
+  "2026-11-10": {
+   "2022_15_BAL_CLE-786": {
+    "recommendation": "inconclusive",
+    "values": {
+     "go": 0.45486,
+     "punt": 0.424356,
+     "fg": 0.462107
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_04_BUF_BAL-2373": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.207696,
+     "punt": 0.129342,
+     "fg": 0.167716
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_08_BAL_TB-1503": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.720886,
+     "punt": 0.748998
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_06_DAL_PHI-271": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.54758,
+     "punt": 0.57798
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_01_CIN_CLE-1295": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.614821,
+     "punt": 0.665962
+    },
+    "best": [
+     "punt"
+    ]
+   }
   }
  }
 }
