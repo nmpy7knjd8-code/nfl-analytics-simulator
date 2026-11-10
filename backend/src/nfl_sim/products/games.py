@@ -24,6 +24,7 @@ from nfl_sim.products.game_compact import compact
 from nfl_sim.play_names import ID_COLS, TEXT_COLUMNS, attach_names, load_players, load_roster
 from nfl_sim.play_text import display_text, penalty_text
 from nfl_sim.products.meta import provenance, write_json
+from nfl_sim.weather_text import parse_weather_text
 
 SEASONS = fourth_downs.SEASONS
 SWING_THRESHOLD = 0.08
@@ -33,6 +34,8 @@ FACT_COLUMNS = ("game_id", "season", "game_type", "week", "gameday", "home_team"
                 "roof", "wind", "temp")
 # nflverse schedules mislabel these; nflverse play-by-play has an overtime period (audit #328).
 OVERTIME_FIXES = {"2021_12_LV_DAL": True}  # LV won 36-33 in OT; schedules say overtime 0
+# Season (schedule) team code -> the code nflverse play-by-play uses for every season (relocations).
+OLD_TEAM_CODES = {"OAK": "LV", "SD": "LAC", "STL": "LA"}
 OPEN_AIR_ROOFS = ("outdoors", "open")  # nflverse roof; wind/temp only reported for open-air games
 PLAY_COLS = ["game_id", "play_id", "qtr", "quarter_seconds_remaining", "game_seconds_remaining", "posteam",
              "down", "ydstogo", "yardline_100", "desc", "play_type", "home_wp", "total_home_score",
@@ -59,7 +62,9 @@ def load_schedules(seasons=SEASONS) -> pd.DataFrame:
     return nfl.load_schedules(list(seasons)).to_pandas()
 
 
-def index_rows(schedules: pd.DataFrame, season: int) -> list[dict]:
+def index_rows(schedules: pd.DataFrame, season: int, weather_text: dict[str, str] | None = None) -> list[dict]:
+    """Season index rows. ``weather_text``: game_id -> nflverse pbp ``weather`` text (W4 fallback for
+    open-air games whose schedule wind/temp are missing)."""
     s = schedules[(schedules["season"] == season) & schedules["home_score"].notna()]
     out = []
     for r in s[list(FACT_COLUMNS)].sort_values(["week", "gameday", "game_id"]).to_dict("records"):
@@ -70,17 +75,28 @@ def index_rows(schedules: pd.DataFrame, season: int) -> list[dict]:
             "home_score": int(r["home_score"]), "away_score": int(r["away_score"]),
             "overtime": OVERTIME_FIXES.get(r["game_id"], bool(int(r["overtime"]))), "stadium": r["stadium"],
             "home_coach": r["home_coach"], "away_coach": r["away_coach"],
-            **weather(r),
+            **weather(r, (weather_text or {}).get(r["game_id"])),
         })
     return out
 
 
-def weather(r: dict) -> dict:
-    """roof from nflverse; wind (mph) and temp (F) only for open-air games, else null."""
+def weather(r: dict, text: str | None = None) -> dict:
+    """roof from nflverse; wind (mph) and temp (F) only for open-air games, else null.
+
+    W4: when both schedule numbers are missing, fall back to the pbp weather text (nfl_sim.weather_text,
+    shared with mining/build_weather.py). Only nulls are filled; a schedule number always wins."""
     roof = _str(r.get("roof"))
     open_air = roof in OPEN_AIR_ROOFS
-    return {"roof": roof, "wind": _int(r.get("wind")) if open_air else None,
-            "temp": _int(r.get("temp")) if open_air else None}
+    wind, temp = (_int(r.get("wind")), _int(r.get("temp"))) if open_air else (None, None)
+    if open_air and wind is None and temp is None and (parsed := parse_weather_text(text)):
+        wind, temp = parsed
+    return {"roof": roof, "wind": wind, "temp": temp}
+
+
+def pbp_weather_text(season: int) -> dict[str, str]:
+    """game_id -> nflverse pbp ``weather`` text (one value per game)."""
+    w = fourth_downs.load_pbp(season, ["game_id", "weather"]).dropna()
+    return w.groupby("game_id")["weather"].first().to_dict()
 
 
 def _clock(qsr) -> str | None:
@@ -145,6 +161,22 @@ def null_overtime_win_chance(doc: dict) -> dict:
             "wp_fallback_play_ids": [x for x in doc.get("wp_fallback_play_ids", []) if x not in ot_ids]}
 
 
+def season_team_codes(doc: dict) -> dict:
+    """Play-level team codes read the season's code, like game.home / game.away (2019 Raiders: OAK, not LV).
+
+    Maps posteam and the fan text built from team codes (display_text, penalty_text). Raw nflverse
+    ``text`` is left as published. game.v1 doc in, new doc out (unchanged when no relocated code applies)."""
+    g = doc["game"]
+    m = {OLD_TEAM_CODES[t]: t for t in (g.get("home"), g.get("away")) if t in OLD_TEAM_CODES}
+    if not m:
+        return doc
+    rx = re.compile(r"\b(" + "|".join(map(re.escape, m)) + r")\b")
+    sub = lambda t: rx.sub(lambda x: m[x.group(1)], t) if isinstance(t, str) else t  # noqa: E731
+    plays = [{**p, "posteam": m.get(p["posteam"], p["posteam"]), "display_text": sub(p["display_text"]),
+              "penalty_text": sub(p["penalty_text"])} for p in doc["plays"]]
+    return {**doc, "plays": plays}
+
+
 def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict,
              players: dict | None = None, roster: dict | None = None) -> dict:
     # nflverse row order is play order; play_id is NOT monotone (e.g. late timeouts).
@@ -181,14 +213,14 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
             "fourth_down": fourth.get(float(r["play_id"])),
         })
     last = series.points[-1] if series.points else None
-    return null_overtime_win_chance({
+    return season_team_codes(null_overtime_win_chance({
         "schema_version": "game.v1", "provenance": prov, "game": game,
         "wp_perspective": "home", "swing_threshold": SWING_THRESHOLD,
         "final_home_wp": None if last is None else last.home_wp_post,
         "swing_play_ids": [int(x) for x in series.swing_play_ids],
         "wp_fallback_play_ids": [int(r["play_id"]) for r in recs if r.get("wp_fallback")],
         "plays": rows,
-    })
+    }))
 
 
 def fourth_lookup(fd: pd.DataFrame, game_id: str) -> dict[float, dict]:
@@ -204,7 +236,7 @@ def build(index_only: bool = False, seasons=SEASONS) -> dict[int, int]:
     counts = {}
     for season in seasons:
         prov = provenance([season], extra={"schedules": "nflverse schedules via nflreadpy (facts only, no odds)"})
-        idx = index_rows(sched, season)
+        idx = index_rows(sched, season, pbp_weather_text(season))
         write_json(f"games/{season}.json", {"schema_version": "games_index.v1", "provenance": prov,
                                             "season": season, "games": idx})
         counts[season] = len(idx)
