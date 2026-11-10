@@ -34,10 +34,9 @@ export function IosGlyph({ name }: { name: "practice" | "stats" | "explore" | "a
       </svg>
     ),
     rivalry: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-        <path d="M7.5 16.5 16.5 7.5M8 8h.01M16 16h.01" />
-        <circle cx="8" cy="8" r="2.2" />
-        <circle cx="16" cy="16" r="2.2" />
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 8h15M15 4l4 4-4 4" />
+        <path d="M20 16H5M9 12l-4 4 4 4" />
       </svg>
     ),
     playoffs: (
