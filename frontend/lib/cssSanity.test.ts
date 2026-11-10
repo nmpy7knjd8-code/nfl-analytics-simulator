@@ -72,7 +72,10 @@ test("QA S7: ☰ menu and top bar stack above /feed chips; footer stays below th
   assert.match(bodyOf(globals, ".fd-top"), /position:\s*relative/);
 
   assert.ok(footer > 0 && footer < nav, `footer z ${footer} must sit above page content and below --ios-z-nav ${nav}`);
-  assert.match(bodyOf(sg, ".sg-tm-note"), /background:\s*var\(--ios-background-secondary\)/);
+  // The footer inherits .sg-app's background (hardcoded #fff). A token like
+  // --ios-background-secondary turns dark (#1c1c1e) in dark mode and left a 2.8:1 strip.
+  assert.match(bodyOf(sg, ".sg-tm-note"), /background:\s*inherit/);
+  assert.doesNotMatch(bodyOf(sg, ".sg-tm-note"), /background:\s*var\(--ios-/);
   assert.match(bodyOf(sg, ".sg-tm-note"), /position:\s*relative/);
   assert.match(bodyOf(sg, ".sg-tm-note"), /flex:\s*none/);
   assert.doesNotMatch(bodyOf(sg, ".sg-tm-note"), /background:\s*#fff/);
