@@ -288,34 +288,39 @@ function SimpleGamePlay({ mode }: { mode: "daily" | "practice" }) {
         {mode === "daily" ? (
           <>
             <pre className="sg-share">{share}</pre>
-            <div className="sg-pair">
-              <button type="button" className="sg-next" onClick={async () => {
-                try {
-                  if (navigator.share) await navigator.share({ text: share });
-                  else { await navigator.clipboard.writeText(share); setCopied(true); }
-                } catch { /* dismissed */ }
-              }}>{copied ? "Copied" : "Share"}</button>
-              <button type="button" className="sg-keep sg-dare" onClick={async () => {
+            <div className="ig-rows">
+              <button type="button" className="ig-row sg-dare" onClick={async () => {
                 const url = `${window.location.origin}${BASE}/daily/#${encodeChallenge(dayNo, picks.map((x) => x.pick))}`;
                 const text = `Fourth & Daily #${dayNo}: can you match my calls?\n${url}`;
                 try {
                   if (navigator.share) await navigator.share({ text });
                   else { await navigator.clipboard.writeText(text); setDareCopied(true); }
                 } catch { /* dismissed */ }
-              }}>{dareCopied ? "Link copied" : "Challenge"}</button>
+              }}><span>{dareCopied ? "Challenge link copied" : "Challenge a friend"}</span><span className="ig-chev" aria-hidden="true">›</span></button>
+              {hasThemedDay(themeSchedule.days as Record<string, { ids: string[] }>, key ?? "") ? (
+                <>
+                  {/* Plain <a>: a same-page hash change must fire hashchange so DailyOrBonus swaps to the bonus round. */}
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                  <a href={`${BASE}/daily/#bonus`} className="ig-row sg-bonus"><span>Bonus round</span><span className="ig-chev" aria-hidden="true">›</span></a>
+                </>
+              ) : null}
+            </div>
+            <div className="ig-end-btns">
+              <button type="button" className="sg-next" onClick={async () => {
+                try {
+                  if (navigator.share) await navigator.share({ text: share });
+                  else { await navigator.clipboard.writeText(share); setCopied(true); }
+                } catch { /* dismissed */ }
+              }}>{copied ? "Copied" : "Share"}</button>
+              <Link href="/endless/" className="sg-keep">Keep playing</Link>
             </div>
           </>
         ) : (
-          <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
-        )}
-        {mode === "daily" && hasThemedDay(themeSchedule.days as Record<string, { ids: string[] }>, key ?? "") ? (
-          <div className="sg-pair sg-pair-end">
-            {/* Plain <a>: a same-page hash change must fire hashchange so DailyOrBonus swaps to the bonus round. */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a href={`${BASE}/daily/#bonus`} className="sg-keep sg-bonus">Bonus round</a>
+          <>
+            <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
             <Link href="/endless/" className="sg-keep">Keep playing</Link>
-          </div>
-        ) : <Link href="/endless/" className="sg-keep">Keep playing</Link>}
+          </>
+        )}
         <Trademark />
       </div>
     );
@@ -380,7 +385,7 @@ export function QuestionScreen({ item: it, header, onPick, extra, ios = false }:
       {header}
       {extra}
       {ios ? <TvScoreBug item={it} /> : <ScoreBug item={it} />}
-      <p className="sg-sent">{ios ? shortQuestion(it) : situationSentence(it, nick)}</p>
+      <p className={ios ? "sg-sent ig-qs" : "sg-sent"}>{ios ? shortQuestion(it) : situationSentence(it, nick)}</p>
       {ios ? <IosField item={it} /> : <FieldView item={it} />}
       <div className="sg-btns">
         {tappable(it).map((o) => {
@@ -412,7 +417,7 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
       {ios ? <TvScoreBug item={it} /> : <ScoreBug item={it} />}
       <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{RESULT_GLYPH[p.scored.result]}</span>{RESULT_TITLE[p.scored.result]}</h1>
       <div className="sg-res">
-        <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine && !(ios && mine !== "Best") ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
         <BreakEvenBar distance={it.situation.distance} yardline100={it.situation.yardline_100} reveal={it.reveal} />

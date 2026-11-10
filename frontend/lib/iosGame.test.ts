@@ -55,6 +55,13 @@ test("colors: token blue is the only accent; dark mode only via tokens; no banne
   for (const h of hexes) assert.ok(["#fff", "#000", "#1c1c1e", "#1a2a20", "#141f18"].includes(h), `unexpected color ${h}`);
   // The new play screen never draws the old gold first-down line or the .sg-edge team strips.
   assert.doesNotMatch(newParts, /#ffd400|sg-edge/i);
+  // Retired colors never come back in any #348 file: the old #1E5BFF blue, or gold/yellow (named or hex like FFD/F5C/FC*).
+  // tvBug.ts is excluded from the gold check only because its team table holds real team colors (scoreboard panels).
+  const all348 = ["../app/ios-game.css", "../app/two-point/two-point.css", "../app/fake-punt/fake-punt.css", "../components/SimpleGame.tsx",
+    "../components/TvScoreBug.tsx", "../components/IosField.tsx", "../app/page.tsx", "../app/daily/page.tsx"].map(read).join("\n");
+  assert.doesNotMatch(all348 + read("./tvBug.ts"), /1e5bff/i, "#1E5BFF is retired");
+  assert.doesNotMatch(all348, /#(ff[cd]|f5c|fc[0-9a-f]|ffb|fe[cd]|ffe)[0-9a-f]{0,3}\b|\bgold\b|\byellow\b|1st down/i, "gold/yellow is retired");
+  assert.doesNotMatch(all348, /--ios-(green|yellow|orange|purple|gold)\b/i);
   assert.doesNotMatch(touched, /\bEPA\b|\bWPA\b|betting|moneyline|sportsbook/i);
 });
 
@@ -87,3 +94,16 @@ test("short question and choice subtitles (display only)", async () => {
     assert.match(choiceSubtitle(it, "go"), /^(\d+ yds? to go|Goal to go)$/);
   }
 });
+
+test("designer/critic round 2: 1st label, football, one orientation, lean result and end", () => {
+  const f = read("../components/IosField.tsx"), sg = read("../components/SimpleGame.tsx");
+  assert.match(f, /className="igf-1st"[^>]*>1st</);
+  assert.match(f, /<ellipse[^>]*fill="#8b4a1c"[^>]*stroke="#fff"/, "brown football with a white rim");
+  assert.match(f, /rtl = s\.posteam === home/, "field follows the TV bug: away left, home right");
+  assert.match(css, /\.be-track,\.ios-game \.be-ends\{display:none\}/);
+  assert.match(sg, /mine && !\(ios && mine !== "Best"\)/);
+  assert.match(sg, /className="ig-row sg-dare"/);
+  assert.match(sg, /className="ig-row sg-bonus"/);
+  assert.match(sg, /encodeChallenge\(dayNo, picks\.map\(\(x\) => x\.pick\)\)/);
+});
+

@@ -48,17 +48,21 @@
 
 /* Compact side-on field (IosField). */
 .ios-game .igf-wrap{flex:none}
-.ios-game .igf{position:relative;height:96px;border-radius:var(--ios-radius-md);overflow:hidden;background:#1a2a20;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.ios-game .igf{position:relative;height:110px;border-radius:var(--ios-radius-md);overflow:hidden;background:#1a2a20;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .ios-game .igf>i,.ios-game .igf>b{position:absolute;top:0;bottom:0}
 .ios-game .igf-ez{position:absolute;top:0;bottom:0;width:8.333%;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;box-sizing:border-box;background:#141f18;color:#fff;font-size:11px;font-weight:700}
-.ios-game .igf-own{left:0;box-shadow:1px 0 0 rgba(255,255,255,.22)}.ios-game .igf-opp{right:0;box-shadow:-1px 0 0 rgba(255,255,255,.22)}
+.ios-game .igf-l{left:0;box-shadow:1px 0 0 rgba(255,255,255,.22)}.ios-game .igf-r{right:0;box-shadow:-1px 0 0 rgba(255,255,255,.22)}
 .ios-game .igf-yd{top:auto!important;height:10px;width:1px;background:rgba(255,255,255,.28)}.ios-game .igf-yd.igf-top{top:0!important;bottom:auto!important}.ios-game .igf-yd.igf-mid{height:auto;top:0!important;background:rgba(255,255,255,.4)}
 .ios-game .igf-los{width:2px;margin-left:-1px;background:#fff}
 .ios-game .igf-los.igf-from{opacity:.45}
 .ios-game .igf-gain{width:3px;margin-left:-1.5px;background:var(--ios-accent)}
 .ios-game .igf-path{top:50%!important;bottom:auto!important;height:0;border-top:2px dashed rgba(255,255,255,.75)}
 .ios-game .igf-yl{position:absolute;top:calc(50% + 8px);transform:translateX(calc(-100% - 5px));color:#fff;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.ios-game .igf-ball{top:50%!important;bottom:auto!important;width:14px;height:9px;margin:-4.5px 0 0 -7px;border-radius:50%;background:#fff}
+.ios-game .igf-ball{position:absolute;top:50%;width:20px;height:12px;margin:-6px 0 0 -10px;display:block}
+.ios-game .igf-rtl .igf-yl{transform:translateX(5px)}
+/* '1st' at the line to gain: accent blue, 19px bold (AA large text on the field: 3.74:1 light, 4.12:1 dark). */
+.ios-game .igf-1st{position:absolute;top:8px;transform:translateX(5px);color:var(--ios-accent);font-size:19px;font-weight:700;line-height:1}
+.ios-game .igf-rtl .igf-1st{transform:translateX(calc(-100% - 5px))}
 .ios-game .igf-pill{margin:8px auto 0;max-width:100%;width:fit-content;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--ig-ink);color:var(--ig-bg);font-weight:700;font-size:15px;line-height:20px;padding:4px 12px;border-radius:999px}
 
 /* Choices: token blue, white 19px bold label and detail (AA large text in both modes). */
@@ -92,7 +96,7 @@
 .ios-game .ml-list{color:var(--ig-ink2)}
 /* Reveal: the field takes the room that's left (96px max), so long play text never makes the page scroll. */
 .ios-game .sg-rv .igf-wrap{flex:1 1 0;min-height:80px;max-height:132px;display:flex;flex-direction:column;justify-content:flex-start;margin-bottom:4px}
-.ios-game .sg-rv .igf{flex:1 1 auto;height:auto;min-height:40px;max-height:96px}
+.ios-game .sg-rv .igf{flex:1 1 auto;height:auto;min-height:40px;max-height:110px}
 
 /* End screen */
 .ios-game .sg-big{font-family:var(--ios-font-display);color:var(--ig-ink)}
@@ -144,3 +148,27 @@
 .ios-game .sg-rv .sg-btns{padding-top:6px}
 body.ios-play-active .ios-game .sg-rv{padding-bottom:calc(var(--ios-home-safe) + 8px)}
 @media (max-width:375px){.ios-game .sg-rv .sg-v{font-size:15px}.ios-game .sg-rv .sg-lbl{font-size:12px}.ios-game .sg-rv .sg-verdict{font-size:24px}}
+
+/* Play screen: question sits right above the field, and both sit right above the pinned choices (no dead gap). */
+.ios-game .ig-qs{margin-top:auto}
+.ios-game .ig-qs~.sg-btns{margin-top:0}
+
+/* Result: the conversion rate is text only (no slider-like track or knob). */
+.ios-game .be-track,.ios-game .be-ends{display:none}
+
+/* End: Challenge and Bonus round are list rows; Share (primary) and Keep playing (secondary) are the only buttons. */
+.ios-game .ig-rows{display:flex;flex-direction:column;border:1px solid var(--ig-sep);border-radius:14px;background:var(--ig-card);overflow:hidden;margin:0 0 8px}
+.ios-game .ig-row{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border:0;background:none;color:var(--ig-ink);font:inherit;font-size:17px;font-weight:600;text-decoration:none;text-align:left;width:100%;cursor:pointer}
+.ios-game .ig-row+.ig-row{border-top:1px solid var(--ig-sep)}
+.ios-game .ig-chev{color:var(--ig-ink2);font-size:22px;line-height:1}
+.ios-game .ig-row:focus-visible{outline:3px solid var(--ig-ink);outline-offset:-3px}
+.ios-game .ig-end-btns{display:flex;gap:8px;margin-top:auto}
+.ios-game .ig-end-btns>*{flex:1;min-width:0;margin-top:0;min-height:56px}
+.ios-game .ig-end-btns .sg-keep{display:flex;align-items:center;justify-content:center;text-decoration:none}
+/* End screen fits 360x740 with the tab bar: tighter score block (tap targets stay 48px+). */
+.ios-game .sg-end>.sg-lbl{margin-top:4px}
+.ios-game .sg-end .sg-big{font-size:44px;margin-top:2px}
+.ios-game .sg-end .sg-marks{margin:6px 0 2px}
+.ios-game .sg-end .sg-streak{margin-bottom:4px}
+.ios-game .sg-end .sg-coach{margin-bottom:2px}
+.ios-game .sg-end .ig-rows{margin:4px 0 6px}
