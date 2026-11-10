@@ -201,6 +201,7 @@
   --ios-material-saturate: 180%;
 
   --ios-nav-height: 44px;
+  --ios-z-nav: 40;
   --ios-tab-height: 49px;
   --ios-touch: 44px;
   --ios-status-safe: env(safe-area-inset-top, 0px);
