@@ -60,3 +60,26 @@ export function outcomeText(p: FdPlay): string {
 
 /** League rate as a fan reads it, never "0%". */
 export const pct = (x: number): string => { const n = Math.round(x * 100); return n < 1 ? "<1%" : `${n}%`; };
+
+const yards = (n: number): string => `${Math.abs(n)} ${Math.abs(n) === 1 ? "yard" : "yards"}`;
+
+/** One-line Why for the reveal: why this call was a good play or not. League rates stay on a separate line. */
+export function whyText(p: FdPlay): string {
+  switch (p.result) {
+    case "TD":
+      return "Why: that play scored a touchdown.";
+    case "1D":
+      return `Why: that ${p.call} picked up a first down and kept the drive going.`;
+    case "INT":
+      return "Why: the interception ended the drive and gave the other team the ball.";
+    case "FUM":
+      return "Why: the fumble ended the drive and gave the other team the ball.";
+    case "INC":
+      return "Why: the incompletion left 2nd & 10, no closer to a first down.";
+    default:
+      if (p.yards >= 4) return `Why: a ${p.yards}-yard gain on 1st & 10 is a good start, even without a first down.`;
+      if (p.yards > 0) return `Why: a ${p.yards}-yard gain on 1st & 10 leaves 2nd & ${10 - p.yards}, short of a good start.`;
+      if (p.yards === 0) return "Why: no gain left 2nd & 10, no closer to a first down.";
+      return `Why: a loss of ${yards(p.yards)} made the next down longer.`;
+  }
+}
