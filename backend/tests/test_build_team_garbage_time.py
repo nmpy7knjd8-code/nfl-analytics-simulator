@@ -59,8 +59,12 @@ def test_frozen_numbers():
     assert gt.check_frozen(old, gt.build(ROWS)) == []
     bad = gt.check_frozen(old, gt.build([r for r in ROWS if r["fixed_drive"] != 4]))
     assert "2024:close:KC" in bad and "all:all:KC" in bad
+    # 2026 PR1: adding a season no longer unfreezes the all-seasons block, and a closed season can't be added
     later = gt.build(ROWS + [row(1, 10, 0.5, season=2025, game="g3")])
-    assert gt.check_frozen(old, later) == []
+    bad = gt.check_frozen(old, later)
+    assert "all:all:league" in bad and "2025:added" in bad
+    later = gt.build(ROWS + [row(1, 10, 0.5, season=2026, game="g3")])
+    assert "2026:added" not in gt.check_frozen(old, later) and "all:all:league" in gt.check_frozen(old, later)
 
 
 def test_site_file_matches_redzone_and_is_clean():

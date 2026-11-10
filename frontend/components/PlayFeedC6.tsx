@@ -68,7 +68,7 @@ function WinBar({ g, wp }: { g: FeedGame; wp: number }) {
   );
 }
 
-function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay; onClose: () => void }) {
+function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay & { homeWp: number }; onClose: () => void }) {
   const W = 340, H = 170, L = 30, R = 8, T = 10, B = 22;
   const pts = chartPoints(g.plays);
   const span = 3600;
@@ -165,7 +165,8 @@ export function PlayFeedC6({ seasons }: { seasons: readonly number[] }) {
   }, [gameId, attempt]);
   const g = load.state === "ready" ? load.game : null;
   const rows = useMemo(() => (g ? filterFeed(g.plays, filter) : []), [g, filter]);
-  const play = g && open ? g.plays.find((p) => p.id === open && canChart(p)) ?? null : null;
+  const found = g && open ? g.plays.find((p) => p.id === open) ?? null : null;
+  const play = found && canChart(found) ? found : null;
   const closeChart = useCallback(() => {
     const id = open;
     setOpen(null);
@@ -250,7 +251,7 @@ export function PlayFeedC6({ seasons }: { seasons: readonly number[] }) {
                         <span className="pf-text">{p.text}</span>
                         {gameId && goalStops.has(stopKey(gameId, p.qtr, p.sec)) ? <span className="pf-gl-note">{goal!.label}</span> : null}
                         {p.big ? <span className="pf-gain">{bigPlayGain(g!, p)}</span> : null}
-                        <WinBar g={g!} wp={p.homeWp} />
+                        {p.homeWp != null ? <WinBar g={g!} wp={p.homeWp} /> : null}
                       </button>
                       )}
                     </li>

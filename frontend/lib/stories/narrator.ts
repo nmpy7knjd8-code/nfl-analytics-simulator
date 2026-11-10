@@ -25,13 +25,18 @@ export function kind(r: NarrRow): Kind {
   return "play";
 }
 
+/** "An ATL" / "A CHI": "an" when the letter's name starts with a vowel sound. */
+export function anTeam(team: string): string {
+  return /^[AEFHILMNORSX]/i.test(team) ? `An ${team}` : `A ${team}`;
+}
+
 const T: Record<Kind, string> = {
   td: "{team} scored a touchdown with {clock} left in {period}, a {swing}% swing toward {gainer}.",
   interception: "{opp} intercepted {team} with {clock} left in {period}, a {swing}% swing toward {gainer}.",
-  fumble: "A {team} fumble with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
+  fumble: "{teamA} fumble with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
   fg_good: "{team}'s field goal with {clock} left in {period} moved {gainer} to {gainer_wp}% to win.",
   fg_miss: "{team} came away empty on a field goal try with {clock} left in {period}; {gainer} rose to {gainer_wp}%.",
-  punt: "A {team} punt with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
+  punt: "{teamA} punt with {clock} left in {period} swung win chance {swing}% toward {gainer}.",
   fourth_go: "{team} went for it on fourth and {togo} with {clock} left in {period}; {gainer} moved to {gainer_wp}%.",
   play: "With {clock} left in {period}, one {team} play swung win chance {swing}% toward {gainer}.",
 };
@@ -53,7 +58,7 @@ export function facts(r: NarrRow, home: string, away: string): Record<string, st
   const before = r.home_wp ?? 0.5, after = r.home_wp_after ?? before;
   const gainer = after >= before ? home : away;
   return {
-    team, opp: team ? (team === home ? away : home) : "", gainer, clock: r.clock || "",
+    team, teamA: anTeam(team), opp: team ? (team === home ? away : home) : "", gainer, clock: r.clock || "",
     period: QTR[r.qtr] ?? "overtime", swing: String(Math.abs(Math.round(after * 100) - Math.round(before * 100)) || "<1"),
     gainer_wp: String(Math.round((gainer === home ? after : 1 - after) * 100)), togo: String(r.ydstogo ?? ""),
   };

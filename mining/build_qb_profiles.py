@@ -18,9 +18,10 @@ Fan-facing fields: no EPA, xpass, play ids or betting fields. wp_before/wp_after
 offense's chance to win on a 0-1 scale, rounded to 4 decimals (the UI shows x100 as points).
 
 Frozen: every published swing in every published player file must stay identical, no player file may
-disappear, and index rows must not change while the season list is unchanged (exit 1). A reviewed
-override (--allow-changes mining/frozen_overrides/<file>.json, rule doubled_period) lets the listed
-swings change only desc, and only to fix_doubled_period(old desc).
+disappear, no swing may be inserted into a closed season or watermarked week, and index rows must not
+change whatever the season list (exit 1). A reviewed override (--allow-changes
+mining/frozen_overrides/<file>.json, rule doubled_period) lets the listed swings change only desc, and only
+to fix_doubled_period(old desc).
 
 Usage: python mining/build_qb_profiles.py PBP_PARQUET [...] --rosters ROSTER_PARQUET [...]
        --players players.csv --games <dir of games-v4 per-game json> [--allow-changes OVERRIDE]
@@ -41,6 +42,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "mining"))
 from _text import fix_doubled_period  # noqa: E402
 from build_stamp import stamp  # noqa: E402
+import _frozen as fz  # noqa: E402
 
 _spec = importlib.util.spec_from_file_location("build_swings", ROOT / "mining/build_swings.py")
 sw = importlib.util.module_from_spec(_spec)
@@ -175,10 +177,15 @@ def check_frozen(old_index: dict | None, new_index: dict, old_files: dict[str, d
             if nk.get(swing_key(s)) != s:
                 bad.append(f"{pid}:{swing_key(s)}")
     bad += [f"{k}: in override but not a published swing" for k in sorted(set(allowed) - seen)]
-    if old_index and old_index.get("season_list") == new_index["season_list"]:
+    for pid, nf in new_files.items():  # new swings (and new QBs): never in a frozen season/week
+        ok_keys = {swing_key(s) for s in old_files.get(pid, {}).get("swings", [])}
+        bad += [f"{pid}:{swing_key(s)} inserted into a frozen week" for s in nf["swings"]
+                if swing_key(s) not in ok_keys and fz.is_frozen_game(s.get("game_id"), "qb_profiles")]
+    if old_index:  # published index rows are frozen whatever the season list (an open season gets its own slice)
         nr = {q["id"]: q for q in new_index["qbs"]}
         bad += [f"index:{q['id']}" for q in old_index["qbs"] if nr.get(q["id"]) != q]
-        bad += [f"index:new {i}" for i in nr if i not in {q["id"] for q in old_index["qbs"]}]
+        bad += [f"index:new {i}" for i in nr if i not in {q["id"] for q in old_index["qbs"]}
+                and i not in new_files]
     return bad
 
 

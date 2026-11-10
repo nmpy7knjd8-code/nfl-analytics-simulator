@@ -14,7 +14,7 @@ This is the single builder for A4 (it replaces backend/scripts/build_fg_rates.py
 No betting fields, EPA or play ids.
 
 Frozen data: a "yards" season key already in the committed file must not change (published numbers stay
-put); the build exits 1 if it would. New seasons only add keys (and update "all").
+put); the build exits 1 if it would. New open seasons (> 2025) only add keys; "all" stays frozen.
 
 Usage: python mining/build_fg_rates.py PBP_PARQUET [...] [--out data/site/fg_rates.json]
 """
@@ -26,6 +26,10 @@ import math
 import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/fg_rates.json"
@@ -88,7 +92,8 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    """Season keys already published must be identical; "all" may only change when a season is added."""
+    """Season keys already published must be identical, and "all" stays frozen too (even when a season is
+    added: an open season gets its own key). New keys may only be open seasons (> 2025)."""
     if not old:
         return []
     if old.get("schema") != new["schema"]:
@@ -96,8 +101,9 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     olds = set(old.get("yards", {})) - {"all"}
     news = set(new["yards"]) - {"all"}
     changed = [k for k in sorted(olds) if new["yards"].get(k) != old["yards"][k]]
-    if olds == news and old["yards"].get("all") != new["yards"]["all"]:
+    if old["yards"].get("all") != new["yards"]["all"]:
         changed.append("all")
+    changed += [f"{k} added" for k in sorted(news - olds) if not fz.open_season_key(k)]
     for k in ("bands", "minYards", "maxYards"):
         if old.get(k) != new[k]:
             changed.append(k)
@@ -107,7 +113,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df = df[df.play_type == "field_goal"].copy()
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))

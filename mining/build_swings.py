@@ -44,6 +44,10 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/swings.json"
 SCHEMA_VERSION = 1
@@ -237,6 +241,20 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: Itera
             probs.append(f"{k} play/value changed (not in override)")
         elif any(v.get(f) != n.get(f) for f in set(v) | set(n) if f not in text_fields):
             probs.append(f"{k} changed (not in override)")
+    marks = fz.load_watermarks()
+    for k, n in new.get("weeks", {}).items():  # new weeks: open season only, past the file's watermark
+        if k not in old.get("weeks", {}) and (fz.is_frozen_season(n["season"])
+                                               or int(n["week"]) <= fz.watermark("swings", n["season"], marks)):
+            probs.append(f"{k} added to a frozen week")
+    # ranked top list: may grow or reorder, never evict or change a published play (overridden weeks exempt)
+    tk = lambda r: (r.get("game_id"), r.get("qtr"), r.get("clock"), r.get("team"))  # noqa: E731
+    ntop = {tk(r): r for r in new.get("top", [])}
+    for r in old.get("top", []):
+        if f"{int(r['season'])}-w{int(r['week']):02d}" in allowed:
+            continue
+        n = ntop.get(tk(r))
+        if n is None or any(r.get(f) != n.get(f) for f in IDENTITY_KEYS + VALUE_KEYS):
+            probs.append(f"top {tk(r)} evicted or changed")
     return probs
 
 
@@ -254,7 +272,7 @@ def load_rows(paths: list[str]) -> list[dict[str, Any]]:
 
     rows: list[dict[str, Any]] = []
     for p in paths:  # one season at a time keeps memory low
-        df = pd.read_parquet(p, columns=COLUMNS)
+        df = read_pbp([p], COLUMNS)
         df = df.astype(object).where(df.notna(), None)
         rows.extend(df.to_dict("records"))
         del df

@@ -8,7 +8,8 @@ included) to the offset in days of the nearest day that had games (circular acro
 earlier day; negative = earlier, e.g. -2 = "two days ago"). The FE picks the key in
 New York time. No play ids, EPA, win chance or betting fields.
 
-Frozen: a published game row may not change; days may only gain games when a season is added. The one allowed
+Frozen: a published game row may not change; a day may only gain games appended after its published ones, from
+an open season past the watermark (mining/_frozen.py); fallback is frozen. The one allowed
 change is the append-only ``ot`` column (mining/frozen_overrides/onthisday-2026-11-04-ot-append.json): cols must
 be exactly the old 4 + ["ot"] and the first 4 values of every row must stay identical.
 
@@ -25,6 +26,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_stamp import stamp  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/onthisday.json"
@@ -100,15 +104,18 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
         new = strip_ot(new)
     newg = {g[0]: g for gs in new["days"].values() for g in gs}
     bad = [g[0] for gs in old["days"].values() for g in gs if newg.get(g[0]) != g]
-    if old.get("season_list") == new.get("season_list") and (old["days"], old["fallback"]) != (new["days"], new["fallback"]):
-        bad.append("days")
+    for d, gs in new["days"].items():  # per day: append-only, never into a frozen season/week
+        bad += [f"{d}:{r}" for r in fz.check_rows(old["days"].get(d, []), gs, lambda g: g[0], "onthisday",
+                                                   gid=lambda g: g[0])]
+    bad += [f"days:{d} removed" for d in old["days"] if d not in new["days"]]
+    bad += ["fallback"] if old["fallback"] != new["fallback"] else []
     return bad
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     ot = df.groupby("game_id")["qtr"].max().ge(5)
     df = df.drop_duplicates("game_id").drop(columns="qtr")
     df["ot"] = df["game_id"].map(ot).astype(bool)

@@ -45,6 +45,8 @@ If an existing project conflicts with these defaults, inspect it and document th
 * NFL bots never message Garrett and never ask him for approvals or decisions. Every question, approval request and status update goes to Head Grokka in Charge, who decides and forwards anything huge to Garrett. (Garrett, Nov 3 2026, via HGIC)
 * A lane bot may squash-merge its own PR directly once HGIC has approved it, provided HGIC's quoted approval line is in the PR body and all 4 required checks (backend, frontend, acceptance, build) are green. Squash only. The bot then sends Integration an FYI with the merge commit. Integration remains the default merger and the auditor. (HGIC, Nov 3 2026 11:24 PM ET; replaces the 11:01 PM shared-account rule)
 * Team colors and logos: self-hosted nflverse team logos and wordmarks are allowed. Never hotlink external images (logo files must be self-hosted under /teams/ and listed in teams/manifest.json). The footer carries "Team names and logos are trademarks of the NFL and its teams. Not affiliated."
+* Light is the default theme. Dark mode is allowed when it follows the system setting (`prefers-color-scheme`) through the iOS design tokens in `frontend/app/tokens.css` (merged in #325). The old black theme and the old bottom nav remain banned. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
+* The 2026 season is approved as NFL Data Builders' 5-PR plan. The freeze-guard PR lands first and must prove that 2019–2025 outputs stay byte-identical. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 ## Core domain invariants
 

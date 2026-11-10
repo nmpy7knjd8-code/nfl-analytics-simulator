@@ -19,6 +19,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frozen import check_frozen as _check  # noqa: E402
 from build_stamp import stamp  # noqa: E402
 
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/firstdown.json"
 SCHEMA = "firstdown/v1"
@@ -99,13 +102,14 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
         return []
     o = {**old, "plays": [dict(zip(old["cols"], p)) for p in old["plays"]]}
     n = {**new, "plays": [dict(zip(new["cols"], p)) for p in new["plays"]]}
-    return _check(o, n, lambda r: (r["game_id"], r["qtr"], r["clock"], r["offense"]), "plays", ("league", "seasons"))
+    return _check(o, n, lambda r: (r["game_id"], r["qtr"], r["clock"], r["offense"]), "plays", ("league", "seasons"),
+                  name="firstdown", ranked=True)
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 
