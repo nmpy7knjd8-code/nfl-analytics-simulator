@@ -5,8 +5,9 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import facts from "./gameFacts.json";
+import { seasonsFromDir } from "./seasons";
 
-export const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
+export const SEASONS = seasonsFromDir(join(process.cwd(), "public", "data", "games"));
 
 /** Conference by franchise (nflverse teams.team_conf). OAK = the Raiders in 2019. Checked against every playoff pairing in tests. */
 export const CONF: Record<string, "AFC" | "NFC"> = Object.fromEntries([

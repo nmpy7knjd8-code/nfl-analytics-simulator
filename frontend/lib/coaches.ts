@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { seasonsFromDir } from "./seasons";
 
 /** Ported from closed PR #59. Engine-derived: pages render only when CHECKER_ENABLED is true. */
 
@@ -67,11 +68,10 @@ export type CoachSeason = {
   coaches: Coach[];
 };
 
-export const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
+const DIR = path.join(process.cwd(), "public", "data", "coaches");
+export const SEASONS = seasonsFromDir(DIR);
 export const LATEST_SEASON = SEASONS[SEASONS.length - 1];
 export const MIN_CALLS = 20;
-
-const DIR = path.join(process.cwd(), "public", "data", "coaches");
 
 export function readSeason(season: number): CoachSeason {
   return JSON.parse(fs.readFileSync(path.join(DIR, `${season}.json`), "utf8")) as CoachSeason;

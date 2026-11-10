@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import colors from "../../lib/teamColors.json";
 import { teamNickname } from "../../lib/teams";
+import { gameSeasons, seasonRangeText } from "../../lib/seasons";
 import { TeamLogo } from "../../components/TeamLogo";
 import { Header, Trademark } from "../../components/SimpleGame";
 import "../section-index.css";
@@ -16,7 +17,7 @@ export default function TeamsIndex() {
       <div className="sg-app ix">
         <Header right="Teams" />
         <h1 className="ix-title">Teams</h1>
-        <p className="ix-sub">All {ABBRS.length} teams: red-zone touchdowns, close-game stats and rivalries, 2019–2025.</p>
+        <p className="ix-sub">All {ABBRS.length} teams: red-zone touchdowns, close-game stats and rivalries, {seasonRangeText(gameSeasons())}.</p>
         <ul className="ix-grid">
           {ABBRS.map((a) => (
             <li key={a}>

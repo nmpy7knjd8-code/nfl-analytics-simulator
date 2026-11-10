@@ -7,8 +7,10 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import facts from "./gameFacts.json";
 import colorsJson from "./teamColors.json";
+import { seasonsFromDir } from "./seasons";
 
-export const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
+const GAMES_DIR = join(process.cwd(), "public", "data", "games");
+export const SEASONS = seasonsFromDir(GAMES_DIR);
 const ALIAS: Record<string, string> = { OAK: "LV" };
 export const franchise = (t: string) => ALIAS[t] ?? t;
 
@@ -29,9 +31,9 @@ const ROUND: Record<string, string> = { WC: "Wild Card", DIV: "Divisional", CON:
 const STORIES = new Set((facts as { games: { game_id: string }[] }).games.map((g) => g.game_id));
 
 let cache: IndexGame[] | null = null;
-export function allGames(dir = join(process.cwd(), "public", "data", "games")): IndexGame[] {
+export function allGames(dir = GAMES_DIR): IndexGame[] {
   if (cache) return cache;
-  cache = SEASONS.flatMap((s) => (JSON.parse(readFileSync(join(dir, `${s}.json`), "utf8")) as { games: IndexGame[] }).games);
+  cache = seasonsFromDir(dir).flatMap((s) => (JSON.parse(readFileSync(join(dir, `${s}.json`), "utf8")) as { games: IndexGame[] }).games);
   return cache;
 }
 
@@ -107,7 +109,7 @@ export function stripColors(a: string, b: string): [string, string] {
 }
 
 export type Rival = { opp: string; key: string; meetings: number; w: number; l: number; t: number };
-/** Every opponent a team met 2019–2025, most meetings first; record from the team's side. */
+/** Every opponent a team met in the committed seasons, most meetings first; record from the team's side. */
 export function teamRivals(team: string): Rival[] {
   const t = franchise(team);
   return allPairs()
