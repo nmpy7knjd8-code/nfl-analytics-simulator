@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import math
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_comebacks", ROOT / "mining/build_comebacks.py")
 bc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bc)
@@ -47,7 +50,7 @@ def test_committed_file():
     assert all(t["spark"][-1] == 100 for t in top if not t["ot"])
     assert sum(x < 0.05 for x in d["lows"]) == 65
     assert not [k for k in set(d) | set(d["cols"]) if BANNED.search(k)]
-    assert FILE.stat().st_size < 40_000
+    assert FILE.stat().st_size < size_cap("data/site/comebacks.json")
 
 
 def test_frozen():

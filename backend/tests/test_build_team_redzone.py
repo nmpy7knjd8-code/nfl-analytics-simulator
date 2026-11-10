@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import SEASONS, span  # noqa: E402
 _spec = importlib.util.spec_from_file_location("build_team_redzone", ROOT / "mining/build_team_redzone.py")
 br = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(br)
@@ -74,7 +77,7 @@ def test_committed_file_invariants():
     assert f["league"]["drives"] == sum(t["drives"] for t in f["teams"])
     assert f["league"]["td"] == sum(t["td"] for t in f["teams"])
     assert f["league"]["td_rate"] == round(f["league"]["td"] / f["league"]["drives"], 4)
-    assert f["season_list"] == list(range(2019, 2026)) and f["seasons"] == [2019, 2025]
+    assert f["season_list"] == list(SEASONS) and f["seasons"] == span()
     assert list(f["by_season"]) == [str(y) for y in f["season_list"]]
     for k in ("drives", "td"):
         assert sum(s["league"][k] for s in f["by_season"].values()) == f["league"][k]

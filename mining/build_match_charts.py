@@ -1,6 +1,6 @@
 """Build data/site/charts/{season}.json (schema matchcharts/v1) for E3 "Match the chart".
 
-Source: nflverse play-by-play 2019-2025, REG+POST, Vegas-adjusted win chance (vegas_home_wp; house rule,
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), REG+POST, Vegas-adjusted win chance (vegas_home_wp; house rule,
 values copied from nflverse and rounded to 3 dp, never recomputed).
 
 Per game: 60 home win-chance points evenly spaced over the 3,600 s of regulation (t = i*3600/59, i = 0..59).

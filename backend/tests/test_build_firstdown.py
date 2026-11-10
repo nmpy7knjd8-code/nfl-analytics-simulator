@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_firstdown", ROOT / "mining/build_firstdown.py")
 bf = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bf)
@@ -32,7 +35,7 @@ def test_rule_and_good():
 
 def test_committed_file():
     d = json.loads(FILE.read_text())
-    assert d["eligible"] == 58737 and len(d["plays"]) == 520 and FILE.stat().st_size < 45_000
+    assert d["eligible"] == 58737 and len(d["plays"]) == 520 and FILE.stat().st_size < size_cap("data/site/firstdown.json")
     assert len({(p[2], p[5], p[6], p[3]) for p in d["plays"]}) == 520
     assert all(abs(p[8] - p[9]) <= 8 and p[10] in ("pass", "run") for p in d["plays"])
     assert not [k for k in set(d) | set(d["cols"]) | set(d["league"]["pass"]) if BANNED.search(k)]

@@ -1,6 +1,6 @@
 """Build data/site/outcomes.json (schema outcomes/v1) for D5: yards gained on 4th-down runs and passes.
 
-Source: nflverse play-by-play 2019-2025, REG+POST. Counts only; no win chance is shown, so overtime
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), REG+POST. Counts only; no win chance is shown, so overtime
 rows are kept (qtr 1-5).
 
 Filter (/workspace/nfl-research/charts/d5-data-shape.md):

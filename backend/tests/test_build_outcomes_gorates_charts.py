@@ -12,10 +12,11 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import CLOSED_SPAN, season_keys, size_cap  # noqa: E402
 FIX = ROOT / "backend/tests/fixtures"
 SITE = ROOT / "data/site"
 BANNED = re.compile(r"epa|xpass|play_?id|wpa|spread|odds|moneyline|vegas|over/under", re.I)
-sys.path.insert(0, str(ROOT / "mining"))
 
 
 def _load(name):
@@ -61,11 +62,11 @@ def test_outcomes_4th_and_2_anchor():
 def test_outcomes_bins_and_shape():
     assert bo.bin_index(-34) == 0 and bo.bin_index(73) == len(bo.BINS) - 1 and bo.BINS[bo.bin_index(0)] == 0
     p, site = _site("outcomes.json")
-    assert site["schema"] == "outcomes/v1" and site["seasons"] == [2019, 2025]
+    assert site["schema"] == "outcomes/v1" and site["seasons"] == CLOSED_SPAN  # cells stay the frozen closed seasons
     assert set(site["cells"]) == {f"{d}-{z}" for d in range(1, 11) for z in ("opp", "mid", "own", "all")}
     for c in site["cells"].values():
         assert len(c["counts"]) == 26 and sum(c["counts"]) == c["tries"] and c["converted"] <= c["tries"]
-    assert p.stat().st_size < 10_000
+    assert p.stat().st_size < size_cap("data/site/outcomes.json")
     _no_banned(p)
 
 
@@ -103,7 +104,7 @@ def test_gorates_committed_file():
     assert site["cells"][0][0] == [510, 442, 68, 0]  # 4th-and-1 at the opp 1-10
     for row in site["cells"]:  # no field goal tries from band 51+ (every kick there would be 68+ yd)
         assert all(c[2] == 0 for c in row[5:])
-    assert p.stat().st_size < 5_000
+    assert p.stat().st_size < size_cap("data/site/gorates.json")
     _no_banned(p)
 
 
@@ -134,13 +135,13 @@ def test_charts_regulation_only_with_ot_flag():
 
 def test_charts_committed_files():
     files = sorted((SITE / "charts").glob("*.json"))
-    assert [f.stem for f in files] == [str(y) for y in range(2019, 2026)]
+    assert [f.stem for f in files] == season_keys()
     total = 0
     for f in files:
         d = json.loads(f.read_text())
         assert d["schema"] == "matchcharts/v1" and d["season"] == int(f.stem) and d["points"] == 60
         assert all(g["gameId"] != bm.BAD_GAME and len(g["wp"]) == 60 for g in d["games"])
-        assert f.stat().st_size < 150_000
+        assert f.stat().st_size < size_cap(f"data/site/charts/{f.name}")
         _no_banned(f)
         total += len(d["games"])
     assert total == 1960  # every nflverse game 2019-2025 (2022_17_BUF_CIN has no pbp rows; still filtered)

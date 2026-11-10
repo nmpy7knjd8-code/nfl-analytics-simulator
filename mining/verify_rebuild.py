@@ -5,7 +5,7 @@ stamp see the published file, exactly as a real rebuild would) and the result mu
 Run one builder at a time (memory). Prints one line per output file plus its sha256.
 
 Usage: python mining/verify_rebuild.py --pbp-dir DIR [--ref-dir DIR] [--games-dir DIR] [--only NAME ...]
-  DIR holds pbp_<season>.parquet; --ref-dir holds players.parquet, roster_weekly_*.parquet, players.csv.
+  DIR holds pbp_<season>.parquet for the seasons in mining/seasons.py; --ref-dir holds players.parquet, roster_weekly_*.parquet, players.csv.
 Exit 1 if any file differs or any builder fails.
 """
 from __future__ import annotations
@@ -20,6 +20,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 M = ROOT / "mining"
+sys.path.insert(0, str(M))
+from seasons import CLOSED, SEASONS, pbp_paths  # noqa: E402
 
 # name -> (builder, [outputs relative to ROOT], extra-args builder(tmp, pbp, ref) -> argv)
 SINGLE = {
@@ -57,9 +59,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--pbp-dir", required=True)
     ap.add_argument("--ref-dir", default=None)
     ap.add_argument("--only", nargs="*", default=None)
+    ap.add_argument("--seasons", choices=("closed", "all"), default="closed",
+                    help="closed = the frozen seasons (mining/seasons.py CLOSED, default); all = closed + open")
     ap.add_argument("--games-dir", default=None, help="games-vN per-game json (swings desc, qb_profiles)")
     a = ap.parse_args(argv)
-    pbp = sorted(str(p) for p in Path(a.pbp_dir).glob("pbp_*.parquet"))
+    pbp = pbp_paths(a.pbp_dir, SEASONS if a.seasons == "all" else CLOSED)
     want = lambda n: a.only is None or n in a.only  # noqa: E731
     ok = True
     with tempfile.TemporaryDirectory() as td:

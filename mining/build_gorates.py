@@ -1,6 +1,6 @@
 """Build data/site/gorates.json (schema gorates/v1) for D6: coaches' real 4th-down go-rates.
 
-Source: nflverse play-by-play 2019-2025, REG+POST. Counts only; no engine layer (that waits for H6).
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), REG+POST. Counts only; no engine layer (that waits for H6).
 
 Filter (/workspace/nfl-research/charts/d6-data-shape.md):
   * down == 4, play_type in run, pass, punt, field_goal, yardline_100 not null;

@@ -1,9 +1,12 @@
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_player_names", ROOT / "mining/build_player_names.py")
 bp = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bp)
@@ -26,7 +29,7 @@ def test_build_maps_only_players_named_in_text():
 
 
 def test_committed_file_small_and_consistent():
-    assert OUT.stat().st_size < 64_000
+    assert OUT.stat().st_size < size_cap("data/site/player_names.json")
     d = json.loads(OUT.read_text())
     f = json.loads((ROOT / "data/site/fakes.json").read_text())
     fake_keys = {bp.play_key(p) for p in f["plays"]}

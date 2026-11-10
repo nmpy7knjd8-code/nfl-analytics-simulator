@@ -11,7 +11,7 @@ is modelled:
     "Opp touchdown": a defensive TD is a trip worth 0 points).
 No EPA, xpass, play ids or betting fields are read or written.
 
-Also writes by_season ("2019".."2025"): the same league + ranked team rows for each regular season.
+Also writes by_season (one key per season in mining/seasons.py): the same league + ranked team rows for each regular season.
 
 Frozen data: every season already in the committed by_season, and the all-seasons total, must be
 identical whatever the season list (a silent nflverse regrade fails the build, exit 1). Adding an open

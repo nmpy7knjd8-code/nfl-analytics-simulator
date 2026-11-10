@@ -1,6 +1,6 @@
 """Build data/site/comebacks.json for D1 Comeback Index (NFL Stories UI).
 
-Source: nflverse play-by-play 2019-2025, REG+POST. Win chance is Vegas-adjusted (vegas_home_wp, house rule),
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), REG+POST. Win chance is Vegas-adjusted (vegas_home_wp, house rule),
 copied from nflverse and never recomputed. For every decided game (no ties; 2022_17_BUF_CIN has no result)
 the winner's lowest chance to win is taken from regulation rows only (qtr 1-4, win chance not null), so a
 game won in overtime counts but its low point is never an overtime row. The bad 2019_03_CIN_BUF
