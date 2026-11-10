@@ -1,0 +1,557 @@
+/* iOS restyle for /games and /games/[id]. Uses --ios-* tokens. Light default, dark via prefers-color-scheme. */
+
+.ios-games.sg-app {
+  --sg-b: var(--ios-accent);
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: 0 var(--ios-space-4) calc(var(--ios-space-4) + var(--ios-home-safe));
+  color: var(--ios-label-primary);
+  background: var(--ios-background-grouped);
+  font-family: var(--ios-font-text);
+  font-size: var(--ios-text-body);
+  line-height: var(--ios-leading-body);
+  letter-spacing: var(--ios-tracking-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  border: 0;
+  border-radius: 0;
+  width: 100%;
+  box-shadow: none;
+}
+
+.ios-games .sg-brand,
+.ios-games .sg-count {
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-text);
+}
+
+.ios-games .sg-brand span {
+  color: var(--ios-accent);
+}
+
+.ios-games .sg-tm-note {
+  color: var(--ios-label-tertiary);
+  font-size: var(--ios-text-caption-1);
+  text-align: center;
+  margin: var(--ios-space-6) 0 var(--ios-space-4);
+  line-height: 1.35;
+}
+
+.ios-games .ios-large-title {
+  margin: var(--ios-space-2) 0 var(--ios-space-3);
+}
+
+.ios-games-src,
+.ios-game-when {
+  color: var(--ios-label-tertiary);
+  font-size: var(--ios-text-footnote);
+  line-height: 1.35;
+  margin: var(--ios-space-3) 0 0;
+}
+
+.ios-games-status,
+.ios-games-empty,
+.ios-games-note {
+  color: var(--ios-label-secondary);
+  font-size: var(--ios-text-footnote);
+  margin: var(--ios-space-3) 0;
+}
+
+.ios-games-error {
+  color: var(--ios-red);
+  font-size: var(--ios-text-footnote);
+  margin: var(--ios-space-3) 0;
+}
+
+.ios-group-head {
+  font-size: var(--ios-text-footnote);
+  font-weight: 600;
+  color: var(--ios-label-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: var(--ios-space-4) var(--ios-space-4) var(--ios-space-2);
+}
+
+.ios-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ios-space-2);
+  margin: 0 0 var(--ios-space-4);
+}
+
+.ios-picker-btn,
+.ios-sheet-close,
+.ios-show-all,
+.ios-back,
+.ios-seg-btn {
+  min-height: var(--ios-touch);
+  min-width: var(--ios-touch);
+  font-family: var(--ios-font-text);
+  cursor: pointer;
+}
+
+.ios-picker-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ios-space-2);
+  padding: 0 var(--ios-space-3);
+  border: 0;
+  border-radius: var(--ios-radius-md);
+  background: var(--ios-fill-secondary);
+  color: var(--ios-label-primary);
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+}
+
+.ios-picker-btn::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--ios-label-tertiary);
+  border-bottom: 2px solid var(--ios-label-tertiary);
+  transform: rotate(45deg);
+  margin-top: -3px;
+}
+
+.ios-back {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ios-accent);
+  text-decoration: none;
+  font-size: var(--ios-text-body);
+  font-weight: 400;
+  margin: 0 0 var(--ios-space-2);
+}
+
+.ios-show-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: var(--ios-space-3) 0;
+  border: 0;
+  border-radius: var(--ios-radius-md);
+  background: var(--ios-accent-soft);
+  color: var(--ios-accent);
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+}
+
+.ios-chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ios-label-tertiary);
+  border-top: 2px solid var(--ios-label-tertiary);
+  transform: rotate(45deg);
+  flex: none;
+  margin-left: auto;
+}
+
+.ios-games .ios-list-row.is-selected {
+  color: var(--ios-accent);
+  font-weight: 600;
+}
+
+.ios-game-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ios-space-3);
+  min-height: 56px;
+  text-decoration: none;
+  color: var(--ios-label-primary);
+  padding-top: var(--ios-space-2);
+  padding-bottom: var(--ios-space-2);
+}
+
+.ios-game-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 2px var(--ios-space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+.ios-game-meta {
+  grid-column: 1 / -1;
+  color: var(--ios-label-secondary);
+  font-size: var(--ios-text-footnote);
+}
+
+.ios-game-side {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ios-game-abbr {
+  font-weight: 400;
+}
+
+.ios-game-sc,
+.gsb-sc {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  margin-left: auto;
+}
+
+.ios-game-sc.is-winner,
+.gsb-sc.is-winner {
+  font-weight: 600;
+  color: inherit;
+}
+
+/* Score bug */
+.gsb-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--ios-background-grouped);
+  padding: var(--ios-space-2) 0 var(--ios-space-3);
+}
+
+.gsb {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  min-height: 56px;
+  border-radius: var(--ios-radius-lg);
+  overflow: hidden;
+}
+
+.gsb-side {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 8px 10px;
+}
+
+.gsb-home {
+  justify-content: flex-end;
+}
+
+.gsb-home .gsb-sc {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.gsb-abbr {
+  font-weight: 600;
+  font-size: var(--ios-text-subhead);
+}
+
+.gsb-sc {
+  font-size: var(--ios-text-title-3);
+  font-weight: 400;
+}
+
+.gsb-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background: var(--ios-background-secondary);
+  color: var(--ios-label-primary);
+  min-width: 72px;
+}
+
+.gsb-final {
+  font-size: var(--ios-text-footnote);
+  font-weight: 600;
+}
+
+.gsb-week {
+  font-size: var(--ios-text-caption-2);
+  color: var(--ios-label-secondary);
+}
+
+/* Chart card */
+.ios-chart-card {
+  margin: 0 0 var(--ios-space-4);
+}
+
+.ios-card-title {
+  margin: 0 0 var(--ios-space-2);
+  font-size: var(--ios-text-title-3);
+  font-weight: 700;
+  letter-spacing: var(--ios-tracking-body);
+}
+
+.ios-card-sub {
+  margin: var(--ios-space-3) 0 var(--ios-space-2);
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+}
+
+.ios-games .wp-opening {
+  font-variant-numeric: tabular-nums;
+  color: var(--ios-label-secondary);
+  font-size: var(--ios-text-footnote);
+  margin: 0 0 var(--ios-space-2);
+}
+
+.ios-games .wp-chart {
+  margin: 0;
+}
+
+.ios-games .wp-chart svg {
+  width: 100%;
+  height: auto;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.ios-games .wp-line {
+  fill: none;
+  stroke: var(--ios-accent);
+  stroke-width: 2.5;
+}
+
+.ios-games .wp-mid,
+.ios-games .wp-grid,
+.ios-games .wp-leader,
+.ios-games .wp-ot-line {
+  stroke: var(--ios-chart-grid);
+}
+
+.ios-games .wp-mid {
+  stroke-dasharray: 4 4;
+}
+
+.ios-games .wp-ot-line {
+  stroke-dasharray: 3 3;
+}
+
+.ios-games .wp-axis,
+.ios-games .wp-ot-label {
+  fill: var(--ios-chart-axis);
+  font-family: var(--ios-font-text);
+  font-size: 11px;
+}
+
+.ios-games .wp-swing {
+  fill: var(--ios-accent);
+  stroke: var(--ios-background-elevated);
+  stroke-width: 2;
+}
+
+.ios-games .wp-swing-num {
+  font: 700 10px var(--ios-font-text);
+  fill: var(--ios-label-on-accent);
+  pointer-events: none;
+}
+
+.ios-games .wp-source,
+.ios-games .wp-chart .muted,
+.ios-games figcaption.muted {
+  color: var(--ios-label-tertiary);
+  font-size: var(--ios-text-caption-1);
+  margin: var(--ios-space-2) 0 0;
+}
+
+.ios-games .wp-dots-narrow {
+  display: none;
+}
+
+@media (max-width: 420px) {
+  .ios-games .wp-dots-wide { display: none; }
+  .ios-games .wp-dots-narrow { display: block; }
+}
+
+/* Swing rows inside the chart card */
+.ios-games .swing-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.ios-games .swing-item {
+  border: 0;
+  border-top: 0.5px solid var(--ios-separator);
+  background: transparent;
+  padding: var(--ios-space-3) 0;
+}
+
+.ios-games .swing-item .play-meta,
+.ios-games .swing-sit,
+.ios-games .swing-why,
+.ios-games .swing-raw {
+  color: var(--ios-label-secondary);
+  font-size: var(--ios-text-footnote);
+}
+
+.ios-games .swing-headline {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  font-size: var(--ios-text-body);
+  color: var(--ios-label-primary);
+  margin: 4px 0;
+}
+
+.ios-games .swing-link {
+  display: flex;
+  align-items: center;
+  min-height: var(--ios-touch);
+  color: var(--ios-accent);
+  text-decoration: none;
+}
+
+.ios-games .swing-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--ios-accent);
+  color: var(--ios-label-on-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ios-games .swing-raw summary {
+  min-height: var(--ios-touch);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--ios-accent);
+}
+
+/* Segmented control */
+.ios-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 2px;
+  margin: 0 0 var(--ios-space-3);
+  background: var(--ios-fill-secondary);
+  border-radius: var(--ios-radius-md);
+}
+
+.ios-seg-btn {
+  border: 0;
+  border-radius: calc(var(--ios-radius-md) - 2px);
+  background: transparent;
+  color: var(--ios-label-primary);
+  font-size: var(--ios-text-subhead);
+  font-weight: 600;
+}
+
+.ios-seg-btn[aria-selected="true"] {
+  background: var(--ios-background-elevated);
+  color: var(--ios-accent);
+}
+
+/* Play / drive lists */
+.ios-play-list,
+.ios-drive-list,
+.ios-games-list,
+.ios-sheet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ios-play-row,
+.ios-drive-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  height: auto;
+  min-height: var(--ios-touch);
+  padding-top: var(--ios-space-3);
+  padding-bottom: var(--ios-space-3);
+  white-space: normal;
+}
+
+.ios-play-meta {
+  color: var(--ios-label-secondary);
+  font-size: var(--ios-text-caption-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.ios-play-text {
+  color: var(--ios-label-primary);
+  font-size: var(--ios-text-subhead);
+  overflow-wrap: anywhere;
+}
+
+.ios-drive-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.ios-play-row.is-swing {
+  box-shadow: inset 3px 0 0 var(--ios-accent);
+}
+
+/* Sheet */
+.ios-sheet-back {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.36);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ios-sheet {
+  width: min(100%, 430px);
+  max-height: 80dvh;
+  overflow: auto;
+  background: var(--ios-background-grouped);
+  border-radius: var(--ios-radius-xl) var(--ios-radius-xl) 0 0;
+  padding: var(--ios-space-3) var(--ios-space-4) calc(var(--ios-space-6) + var(--ios-home-safe));
+}
+
+.ios-sheet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ios-space-3);
+  margin-bottom: var(--ios-space-3);
+}
+
+.ios-sheet-title {
+  margin: 0;
+  font-size: var(--ios-text-title-3);
+  font-weight: 700;
+}
+
+.ios-sheet-close {
+  border: 0;
+  background: transparent;
+  color: var(--ios-accent);
+  font-size: var(--ios-text-body);
+  font-weight: 600;
+  padding: 0 var(--ios-space-2);
+}
+
+.ios-sheet-list .ios-list-row {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ios-games *,
+  .ios-sheet,
+  .ios-sheet-back {
+    transition: none !important;
+    animation: none !important;
+  }
+}

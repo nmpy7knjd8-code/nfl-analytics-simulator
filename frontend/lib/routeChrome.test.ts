@@ -12,7 +12,7 @@ const FRONTEND = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const APP = join(FRONTEND, "app");
 
 // Pre-existing routes still on the old shell. Shrink this list; never grow it.
-const LEGACY_ROUTES = new Set(["/games", "/games/[gameId]"]);
+const LEGACY_ROUTES = new Set<string>([]);
 
 // Old dark theme / old chrome markers (globals.css :root dark tokens, .fd-page, TopBar, bottom nav).
 const DARK_MARKERS: [RegExp, string][] = [
@@ -105,9 +105,8 @@ test("brand link keeps the spaces in 'Fourth & Daily'", () => {
   assert.match(readFileSync(join(APP, "simple-game.css"), "utf8"), /\.sg-brand\{[^}]*column-gap:/);
 });
 
-// /games list already had the footer; /games/[gameId] was a leftover gap.
-// Stays in LEGACY_ROUTES: the page is still the dark layout (a restyle PR is coming),
-// no-tabs.css mentions .app-nav only to hide it, and useGameRoute cannot use a /games/ prefix (#418).
+// /games and /games/[gameId] share the iOS restyle and the <Trademark /> footer.
+// Old chrome is hidden via .sg-app (not a /games/ prefix in useGameRoute; #418).
 test("trademark footer (.sg-tm-note) is on /games and /games/[gameId]", () => {
   const tm = readFileSync(join(FRONTEND, "components", "SimpleGame.tsx"), "utf8");
   assert.match(tm, /export const Trademark = \(\) => <p className="sg-tm-note">/);
@@ -116,7 +115,7 @@ test("trademark footer (.sg-tm-note) is on /games and /games/[gameId]", () => {
     assert.ok(file, `${route} page missing`);
     assert.match(readFileSync(file, "utf8"), /<Trademark\b/, `${route} is missing the <Trademark /> footer`);
   }
-  const css = readFileSync(join(APP, "games", "[gameId]", "no-tabs.css"), "utf8");
-  assert.match(css, /\.gs-no-tabs \.sg-tm-note\s*\{[^}]*color:\s*#fff/, "game page footer must stay readable on the dark layout");
+  const css = readFileSync(join(APP, "games", "games-ios.css"), "utf8");
+  assert.match(css, /\.ios-games \.sg-tm-note\s*\{[^}]*color:\s*var\(--ios-label-tertiary\)/, "game page footer uses iOS label color in light and dark");
 });
 
