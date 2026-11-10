@@ -104,3 +104,19 @@ test("brand link keeps the spaces in 'Fourth & Daily'", () => {
   assert.match(sg, /className="sg-brand">Fourth\{" "\}<span>&amp;<\/span>\{" "\}Daily</);
   assert.match(readFileSync(join(APP, "simple-game.css"), "utf8"), /\.sg-brand\{[^}]*column-gap:/);
 });
+
+// /games list already had the footer; /games/[gameId] was a leftover gap.
+// Stays in LEGACY_ROUTES: the page is still the dark layout (a restyle PR is coming),
+// no-tabs.css mentions .app-nav only to hide it, and useGameRoute cannot use a /games/ prefix (#418).
+test("trademark footer (.sg-tm-note) is on /games and /games/[gameId]", () => {
+  const tm = readFileSync(join(FRONTEND, "components", "SimpleGame.tsx"), "utf8");
+  assert.match(tm, /export const Trademark = \(\) => <p className="sg-tm-note">/);
+  for (const route of ["/games", "/games/[gameId]"]) {
+    const file = ROUTES.find((r) => r.route === route)?.file;
+    assert.ok(file, `${route} page missing`);
+    assert.match(readFileSync(file, "utf8"), /<Trademark\b/, `${route} is missing the <Trademark /> footer`);
+  }
+  const css = readFileSync(join(APP, "games", "[gameId]", "no-tabs.css"), "utf8");
+  assert.match(css, /\.gs-no-tabs \.sg-tm-note\s*\{[^}]*color:\s*#fff/, "game page footer must stay readable on the dark layout");
+});
+
