@@ -177,7 +177,8 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
 
   if (done) {
     const credit = picks.reduce((a, p) => a + p.scored.credit, 0);
-    const share = plainShare(dayNo, picks.map((p) => p.scored.result), formatScore(credit), streak);
+    const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}${BASE}/daily/`;
+    const share = plainShare(dayNo, picks.map((p) => p.scored.result), formatScore(credit), streak, shareUrl);
     return (
       <div className={`sg-app sg-end${dare.kind === "ok" ? " sg-vs" : ""}`}>
         <Header right={mode === "daily" ? `#${dayNo}` : "Practice"} />
