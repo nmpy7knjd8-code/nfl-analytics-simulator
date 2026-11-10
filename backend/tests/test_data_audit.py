@@ -100,12 +100,18 @@ RAW_TEXT: dict[tuple[str, str], str] = {
     ("site", "$.real_punts[].desc"): "fakes.json raw nflverse desc; fans see frontend/lib/site/fakesText.json (audited)",
 }
 
+# Game files come from the release named by GAMES_RELEASE_TAG; releases before games-v7.1 predate the
+# no-win-chance-in-overtime rule and the 2021_12_LV_DAL overtime fix.
+_PRE_V71_RELEASE = os.environ.get("GAMES_RELEASE_TAG") in {
+    "games-v2", "games-v3", "games-v4", "games-v5", "games-v6", "games-v7"}
+
 # Known findings in other lanes' files: (check, group) -> reason. xfail, not strict.
 DEFERRED: dict[tuple[str, str], str] = {
     ("banned_keys", "packs"): "NFL Data & Models: packs items carry source.play_id (180 items)",
     ("banned_keys", "game_files"): "NFL Data & Models: per-game files carry cols.play_id, swing_play_ids, "
                                    "wp_fallback_play_ids (every game file)",
-    ("ot_win_chance", "game_files"): "NFL Data & Models: cols.home_wp is set on overtime plays (110 OT games)",
+    **({("ot_win_chance", "game_files"): "games <= v7: cols.home_wp is set on overtime plays (fixed in games-v7.1)"}
+       if _PRE_V71_RELEASE else {}),
     ("nulls", "game_files"): "NFL Data & Models: cols.sec is null on some rows",
     ("doubled_period", "game_files"): "NFL Data & Models: 'Jr..'/'Sr..' in cols.display_text and cols.text; the UI "
                                       "collapses it at render (frontend/lib/gamePlays.ts stopgap) until the next "
@@ -583,8 +589,8 @@ COUNT_CHECKS: list[tuple[str, str, Callable[[], list[str]]]] = [
 
 # Known count findings in other lanes' files: name -> reason. xfail, not strict.
 DEFERRED_COUNTS: dict[str, str] = {
-    "games_index": "NFL Data & Models: 2021_12_LV_DAL has overtime false; nflverse pbp has an OT period (LV won 36-33 in OT)",
-    "game_files": "NFL Data & Models: 2021_12_LV_DAL game.overtime is false; nflverse pbp has an OT period",
+    **({"game_files": "games <= v7: 2021_12_LV_DAL game.overtime is false (fixed in games-v7.1)"}
+       if _PRE_V71_RELEASE else {}),
 }
 
 
