@@ -1,4 +1,5 @@
 import { SimpleGame } from "../components/SimpleGame";
+import "./ios-game.css";
 
 export default function HomePage() {
   return (

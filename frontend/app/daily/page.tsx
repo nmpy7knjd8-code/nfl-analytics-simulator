@@ -1,6 +1,7 @@
 import { DailyOrBonus } from "../../components/DailyOrBonus";
 import "../fake-punt/fake-punt.css";
 import "./bonus.css";
+import "../ios-game.css";
 import { shareMetadata } from "../../lib/share";
 
 export const metadata = shareMetadata({

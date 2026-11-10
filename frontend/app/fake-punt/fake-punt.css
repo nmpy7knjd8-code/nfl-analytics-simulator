@@ -11,3 +11,10 @@
 .fp-row{display:flex;flex-direction:column;gap:8px}
 .fp .sg-keep{min-height:54px;font-weight:700;font-size:19px;width:100%}
 @media (max-width:375px){.fp-h1{font-size:22px;margin:4px 0 8px}.fp-desc,.fp-rates{font-size:13px}.fp .sg-big{font-size:48px}.fp .sg-recap>div{padding:5px 0}}
+/* iOS v2: pin the choices to the thumb zone (no dead gap under them); the footer sits right below. */
+.fp .sg-btns{margin-top:auto}
+.fp .sg-btns~.sg-tm-note{margin-top:0}
+/* iOS v2 dark mode: text and outlines follow the tokens (the old hard-coded black was invisible on the dark page). */
+.fp{--sg-g:var(--ios-label-secondary)}
+.fp-h1,.fp-desc{color:var(--ios-label-primary)}
+.fp-card{border-color:var(--ios-separator-opaque);background:var(--ios-background-elevated)}

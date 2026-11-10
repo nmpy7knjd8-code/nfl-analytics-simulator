@@ -1,0 +1,146 @@
+/*
+  Live daily play screen on the iOS tokens (Designer's v2 game spec). Scoped to .ios-game, which only
+  SimpleGame mode="daily" renders (routes / and /daily). The shell, play bar (back, "Play X of 5",
+  menu) and Today hub come from PR 342; this file styles the play, result and end screens only.
+
+  Colors: --ios-* tokens only, so dark mode follows the system setting through tokens.css.
+  The one accent is the token blue (--ios-accent). White text on it is set at 19px bold or
+  larger so it passes AA large-text contrast in both modes. Team colors appear only on the
+  score bug panels (lib/tvBug.ts picks AA ink).
+*/
+.ios-game{
+  --ig-ink:var(--ios-label-primary);
+  --ig-ink2:var(--ios-label-secondary);
+  --ig-bg:var(--ios-background-primary);
+  --ig-card:var(--ios-background-elevated);
+  --ig-sep:var(--ios-separator);
+  --sg-b:var(--ios-accent);
+  --sg-g:var(--ig-ink2);
+}
+/* Thin 5-segment progress bar under the play bar. */
+.ios-game .ig-prog{display:flex;gap:4px;padding:4px 0 10px;flex:none}
+.ios-game .ig-prog i{flex:1;height:4px;border-radius:999px;background:var(--ios-separator)}
+.ios-game .ig-prog i.ig-on{background:var(--ios-accent)}
+
+/* TV score bug: team-color panels | Q + clock | team-color panels, blue flag row. */
+.ios-game .tv{width:100%;flex:none;border-radius:var(--ios-radius-md);overflow:hidden;box-shadow:0 0 0 1px var(--ios-hairline)}
+.ios-game .tv-r1{display:grid;grid-template-columns:minmax(0,1fr) 68px minmax(0,1fr);min-height:52px;background:#1c1c1e;color:#fff}
+.ios-game .tv-side{display:flex;align-items:center;gap:6px;padding:0 10px 0 8px;min-width:0}
+.ios-game .tv-h{flex-direction:row-reverse;padding:0 8px 0 10px}
+.ios-game .tv-plate{width:28px;height:28px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.ios-game .tv-plate img{width:20px;height:20px;object-fit:contain}
+.ios-game .tv-id{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ios-game .tv-h .tv-id{align-items:flex-end}
+.ios-game .tv-code{display:flex;align-items:center;gap:4px;font-size:15px;font-weight:700;line-height:1}
+.ios-game .tv-h .tv-code{flex-direction:row-reverse}
+.ios-game .tv-ball{width:15px;height:15px;flex:none}
+.ios-game .tv-to{display:flex;gap:2px}.ios-game .tv-to i{width:9px;height:3px;border-radius:1px;background:currentColor}.ios-game .tv-to i.tv-used{opacity:.3}
+.ios-game .tv-sc{margin-left:auto;font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;min-width:26px;text-align:center}
+.ios-game .tv-h .tv-sc{margin-left:0;margin-right:auto}
+.ios-game .tv-clk{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.ios-game .tv-q{font-size:12px;font-weight:700;letter-spacing:.04em}
+.ios-game .tv-t{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.ios-game .tv-flag{min-height:30px;display:flex;align-items:center;justify-content:center;background:var(--ios-accent);color:#fff;font-size:19px;font-weight:700;line-height:1}
+@media (max-width:375px){.ios-game .tv-r1{grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr)}.ios-game .tv-side{gap:5px;padding:0 8px 0 6px}.ios-game .tv-h{padding:0 6px 0 8px}.ios-game .tv-sc{font-size:22px}.ios-game .tv-t{font-size:15px}}
+
+/* Question */
+.ios-game .sg-sent{font-family:var(--ios-font-display);font-size:var(--ios-text-title-3);font-weight:700;line-height:1.25;margin:14px 2px 12px}
+
+/* Compact side-on field (IosField). */
+.ios-game .igf-wrap{flex:none}
+.ios-game .igf{position:relative;height:96px;border-radius:var(--ios-radius-md);overflow:hidden;background:#1a2a20;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.ios-game .igf>i,.ios-game .igf>b{position:absolute;top:0;bottom:0}
+.ios-game .igf-ez{position:absolute;top:0;bottom:0;width:8.333%;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;box-sizing:border-box;background:#141f18;color:#fff;font-size:11px;font-weight:700}
+.ios-game .igf-own{left:0;box-shadow:1px 0 0 rgba(255,255,255,.22)}.ios-game .igf-opp{right:0;box-shadow:-1px 0 0 rgba(255,255,255,.22)}
+.ios-game .igf-yd{top:auto!important;height:10px;width:1px;background:rgba(255,255,255,.28)}.ios-game .igf-yd.igf-top{top:0!important;bottom:auto!important}.ios-game .igf-yd.igf-mid{height:auto;top:0!important;background:rgba(255,255,255,.4)}
+.ios-game .igf-los{width:2px;margin-left:-1px;background:#fff}
+.ios-game .igf-los.igf-from{opacity:.45}
+.ios-game .igf-gain{width:3px;margin-left:-1.5px;background:var(--ios-accent)}
+.ios-game .igf-path{top:50%!important;bottom:auto!important;height:0;border-top:2px dashed rgba(255,255,255,.75)}
+.ios-game .igf-yl{position:absolute;top:calc(50% + 8px);transform:translateX(calc(-100% - 5px));color:#fff;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.ios-game .igf-ball{top:50%!important;bottom:auto!important;width:14px;height:9px;margin:-4.5px 0 0 -7px;border-radius:50%;background:#fff}
+.ios-game .igf-pill{margin:8px auto 0;max-width:100%;width:fit-content;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--ig-ink);color:var(--ig-bg);font-weight:700;font-size:15px;line-height:20px;padding:4px 12px;border-radius:999px}
+
+/* Choices: token blue, white 19px bold label and detail (AA large text in both modes). */
+.ios-game .sg-btns{gap:8px}
+.ios-game .sg-btn,.ios-game .sg-next{min-height:56px;border:0;border-radius:14px;background:var(--ios-accent);color:#fff;font-size:19px;font-weight:700;padding:0 18px}
+.ios-game .sg-btn small{color:#fff;font-size:19px;font-weight:700}
+.ios-game .sg-keep,.ios-game .sg-reset,.ios-game .rp-skip{min-height:52px;border:1px solid var(--ig-sep);border-radius:14px;background:var(--ig-card);color:var(--ig-ink);font-size:17px;font-weight:600}
+.ios-game .sg-pair-end .sg-keep{min-height:48px}
+.ios-game .sg-btn:focus-visible,.ios-game .sg-next:focus-visible,.ios-game .sg-keep:focus-visible{outline:3px solid var(--ig-ink);outline-offset:2px}
+.ios-game .sg-note{color:var(--ig-ink2)}
+
+/* Reveal */
+.ios-game .sg-verdict{font-family:var(--ios-font-display);color:var(--ig-ink)}
+.ios-game .sg-ok .sg-glyph{background:var(--ios-accent);color:#fff}
+.ios-game .sg-no .sg-glyph{background:var(--ig-ink);color:var(--ig-bg)}
+.ios-game .sg-half .sg-glyph{border-color:var(--ig-ink)}
+.ios-game .sg-res{background:var(--ig-card);border:1px solid var(--ig-sep);border-radius:var(--ios-radius-lg);box-shadow:var(--ios-shadow-card)}
+.ios-game .sg-ok .sg-res{border-color:var(--ios-accent)}
+.ios-game .sg-ln+.sg-ln{border-top:.5px solid var(--ig-sep)}
+.ios-game .sg-lbl{color:var(--ig-ink2);letter-spacing:.02em}
+.ios-game .sg-v{color:var(--ig-ink)}
+.ios-game .sg-final{color:var(--ig-ink2)}
+.ios-game .sg-best,.ios-game .sg-close{background:var(--ig-ink);color:var(--ig-bg)}
+.ios-game .be-track{background:var(--ios-fill-primary)}
+.ios-game .be-need{background:var(--ig-ink)}
+.ios-game .be-dot{background:var(--ios-accent);border-color:var(--ig-card);box-shadow:0 0 0 1px var(--ios-accent)}
+.ios-game .be-ends,.ios-game .be-src,.ios-game .be-empty{color:var(--ig-ink2)}
+.ios-game .ml{background:var(--ig-card);border:1px solid var(--ig-sep)}
+.ios-game .ml-sum{min-height:48px;color:var(--ig-ink)}
+.ios-game .ml-sum::after{color:var(--ios-accent)}
+.ios-game .ml-list{color:var(--ig-ink2)}
+/* Reveal: the field takes the room that's left (96px max), so long play text never makes the page scroll. */
+.ios-game .sg-rv .igf-wrap{flex:1 1 0;min-height:80px;max-height:132px;display:flex;flex-direction:column;justify-content:flex-start;margin-bottom:4px}
+.ios-game .sg-rv .igf{flex:1 1 auto;height:auto;min-height:40px;max-height:96px}
+
+/* End screen */
+.ios-game .sg-big{font-family:var(--ios-font-display);color:var(--ig-ink)}
+.ios-game .sg-marks .sg-y{background:var(--ios-accent);color:#fff}
+.ios-game .sg-marks .sg-n{border-color:var(--ig-ink)}
+.ios-game .sg-recap{border-top:.5px solid var(--ig-sep)}
+.ios-game .sg-recap>div{border-bottom:.5px solid var(--ig-sep)}
+.ios-game .sg-recap b{font-size:19px}
+.ios-game .sg-recap .sg-y b{background:var(--ios-accent);color:#fff}
+.ios-game .sg-recap .sg-n b{border-color:var(--ig-ink)}
+.ios-game .sg-c{color:var(--ig-ink2)}
+.ios-game .sg-same,.ios-game .sg-diff{color:var(--ig-ink)}
+.ios-game .sg-share{background:var(--ios-fill-primary);color:var(--ig-ink)}
+.ios-game .sg-coach{color:var(--ig-ink);border-top:.5px solid var(--ig-sep)}
+.ios-game .sg-coach b{color:var(--ig-ink)}
+.ios-game .sg-hard{color:var(--ig-ink)}
+.ios-game .sg-hard input{accent-color:var(--ios-accent)}
+.ios-game .sg-calib,.ios-game .sg-conf-sit{color:var(--ig-ink)}
+.ios-game .sg-dare-bad,.ios-game .sg-dare-ok{border-color:var(--ig-ink);color:var(--ig-ink)}
+.ios-game .rp-tag{color:var(--ig-ink)}
+.ios-game .rp-res{background:var(--ig-card);border:1px solid var(--ig-sep)}
+.ios-game .rp-bar{background:var(--ios-fill-primary)}
+.ios-game .rp-src{color:var(--ig-ink2)}
+.ios-game .sg-recap img{background:#fff;border-radius:50%;padding:2px}
+
+/* Loading, empty, error, played-today */
+.ios-game .sg-status{color:var(--ig-ink)}
+.ios-game .sg-spin{border-color:var(--ig-sep);border-top-color:var(--ios-accent)}
+.ios-game .sg-skel-card{background:var(--ios-fill-primary)}
+.ios-game .sg-empty-sub{color:var(--ig-ink2)}
+.ios-game .sg-clock{color:var(--ig-ink)}
+.ios-game .sg-link{color:#fff}
+
+/* Center 'Play X of 5' across the whole bar: PR 342 positions .sg-count inside .sg-top-r (position:relative),
+   which squeezes it to 0px wide. Anchor it to the sticky bar instead. */
+.ios-game .sg-top-r{position:static}
+
+/* House rule: 48px tap targets for the play bar's back and menu buttons on the daily game. */
+.ios-game .sg-back,.ios-game .sg-menu{width:48px;height:48px;min-width:48px;min-height:48px}
+
+/* Result screen fits 360x740 with no page scroll: tighter verdict, card and field. */
+.ios-game .sg-rv .sg-verdict{font-size:26px;margin:6px 0 8px}
+.ios-game .sg-rv .sg-glyph{width:34px;height:34px;font-size:20px}
+.ios-game .sg-rv .sg-res{padding:6px 12px;margin-bottom:8px}
+.ios-game .sg-rv .sg-ln{padding:3px 0}
+.ios-game .sg-rv .igf-wrap{min-height:66px}
+.ios-game .sg-rv .igf-pill{margin-top:6px;padding:3px 12px}
+.ios-game .sg-rv .ml{margin:6px 0 0}
+.ios-game .sg-rv .sg-btns{padding-top:6px}
+body.ios-play-active .ios-game .sg-rv{padding-bottom:calc(var(--ios-home-safe) + 8px)}
+@media (max-width:375px){.ios-game .sg-rv .sg-v{font-size:15px}.ios-game .sg-rv .sg-lbl{font-size:12px}.ios-game .sg-rv .sg-verdict{font-size:24px}}
