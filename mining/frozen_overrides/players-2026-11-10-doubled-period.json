@@ -1,0 +1,22 @@
+{
+  "file": "frontend/public/data/players/<gsis_id>.json",
+  "reason": "Data audit (backend/tests/test_data_audit.py, 2026-11-10): 14 swing desc strings in 9 QB player files end in a doubled period after Jr./Sr. (e.g. 'touchdown pass to Chris Godwin Jr..'), copied from games-v4 display_text. build_qb_profiles.py now collapses '..' to '.'. Listed swings may change only desc, and only to fix_doubled_period(old desc); every other field and every other swing stays identical. games-v4 is untouched.",
+  "rule": "doubled_period",
+  "swings": [
+    "00-0027973|2020_11_DAL_MIN|2|01:55|DAL|pass",
+    "00-0031280|2024_09_NO_CAR|4|01:09|NO|pass",
+    "00-0031345|2019_13_SF_BAL|1|12:00|SF|pass",
+    "00-0031503|2019_01_SF_TB|4|13:07|TB|pass",
+    "00-0031503|2019_02_TB_CAR|2|01:25|TB|pass",
+    "00-0033662|2021_08_DAL_MIN|3|14:18|DAL|pass",
+    "00-0034855|2024_06_TB_NO|3|04:37|TB|pass",
+    "00-0036971|2024_05_IND_JAX|2|07:12|JAX|pass",
+    "00-0036972|2024_15_NYJ_JAX|4|11:04|JAX|pass",
+    "00-0036972|2024_16_JAX_LV|3|01:03|JAX|pass",
+    "00-0039732|2024_13_CLE_DEN|3|10:12|DEN|pass",
+    "00-0039732|2024_17_DEN_CIN|4|08:56|DEN|pass",
+    "00-0039732|2024_17_DEN_CIN|4|00:14|DEN|pass",
+    "00-0039732|2025_20_BUF_DEN|4|01:01|DEN|pass"
+  ],
+  "approved_by": "PENDING HGIC"
+}
