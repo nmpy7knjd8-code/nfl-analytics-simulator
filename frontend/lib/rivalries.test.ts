@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { allGames, allPairs, pairKey, rivalry, seriesLine } from "./rivalries";
 
 test("every game lands in exactly one pair and pair counts add up", () => {
@@ -57,4 +58,10 @@ test("either order of a pair has a page that points at the alphabetical key", as
   assert.equal(canonicalPair("DET-XYZ"), null);
   assert.ok(reversePairs().includes("GB-DET"));
   assert.ok(!reversePairs().some((k) => allPairs().includes(k)));
+});
+
+test("rivalry pages label series totals as Score, not Points", () => {
+  const src = readFileSync(new URL("../app/rivalry/[pair]/page.tsx", import.meta.url), "utf8");
+  assert.match(src, />\s*Score:/);
+  assert.doesNotMatch(src, />\s*Points:/);
 });
