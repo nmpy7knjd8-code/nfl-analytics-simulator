@@ -24,7 +24,12 @@ test("/games and /games/[gameId] render the trademark footer and are off the leg
   assert.match(read("app/games/[gameId]/page.tsx"), /className="sg-app ios-games"/);
   const chrome = read("lib/routeChrome.test.ts");
   assert.match(chrome, /LEGACY_ROUTES = new Set<string>\(\[\]\)/);
-  assert.doesNotMatch(chrome, /"\/games\/\[gameId\]"/);
+  assert.doesNotMatch(chrome.split("for (const")[0], /"\/games\/\[gameId\]"/);
+  const nav = read("components/AppNav.tsx");
+  const body = nav.match(/function useGameRoute[\s\S]*?\n}/)?.[0] ?? "";
+  assert.match(body, /"\/games"/);
+  assert.doesNotMatch(body, /"\/games\/"/);
+  assert.doesNotMatch(body, /startsWith\(/);
 });
 
 test("changed games files contain none of the banned colors", () => {
@@ -56,8 +61,14 @@ test("house-rule words stay off the games restyle fan screens", () => {
   // play_id may appear as a data key; it must not be shown as fan text.
   assert.doesNotMatch(blob, /["'`][^"'`]{0,40}play[_ -]?id[^"'`]{0,40}["'`]/i);
   // Overtime win chance must not be plotted; the existing chart already stops at regulation.
-  assert.match(read("components/WinProbabilityChart.tsx"), /Regulation only/);
+  const chart = read("components/WinProbabilityChart.tsx");
+  assert.match(chart, /Regulation only/);
+  assert.match(chart, /!p\.is_overtime && p\.quarter <= 4/);
   assert.match(read("app/games/[gameId]/page.tsx"), /Win chance/);
+  const detail = read("app/games/[gameId]/GameDetail.tsx");
+  assert.doesNotMatch(detail, /win chance|home_wp|wp_pre/i);
+  assert.match(detail, /wins it/);
+  assert.match(read("app/games/[gameId]/page.tsx"), /otWinner=\{overtime \? winner : null\}/);
 });
 
 test("games restyle uses the system font and iOS tokens, not Inter", () => {

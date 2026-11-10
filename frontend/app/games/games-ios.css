@@ -1,5 +1,13 @@
 /* iOS restyle for /games and /games/[id]. Uses --ios-* tokens. Light default, dark via prefers-color-scheme. */
 
+html:has(.ios-games),
+body:has(.sg-app.ios-games),
+body:has(.ios-games) .app-shell,
+body:has(.ios-games) .app-stage {
+  background: var(--ios-background-grouped);
+  color: var(--ios-label-primary);
+}
+
 .ios-games.sg-app {
   --sg-b: var(--ios-accent);
   max-width: 430px;
@@ -20,10 +28,38 @@
   box-shadow: none;
 }
 
+.ios-games.sg-app,
+.ios-games.sg-app *:not(.ios-large-title) {
+  font-family: var(--ios-font-text);
+}
+
+.ios-games .ios-large-title {
+  font-family: var(--ios-font-display);
+}
+
+.ios-games :focus-visible {
+  outline: 2px solid var(--ios-accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
 .ios-games .sg-brand,
-.ios-games .sg-count {
+.ios-games .sg-count,
+.ios-games .sg-menu {
   color: var(--ios-label-primary);
   font-family: var(--ios-font-text);
+}
+
+.ios-games .sg-menu-list {
+  background: var(--ios-background-elevated);
+  border: 0.5px solid var(--ios-separator);
+  box-shadow: var(--ios-shadow-card);
+}
+
+.ios-games .sg-menu-list a,
+.ios-games .sg-menu-group {
+  color: var(--ios-label-primary);
+  border-color: var(--ios-separator);
 }
 
 .ios-games .sg-brand span {
@@ -32,6 +68,7 @@
 
 .ios-games .sg-tm-note {
   color: var(--ios-label-tertiary);
+  background: var(--ios-background-grouped);
   font-size: var(--ios-text-caption-1);
   text-align: center;
   margin: var(--ios-space-6) 0 var(--ios-space-4);
@@ -167,23 +204,22 @@
 
 .ios-game-teams {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 2px var(--ios-space-3);
+  gap: 2px;
   min-width: 0;
   flex: 1;
 }
 
 .ios-game-meta {
-  grid-column: 1 / -1;
   color: var(--ios-label-secondary);
   font-size: var(--ios-text-footnote);
+  margin-top: 2px;
 }
 
 .ios-game-side {
-  display: flex;
+  display: grid;
+  grid-template-columns: 22px auto 1fr;
   align-items: center;
-  gap: 6px;
+  column-gap: 8px;
   min-width: 0;
 }
 
@@ -195,6 +231,14 @@
 .gsb-sc {
   font-variant-numeric: tabular-nums;
   font-weight: 400;
+  text-align: right;
+}
+
+.ios-game-sc {
+  justify-self: end;
+}
+
+.gsb-sc {
   margin-left: auto;
 }
 
@@ -209,7 +253,9 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--ios-background-grouped);
+  background: color-mix(in srgb, var(--ios-background-grouped) 86%, transparent);
+  backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
+  -webkit-backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
   padding: var(--ios-space-2) 0 var(--ios-space-3);
 }
 
@@ -220,6 +266,7 @@
   min-height: 56px;
   border-radius: var(--ios-radius-lg);
   overflow: hidden;
+  box-shadow: 0 0 0 0.5px var(--ios-separator);
 }
 
 .gsb-side {
@@ -229,6 +276,7 @@
   min-width: 0;
   min-height: 56px;
   padding: 8px 10px;
+  white-space: nowrap;
 }
 
 .gsb-home {
@@ -312,6 +360,8 @@
   fill: none;
   stroke: var(--ios-accent);
   stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .ios-games .wp-mid,
@@ -333,7 +383,6 @@
 .ios-games .wp-ot-label {
   fill: var(--ios-chart-axis);
   font-family: var(--ios-font-text);
-  font-size: 11px;
 }
 
 .ios-games .wp-swing {
@@ -343,7 +392,8 @@
 }
 
 .ios-games .wp-swing-num {
-  font: 700 10px var(--ios-font-text);
+  font-family: var(--ios-font-text);
+  font-weight: 700;
   fill: var(--ios-label-on-accent);
   pointer-events: none;
 }
@@ -450,7 +500,8 @@
 
 .ios-seg-btn[aria-selected="true"] {
   background: var(--ios-background-elevated);
-  color: var(--ios-accent);
+  color: var(--ios-label-primary);
+  box-shadow: var(--ios-shadow-card);
 }
 
 /* Play / drive lists */
@@ -475,6 +526,7 @@
   padding-top: var(--ios-space-3);
   padding-bottom: var(--ios-space-3);
   white-space: normal;
+  scroll-margin-top: 96px;
 }
 
 .ios-play-meta {

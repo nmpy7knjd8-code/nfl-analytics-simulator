@@ -45,10 +45,12 @@ function GamesPlayList({
   gameId,
   fallback,
   swingRanks,
+  otWinner,
 }: {
   gameId: string;
   fallback: FeedRow[];
   swingRanks: [string, number][];
+  otWinner: string | null;
 }) {
   const [state, setState] = useState<PlayState>({ kind: "loading" });
   const [open, setOpen] = useState(false);
@@ -73,6 +75,24 @@ function GamesPlayList({
   const rows = state.kind === "ready" ? state.rows : fallback;
   const rank = new Map(swingRanks);
   const shown = open || rows.length <= PLAY_PREVIEW ? rows : rows.slice(0, PLAY_PREVIEW);
+  const lastOtId = [...rows].reverse().find((p) => p.quarter > 4)?.id;
+
+  useEffect(() => {
+    const playHash = () => {
+      const id = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+      if (id.startsWith("play-") && rows.some((p) => `play-${p.id}` === id)) setOpen(true);
+    };
+    playHash();
+    window.addEventListener("hashchange", playHash);
+    return () => window.removeEventListener("hashchange", playHash);
+  }, [rows]);
+
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+    if (!id.startsWith("play-") || !rows.some((p) => `play-${p.id}` === id)) return;
+    if (!open && rows.length > PLAY_PREVIEW) return;
+    document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }, [open, rows]);
   const quarters: { q: number; items: FeedRow[] }[] = [];
   for (const p of shown) {
     const last = quarters.at(-1);
@@ -103,6 +123,7 @@ function GamesPlayList({
               return (
                 <li className={`ios-list-row ios-play-row${r ? " is-swing" : ""}`} key={p.id} id={`play-${p.id}`}>
                   <span className="ios-play-meta">
+                    {otWinner && p.id === lastOtId ? `${otWinner} wins it · ` : ""}
                     {periodName(p.quarter)} · {clock(p.clock_seconds)}
                     {p.down ? ` · ${ORD[p.down]} & ${p.distance}` : ""}
                     {r ? ` · Swing ${r}` : ""}
@@ -187,10 +208,13 @@ export function GameDetail({
   gameId,
   fallback,
   swingRanks,
+  otWinner = null,
 }: {
   gameId: string;
   fallback: FeedRow[];
   swingRanks: [string, number][];
+  /** Team that won in overtime, named on the last OT play. No win-chance number. */
+  otWinner?: string | null;
 }) {
   const [tab, setTab] = useState<"plays" | "drives">("plays");
   return (
@@ -203,7 +227,13 @@ export function GameDetail({
           Drives
         </button>
       </div>
-      <div role="tabpanel">{tab === "plays" ? <GamesPlayList gameId={gameId} fallback={fallback} swingRanks={swingRanks} /> : <GamesDriveList gameId={gameId} />}</div>
+      <div role="tabpanel">
+        {tab === "plays" ? (
+          <GamesPlayList gameId={gameId} fallback={fallback} swingRanks={swingRanks} otWinner={otWinner} />
+        ) : (
+          <GamesDriveList gameId={gameId} />
+        )}
+      </div>
     </section>
   );
 }

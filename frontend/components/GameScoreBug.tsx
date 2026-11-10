@@ -35,14 +35,14 @@ export function GameScoreBug({
       <div className="gsb-side" style={{ background: panels.away.bg, color: panels.away.ink }}>
         <TeamLogo abbr={away} size={24} />
         <span className="gsb-abbr">{away}</span>
-        <span className={`gsb-sc${awayWin ? " is-winner" : ""}`}>{awayLabel}</span>
+        <span className={`gsb-sc ios-nums${awayWin ? " is-winner" : ""}`}>{awayLabel}</span>
       </div>
       <div className="gsb-mid">
         <span className="gsb-final">{mid}</span>
         <span className="gsb-week">Week {week}</span>
       </div>
       <div className="gsb-side gsb-home" style={{ background: panels.home.bg, color: panels.home.ink }}>
-        <span className={`gsb-sc${homeWin ? " is-winner" : ""}`}>{homeLabel}</span>
+        <span className={`gsb-sc ios-nums${homeWin ? " is-winner" : ""}`}>{homeLabel}</span>
         <span className="gsb-abbr">{home}</span>
         <TeamLogo abbr={home} size={24} />
       </div>

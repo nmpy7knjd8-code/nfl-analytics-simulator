@@ -79,7 +79,13 @@ for (const { file, route } of ROUTES) {
     if (!/<Header\b/.test(all) || !all.includes("☰") && !/from\s+["'][./]+(components\/)?SimpleGame["']/.test(all))
       problems.push("missing the Fourth & Daily <Header> with the ☰ menu (import { Header } from SimpleGame)");
     if (!/<Trademark\b/.test(all)) problems.push("missing the <Trademark /> footer");
-    if (!gameRouteBody.includes(`"${route.replace(/\[[^\]]+\]/g, "").replace(/\/+/g, "/")}`))
+    // The searched string is intentionally unclosed: "/playoffs/[season]" must match the
+    // comment prefix "/playoffs/" (no "/playoffs" exact entry). Do not add a closing quote.
+    const routeHit = gameRouteBody.includes(`"${route.replace(/\[[^\]]+\]/g, "").replace(/\/+/g, "/")}`);
+    // /games/[gameId] would need the prefix "/games/" in useGameRoute. That prefix check
+    // is forbidden (#418). Exact "/games" is in GAME_EXACT, and .sg-app hides the old bars.
+    const gamesDetail = route === "/games/[gameId]" && gameRouteBody.includes(`"/games"`) && /\bsg-app\b/.test(all);
+    if (!routeHit && !gamesDetail)
       problems.push(`not in AppNav useGameRoute(), so the old top bar and bottom nav still render on ${route}`);
     for (const [f, src] of srcs) {
       for (const [re, what] of DARK_MARKERS) {

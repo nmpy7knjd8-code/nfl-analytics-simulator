@@ -123,7 +123,7 @@ export default async function GameReplayPage({ params }: Props) {
               </section>
             ) : null}
 
-            <GameDetail gameId={id} fallback={fallbackRows} swingRanks={[...swingRank]} />
+            <GameDetail gameId={id} fallback={fallbackRows} swingRanks={[...swingRank]} otWinner={overtime ? winner : null} />
 
             <p className="ios-games-src">{GAME_SOURCE_LINE} Win chance is an estimate of each side’s chances at the snap.</p>
           </>

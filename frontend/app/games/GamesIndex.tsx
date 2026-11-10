@@ -167,12 +167,12 @@ export function GamesIndex({ built }: { built: string[] }) {
                     <span className="ios-game-side">
                       <TeamLogo abbr={g.away} size={22} />
                       <span className="ios-game-abbr">{g.away}</span>
-                      <span className={`ios-game-sc${s.awayWin ? " is-winner" : ""}`}>{s.away}</span>
+                      <span className={`ios-game-sc ios-nums${s.awayWin ? " is-winner" : ""}`}>{s.away}</span>
                     </span>
                     <span className="ios-game-side">
                       <TeamLogo abbr={g.home} size={22} />
                       <span className="ios-game-abbr">{g.home}</span>
-                      <span className={`ios-game-sc${s.homeWin ? " is-winner" : ""}`}>{s.home}</span>
+                      <span className={`ios-game-sc ios-nums${s.homeWin ? " is-winner" : ""}`}>{s.home}</span>
                     </span>
                     <span className="ios-game-meta">{when}</span>
                   </span>
