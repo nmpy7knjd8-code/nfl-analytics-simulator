@@ -8,3 +8,6 @@ body:has(.gs-no-tabs) .app-stage { padding-bottom: var(--safe-bottom); }
 .gs-no-tabs .swing-headline { display: block; -webkit-line-clamp: unset; overflow: visible; }
 .gs-no-tabs .swing-link { display: flex; align-items: center; min-height: 44px; }
 .gs-no-tabs .swing-link-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+
+/* Trademark footer: readable on the current dark game layout. */
+.gs-no-tabs .sg-tm-note { color: #fff; margin: 16px 0 24px; }

@@ -3,7 +3,7 @@ import { swingPctText } from "@/lib/stories/swings";
 
 import { useState } from "react";
 import type { Story } from "../../lib/stories/gameStory";
-import { CALL_LABEL, spot } from "../../lib/stories/keyFourths";
+import { CALL_LABEL, atSpot, spot } from "../../lib/stories/keyFourths";
 
 /** C1 Pause: step through the game's key 4th downs, tap to see the real call. */
 export function KeyFourths({ story }: { story: Story }) {
@@ -24,7 +24,7 @@ export function KeyFourths({ story }: { story: Story }) {
         </>
       ) : (
         <>
-          <p className="gs-sent">{k.team} faces 4th and {k.togo}{at ? ` at the ${at}` : ""}.</p>
+          <p className="gs-sent">{k.team} faces 4th and {k.togo}{at ? atSpot(at) : ""}.</p>
           <p className="gs-meta">Q{k.qtr} · {k.clock} · {k.team} ball</p>
           {shown ? (
             <>
