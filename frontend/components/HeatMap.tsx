@@ -105,7 +105,6 @@ export function EngineLayer({
       <EngineBar kind="model" label={view.modelLabel} value={view.modelGoPct} />
       <EngineBar kind="teams" label={view.teamsLabel} value={view.teamsWentPct} />
       <p className="hm-engine-summary" style={{ fontSize: iosType.footnote }}>{view.summary}</p>
-      {view.agreeLine ? <p className="hm-engine-agree" style={{ fontSize: iosType.caption1 }}>{view.agreeLine}</p> : null}
     </section>
   );
 }

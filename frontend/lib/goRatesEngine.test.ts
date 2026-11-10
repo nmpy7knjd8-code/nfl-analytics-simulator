@@ -68,16 +68,17 @@ test("D6: wording compares model go rate with how often teams went, with no bann
   assert.equal(v.teamsWentPct, pct(442, 510));
   assert.equal(v.modelLabel, MODEL_GO_LABEL);
   assert.equal(v.teamsLabel, TEAMS_WENT_LABEL);
-  assert.equal(v.summary, "Our model says go on 74% of these; teams went for it 87%.");
-  assert.equal(v.agreeLine, "When our model said go, teams went 100%.");
-  for (const s of [v.summary, v.agreeLine, v.modelLabel, v.teamsLabel]) {
+  assert.equal(v.summary, "Our model says go here 74% of the time. Teams went for it 87%.");
+  assert.doesNotMatch(v.summary, /When our model said go|of these/);
+  for (const s of [v.summary, v.modelLabel, v.teamsLabel]) {
     assert.doesNotMatch(s, BANNED);
   }
   const real = engineLayer(goRates, 0, 4, true)!;
   // 4th-and-1, opp 41-50: engineGo 353 / 356, went 322 / 356
   assert.equal(real.modelGoPct, pct(353, 356));
   assert.equal(real.teamsWentPct, pct(322, 356));
-  assert.doesNotMatch(real.summary + (real.agreeLine ?? ""), BANNED);
+  assert.equal(real.summary, `Our model says go here ${pct(353, 356)}% of the time. Teams went for it ${pct(322, 356)}%.`);
+  assert.doesNotMatch(real.summary, BANNED);
 });
 
 test("D6: HeatMap is unchanged when the engine block is absent", async () => {
@@ -106,7 +107,8 @@ test("D6: HeatMap renders nothing for the engine layer when the flag is off", as
   assert.match(on, /hm-engine/);
   assert.match(on, /Our model says go/);
   assert.match(on, /Teams went for it/);
-  assert.match(on, /Our model says go on 74% of these; teams went for it 87%\./);
+  assert.match(on, /Our model says go here 74% of the time\. Teams went for it 87%\./);
+  assert.doesNotMatch(on, /When our model said go/);
   assert.doesNotMatch(on, BANNED);
 });
 

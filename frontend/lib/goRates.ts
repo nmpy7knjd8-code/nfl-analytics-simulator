@@ -163,13 +163,11 @@ export const TEAMS_WENT_LABEL = "Teams went for it";
 export type EngineLayerView = {
   modelGoPct: number;
   teamsWentPct: number;
-  agreedPct: number | null;
   rated: number;
   plays: number;
   modelLabel: typeof MODEL_GO_LABEL;
   teamsLabel: typeof TEAMS_WENT_LABEL;
   summary: string;
-  agreeLine: string | null;
 };
 
 /** Comparison for one cell. Null when the flag is off, the file has no engine, or the cell is too thin. */
@@ -184,22 +182,18 @@ export function engineLayer(
   const eng = file.engineCells[row]?.[col];
   if (!cell || !eng) return null;
   const [plays, went] = cell;
-  const [rated, engineGo, , , , wentWhenEngineGo] = eng;
+  const [rated, engineGo] = eng;
   if (plays < file.minPlays || rated <= 0) return null;
   const modelGoPct = pct(engineGo, rated);
   const teamsWentPct = pct(went, plays);
-  const agreedPct = engineGo ? pct(wentWhenEngineGo, engineGo) : null;
-  const summary = `${MODEL_GO_LABEL} on ${modelGoPct}% of these; ${TEAMS_WENT_LABEL.toLowerCase()} ${teamsWentPct}%.`;
-  const agreeLine = agreedPct == null ? null : `When our model said go, teams went ${agreedPct}%.`;
+  const summary = `${MODEL_GO_LABEL} here ${modelGoPct}% of the time. ${TEAMS_WENT_LABEL} ${teamsWentPct}%.`;
   return {
     modelGoPct,
     teamsWentPct,
-    agreedPct,
     rated,
     plays,
     modelLabel: MODEL_GO_LABEL,
     teamsLabel: TEAMS_WENT_LABEL,
     summary,
-    agreeLine,
   };
 }

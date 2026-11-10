@@ -1834,7 +1834,6 @@ body { font-variant-numeric: tabular-nums; }
 .hm-engine-row.is-model .hm-engine-fill{background:var(--ios-accent)}
 .hm-engine-row.is-teams .hm-engine-fill{background:var(--ios-label-secondary)}
 .hm-engine-summary{margin:0;font-size:var(--ios-text-footnote);line-height:var(--ios-leading-body);color:var(--ios-label-primary)}
-.hm-engine-agree{margin:0;font-size:var(--ios-text-caption-1);line-height:var(--ios-leading-body);color:var(--ios-label-secondary)}
 @media (prefers-reduced-motion:reduce){
   .hm-engine-fill{transition:none}
 }
