@@ -52,7 +52,7 @@ Interior app screens skip the marketing hero; they open with a quiet top bar, pa
 
 ## 3. Color
 
-Light theme is default. A future dark theme is out of MVP scope; do not design dark-first.
+Light theme is default. Dark mode is allowed when it follows the system setting (`prefers-color-scheme`) through the iOS design tokens in `frontend/app/tokens.css` (merged in #325). The old black theme and the old bottom nav remain banned. Do not design dark-first. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 ### 3.1 CSS variables
 

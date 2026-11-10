@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { isFirstDownDoc, isGood, outcomeText, pct, plays, situation, weekSet, type FdPlay } from "./firstDown";
+import { isFirstDownDoc, isGood, outcomeText, pct, plays, situation, weekSet, whyText, type FdPlay } from "./firstDown";
 
 const raw = readFileSync(new URL("../../public/data/stories/firstdown.json", import.meta.url), "utf8");
 const doc = JSON.parse(raw);
@@ -40,5 +40,20 @@ test("a week is 5 plays, stable within the week, different the next", () => {
 test("wording: percent, no EPA/WPA/xpass, no ids or betting words", () => {
   assert.equal(pct(doc.league.pass.good), "54%");
   assert.equal(pct(0.001), "<1%");
-  for (const p of plays(doc)) assert.doesNotMatch(`${situation(p)} ${outcomeText(p)}`, /EPA|WPA|xpass|expected|_|odds|bet/i);
+  for (const p of plays(doc)) assert.doesNotMatch(`${situation(p)} ${outcomeText(p)} ${whyText(p)}`, /EPA|WPA|xpass|expected|_|odds|bet|\bpoints?\b/i);
+});
+
+test("QA N2: reveal Why says why the play was good or not, not the league rate", () => {
+  const b = plays(doc)[0];
+  const m = (o: Partial<FdPlay>): FdPlay => ({ ...b, ...o });
+  assert.equal(whyText(m({ call: "run", result: "GAIN", yards: 2 })), "Why: a 2-yard gain on 1st & 10 leaves 2nd & 8, short of a good start.");
+  assert.equal(whyText(m({ call: "run", result: "1D", yards: 12 })), "Why: that run picked up a first down and kept the drive going.");
+  assert.equal(whyText(m({ call: "pass", result: "TD", yards: 8 })), "Why: that play scored a touchdown.");
+  assert.equal(whyText(m({ call: "pass", result: "INC", yards: 0 })), "Why: the incompletion left 2nd & 10, no closer to a first down.");
+  assert.equal(whyText(m({ call: "pass", result: "INT", yards: 0 })), "Why: the interception ended the drive and gave the other team the ball.");
+  assert.equal(whyText(m({ call: "run", result: "FUM", yards: 5 })), "Why: the fumble ended the drive and gave the other team the ball.");
+  assert.equal(whyText(m({ call: "pass", result: "GAIN", yards: 6 })), "Why: a 6-yard gain on 1st & 10 is a good start, even without a first down.");
+  assert.equal(whyText(m({ call: "run", result: "GAIN", yards: 0 })), "Why: no gain left 2nd & 10, no closer to a first down.");
+  assert.equal(whyText(m({ call: "run", result: "GAIN", yards: -2 })), "Why: a loss of 2 yards made the next down longer.");
+  assert.doesNotMatch(whyText(m({ result: "GAIN", yards: 2 })), /54%|49%|Since 2019/i);
 });
