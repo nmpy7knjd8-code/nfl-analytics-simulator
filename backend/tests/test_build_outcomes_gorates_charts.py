@@ -115,6 +115,60 @@ def test_gorates_frozen():
     assert bg.check_frozen(old, built) == ["3-4"]
 
 
+
+# ---------- D6 engine layer (additive to gorates/v1) ----------
+def _engine_fixture():
+    rows = [{"season": 2025, "game_date": "", "down": 4, "qtr": 2, "ydstogo": 1, "yardline_100": 45, "play_type": pt,
+             "kick_distance": None, "game_id": "2025_01_A_B", "play_id": float(i)}
+            for i, pt in enumerate(["run", "pass", "punt", "punt", "field_goal"], 1)]
+    rows.append({**rows[0], "play_id": 99.0, "qtr": 5})  # overtime: not counted, even with an engine call
+    calls = {("2025_01_A_B", 1): ("go", 1), ("2025_01_A_B", 2): ("punt", 0), ("2025_01_A_B", 3): ("go", 0),
+             ("2025_01_A_B", 4): ("punt", 1), ("2025_01_A_B", 5): ("fg", 0), ("2025_01_A_B", 99): ("go", 0)}
+    return rows, calls
+
+
+def test_gorates_engine_cells_count_the_same_plays():
+    rows, calls = _engine_fixture()
+    eng = bg.build_engine(rows, "fourth_down_engine.v3", calls, "2026-02-08", "games-v7")
+    assert eng["engine"] == {"version": "fourth_down_engine.v3",
+                             "source": "Our 4th-down engine's best call for the same plays as cells, from the games-v7 game files",
+                             "dataThrough": "2026-02-08", "closeCallPct": 2,
+                             "fields": ["rated", "engineGo", "engineKick", "enginePunt", "closeCalls", "wentWhenEngineGo"]}
+    assert eng["engineCells"][0][4] == [5, 2, 1, 2, 2, 1]  # go on 1 and 3 (coaches went on 1 only)
+    assert bg.build(rows)["cells"][0][4][0] == 5
+    del calls[("2025_01_A_B", 5)]  # a play with no engine call is left out of rated only
+    assert bg.build_engine(rows, "v", calls, "", "t")["engineCells"][0][4] == [4, 2, 0, 2, 2, 1]
+
+
+def test_gorates_engine_committed_layer():
+    p, site = _site("gorates.json")
+    eng = site["engine"]
+    assert eng["version"] == "fourth_down_engine.v3" and eng["closeCallPct"] == 2
+    assert eng["fields"] == ["rated", "engineGo", "engineKick", "enginePunt", "closeCalls", "wentWhenEngineGo"]
+    assert eng["dataThrough"] == site["dataThrough"] and "example" not in eng
+    assert len(site["engineCells"]) == len(site["distances"])
+    for row, erow in zip(site["cells"], site["engineCells"], strict=True):
+        assert len(erow) == len(site["bands"])
+        for (plays, went, _fg, _punts), (rated, go, kick, punt, close, went_go) in zip(row, erow, strict=True):
+            assert rated == plays  # every kept play has an engine call
+            assert go + kick + punt == rated and close <= rated and went_go <= min(go, went)
+    assert site["engineCells"][0][4] == [356, 353, 1, 2, 157, 319]  # 4th-and-1 at the opp 41-50
+    assert not any(k in json.dumps(site) for k in ("gap", "alt_cost", "_pts"))
+
+
+def test_gorates_engine_frozen():
+    rows, calls = _engine_fixture()
+    new = {**bg.build(rows), **bg.build_engine(rows, "fourth_down_engine.v3", calls, "", "games-v7")}
+    old = json.loads(bg.dumps(new))
+    assert bg.check_engine_frozen(old, new) == [] and bg.check_engine_frozen(None, new) == []
+    old["engineCells"][0][4][1] += 1
+    assert bg.check_engine_frozen(old, new) == ["engine 1-4"]
+    old = json.loads(bg.dumps(new))
+    old["engine"]["version"] = "fourth_down_engine.v2"
+    assert bg.check_engine_frozen(old, new) == ["engine fourth_down_engine.v2 -> fourth_down_engine.v3"]
+    base_only = {k: v for k, v in old.items() if k not in ("engine", "engineCells")}
+    assert bg.check_engine_frozen(base_only, new) == []  # first engine publish
+
 # ---------- E3 match charts ----------
 def test_charts_regulation_only_with_ot_flag():
     built = bm.build(C_ROWS)[2023]["games"]
@@ -166,7 +220,14 @@ def test_full_rebuild_matches_committed_files():
     paths = sorted(glob.glob(f"{d}/pbp_20*.parquet"))
     strip = lambda o: {k: v for k, v in o.items() if k != "builtAt"}
     assert strip(bo.build(bo.load_rows(paths))) == strip(_site("outcomes.json")[1])
-    assert strip(bg.build(bg.load_rows(paths))) == strip(_site("gorates.json")[1])
+    rows = bg.load_rows(paths)
+    site = _site("gorates.json")[1]
+    built = bg.build(rows)
+    assert built == {k: v for k, v in site.items() if k not in ("builtAt", "engine", "engineCells")} | {"builtAt": ""}
+    games = ROOT / "frontend/public/data/games"
+    if games.is_dir() and any(games.glob("20??_*_*.json")):
+        eng = bg.build_engine(rows, *bg.load_engine_calls(str(games)), built["dataThrough"], "games-v7")
+        assert eng["engineCells"] == site["engineCells"] and eng["engine"]["version"] == site["engine"]["version"]
     for s, new in bm.build(bm.load_rows(paths)).items():
         assert strip(new) == strip(_site(f"charts/{s}.json")[1])
 

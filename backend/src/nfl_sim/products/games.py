@@ -31,6 +31,8 @@ SWING_THRESHOLD = 0.08
 FACT_COLUMNS = ("game_id", "season", "game_type", "week", "gameday", "home_team", "away_team",
                 "home_score", "away_score", "overtime", "stadium", "home_coach", "away_coach",
                 "roof", "wind", "temp")
+# nflverse schedules mislabel these; nflverse play-by-play has an overtime period (audit #328).
+OVERTIME_FIXES = {"2021_12_LV_DAL": True}  # LV won 36-33 in OT; schedules say overtime 0
 OPEN_AIR_ROOFS = ("outdoors", "open")  # nflverse roof; wind/temp only reported for open-air games
 PLAY_COLS = ["game_id", "play_id", "qtr", "quarter_seconds_remaining", "game_seconds_remaining", "posteam",
              "down", "ydstogo", "yardline_100", "desc", "play_type", "home_wp", "total_home_score",
@@ -66,7 +68,7 @@ def index_rows(schedules: pd.DataFrame, season: int) -> list[dict]:
             "season_type": "REG" if r["game_type"] == "REG" else "POST", "game_type": r["game_type"],
             "date": str(r["gameday"]), "home": r["home_team"], "away": r["away_team"],
             "home_score": int(r["home_score"]), "away_score": int(r["away_score"]),
-            "overtime": bool(int(r["overtime"])), "stadium": r["stadium"],
+            "overtime": OVERTIME_FIXES.get(r["game_id"], bool(int(r["overtime"]))), "stadium": r["stadium"],
             "home_coach": r["home_coach"], "away_coach": r["away_coach"],
             **weather(r),
         })
@@ -119,6 +121,30 @@ def _settle_end_game(plays: pd.DataFrame, game: dict) -> pd.DataFrame:
     return plays
 
 
+def null_overtime_win_chance(doc: dict) -> dict:
+    """House rule: no win chance in overtime (audit #328). game.v1 doc in, new doc out.
+
+    Overtime rows (qtr >= 5, including the END GAME row) get home_wp / home_wp_after None and are never
+    swings or model fallbacks. The win-chance series ends at the last regulation row: its after-value
+    would be the first overtime value, so it is None too (and that row is no longer a swing).
+    final_home_wp keeps the game's result (1/0/0.5); it is the result, not a win chance."""
+    plays = [dict(p) for p in doc["plays"]]
+    ot = {i for i, p in enumerate(plays) if p["qtr"] >= 5}
+    if not ot:
+        return doc
+    first = min(ot)
+    for i in ot:
+        plays[i].update(home_wp=None, home_wp_after=None, swing=False)
+    reg = [i for i in range(first) if plays[i]["home_wp"] is not None]
+    if reg:
+        plays[reg[-1]].update(home_wp_after=None, swing=False)
+    dropped = {plays[i]["play_id"] for i in ot} | ({plays[reg[-1]]["play_id"]} if reg else set())
+    ot_ids = {plays[i]["play_id"] for i in ot}
+    return {**doc, "plays": plays,
+            "swing_play_ids": [x for x in doc["swing_play_ids"] if x not in dropped],
+            "wp_fallback_play_ids": [x for x in doc.get("wp_fallback_play_ids", []) if x not in ot_ids]}
+
+
 def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: dict,
              players: dict | None = None, roster: dict | None = None) -> dict:
     # nflverse row order is play order; play_id is NOT monotone (e.g. late timeouts).
@@ -155,14 +181,14 @@ def game_doc(game: dict, plays: pd.DataFrame, fourth: dict[float, dict], prov: d
             "fourth_down": fourth.get(float(r["play_id"])),
         })
     last = series.points[-1] if series.points else None
-    return {
+    return null_overtime_win_chance({
         "schema_version": "game.v1", "provenance": prov, "game": game,
         "wp_perspective": "home", "swing_threshold": SWING_THRESHOLD,
         "final_home_wp": None if last is None else last.home_wp_post,
         "swing_play_ids": [int(x) for x in series.swing_play_ids],
         "wp_fallback_play_ids": [int(r["play_id"]) for r in recs if r.get("wp_fallback")],
         "plays": rows,
-    }
+    })
 
 
 def fourth_lookup(fd: pd.DataFrame, game_id: str) -> dict[float, dict]:
