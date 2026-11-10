@@ -20,10 +20,10 @@ export type FeedPlay = {
   dist: number | null;
   text: string;
   penalty: string | null;
-  /** Home team's win chance after the play (0..1). */
-  homeWp: number;
-  /** Home win chance just before the snap. */
-  homeWpBefore: number;
+  /** Home team's win chance after the play (0..1). Null when the file has no value (overtime, or a null row). */
+  homeWp: number | null;
+  /** Home win chance just before the snap. Null when the file has no value. */
+  homeWpBefore: number | null;
   big: boolean;
   scoring: boolean;
   fourth: boolean;
@@ -50,14 +50,17 @@ export function buildFeed(doc: GameFileV2): FeedGame {
   const c = doc.cols;
   const n = c.play_id.length;
   const swings = new Set(doc.swing_play_ids);
-  // The game's real result (1/0 for the home team, 0.5 tie). The END GAME row's home_wp is only a model fallback,
-  // so no swing is ever read from it: the last real play's after-value is the final result.
+  // The game's real result (1/0 for the home team, 0.5 tie). Used only when a regulation
+  // game runs out of rows: never as a placeholder for a null overtime value.
   const result = doc.game.home_score != null && doc.game.away_score != null ? (doc.game.home_score > doc.game.away_score ? 1 : doc.game.home_score < doc.game.away_score ? 0 : 0.5) : doc.final_home_wp ?? 0.5;
-  const wpAt = (i: number): number => {
+  /** Next win-chance value at or after row i. Does not look into or through overtime, and never fills a null with the result. */
+  const wpAt = (i: number): number | null => {
     for (let j = i; j < n; j++) {
       if (/^END GAME/i.test(c.text[j] ?? "")) break;
+      if (c.qtr[j] > 4) return null;
       if (c.home_wp[j] != null) return c.home_wp[j] as number;
     }
+    if (i < n && c.qtr[i] > 4) return null;
     return result;
   };
   const plays: FeedPlay[] = [];
@@ -65,7 +68,7 @@ export function buildFeed(doc: GameFileV2): FeedGame {
     if (c.play_type[i] == null || NON_PLAY.test(c.text[i] ?? "")) continue;
     const text = (c.display_text?.[i] || c.text[i] || "").trim();
     if (!text) continue;
-    const before = c.home_wp[i] ?? wpAt(i);
+    const before = c.qtr[i] > 4 ? null : (c.home_wp[i] ?? wpAt(i));
     const after = wpAt(i + 1);
     // game.v2 score columns are the score after the play on that row.
     const home = c.home_score[i] ?? 0;
@@ -76,7 +79,7 @@ export function buildFeed(doc: GameFileV2): FeedGame {
       id: String(c.play_id[i]), qtr: c.qtr[i], sec: c.sec[i], t: elapsed(c.qtr[i], c.sec[i]), team: c.posteam[i],
       down: c.down[i], dist: c.ydstogo[i], text, penalty: c.penalty_text?.[i] ?? null,
       homeWp: after, homeWpBefore: before, // The precomputed list can be stale (mined with the old END GAME fallback), so the tag must also agree with the swing shown.
-      big: c.qtr[i] <= 4 && swings.has(c.play_id[i]) && Math.abs(after - before) >= DEFAULT_SWING_WP_THRESHOLD,
+      big: c.qtr[i] <= 4 && before != null && after != null && swings.has(c.play_id[i]) && Math.abs(after - before) >= DEFAULT_SWING_WP_THRESHOLD,
       scoring: home !== prevHome || away !== prevAway,
       fourth: c.down[i] === 4 && c.play_type[i] !== "no_play",
       homeScore: home, awayScore: away, ot: c.qtr[i] > 4,
@@ -123,6 +126,7 @@ export function winLine(g: Pick<FeedGame, "home" | "away">, wp: number): { team:
 
 /** Change in that team's win chance on this play, in percent from the rounded shown values (as #269), e.g. "NYJ's win chance down 1%". */
 export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
+  if (p.homeWp == null || p.homeWpBefore == null) return "";
   const lead = winLine(g, p.homeWp);
   const sign = lead.team === g.home ? 1 : -1;
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
@@ -133,22 +137,27 @@ export function swingText(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): stri
 
 /** S7 Big-play card tag: the team that gained and its swing in percent, from the same rounded numbers shown, e.g. "KC +12% win chance". */
 export function bigPlayGain(g: Pick<FeedGame, "home" | "away">, p: FeedPlay): string {
+  if (p.homeWp == null || p.homeWpBefore == null) return "";
   const d = Math.round(p.homeWp * 100) - Math.round(p.homeWpBefore * 100);
   const n = Math.abs(d);
   return `${d >= 0 ? g.home : g.away} +${n < 1 ? "<1" : n}% win chance`;
 }
 
 /** Points for the chart: start of game, then each play's chance after it. */
-/** Regulation only: overtime plays never appear on the chart (house rule). */
+/** Regulation only; null rows are omitted — no placeholder, no fallback, no line through overtime. */
 export function chartPoints(plays: FeedPlay[]): { t: number; wp: number; id: string | null }[] {
   const reg = plays.filter((p) => !p.ot);
-  if (!reg.length) return [];
-  return [{ t: 0, wp: reg[0].homeWpBefore, id: null }, ...reg.map((p) => ({ t: p.t, wp: p.homeWp, id: p.id }))];
+  const pts: { t: number; wp: number; id: string | null }[] = [];
+  if (reg[0]?.homeWpBefore != null) pts.push({ t: 0, wp: reg[0].homeWpBefore, id: null });
+  for (const p of reg) {
+    if (p.homeWp != null) pts.push({ t: p.t, wp: p.homeWp, id: p.id });
+  }
+  return pts;
 }
 
-/** Rows that can open the chart: regulation plays only. */
-export function canChart(p: FeedPlay): boolean {
-  return !p.ot;
+/** Rows that can open the chart: regulation plays with a real after-value. */
+export function canChart(p: FeedPlay): p is FeedPlay & { homeWp: number } {
+  return !p.ot && p.homeWp != null;
 }
 
 const ROUNDS = ["Wild Card", "Divisional", "Conference", "Super Bowl"];
