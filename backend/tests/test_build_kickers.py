@@ -117,12 +117,20 @@ def test_frozen():
     new = json.loads(json.dumps(d))
     new["games"][0][2] = "00-0000000"
     assert bk.check_frozen(d, new)
-    # a new season may be added and may change kick_plays
+    # a new open-season row may be appended; kick_plays (the closed-season total) stays frozen
     newer = json.loads(json.dumps(d))
     newer["season_list"] = d["season_list"] + [2026]
     newer["rows"] = d["rows"] + [[2026, "BAL", "00-0029597", "Justin Tucker"]]
-    newer["kick_plays"] = d["kick_plays"] + 1
     assert bk.check_frozen(d, newer) == []
+    newer["kick_plays"] = d["kick_plays"] + 1
+    assert bk.check_frozen(d, newer)
+    # a 2026 game override may be appended; a closed-season game may not
+    with_game = json.loads(json.dumps(d))
+    with_game["games"] = d["games"] + [["2026_01_BAL_PIT", "BAL", "00-0029597", "Justin Tucker"]]
+    assert bk.check_frozen(d, with_game) == []
+    closed = json.loads(json.dumps(d))
+    closed["games"] = d["games"] + [["2025_18_BAL_PIT", "BAL", "00-0029597", "Justin Tucker"]]
+    assert bk.check_frozen(d, closed)
 
 
 def test_frozen_change_exits_nonzero_and_writes_nothing(tmp_path, monkeypatch):

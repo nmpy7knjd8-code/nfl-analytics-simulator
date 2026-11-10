@@ -8,7 +8,9 @@ from the season kicker. Charts UI looks up (game_id, team) in ``games`` and fall
 in ``rows``. 43 team-games with no FG/XP therefore use the season kicker. No betting, EPA, WPA or play_id
 fields.
 
-Frozen: published season rows and game rows may not change unless a season is added.
+Frozen: published season and game rows never change; kick_plays stays the closed-season
+total; new rows may only be appended from an open season past the week watermark
+(mining/_frozen.py). Play-by-play is loaded with read_pbp (finished games only).
 
 Usage: python mining/build_kickers.py PLAYERS_PARQUET PBP_PARQUET [...] [--out data/site/kickers.json]
 """
@@ -22,7 +24,8 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _frozen import check_frozen as _check  # noqa: E402
+import _frozen as fz  # noqa: E402
+from _frozen import check_frozen as _check, check_rows, read_pbp  # noqa: E402
 from build_stamp import stamp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,11 +111,19 @@ def build(plays: list[dict[str, Any]], names: dict[str, str]) -> dict[str, Any]:
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
-    # _frozen.check_frozen zips arrays itself when "cols" is set; pass arrays through.
-    bad = _check(old, new, lambda r: (r["season"], r["team"]), "rows", ("kick_plays",))
+    # Season rows have no game_id; a new team-season is frozen iff the season is closed.
+    def as_rows(f: dict[str, Any], rec: str, cols: list[str]) -> list[dict[str, Any]]:
+        return [dict(zip(cols, r)) for r in f.get(rec, [])]
+    old_s, new_s = as_rows(old, "rows", old["cols"]), as_rows(new, "rows", new["cols"])
+    newmap = {(r["season"], r["team"]): r for r in new_s}
+    bad = [f"changed/removed {(r['season'], r['team'])}" for r in old_s
+           if newmap.get((r["season"], r["team"])) != r]
+    bad += check_rows(old_s, new_s, lambda r: (r["season"], r["team"]), "kickers",
+                      gid=lambda r: f"{r['season']}_99_SEASON_ROW")
+    bad += [f"summary {p}" for p in fz.grow_only(old.get("kick_plays"), new.get("kick_plays"), "kick_plays.")]
     o = {**old, "cols": old["game_cols"]}
     n = {**new, "cols": new["game_cols"]}
-    bad += _check(o, n, lambda r: (r["game_id"], r["team"]), "games")
+    bad += _check(o, n, lambda r: (r["game_id"], r["team"]), "games", name="kickers")
     return bad
 
 
@@ -121,8 +132,7 @@ def load(players: str, pbp: list[str]) -> tuple[list[dict[str, Any]], dict[str, 
 
     pl = pd.read_parquet(players, columns=["gsis_id", "display_name"]).dropna(subset=["gsis_id", "display_name"])
     names = dict(zip(pl["gsis_id"].astype(str), pl["display_name"].astype(str)))
-    frames = [pd.read_parquet(p, columns=PBP_COLUMNS) for p in pbp]
-    df = pd.concat(frames, ignore_index=True)
+    df = read_pbp(pbp, PBP_COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     dates = df.drop_duplicates("game_id")[["game_id", "game_date", "season"]].copy()
     dates["play_type"] = None
