@@ -38,3 +38,11 @@ test("chip rows start at the left edge and scroll only enough to show the select
 test("/heatmap corner and yard labels stay pinned over the scrolled squares", () => {
   for (const sel of [".hm-corner", ".hm-rowh"]) assert.match(rule(sel), /position:sticky;left:-6px.*background:#fff/);
 });
+
+test("team and playoff chip rows use ChipScroll edge fades as the scroll cue", () => {
+  const cs = readFileSync(new URL("../components/ChipScroll.tsx", import.meta.url), "utf8");
+  assert.match(cs, /classList\.toggle\("fade-l"/);
+  assert.match(cs, /classList\.toggle\("fade-r"/);
+  assert.match(readFileSync(new URL("../components/TeamRedzone.tsx", import.meta.url), "utf8"), /<ChipScroll>/);
+  assert.match(readFileSync(new URL("../app/playoffs/[season]/page.tsx", import.meta.url), "utf8"), /<ChipScroll>/);
+});
