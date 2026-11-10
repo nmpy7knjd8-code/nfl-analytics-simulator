@@ -27,6 +27,8 @@ import { FieldView } from "./FieldView";
 import { ModelLimits } from "./ModelLimits";
 import { BreakEvenBar } from "./BreakEvenBar";
 import { ScoreBug, teamLogo } from "./ScoreBug";
+import { TvScoreBug } from "./TvScoreBug";
+import { IosField } from "./IosField";
 import themeSchedule from "../lib/themeSchedule.json";
 import { hasThemedDay } from "../lib/themeReveal";
 import { CONFIDENCE_STEPS, HARD_NEXT_LABEL, calibrationText, gameItems, readConfs, readHard, writeConfs, writeHard } from "../lib/hardMode";
@@ -102,7 +104,22 @@ function TodayHub({ dayKey, item, onStart }: { dayKey: string; item: DailyItem; 
 
 export const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
 
+/** The daily game (/ and /daily) wears the iOS v2 play screen (app/ios-game.css, scoped to .ios-game); practice is unchanged. */
 export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) {
+  return mode === "daily" ? <div className="ios-game"><SimpleGamePlay mode="daily" /></div> : <SimpleGamePlay mode={mode} />;
+}
+
+/** Thin 5-segment progress bar under the play bar (daily only). */
+function PlayProgress({ step, total }: { step: number; total: number }) {
+  return (
+    <div className="ig-prog" aria-hidden="true">
+      {Array.from({ length: total }, (_, i) => <i key={i} className={i <= step ? "ig-on" : ""} />)}
+    </div>
+  );
+}
+
+function SimpleGamePlay({ mode }: { mode: "daily" | "practice" }) {
+  const ios = mode === "daily";
   const router = useRouter();
   const [started, setStarted] = useState(mode !== "daily");
   const [key, setKey] = useState<string | null>(null);
@@ -274,34 +291,39 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
         {mode === "daily" ? (
           <>
             <pre className="sg-share">{share}</pre>
-            <div className="sg-pair">
-              <button type="button" className="sg-next" onClick={async () => {
-                try {
-                  if (navigator.share) await navigator.share({ text: share });
-                  else { await navigator.clipboard.writeText(share); setCopied(true); }
-                } catch { /* dismissed */ }
-              }}>{copied ? "Copied" : "Share"}</button>
-              <button type="button" className="sg-keep sg-dare" onClick={async () => {
+            <div className="ig-rows">
+              <button type="button" className="ig-row sg-dare" onClick={async () => {
                 const url = `${window.location.origin}${BASE}/daily/#${encodeChallenge(dayNo, picks.map((x) => x.pick))}`;
                 const text = `Fourth & Daily #${dayNo}: can you match my calls?\n${url}`;
                 try {
                   if (navigator.share) await navigator.share({ text });
                   else { await navigator.clipboard.writeText(text); setDareCopied(true); }
                 } catch { /* dismissed */ }
-              }}>{dareCopied ? "Link copied" : "Challenge"}</button>
+              }}><span>{dareCopied ? "Challenge link copied" : "Challenge a friend"}</span><span className="ig-chev" aria-hidden="true">›</span></button>
+              {hasThemedDay(themeSchedule.days as Record<string, { ids: string[] }>, key ?? "") ? (
+                <>
+                  {/* Plain <a>: a same-page hash change must fire hashchange so DailyOrBonus swaps to the bonus round. */}
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                  <a href={`${BASE}/daily/#bonus`} className="ig-row sg-bonus"><span>Bonus round</span><span className="ig-chev" aria-hidden="true">›</span></a>
+                </>
+              ) : null}
+            </div>
+            <div className="ig-end-btns">
+              <button type="button" className="sg-next" onClick={async () => {
+                try {
+                  if (navigator.share) await navigator.share({ text: share });
+                  else { await navigator.clipboard.writeText(share); setCopied(true); }
+                } catch { /* dismissed */ }
+              }}>{copied ? "Copied" : "Share"}</button>
+              <Link href="/endless/" className="sg-keep">Keep playing</Link>
             </div>
           </>
         ) : (
-          <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
-        )}
-        {mode === "daily" && hasThemedDay(themeSchedule.days as Record<string, { ids: string[] }>, key ?? "") ? (
-          <div className="sg-pair sg-pair-end">
-            {/* Plain <a>: a same-page hash change must fire hashchange so DailyOrBonus swaps to the bonus round. */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a href={`${BASE}/daily/#bonus`} className="sg-keep sg-bonus">Bonus round</a>
+          <>
+            <button type="button" className="sg-next" onClick={() => { setSeed(String(Date.now())); setIdx(0); setBonusSeen([]); setPicks([]); }}>Practice again</button>
             <Link href="/endless/" className="sg-keep">Keep playing</Link>
-          </div>
-        ) : <Link href="/endless/" className="sg-keep">Keep playing</Link>}
+          </>
+        )}
         <Trademark />
       </div>
     );
@@ -315,7 +337,9 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   const p = picks[idx];
   const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
   const onPlayBack = mode === "daily" ? () => setStarted(false) : () => router.push("/");
-  const playHeader = <Header right={counter} onBack={onPlayBack} />;
+  const playHeader = ios
+    ? <><Header right={counter} onBack={onPlayBack} /><PlayProgress step={idx} total={n} /></>
+    : <Header right={counter} onBack={onPlayBack} />;
   const banner = dare.kind === "bad" && idx === 0
     ? <p className="sg-dare-bad" role="status">This challenge link doesn&apos;t work. Play today&apos;s five instead.</p>
     : dare.kind === "ok" && idx === 0 ? <p className="sg-dare-ok" role="status">A friend challenged you. Their picks show after you finish.</p> : null;
@@ -334,30 +358,47 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       </div>
     );
   }
-  if (!p) return <QuestionScreen item={it} header={playHeader} extra={banner} onPick={choose} />;
+  if (!p) return <QuestionScreen item={it} header={playHeader} extra={banner} onPick={choose} ios={ios} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
     return <RunOrPass header={playHeader} onDone={() => setBonusSeen((b) => [...b, idx])} />;
   }
   return (
-    <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={playHeader}
+    <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={playHeader} ios={ios}
       nextLabel={idx + 1 < n ? "Next play" : "See your score"} onNext={() => setIdx(idx + 1)} />
   );
 }
 
-export function QuestionScreen({ item: it, header, onPick, extra }: { item: DailyItem; header: React.ReactNode; onPick: (c: QuizChoice) => void; extra?: React.ReactNode }) {
+/** iOS v2 short question: "Browns ball. Go for it or kick?" (kick = field goal; "or punt?" when no kick is offered). */
+export function shortQuestion(it: DailyItem): string {
+  const kick = tappable(it).some((o) => o.id === "fg");
+  return `${nick(it.situation.posteam)} ball. Go for it or ${kick ? "kick" : "punt"}?`;
+}
+
+/** iOS v2 choice subtitles. Display only; never feeds scoring. */
+export function choiceSubtitle(it: DailyItem, id: QuizChoice): string {
+  const s = it.situation;
+  if (id === "go") return isGoalToGo(it) ? "Goal to go" : `${s.distance} yd${s.distance === 1 ? "" : "s"} to go`;
+  if (id === "fg") return `${Math.round(s.yardline_100 + 18)} yds`;
+  return "Kick it away";
+}
+
+export function QuestionScreen({ item: it, header, onPick, extra, ios = false }: { item: DailyItem; header: React.ReactNode; onPick: (c: QuizChoice) => void; extra?: React.ReactNode; ios?: boolean }) {
   return (
     <div className="sg-app">
       {header}
       {extra}
-      <ScoreBug item={it} />
-      <p className="sg-sent">{situationSentence(it, nick)}</p>
-      <FieldView item={it} />
+      {ios ? <TvScoreBug item={it} /> : <ScoreBug item={it} />}
+      <p className={ios ? "sg-sent ig-qs" : "sg-sent"}>{ios ? shortQuestion(it) : situationSentence(it, nick)}</p>
+      {ios ? <IosField item={it} /> : <FieldView item={it} />}
       <div className="sg-btns">
-        {tappable(it).map((o) => (
-          <button key={o.id} type="button" className="sg-btn" onClick={() => onPick(o.id)}>
-            {CHOICE_LABEL[o.id]}{o.detail ? <small>{o.detail}</small> : null}
-          </button>
-        ))}
+        {tappable(it).map((o) => {
+          const d = ios ? choiceSubtitle(it, o.id) : o.detail;
+          return (
+            <button key={o.id} type="button" className="sg-btn" onClick={() => onPick(o.id)}>
+              {CHOICE_LABEL[o.id]}{d ? <small>{d}</small> : null}
+            </button>
+          );
+        })}
         {kickTooFar(it) ? <p className="sg-note">Too far to kick (65+ yards)</p> : null}
       </div>
       <Trademark />
@@ -365,9 +406,10 @@ export function QuestionScreen({ item: it, header, onPick, extra }: { item: Dail
   );
 }
 
-export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabel, onNext, extra }: {
-  item: DailyItem; pick: Pick; outcome: Outcome | null | undefined; header: React.ReactNode; nextLabel: string; onNext: () => void; extra?: React.ReactNode;
+export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabel, onNext, extra, ios = false }: {
+  item: DailyItem; pick: Pick; outcome: Outcome | null | undefined; header: React.ReactNode; nextLabel: string; onNext: () => void; extra?: React.ReactNode; ios?: boolean;
 }) {
+  const shown = out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null };
   const tags = optionTags(it, p.scored);
   const mine = tags.find((t) => t.id === p.pick)?.tag;
   const cls = { right: "sg-ok", close: "sg-half", wrong: "sg-no" }[p.scored.result];
@@ -375,15 +417,15 @@ export function RevealScreen({ item: it, pick: p, outcome: out, header, nextLabe
     <div className={`sg-app sg-rv ${cls}`}>
       {header}
       {extra}
-      <ScoreBug item={it} />
+      {ios ? <TvScoreBug item={it} /> : <ScoreBug item={it} />}
       <h1 className="sg-verdict" aria-live="polite"><span className="sg-glyph" aria-hidden="true">{RESULT_GLYPH[p.scored.result]}</span>{RESULT_TITLE[p.scored.result]}</h1>
       <div className="sg-res">
-        <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
+        <div className="sg-ln"><div className="sg-lbl">You picked</div><div className="sg-v">{CHOICE_LABEL[p.pick]} {mine && !(ios && mine !== "Best") ? <span className={`sg-tag ${mine === "Best" ? "sg-best" : "sg-close"}`}>{mine}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">The {nick(it.situation.posteam)} coach</div><div className="sg-v">{coachCallText(it)} {out?.text ?? ""} {out?.penalty ? `${out.penalty} ` : ""}{out?.finalText ? <span className="sg-final">{out.finalText}</span> : null}</div></div>
         <div className="sg-ln"><div className="sg-lbl">Best call</div><div className="sg-v">{bestCallText(tags)}</div></div>
         <BreakEvenBar distance={it.situation.distance} yardline100={it.situation.yardline_100} reveal={it.reveal} />
       </div>
-      <FieldView item={it} outcome={out ?? { endYardline100: it.situation.yardline_100, label: coachCallText(it).replace(/\.$/, ""), text: null, finalText: null }} />
+      {ios ? <IosField item={it} outcome={shown} /> : <FieldView item={it} outcome={shown} />}
       <div className="sg-btns">
         <button type="button" className="sg-next" onClick={onNext}>{nextLabel}</button>
       </div>

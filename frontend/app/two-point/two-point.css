@@ -29,3 +29,12 @@
 .tp .tp-wc-delta.is-up { background: var(--sg-b); }
 .tp .tp-wc-delta.is-down { background: #fff; box-shadow: inset 0 0 0 2px var(--sg-b); }
 .tp .tp-wc-tick { width: 2px; margin-left: -1px; background: var(--sg-b); }
+/* iOS v2: pin the choices to the thumb zone (no dead gap under them); the footer sits right below. */
+.tp .sg-btns,.tp .tp-btns{margin-top:auto}
+.tp .sg-btns~.sg-tm-note{margin-top:0}
+/* iOS v2 dark mode: text and outlines follow the tokens (the old hard-coded black was invisible on the dark page). */
+.tp{--sg-g:var(--ios-label-secondary)}
+.tp-h1,.tp-call,.tp-league{color:var(--ios-label-primary)}
+.tp-card{border-color:var(--ios-separator-opaque);background:var(--ios-background-elevated)}
+.tp-rates li+li{border-top-color:var(--ios-separator)}
+.tp .sg-btn small{color:#5f6368} /* buttons stay white in both modes */
