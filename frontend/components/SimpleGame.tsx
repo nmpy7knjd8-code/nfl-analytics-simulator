@@ -41,18 +41,21 @@ const BACK_ICON = (
   <svg width="12" height="22" viewBox="0 0 12 22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 2 2 11l8 9" /></svg>
 );
 
-export function Header({ right, onBack, backHref }: { right: string; onBack?: () => void; backHref?: string }) {
+export function Header({ right, onBack, backHref, showMenu = true }: { right: string; onBack?: () => void; backHref?: string; showMenu?: boolean }) {
+  const playChrome = Boolean(onBack || backHref);
   return (
-    <header className="sg-top">
-      {onBack ? (
-        <button type="button" className="sg-back" aria-label="Back" onClick={onBack}>{BACK_ICON}</button>
-      ) : backHref ? (
-        <Link href={backHref} className="sg-back" aria-label="Back">{BACK_ICON}</Link>
-      ) : null}
+    <header className={playChrome ? "sg-top sg-top-play" : "sg-top"}>
+      <div className="sg-top-l">
+        {onBack ? (
+          <button type="button" className="sg-back" aria-label="Back" onClick={onBack}>{BACK_ICON}</button>
+        ) : backHref ? (
+          <Link href={backHref} className="sg-back" aria-label="Back">{BACK_ICON}</Link>
+        ) : null}
+      </div>
       <Link href="/" className="sg-brand">Fourth{" "}<span>&amp;</span>{" "}Daily</Link>
+      {right ? <span className="sg-count">{right}</span> : null}
       <div className="sg-top-r">
-        <span className="sg-count">{right}</span>
-        <SiteMenu />
+        {showMenu ? <SiteMenu /> : null}
       </div>
     </header>
   );

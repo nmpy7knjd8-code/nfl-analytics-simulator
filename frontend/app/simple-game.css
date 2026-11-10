@@ -93,7 +93,7 @@ html:has(.sg-app),body:has(.sg-app),body:has(.sg-app) .app-shell,body:has(.sg-ap
   font-family:var(--ios-font-text);
 }
 body.ios-play-active .sg-app{
-  padding-bottom:calc(var(--ios-home-safe) + 20px);
+  padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Beat page-level .ab/.kb/.gs/.tm/.co padding so the tab bar does not cover the footer. */
@@ -360,34 +360,46 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 }
 .sg-menu-list a+a{border-top:0.5px solid var(--ios-separator)}
 .sg-menu-group{color:var(--ios-label-secondary);border-top-color:var(--ios-separator)}
-.sg-count{
-  font-size:17px;
-  font-weight:600;
-  letter-spacing:-0.4px;
-  color:var(--ios-label-primary);
+.sg-top-l,.sg-top-r{
+  width:var(--ios-touch);
+  min-width:var(--ios-touch);
+  min-height:var(--ios-touch);
+  display:flex;
+  align-items:center;
+  flex:none;
+  z-index:2;
 }
-body:not(.ios-play-active) .sg-count{
+.sg-top-r{justify-content:flex-end;position:relative}
+.sg-count{
   position:absolute;
   width:1px;
   height:1px;
   overflow:hidden;
   clip:rect(0 0 0 0);
   clip-path:inset(50%);
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:-0.4px;
+  color:var(--ios-label-primary);
+  pointer-events:none;
 }
-body.ios-play-active .sg-count{
-  position:absolute;
+/* Centered in the header itself (not .sg-top-r), so back / title / menu stay aligned. */
+.sg-top-play .sg-count{
   left:52px;
   right:52px;
-  top:calc(var(--ios-status-safe) + (var(--ios-nav-height) - 22px) / 2);
+  top:var(--ios-status-safe);
+  height:var(--ios-nav-height);
   width:auto;
-  height:auto;
   overflow:hidden;
   clip:auto;
   clip-path:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
   white-space:nowrap;
   text-overflow:ellipsis;
-  pointer-events:none;
+  z-index:1;
 }
 .sg-tm-note{
   font-size:11px;
@@ -437,4 +449,15 @@ body.ios-play-active .sg-count{
 .sg-today-list,.ios-more .ios-list,.ios-explore .ios-list{padding:0}
 @media (prefers-reduced-motion:reduce){
   .sg-top,.sg-today-go,.sg-back{transition:none!important;animation:none!important}
+}
+
+.ios-more .ios-large-title,
+.ios-more .sg-today-title{
+  padding-top:8px;
+  padding-bottom:0;
+  margin:0 0 18px;
+}
+.ios-more .ios-inset-grouped:first-child{margin-top:0}
+body.ios-play-active .sg-tm-note{
+  padding-bottom:4px;
 }

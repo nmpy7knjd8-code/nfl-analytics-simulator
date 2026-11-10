@@ -30,7 +30,7 @@ export default function MorePage() {
   return (
     <main id="main">
       <div className="sg-app ios-more">
-        <Header right="More" />
+        <Header right="More" showMenu={false} />
         <h1 className="ios-large-title sg-today-title">More</h1>
         <nav aria-label="More">
           <ul className="ios-list ios-inset-grouped">

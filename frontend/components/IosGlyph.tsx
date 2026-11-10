@@ -4,9 +4,10 @@ import React, { type ReactNode } from "react";
 export function IosGlyph({ name }: { name: "practice" | "stats" | "explore" | "about" }) {
   const paths: Record<typeof name, ReactNode> = {
     practice: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
         <circle cx="12" cy="12" r="8.2" />
-        <path d="M12 7.5v5l3.2 1.8" />
+        <circle cx="12" cy="12" r="4.6" />
+        <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
       </svg>
     ),
     stats: (
