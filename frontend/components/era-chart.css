@@ -1,0 +1,184 @@
+/* Scoped to /era after it adopts chartStyle. Other chart pages stay on the live look. */
+
+.sg-app.ch-era {
+  background: var(--ios-background-primary);
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-text);
+}
+
+.ch-era .kb-h1 {
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-display);
+  font-size: var(--ios-text-title-2);
+  font-weight: 700;
+  letter-spacing: var(--ios-tracking-large-title);
+}
+
+.ch-era .kb-lede,
+.ch-era .kb-note,
+.ch-era .sg-tm-note,
+.ch-era .sg-count {
+  color: var(--ios-label-secondary);
+}
+
+.ch-era .kb-hero {
+  background: var(--ios-background-elevated);
+  border: 1px solid var(--ios-separator);
+  border-radius: var(--ios-radius-lg);
+  color: var(--ios-label-primary);
+}
+
+.ch-era .sg-top {
+  background: transparent;
+}
+
+.ch-era .sg-brand {
+  color: var(--ios-label-primary);
+}
+
+.ch-era .sg-brand span {
+  color: var(--ios-accent);
+}
+
+.ch-era .sg-menu {
+  color: var(--ios-label-primary);
+}
+
+.ch-era .sg-menu-list {
+  background: var(--ios-background-elevated);
+  border-color: var(--ios-separator);
+  border-width: 1px;
+  box-shadow: var(--ios-shadow-card);
+}
+
+.ch-era .sg-menu-list a {
+  color: var(--ios-label-primary);
+}
+
+.ch-era .sg-menu-list a + a,
+.ch-era .sg-menu-group {
+  border-color: var(--ios-separator);
+}
+
+.ch-era .sg-menu-group {
+  color: var(--ios-label-secondary);
+}
+
+.ch-era .era-ax {
+  font-size: var(--ios-text-caption-1);
+  fill: var(--ios-chart-axis);
+  font-variant-numeric: tabular-nums;
+}
+
+.ch-era .era-ax.is-on {
+  fill: var(--ios-label-primary);
+  font-weight: 600;
+}
+
+.ch-era .era-lbl {
+  font-size: var(--ios-text-caption-1);
+  font-weight: 600;
+}
+
+.ch-era .era-pick-h {
+  color: var(--ios-label-primary);
+  font-size: var(--ios-text-subhead);
+  font-weight: 600;
+}
+
+.ch-era .era-rows li {
+  color: var(--ios-label-primary);
+  font-size: var(--ios-text-subhead);
+}
+
+.ch-era .era-rows strong {
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ch-era .era-all {
+  border-top-color: var(--ios-separator);
+}
+
+.ch-era .era-dot {
+  background: var(--ios-label-primary);
+}
+
+.ch-era .pf-chip {
+  background: var(--ios-background-elevated);
+  border-color: var(--ios-separator);
+  color: var(--ios-label-primary);
+  border-radius: var(--ios-radius-sm);
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.ch-era .pf-chip.is-on {
+  background: var(--ios-accent);
+  border-color: var(--ios-accent);
+  color: var(--ios-label-on-accent);
+}
+
+.ch-era .pf-chip:focus-visible {
+  outline-color: var(--ios-accent);
+}
+
+.ch-era .era-plot {
+  position: relative;
+}
+
+.ch-era .era-tip {
+  position: absolute;
+  top: 8px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 24px);
+  padding: 8px 12px;
+  background: var(--ios-background-elevated);
+  color: var(--ios-label-primary);
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.ch-era .era-tip.is-end {
+  transform: translateX(-92%);
+}
+
+.ch-era .era-tip-k {
+  font-size: var(--ios-text-caption-1);
+  color: var(--ios-label-secondary);
+  margin-bottom: 4px;
+}
+
+.ch-era .era-tip-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.ch-era .era-tip-rows li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--ios-text-caption-1);
+  color: var(--ios-label-secondary);
+}
+
+.ch-era .era-tip-rows strong {
+  margin-left: auto;
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ios-label-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ch-era * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

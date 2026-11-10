@@ -6,6 +6,11 @@
  * or [data-theme], already defined in tokens.css — this module does not
  * inject CSS or restyle existing charts.
  *
+ * Chart series follow tokens v2 (#338): accent-blue tints plus gray #8E8E93,
+ * never team colors or the #325 orange/green/gold/purple series. Until #338
+ * lands, seriesStops uses the same resolved hexes as iosChart.series in that
+ * PR so this branch does not pick up the colorful #325 palette.
+ *
  * Import path: import { palettes, axis, grid, chartMotionMs } from "@/lib/chartStyle";
  */
 
@@ -26,8 +31,21 @@ export type Theme = IosTheme;
 
 export const FONT_STACK = iosFonts.text;
 
-/** Chart numbers use tabular figures. */
+/** Chart numbers use tabular figures (iosFonts.nums / --ios-nums in tokens v2). */
 export const NUMERIC_VARIANT = "tabular-nums" as const;
+
+/** Backdrop and typography weights from tokens v2 (#338). Local until that PR lands. */
+export const MATERIAL = {
+  blur: "20px",
+  saturate: "180%",
+} as const;
+
+export const WEIGHT = {
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+} as const;
 
 /** Semantic chart palette for a theme, mapped from iosColor / iosChart. */
 export type Palette = {
@@ -46,6 +64,55 @@ export type Palette = {
   shadow: string;
 };
 
+/** Resolved series from tokens v2 (#338): accent + two tints + gray. */
+const TOKENS_V2_SERIES = {
+  light: ["#007aff", "#54a3ff", "#9bc4ff", "#8e8e93"],
+  dark: ["#0a84ff", "#0757a8", "#06355f", "#8e8e93"],
+} as const;
+
+const COLORFUL_SERIES = /#34c759|#ff9f0a|#af52de|#30d158|#ffd60a|#bf5af2/i;
+
+function isBlueGraySeries(series: readonly string[]): boolean {
+  return (
+    series.length >= 4 &&
+    /^#8e8e93$/i.test(series[series.length - 1] ?? "") &&
+    series.every((c) => !COLORFUL_SERIES.test(c))
+  );
+}
+
+/**
+ * Series colors: accent-blue tints plus gray #8E8E93, matching iosChart.series
+ * in tokens v2 (#338). Never team colors, and never the #325 colorful series.
+ * Prefers the token export once it is already blue+gray; otherwise the v2 hexes.
+ */
+export function seriesStops(theme: Theme = "light"): readonly string[] {
+  const official = iosChart[theme].series as readonly string[];
+  if (isBlueGraySeries(official)) return official;
+  return TOKENS_V2_SERIES[theme];
+}
+
+export const SERIES_CSS_VARS = [
+  "--chart-series-1",
+  "--chart-series-2",
+  "--chart-series-3",
+  "--chart-series-4",
+] as const;
+
+export function seriesDeclarations(theme: Theme): string {
+  return seriesStops(theme).map((c, i) => `${SERIES_CSS_VARS[i]}:${c}`).join(";");
+}
+
+/** Light defaults, dark via prefers-color-scheme or [data-theme]. Not injected globally. */
+export function seriesColorSchemeCss(selector = ":root"): string {
+  const nested = selector === ":root" ? "" : ` ${selector}`;
+  return (
+    `${selector}{${seriesDeclarations("light")}}` +
+    `[data-theme="light"]${nested}{${seriesDeclarations("light")}}` +
+    `@media (prefers-color-scheme:dark){:root:not([data-theme="light"])${nested}{${seriesDeclarations("dark")}}}` +
+    `[data-theme="dark"]${nested}{${seriesDeclarations("dark")}}`
+  );
+}
+
 export function palette(theme: Theme = "light"): Palette {
   const color = iosThemeColors(theme);
   const chart = iosChartColors(theme);
@@ -61,7 +128,7 @@ export function palette(theme: Theme = "light"): Palette {
     card: color.backgroundElevated,
     tooltip: color.backgroundElevated,
     band: chart.band,
-    series: chart.series,
+    series: seriesStops(theme),
     shadow: color.shadowCard,
   };
 }
@@ -89,6 +156,9 @@ export const CSS_VARS = {
   caption: "--ios-text-caption-1",
   headline: "--ios-text-headline",
   duration: "--ios-duration",
+  nums: "--ios-nums",
+  materialBlur: "--ios-material-blur",
+  materialSaturate: "--ios-material-saturate",
 } as const;
 
 export const typeScale = iosType;
@@ -146,17 +216,18 @@ export const line = {
   areaFill: `var(${CSS_VARS.band})`,
 } as const;
 
-/** Backdrop blur matches the opt-in shell chrome in ios-shell.css. */
-export const TOOLTIP_BLUR_PX = 20;
+/** Backdrop blur matches tokens v2 iosMaterial.blur and ios-shell.css. */
+export const TOOLTIP_BLUR_PX = parseInt(MATERIAL.blur, 10);
 
 /** Tooltip: headline-weight value, caption label, card radius, card shadow. */
 export const tooltip = {
   background: `var(${CSS_VARS.tooltip})`,
   backdropBlurPx: TOOLTIP_BLUR_PX,
+  backdropSaturate: MATERIAL.saturate,
   borderRadius: radius.tooltip,
   shadow: `var(${CSS_VARS.shadow})`,
-  value: { fontSize: iosType.headline, fontWeight: 600 },
-  label: { fontSize: iosType.caption1, fontWeight: 400 },
+  value: { fontSize: iosType.headline, fontWeight: WEIGHT.semibold },
+  label: { fontSize: iosType.caption1, fontWeight: WEIGHT.regular },
 } as const;
 
 /** Matches --ios-duration in tokens.css. */
@@ -168,15 +239,12 @@ export function chartMotionMs(prefersReducedMotion: boolean): number {
 }
 
 /**
- * Series color: team colors when comparing teams, otherwise the theme accent
- * (iosColor / --ios-accent, not the live --sg-b).
+ * Series color by step (0 = accent, then tints, then gray #8E8E93).
+ * Never uses team colors.
  */
-export function seriesColor(
-  theme: Theme,
-  opts: { comparingTeams?: boolean; teamColor?: string | null } = {},
-): string {
-  if (opts.comparingTeams && opts.teamColor) return opts.teamColor;
-  return iosColor[theme].accent;
+export function seriesColor(theme: Theme, index = 0): string {
+  const stops = seriesStops(theme);
+  return stops[index] ?? stops[0];
 }
 
 export { iosChart, iosColor, iosFonts, iosMetrics, iosRadius, iosSpace, iosType };

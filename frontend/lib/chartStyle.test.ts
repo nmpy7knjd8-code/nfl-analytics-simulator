@@ -8,9 +8,11 @@ import {
   CHART_MOTION_MS,
   CSS_VARS,
   FONT_STACK,
+  MATERIAL,
   NUMERIC_VARIANT,
   TAP_TARGET_MIN,
   TOOLTIP_BLUR_PX,
+  WEIGHT,
   axis,
   chartMotionMs,
   grid,
@@ -18,6 +20,8 @@ import {
   palettes,
   radius,
   seriesColor,
+  seriesColorSchemeCss,
+  seriesStops,
   space,
   tooltip,
   typeScale,
@@ -44,6 +48,12 @@ test("chartStyle derives from #325 tokens and has no provisional comments", () =
   assert.doesNotMatch(src, /TODO\(iOS tokens\)/);
   assert.equal(FONT_STACK, iosFonts.text);
   assert.equal(NUMERIC_VARIANT, "tabular-nums");
+  assert.equal(CSS_VARS.nums, "--ios-nums");
+  assert.equal(MATERIAL.blur, "20px");
+  assert.equal(MATERIAL.saturate, "180%");
+  assert.equal(TOOLTIP_BLUR_PX, 20);
+  assert.equal(WEIGHT.regular, 400);
+  assert.equal(WEIGHT.semibold, 600);
   assert.equal(TAP_TARGET_MIN, iosMetrics.touch);
   assert.ok(TAP_TARGET_MIN >= 44);
   assert.equal(typeScale, iosType);
@@ -65,7 +75,8 @@ test("light and dark palettes come from iosColor / iosChart, not --sg-b", () => 
     assert.equal(p.card, c.backgroundElevated);
     assert.equal(p.tooltip, c.backgroundElevated);
     assert.equal(p.band, ch.band);
-    assert.equal(p.series, ch.series);
+    assert.deepEqual(p.series, seriesStops(theme));
+    assert.equal(p.series[0], c.accent);
     assert.equal(p.shadow, c.shadowCard);
   }
   assert.equal(palettes.light.accent, "#007aff");
@@ -130,9 +141,11 @@ test("chart defaults: thin horizontal grid, few ticks, round 2.5px lines, phone 
   assert.equal(tooltip.shadow, "var(--ios-shadow-card)");
   assert.equal(tooltip.borderRadius, iosRadius.md);
   assert.equal(tooltip.value.fontSize, iosType.headline);
-  assert.equal(tooltip.value.fontWeight, 600);
+  assert.equal(tooltip.value.fontWeight, WEIGHT.semibold);
   assert.equal(tooltip.label.fontSize, iosType.caption1);
+  assert.equal(tooltip.label.fontWeight, WEIGHT.regular);
   assert.equal(tooltip.backdropBlurPx, TOOLTIP_BLUR_PX);
+  assert.equal(tooltip.backdropSaturate, MATERIAL.saturate);
   assert.match(shellCss, new RegExp(`blur\\(${TOOLTIP_BLUR_PX}px\\)`));
 });
 
@@ -143,16 +156,38 @@ test("reduced motion turns chart animation off; duration matches --ios-duration"
   assert.ok(CHART_MOTION_MS > 0);
 });
 
-test("series use team colors when comparing teams, otherwise the accent", () => {
-  assert.equal(seriesColor("light"), iosColor.light.accent);
-  assert.equal(seriesColor("dark"), iosColor.dark.accent);
-  assert.equal(seriesColor("light", { comparingTeams: true, teamColor: "#00338D" }), "#00338D");
-  assert.equal(seriesColor("light", { comparingTeams: false, teamColor: "#00338D" }), iosColor.light.accent);
-  assert.equal(seriesColor("dark", { comparingTeams: true }), iosColor.dark.accent);
+test("series are accent-blue tints plus grays, never team or orange/green/gold/purple tokens", () => {
+  const banned = /#34c759|#ff9f0a|#af52de|#30d158|#ffd60a|#bf5af2|#00338D|#1E5BFF/i;
+  // Resolved hexes from tokens v2 (#338) iosChart.series.
+  assert.deepEqual(seriesStops("light"), ["#007aff", "#54a3ff", "#9bc4ff", "#8e8e93"]);
+  assert.deepEqual(seriesStops("dark"), ["#0a84ff", "#0757a8", "#06355f", "#8e8e93"]);
+  for (const theme of ["light", "dark"] as const) {
+    const stops = seriesStops(theme);
+    assert.equal(stops[0], iosColor[theme].accent);
+    assert.equal(stops.length, 4);
+    assert.equal(seriesColor(theme, 0), stops[0]);
+    assert.equal(seriesColor(theme, 1), stops[1]);
+    assert.equal(seriesColor(theme, 3), stops[3]);
+    for (const c of stops) {
+      assert.doesNotMatch(c, banned);
+    }
+    for (const c of stops.slice(0, 3)) {
+      const n = parseInt(c.slice(1), 16);
+      const r = (n >> 16) & 255, b = n & 255;
+      assert.ok(b > r + 40, `${theme} ${c} should be a blue tint`);
+    }
+    assert.match(stops[3], /^#8e8e93$/i);
+  }
+  const css = seriesColorSchemeCss(".ch-era");
+  assert.match(css, /\.ch-era\{/);
+  assert.match(css, /prefers-color-scheme:dark/);
+  assert.match(css, /\[data-theme="dark"\] \.ch-era/);
+  assert.doesNotMatch(css, banned);
+  assert.doesNotMatch(src, /teamColor|comparingTeams/);
 });
 
-test("no existing frontend file imports chartStyle yet (live look unchanged)", () => {
-  const skip = new Set(["chartStyle.ts", "chartStyle.test.ts"]);
+test("only the /era migration imports chartStyle (other live charts unchanged)", () => {
+  const skip = new Set(["chartStyle.ts", "chartStyle.test.ts", "EraChart.tsx", "era-chart.css", "era.test.ts"]);
   const hits: string[] = [];
   const walk = (dir: string) => {
     for (const name of readdirSync(dir, { withFileTypes: true })) {
