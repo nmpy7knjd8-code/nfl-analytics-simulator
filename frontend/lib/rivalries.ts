@@ -7,10 +7,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import facts from "./gameFacts.json";
 import colorsJson from "./teamColors.json";
-import { seasonsFromDir } from "./seasons";
+import { GAMES_DIR, gameSeasons, seasonsFromDir } from "./seasons";
 
-const GAMES_DIR = join(process.cwd(), "public", "data", "games");
-export const SEASONS = seasonsFromDir(GAMES_DIR);
+export const SEASONS = gameSeasons();
 const ALIAS: Record<string, string> = { OAK: "LV" };
 export const franchise = (t: string) => ALIAS[t] ?? t;
 

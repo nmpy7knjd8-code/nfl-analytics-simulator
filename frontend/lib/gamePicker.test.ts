@@ -9,6 +9,10 @@ import { gameSeasons } from "./seasons";
 
 const SEASONS = gameSeasons("desc");
 
+test("picker seasons are the committed game files, newest first", () => {
+  assert.deepEqual(SEASONS, [2025, 2024, 2023, 2022, 2021, 2020, 2019]);
+});
+
 const idx = (s: number) => JSON.parse(readFileSync(new URL(`../public/data/games/${s}.json`, import.meta.url), "utf8")) as SeasonIndex;
 
 test("every picker season has a committed games index", () => {
