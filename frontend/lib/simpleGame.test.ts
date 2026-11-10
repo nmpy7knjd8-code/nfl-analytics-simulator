@@ -52,10 +52,11 @@ test("tags: only offered options (N9); every tie is Best; ½ only for near, non-
   assert.equal(scoreCall("fg", byId("2022_03_BAL_NE-819")).result, "close");
 });
 
-test("share text has no colored emoji and no teams", () => {
-  const t = plainShare(299, ["right", "close", "wrong"], "1.5", 6);
-  assert.equal(t, "Fourth & Daily #299 · 1.5/3 · streak\u00a06\n✓ ½ ✕");
+test("share text has no colored emoji and no teams, and includes the daily URL", () => {
+  const t = plainShare(299, ["right", "close", "wrong"], "1.5", 6, "https://x.test/nfl-analytics-simulator/daily/");
+  assert.equal(t, "Fourth & Daily #299 · 1.5/3 · streak\u00a06\n✓ ½ ✕\nhttps://x.test/nfl-analytics-simulator/daily/");
   assert.ok(!/\p{Extended_Pictographic}/u.test(t.replace(/[✓✕]/g, "")));
+  assert.match(t, /https:\/\/x\.test\/nfl-analytics-simulator\/daily\/$/);
 });
 
 test("outcome from the game file: ball end spot and plain text only", () => {
