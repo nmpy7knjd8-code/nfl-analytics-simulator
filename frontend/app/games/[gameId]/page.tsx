@@ -9,6 +9,7 @@ import { OvertimePlayList, SwingPlayList, WinProbabilityChart } from "../../../c
 import { findSwingPlays, inGameOrder } from "../../../lib/winProbability";
 import { GAME_PLAY_LISTS } from "../../../lib/gamePlays";
 import { PlayFeed } from "../../../components/PlayFeed";
+import { Trademark } from "../../../components/SimpleGame";
 import type { FeedRow } from "../../../lib/gameFileV2";
 import { openingWinChance } from "../../../lib/wpFixtures";
 import "./no-tabs.css";
@@ -146,6 +147,7 @@ export default async function GameReplayPage({ params }: Props) {
           </aside>
         </>
       ) : null}
+      <Trademark />
     </main>
   );
 }
