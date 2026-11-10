@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 import pandas as pd
 import pytest
@@ -58,6 +59,11 @@ def test_every_index_game_has_a_game_file(season):
         assert (GAMES / f"{g['id']}.json").exists(), g["id"]
 
 
+# Releases built before the no-win-chance-in-overtime rule (audit #328) and the 2021_12_LV_DAL overtime fix.
+_PRE_OT_RULE_RELEASES = {"games-v2", "games-v3", "games-v4", "games-v5", "games-v6", "games-v7"}
+_PRE_OT_RULE = os.environ.get("GAMES_RELEASE_TAG") in _PRE_OT_RULE_RELEASES
+
+
 @pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
 def test_game_file_wp_home_side_ends_at_result(path):
     raw = json.loads(path.read_text())
@@ -66,11 +72,19 @@ def test_game_file_wp_home_side_ends_at_result(path):
     g = doc["game"]
     assert doc["wp_perspective"] == "home" and doc["provenance"]["source"] == "nflverse"
     idx = {x["id"]: x for x in _index(g["season"])["games"]}
-    assert idx[g["id"]] == g
+    ig = idx[g["id"]]
+    if _PRE_OT_RULE and g["id"] in games.OVERTIME_FIXES:  # old release still has nflverse's wrong flag
+        ig = {**ig, "overtime": g["overtime"]}
+    assert ig == g
     want = 1.0 if g["home_score"] > g["away_score"] else 0.0 if g["home_score"] < g["away_score"] else 0.5
     assert doc["final_home_wp"] == want
     wp = [p for p in doc["plays"] if p["home_wp"] is not None]
-    assert wp[-1]["home_wp_after"] == want
+    if any(p["qtr"] >= 5 for p in doc["plays"]) and not _PRE_OT_RULE:
+        # No win chance in overtime: the series ends at the last regulation row (no after-value);
+        # the result lives in final_home_wp only.
+        assert wp[-1]["qtr"] <= 4 and wp[-1]["home_wp_after"] is None
+    else:
+        assert wp[-1]["home_wp_after"] == want
     assert all(0 <= p["home_wp"] <= 1 for p in wp)
     last = [p for p in doc["plays"] if p["home_score"] is not None][-1]
     assert (last["home_score"], last["away_score"]) == (g["home_score"], g["away_score"])
@@ -81,9 +95,43 @@ def test_game_file_wp_home_side_ends_at_result(path):
             assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 18 <= 64)
 
 
+@pytest.mark.skipif(_PRE_OT_RULE, reason="release built before the no-win-chance-in-overtime rule")
+@pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
+def test_no_win_chance_in_overtime(path):
+    """House rule (audit #328): overtime rows have no win chance, swing, model fallback or 4th-down values,
+    and game.overtime is true exactly when the file has overtime rows."""
+    doc = json.loads(path.read_text())
+    c = doc["cols"]
+    ot = [i for i, q in enumerate(c["qtr"]) if q >= 5]
+    assert doc["game"]["overtime"] == bool(ot), doc["game"]["id"]
+    ot_ids = {c["play_id"][i] for i in ot}
+    assert all(c["home_wp"][i] is None for i in ot)
+    assert not ot_ids & set(doc["swing_play_ids"]) and not ot_ids & set(doc["wp_fallback_play_ids"])
+    assert not {int(k) for k in doc["fourth"]} & set(ot)
+
+
+def test_null_overtime_win_chance_rule():
+    row = lambda pid, q, wp, after, swing: {"play_id": pid, "qtr": q, "home_wp": wp, "home_wp_after": after, "swing": swing}
+    doc = {"final_home_wp": 1.0, "swing_play_ids": [2, 3, 5], "wp_fallback_play_ids": [6],
+           "plays": [row(1, 4, 0.5, 0.4, False), row(2, 4, 0.4, 0.5, True), row(3, 4, 0.5, 0.6, True),
+                     row(4, 5, 0.6, 0.9, False), row(5, 5, 0.9, 1.0, True), row(6, 5, 1.0, 1.0, False)]}
+    out = games.null_overtime_win_chance(doc)
+    assert [p["home_wp"] for p in out["plays"]] == [0.5, 0.4, 0.5, None, None, None]
+    assert [p["home_wp_after"] for p in out["plays"]] == [0.4, 0.5, None, None, None, None]
+    assert out["swing_play_ids"] == [2] and out["wp_fallback_play_ids"] == [] and out["final_home_wp"] == 1.0
+    assert doc["plays"][3]["home_wp"] == 0.6  # input untouched
+    reg = {**doc, "plays": doc["plays"][:3]}
+    assert games.null_overtime_win_chance(reg) is reg
+
+
+def test_overtime_fixes_in_index():
+    for gid, ot in games.OVERTIME_FIXES.items():
+        assert next(g for g in _index(int(gid[:4]))["games"] if g["id"] == gid)["overtime"] is ot
+
+
 def test_game_files_total_size_budget():
     total = sum(p.stat().st_size for p in _game_files())
-    assert total < 60_000_000, f"{total / 1e6:.1f} MB"
+    assert total < 75_000_000, f"{total / 1e6:.1f} MB"  # games-v3 adds display_text (~68 MB)
 
 
 def test_compact_round_trip_restores_v1():
@@ -93,13 +141,13 @@ def test_compact_round_trip_restores_v1():
           "final_home_wp": 1.0, "swing_play_ids": [2],
           "plays": [
               {"play_id": 1, "qtr": 4, "clock": "0:30", "posteam": "LV", "down": 4, "ydstogo": 2, "yardline_100": 30,
-               "text": "(0:30) run", "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
+               "text": "(0:30) run", "display_text": "Run.", "penalty_text": None, "play_type": "run", "home_wp": 0.41234, "home_wp_after": 0.6, "swing": False,
                "home_score": 3, "away_score": 7,
                "fourth_down": {"recommendation": "go", "close_call": False, "gap_pts": 3.21, "wp": {"go": 0.41, "fg": 0.38},
                                "home_wp": {"go": 0.41, "fg": 0.38}, "options": ["go", "fg"], "actual": "go",
                                "kick_distance": 48, "engine_version": "e1"}},
               {"play_id": 2, "qtr": 4, "clock": "0:05", "posteam": "LV", "down": 1, "ydstogo": 10, "yardline_100": 5,
-               "text": "(0:05) pass TD", "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
+               "text": "(0:05) pass TD", "display_text": "Touchdown pass.", "penalty_text": None, "play_type": "pass", "home_wp": 0.6, "home_wp_after": 1.0, "swing": True,
                "home_score": 10, "away_score": 7, "fourth_down": None}]}
     back = expand(compact(v1))
     v1["plays"][0]["home_wp"] = 0.412
@@ -119,3 +167,141 @@ def test_home_view_flip_from_synthetic_rows():
     doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
     assert doc["final_home_wp"] == 0.0 and doc["plays"][0]["home_wp"] == 0.05
     assert doc["plays"][0]["clock"] == "0:30"
+
+
+@pytest.mark.parametrize("scores,want", [((20, 21), 0.0), ((24, 21), 1.0), ((23, 23), 0.5)])
+def test_end_game_row_carries_final_result_not_fallback(scores, want):
+    """QA 2026-10-28 Q1: END GAME's fallback WP (DET_KC: 0.186) made Goff's last kneel a fake 15-pt swing."""
+    game = {"id": "t", "season": 2023, "season_type": "REG", "home": "KC", "away": "DET",
+            "home_score": scores[0], "away_score": scores[1]}
+    pre = {0.0: 0.042, 1.0: 0.97, 0.5: 0.49}[want]
+    plays = pd.DataFrame({"game_id": ["t"] * 2, "play_id": [1.0, 2.0], "qtr": [4, 4],
+                          "quarter_seconds_remaining": [37, 0], "game_seconds_remaining": [37, 0],
+                          "posteam": ["DET", None], "down": [1, None], "ydstogo": [10, None],
+                          "yardline_100": [77, None], "desc": ["kneel", "END GAME"], "play_type": ["qb_kneel", None],
+                          "home_wp": [pre, 0.186], "total_home_score": [scores[0]] * 2,
+                          "total_away_score": [scores[1]] * 2})
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    kneel, end = doc["plays"]
+    assert end["home_wp"] == want and end["home_wp_after"] == want and doc["final_home_wp"] == want
+    assert kneel["home_wp_after"] == want and not kneel["swing"] and not end["swing"]
+    assert doc["swing_play_ids"] == []
+
+
+def _rows(descs, types, wps, scores):
+    n = len(descs)
+    return pd.DataFrame({"game_id": ["t"] * n, "play_id": [float(i + 1) for i in range(n)], "qtr": [4] * n,
+                         "quarter_seconds_remaining": [300 - 10 * i for i in range(n)],
+                         "game_seconds_remaining": [300 - 10 * i for i in range(n)],
+                         "posteam": ["BUF"] * n, "down": [1] * n, "ydstogo": [10] * n, "yardline_100": [50] * n,
+                         "desc": descs, "play_type": types, "home_wp": wps,
+                         "total_home_score": [scores[0]] * n, "total_away_score": [scores[1]] * n})
+
+
+def test_end_of_game_text_row_carries_final_result():
+    """QA 2026-10-28 R1: 2019 BUF-home 'End of game - 4.17 pm' rows (CIN_BUF 4766: 0.585 -> 1.0)."""
+    game = {"id": "t", "season": 2019, "season_type": "REG", "home": "BUF", "away": "CIN",
+            "home_score": 21, "away_score": 17}
+    plays = _rows(["kneel", "End of game - 4.17 pm"], ["qb_kneel", None], [0.97, 0.585], (21, 17))
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    kneel, end = doc["plays"]
+    assert end["home_wp"] == 1.0 and doc["final_home_wp"] == 1.0
+    assert kneel["home_wp_after"] == 1.0 and not kneel["swing"] and not end["swing"]
+    assert doc["swing_play_ids"] == []
+
+
+def test_rows_without_play_type_are_never_swings():
+    """QA 2026-10-28 R1: delay/notes rows with stand-in WPs ('The game has resumed.') were flagged."""
+    game = {"id": "t", "season": 2019, "season_type": "REG", "home": "CAR", "away": "TB",
+            "home_score": 20, "away_score": 14}
+    plays = _rows(["pass", "The game has resumed.", "run", "pass", "END GAME"],
+                  ["pass", None, "run", "pass", None], [0.5, 0.32, 0.68, 0.70, 0.3], (20, 14))
+    doc = games.game_doc(game, plays, {}, {"source": "nflverse"})
+    flagged = {r["play_id"] for r in doc["plays"] if r["swing"]}
+    assert 2 not in doc["swing_play_ids"] and 2 not in flagged
+    assert set(doc["swing_play_ids"]) == flagged == {1, 4}  # real plays: 0.5->0.32, 0.70->1.0 (result)
+    assert doc["plays"][3]["home_wp_after"] == 1.0
+
+
+def test_is_end_game_text():
+    assert games.is_end_game_text("END GAME") and games.is_end_game_text("End of game - 4.17 pm")
+    assert not games.is_end_game_text("End of half - 2.43 pm") and not games.is_end_game_text("END QUARTER 4")
+    assert not games.is_end_game_text(None)
+
+
+_PRE_Q1_RELEASES = {"games-v2", "games-v3", "games-v4"}  # built before the END GAME fix
+
+
+@pytest.mark.skipif(os.environ.get("GAMES_RELEASE_TAG") in _PRE_Q1_RELEASES,
+                    reason="game files come from a release built before the END GAME fix (games-v5+)")
+@pytest.mark.parametrize("path", [p for p in _game_files()], ids=lambda p: p.stem)
+def test_game_file_end_game_row_is_final_result(path):
+    doc = json.loads(path.read_text())
+    c = doc["cols"]
+    for i, t in enumerate(c["text"]):
+        if games.is_end_game_text(t) and c["home_wp"][i] is not None:
+            assert c["home_wp"][i] == doc["final_home_wp"], (i, c["home_wp"][i])
+    # QA 2026-10-28 R1: rows with no play type are never swings.
+    no_type = {c["play_id"][i] for i, pt in enumerate(c["play_type"]) if pt is None}
+    assert not no_type & set(doc["swing_play_ids"]), sorted(no_type & set(doc["swing_play_ids"]))
+
+
+def _has_display_text():
+    files = _game_files()
+    return bool(files) and "display_text" in json.loads(files[0].read_text())["cols"]
+
+
+@pytest.mark.skipif(not _has_display_text(), reason="game files predate games-v3 (no display_text column)")
+def test_game_files_display_text_nonempty_and_matches_lib_plays():
+    from pathlib import Path
+    lib = Path(__file__).resolve().parents[2] / "frontend/lib/plays"
+    for path in _game_files():
+        c = json.loads(path.read_text())["cols"]
+        assert len(c["display_text"]) == len(c["play_id"])
+        assert all(isinstance(t, str) and t.strip() for t in c["display_text"]), path.stem
+        shared = lib / f"{path.stem}.json"
+        if shared.exists():
+            got = dict(zip(map(str, c["play_id"]), c["display_text"]))
+            pen = dict(zip(map(str, c["play_id"]), c["penalty_text"]))
+            for p in json.loads(shared.read_text())["plays"]:
+                assert got[p["play_id"]] == p["display_text"], (path.stem, p["play_id"])
+                assert pen[p["play_id"]] == p["penalty_text"], (path.stem, p["play_id"])
+
+
+@pytest.mark.skipif(not _has_display_text(), reason="game files predate games-v3 (no display_text column)")
+def test_game_files_no_doubled_suffix_period():
+    """#309 / games-v7: "Chris Godwin Jr." ends the sentence; never "Jr..". Raw nflverse `text` is left as published."""
+    for path in _game_files():
+        bad = [t for t in json.loads(path.read_text())["cols"]["display_text"]
+               if any(f"{s}.." in t for s in (" Jr", " Sr", " II", " III", " IV", " V"))]
+        assert not bad, (path.stem, bad[:3])
+
+
+def test_game_flow_rows_get_display_text():
+    got = games.play_display_texts([{"game_id": "2023_01_X_Y", "desc": d} for d in (
+        "GAME", "END QUARTER 1", "END GAME", "Two-Minute Warning", "Timeout #1 by BUF at 01:23.")], {}, {})
+    assert got == ["Start of game.", "End of quarter 1.", "End of game.", "Two-minute warning.", "Timeout by BUF."]
+
+
+def test_compact_round_trips_display_text():
+    doc = {"plays": [{"play_id": 1, "qtr": 1, "clock": "15:00", "posteam": "BUF", "down": None, "ydstogo": None,
+                      "yardline_100": None, "text": "GAME", "display_text": "Start of game.", "penalty_text": None, "play_type": None,
+                      "home_wp": 0.5, "home_wp_after": 0.5, "swing": False, "home_score": 0, "away_score": 0,
+                      "fourth_down": None}],
+           "provenance": {"source": "nflverse"}, "game": {}, "wp_perspective": "home", "swing_threshold": 0.08,
+           "final_home_wp": 0.5, "swing_play_ids": []}
+    assert expand(compact(doc))["plays"][0]["display_text"] == "Start of game."
+
+
+_DET_KC = next((p for p in _game_files() if p.stem == "2023_01_DET_KC"), None)
+
+
+@pytest.mark.skipif(_DET_KC is None or os.environ.get("GAMES_RELEASE_TAG") in _PRE_Q1_RELEASES,
+                    reason="needs games-v5+ game files")
+def test_det_kc_final_kneel_is_not_a_swing():
+    """QA 2026-10-28 Q1: Goff's Q4 0:37 kneel (4204) read 'DET's win chance down 15%' though DET won."""
+    doc = json.loads(_DET_KC.read_text())
+    c = doc["cols"]
+    i = c["play_id"].index(4204)
+    assert c["play_type"][i] == "qb_kneel" and c["qtr"][i] == 4 and c["sec"][i] == 37
+    assert doc["final_home_wp"] == 0.0 and 4204 not in doc["swing_play_ids"]

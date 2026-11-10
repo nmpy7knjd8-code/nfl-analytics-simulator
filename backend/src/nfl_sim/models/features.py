@@ -68,11 +68,18 @@ def build_feature_frame(pbp: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
+# The pregame point spread is known before kickoff, so it is not leakage; the WP model
+# uses it (internal input only, never shown to fans). Raw spread_line / vegas_* stay banned.
+PREGAME_ALLOWED_FEATURES: frozenset[str] = frozenset({"posteam_spread", "posteam_spread_decayed"})
+
+
 def assert_no_leakage_columns(columns: list[str] | tuple[str, ...]) -> None:
     """Raise if any forbidden reference/odds column sneaks into features."""
     bad: list[str] = []
     for c in columns:
         cl = c.lower()
+        if cl.split("__")[-1] in PREGAME_ALLOWED_FEATURES:
+            continue  # known before kickoff, not a model output (WP model only)
         if cl in FORBIDDEN_EXACT:
             bad.append(c)
             continue

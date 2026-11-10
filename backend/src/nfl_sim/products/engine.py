@@ -46,6 +46,11 @@ class EngineInput:
     # receiving the 2H kickoff (grid/checker use this; real plays pass 0/1).
     receive_2h_ko: int | None = 0
     season: int = 2023
+    # Real-game team context (internal model inputs, never shown to fans). Defaults = generic
+    # what-if: league-average teams and no pregame spread (no-spread WP model).
+    convert_shift: float = 0.0  # offense + defense empirical-Bayes shift to P(convert)
+    fg_make_shift: float = 0.0  # kicker empirical-Bayes shift to P(make)
+    home_spread: float | None = None  # pregame, home side (+ = home favored)
 
     def __post_init__(self) -> None:
         if not 1 <= self.yardline_100 <= 99:
@@ -132,12 +137,23 @@ class EngineOutput:
 
 
 class FourthDownEngine:
-    def __init__(self, analyzer: FourthDownAnalyzer):
+    def __init__(self, analyzer: FourthDownAnalyzer, spread_analyzer: FourthDownAnalyzer | None = None):
         self.analyzer = analyzer
+        self.spread_analyzer = spread_analyzer  # used only when a real game's spread is known
 
     def _raw_wp(self, x: EngineInput) -> dict[str, float]:
-        res = self.analyzer.analyze(
-            x.to_situation(), empirics_mode=EMPIRICS_MODE, transition_mode=TRANSITION_MODE
+        sit = x.to_situation()
+        az = self.spread_analyzer if (x.home_spread is not None and self.spread_analyzer) else self.analyzer
+        emp = az.empirics
+        conv = make = None
+        if x.convert_shift:
+            conv = emp.p_convert(sit.distance, season=sit.season, mode=EMPIRICS_MODE)[0] + x.convert_shift
+        if x.fg_make_shift:
+            make = emp.p_make(x.kick_distance, season=sit.season, mode=EMPIRICS_MODE)[0] + x.fg_make_shift
+        res = az.analyze(
+            sit, empirics_mode=EMPIRICS_MODE, transition_mode=TRANSITION_MODE,
+            p_convert_override=conv, p_make_override=make,
+            home_spread=x.home_spread if az is self.spread_analyzer else None,
         )
         return {o: float(a.value_wp) for o, a in res.actions.items()}
 
@@ -164,10 +180,20 @@ class FourthDownEngine:
         )
 
 
-def load_engine() -> FourthDownEngine:
-    from nfl_sim.api.situation_lab import _load_analyzer
+def load_engine(*, with_spread_model: bool = False) -> FourthDownEngine:
+    """Generic engine (grid, checker) uses the no-spread model. ``with_spread_model`` adds the
+    separate spread model for real games with a known spread (fourth_downs table)."""
+    from nfl_sim.api.situation_lab import WP_MODEL_ARTIFACT, _load_analyzer
+    from nfl_sim.models.fourth_down import FourthDownAnalyzer
+    from nfl_sim.models.wp_model import WP_SPREAD_MODEL_FILE, WPModel
 
     az = _load_analyzer()
     if az is None:
         raise FileNotFoundError("WP model artifact missing (reports/wp/artifacts/wp_model.joblib)")
-    return FourthDownEngine(az)
+    spread_az = None
+    if with_spread_model:
+        path = WP_MODEL_ARTIFACT.parent / WP_SPREAD_MODEL_FILE
+        if not path.exists():
+            raise FileNotFoundError(f"{path} missing; run python -m nfl_sim.models wp-train-spread")
+        spread_az = FourthDownAnalyzer(WPModel.load(path), az.empirics)
+    return FourthDownEngine(az, spread_az)

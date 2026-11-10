@@ -1,0 +1,297 @@
+{
+ "note": "Append-only. Never edit or remove a date. Reveal values + best call(s) per themed ET day, frozen 2 days ahead by scripts/snapshot-themes.ts (same rule as dailySnapshot.json).",
+ "days": {
+  "2026-10-31": {
+   "theme": "playoffs",
+   "items": {
+    "2022_19_LAC_JAX-3658": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.873442,
+      "punt": 0.849089,
+      "fg": 0.888973
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_19_GB_DAL-4668": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.0554969,
+      "punt": 0.0400629,
+      "fg": 0.0547709
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_19_NYG_MIN-971": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.152744,
+      "punt": 0.136478
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_19_MIA_KC-515": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.689193,
+      "punt": 0.69612
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_19_PIT_BUF-2819": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.892469,
+      "punt": 0.878073
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-03": {
+   "theme": "goal-line",
+   "items": {
+    "2023_03_LA_CIN-1333": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.68711,
+      "punt": 0.588009,
+      "fg": 0.661933
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_08_TEN_HOU-2127": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.807019,
+      "punt": 0.663149,
+      "fg": 0.757958
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_18_DAL_WAS-3811": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.975827,
+      "punt": 0.959625,
+      "fg": 0.974203
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_02_TEN_BUF-1798": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.653984,
+      "punt": 0.488878,
+      "fg": 0.603025
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_13_NYJ_MIN-3679": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.191103,
+      "punt": 0.08554,
+      "fg": 0.129434
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-05": {
+   "theme": "marathon",
+   "items": {
+    "2022_06_NYJ_GB-3422": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.064604,
+      "punt": 0.059423,
+      "fg": 0.072021
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2022_09_LAC_ATL-657": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.768141,
+      "punt": 0.701051,
+      "fg": 0.786005
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_07_MIA_PHI-3466": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.785293,
+      "punt": 0.762733
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_13_MIA_SF-2779": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.812618,
+      "punt": 0.751565,
+      "fg": 0.805028
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_17_DEN_KC-1079": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.203721,
+      "punt": 0.170388,
+      "fg": 0.215296
+     },
+     "best": [
+      "fg"
+     ]
+    }
+   }
+  },
+  "2026-11-07": {
+   "theme": "playoffs",
+   "items": {
+    "2022_21_CIN_KC-2166": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.719642,
+      "punt": 0.73862
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_20_DAL_SF-3860": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.79193,
+      "punt": 0.817156
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_19_NYG_MIN-2873": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.422396,
+      "punt": 0.338956,
+      "fg": 0.433058
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2022_19_DAL_TB-324": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.311363,
+      "punt": 0.344111
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_21_KC_BAL-1491": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.129669,
+      "punt": 0.128242
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-10": {
+   "theme": "goal-line",
+   "items": {
+    "2023_07_GB_DEN-3454": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.40047,
+      "punt": 0.248129,
+      "fg": 0.343839
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_03_LAC_MIN-1916": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.696357,
+      "punt": 0.58967,
+      "fg": 0.673577
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_14_IND_CIN-2670": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.86322,
+      "punt": 0.773545,
+      "fg": 0.844392
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_12_NO_SF-3864": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.123543,
+      "punt": 0.0630037,
+      "fg": 0.0964554
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_08_BAL_TB-268": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.531644,
+      "punt": 0.382697,
+      "fg": 0.496094
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  }
+ }
+}

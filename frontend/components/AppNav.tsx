@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SiteMenu } from "./SiteMenu";
 import { CHECKER_ENABLED } from "../lib/features";
 
 const ALL_TABS = [
@@ -14,22 +15,38 @@ const ALL_TABS = [
 // H6 (#80): the checker tab stays hidden while CHECKER_ENABLED is false.
 const TABS = ALL_TABS.filter((t) => CHECKER_ENABLED || t.href !== "/fourth-down/");
 
+/** Game-style routes have their own header and ☰ menu, so the old chrome is hidden there:
+ * "/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration",
+ * "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games", "/fourth-down", "/coaches" and anything under "/team/", "/coaches/", "/card/", "/rivalry/" or "/playoffs/". */
+function useGameRoute(): boolean {
+  // Lists live inside the function: lib/routeChrome.test.ts reads this body for each route.
+  const GAME_EXACT = new Set(["/", "/daily", "/practice", "/endless", "/feed", "/kicks", "/about", "/daily/stats", "/era", "/calibration", "/outcomes", "/heatmap", "/match-chart", "/wheres-the-ball", "/fake-punt", "/two-point", "/games", "/swing", "/fourth-down", "/story", "/comebacks", "/on-this-day", "/first-down"]);
+  // Prefix routes "/team/", "/coaches/", "/card/", "/rivalry/", "/playoffs/" are NOT hidden here: one exported
+  // 404.html serves every unknown URL, so a path-prefix check made the client render differ from the static
+  // HTML on e.g. /team/ZZZ/ (React #418). Their old bars are hidden in CSS instead (globals.css: body:has(.sg-app)),
+  // which also covers the light 404 page.
+  const p = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  return GAME_EXACT.has(p) || p === "/coaches";
+}
+
 export function TopBar() {
+  if (useGameRoute()) return null;
   return (
     <header className="fd-top">
       <Link href="/" className="fd-brand">
         Fourth &amp; Daily
       </Link>
-      <nav aria-label="More" className="fd-top-links">
-        <Link href="/daily/stats/">Stats</Link>
-        <Link href="/about/">About</Link>
-      </nav>
+      <div className="fd-top-r">
+        <SiteMenu />
+      </div>
     </header>
   );
 }
 
 export function AppNav() {
+  const game = useGameRoute();
   const pathname = (usePathname() || "/").replace(/\/+$/, "") || "/";
+  if (game) return null;
   return (
     <nav className={`app-nav${TABS.length === 4 ? " app-nav-4" : ""}`} aria-label="Primary">
       {TABS.map((tab) => {

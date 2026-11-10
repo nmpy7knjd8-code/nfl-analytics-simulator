@@ -1,0 +1,13 @@
+/* B2 Real punt or fake? Same white card as the Fourth & Daily game (.sg-app). */
+.fp-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 10px;color:#000}
+.fp-card{border:1.5px solid #000;border-radius:16px;padding:12px 14px}
+.fp-team{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--sg-g)}
+.fp-team img{width:36px;height:36px;object-fit:contain}
+.fp-card .sg-sent{margin:10px 0 6px}
+.fp-hint{margin:0;font-size:15px;color:var(--sg-g)}
+.fp-why{font-size:16px;font-weight:600}
+.fp-desc{margin:0 0 8px;font-size:14px;line-height:1.35;color:#000;border-left:3px solid var(--sg-b);padding-left:10px}
+.fp-rates{margin:0;font-size:14px;line-height:1.35;color:var(--sg-g)}
+.fp-row{display:flex;flex-direction:column;gap:8px}
+.fp .sg-keep{min-height:54px;font-weight:700;font-size:19px;width:100%}
+@media (max-width:375px){.fp-h1{font-size:22px;margin:4px 0 8px}.fp-desc,.fp-rates{font-size:13px}.fp .sg-big{font-size:48px}.fp .sg-recap>div{padding:5px 0}}

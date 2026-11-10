@@ -1,0 +1,31 @@
+/* B1 Kick or go for two? Same white card as the Fourth & Daily game (.sg-app). */
+.tp-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 10px;color:#000}
+.tp-card{border:1.5px solid #000;border-radius:16px;padding:12px 14px}
+.tp-team{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:var(--sg-g)}
+.tp-team img{width:36px;height:36px;object-fit:contain}
+.tp-card .sg-sent{margin:10px 0 2px}
+.tp-rates{list-style:none;margin:0;padding:0;font-size:15px;line-height:1.35}
+.tp-rates li{padding:4px 0}.tp-rates li+li{border-top:1px solid #e6e6e6}
+.tp-note{margin:6px 0 0;font-size:13px;color:var(--sg-g)}
+.tp-row{display:flex;flex-direction:column;gap:8px}
+.tp .sg-keep{min-height:54px;font-weight:700;font-size:19px;width:100%;margin-top:0}
+.tp-call{margin:0 0 4px;font-size:15px;color:#000}
+@media (max-width:375px){.tp-h1{font-size:22px;margin:4px 0 8px}.tp-rates{font-size:14px}.tp .sg-big{font-size:48px}}
+/* QA 2026-10-28 T3/T4: buttons right under the situation, >=44px (48px house rule), footnotes >=13px. */
+.tp .tp-btns{margin-top:0;padding-top:12px}
+.tp .sg-btn{min-height:48px}
+.tp .sg-btn small,.tp .sg-note,.tp .sg-lbl,.tp .tp-note,.tp .sg-tm-note{font-size:13px}
+.tp .sg-btn small{font-size:14px}
+.tp-league{margin:8px 0 4px;font-size:15px;font-weight:600;color:#000}
+@media (max-width:375px){.tp.sg-rv .sg-lbl{font-size:13px}.tp-league{font-size:14px}.tp-call{font-size:14px}}
+
+/* B1 win-chance row */
+.tp .tp-wc { margin: 4px 0 12px; }
+.tp .tp-wc-text { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+.tp .tp-wc-bar { position: relative; height: 8px; border-radius: 4px; background: #fff; border: 1px solid #000; overflow: hidden; }
+.tp .tp-wc-bar > span { position: absolute; top: 0; bottom: 0; }
+/* Palette only (sg tokens): black = kept, blue = gained, blue outline = lost. */
+.tp .tp-wc-base { left: 0; background: #000; }
+.tp .tp-wc-delta.is-up { background: var(--sg-b); }
+.tp .tp-wc-delta.is-down { background: #fff; box-shadow: inset 0 0 0 2px var(--sg-b); }
+.tp .tp-wc-tick { width: 2px; margin-left: -1px; background: var(--sg-b); }

@@ -2,7 +2,7 @@
  * Win-probability series for the fixture game pages, built from REAL nflverse 2023 pbp rows
  * exported by backend/scripts/build_swing_examples.py into ./swingPlays.json (QA H5/M9).
  * Every play's quarter, clock, description and play_id is a real nflverse row; WP values are
- * nflverse's home_wp / home_wp_post (not our model). Contract shape: frontend/contracts/README.md.
+ * nflverse's published home WP (pre/post snap); our model only on rows flagged wp_fallback. Contract shape: frontend/contracts/README.md.
  */
 import swingPlays from "./swingPlays.json";
 import { GAME_SOURCE_LINE } from "./fixtures";
@@ -41,14 +41,20 @@ export interface SwingPlay {
   yards_gained: number | null;
   /** Interception or fumble returned for a TD by the defense. */
   return_td: boolean;
+  /** Punt or kickoff returned for a TD (nflverse return_touchdown). Never true together with return_td. */
+  kick_return_td: boolean;
   /** Fan-facing, <= 20 words, no clock/formation/jersey text. Show this on cards. */
   display_text: string;
+  /** Penalty sentence(s) after the play; null on "No play" rows (the flag is display_text) and flag-free plays. */
+  penalty_text: string | null;
   /** Original nflverse desc, verbatim (same as `description`); for a "Play-by-play text" disclosure. */
   raw_desc: string;
   home_wp_pre?: number;
   home_wp_post?: number;
   delta_home_wp?: number;
   swing_eligible?: boolean;
+  /** True when nflverse had no WP for this row and our model filled it. */
+  wp_fallback?: boolean;
 }
 export type SwingEvent =
   | "turnover_on_downs" | "interception" | "fumble_lost" | "touchdown" | "field_goal" | "punt" | "other";
@@ -83,12 +89,15 @@ function fanFields(r: SwingPlay) {
     event: r.event,
     fourth_down_failed: r.fourth_down_failed,
     display_text: r.display_text,
+    penalty_text: r.penalty_text ?? null,
     raw_desc: r.raw_desc,
     down: r.down,
     distance: r.distance,
     yardline_100: r.yardline_100,
     home_score_before: r.home_score_before,
     away_score_before: r.away_score_before,
+    yards_gained: r.yards_gained,
+    return_td: r.return_td,
   };
 }
 

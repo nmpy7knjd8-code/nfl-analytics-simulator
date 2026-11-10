@@ -384,6 +384,9 @@ button {
 .main,
 .decide-page {
   width: 100%;
+  /* Same column as the .fd-top header (QA 0019 N15). */
+  max-width: 40rem;
+  margin-inline: auto;
   padding: calc(1.25rem + var(--safe-top)) var(--page-pad-x) 1.75rem;
 }
 
@@ -550,11 +553,11 @@ button {
 }
 
 .game-row-main {
+  /* QA 0019 N19: date always sits under the matchup, so no row wraps differently at 390px. */
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.55rem 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
   min-width: 0;
 }
 
@@ -574,7 +577,9 @@ button {
 }
 
 .game-row-score {
-  font-family: var(--font-mono);
+  /* QA 0019 N19: scores in the sans face with even-width digits, like the rest of the page. */
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.1rem;
   font-weight: 600;
   flex-shrink: 0;
@@ -599,7 +604,8 @@ button {
 }
 
 .scoreboard-final {
-  font-family: var(--font-mono);
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -654,6 +660,14 @@ button {
   margin: 0;
   font-size: 1.02rem;
   line-height: 1.4;
+}
+/* #106 penalty sentence after the play: own line, same size, secondary ink (11:1 on --color-bg) */
+.play-penalty {
+  display: block;
+  margin-top: 2px;
+  font-size: inherit;
+  line-height: 1.4;
+  color: var(--color-ink-secondary);
 }
 
 .win-chance {
@@ -974,12 +988,6 @@ button {
   border-top: 1px solid var(--color-divider);
   color: var(--color-ink) !important;
   font-weight: 500;
-}
-
-@media (min-width: 720px) {
-  body {
-    background: linear-gradient(180deg, #ebebec 0%, var(--color-bg) 50%);
-  }
 }
 
 /* —— Fourth-down quiz (night CGI + bubble card) —— */
@@ -1414,6 +1422,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 3.25rem; /* QA P3-J: rows line up with or without a tag */
   padding: 0.55rem 0.8rem;
   border-radius: 999px;
   background: #1f1f23;
@@ -1507,11 +1516,10 @@ body:has(.quiz-page) .app-nav-item.is-current {
    Black / white / greys, one blue for "the right call". No page-enter motion;
    150 ms only on reveals. Tabular numerals, body 16 px, labels >= 13 px. */
 body { font-variant-numeric: tabular-nums; }
-.fd-top { display: flex; justify-content: space-between; align-items: center; padding: calc(0.75rem + var(--safe-top)) var(--page-pad-x) 0.25rem; max-width: 40rem; margin: 0 auto; width: 100%; }
-.fd-brand { font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; }
-.fd-top-links { display: flex; gap: 0.25rem; }
-.fd-top-links a { color: var(--color-ink-secondary); text-decoration: none; padding: 0.7rem 0.6rem; min-height: 44px; font-size: 0.9375rem; }
-.fd-top-links a:hover { color: var(--color-ink); }
+.fd-top { position: relative; z-index: var(--ios-z-nav); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: var(--safe-top) var(--page-pad-x) 0; min-height: calc(48px + var(--safe-top)); max-width: 40rem; margin: 0 auto; width: 100%; }
+.fd-brand { white-space: nowrap; flex-shrink: 0; font-weight: 800; letter-spacing: -0.01em; color: var(--color-ink); text-decoration: none; font-size: 1.05rem; display: inline-flex; align-items: center; min-height: 44px; }
+.fd-top-r { display: flex; align-items: center; position: relative; }
+.fd-top .sg-menu { color: var(--color-ink); }
 .fd-page { width: 100%; max-width: 40rem; margin: 0 auto; padding: 0.5rem var(--page-pad-x) 2rem; display: grid; gap: 1rem; }
 .fd-head h1 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
 .fd-date { margin: 0; color: var(--color-ink-secondary); font-size: 0.875rem; }
@@ -1585,7 +1593,6 @@ body { font-variant-numeric: tabular-nums; }
 .fd-prose h1 { font-size: 1.75rem; margin: 0; }
 .fd-prose h2 { font-size: 1.2rem; margin: 0.5rem 0 0; }
 .fd-prose p, .fd-prose ul { margin: 0; }
-=======
 /* Branded 404 (QA2 L4): black, white type, one blue accent. */
 .not-found {
   --nf-accent: #1f6feb;
@@ -1651,9 +1658,9 @@ body { font-variant-numeric: tabular-nums; }
 .swing-sit { font-size: 13px; color: var(--color-ink-secondary); font-variant-numeric: tabular-nums; }
 .swing-headline { font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .swing-raw { font-size: 13px; line-height: 1.45; color: var(--color-ink-secondary); }
-.swing-raw summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; }
+
 .play-feed { list-style: none; padding: 0; }
-.play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); padding-left: 0.75rem; }
+.play-card.is-swing { box-shadow: inset 3px 0 0 var(--color-blue); }
 .play-feed-soon { font-size: 14px; line-height: 1.5; color: var(--color-ink-secondary); padding: 16px 0; border-top: 1px solid var(--color-divider); margin: 0; }
 /* Recheck 2145: intro leads, source line and disclaimer stay quiet. */
 .games-intro { font-size: 15px; line-height: 1.5; color: var(--color-ink); }
@@ -1666,3 +1673,197 @@ body { font-variant-numeric: tabular-nums; }
   .wp-ot-label { font-size: 18px; }
   .wp-swing-num { font-size: 12px; }
 }
+
+/* UI Critic 2240: Game Story play list + swing cards. */
+.play-card { padding-left: 12px; scroll-margin-top: 56px; }
+.play-meta { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.play-desc .swing-badge { margin-right: 8px; vertical-align: 0.1em; }
+@media (min-width: 640px) {
+  .play-card { display: grid; grid-template-columns: 11.5rem 1fr; column-gap: 16px; align-items: baseline; }
+}
+.play-quarter-head {
+  position: sticky; top: 0; z-index: 2; margin: 0; padding: 8px 0 8px 12px;
+  font-size: 13px; font-weight: 700; line-height: 1.3; text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--color-bg); border-bottom: 1px solid var(--color-divider);
+}
+.play-quarter .play-feed { margin-top: 0; border-top: 0; }
+.swing-headline { margin-bottom: 4px; }
+.swing-link { color: inherit; text-decoration: underline; text-decoration-color: var(--color-divider); text-underline-offset: 3px; }
+.swing-link:hover, .swing-link:focus-visible { text-decoration-color: var(--color-blue); }
+.swing-raw { margin: 0; }
+.swing-raw summary {
+  min-height: 44px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--color-blue); list-style: none;
+}
+.swing-raw summary::-webkit-details-marker { display: none; }
+.swing-raw summary::after {
+  content: ""; width: 6px; height: 6px; margin-top: -3px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform 0.15s ease;
+}
+.swing-raw[open] summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.wp-opening { font-size: 15px; line-height: 1.5; }
+.wp-dots-narrow { display: none; }
+@media (max-width: 640px) {
+  .wp-dots-wide { display: none; }
+  .wp-dots-narrow { display: inline; }
+  .wp-swing-num { font-size: 16px; }
+}
+
+/* Live play file states (PlayFeed). */
+.play-feed-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--color-ink-secondary); margin: 0 0 8px; }
+.play-feed-retry { min-height: 48px; }
+.error-band .play-feed-retry { margin-left: 12px; }
+.play-feed-skeleton .play-card { min-height: 56px; background: var(--color-bg-sunken); border-radius: 6px; margin-bottom: 6px; }
+/* QA 2315: at phone widths (≤640px, incl. 500px) the axis shows "100%" only; the caption names the team (no clipped "YJ 100%"). */
+@media (max-width: 640px) { .wp-axis-team { display: none; } }
+.ot-winner { font-weight: 700; color: var(--color-blue); font-family: var(--font-body); }
+
+/* QA 0019 N18: the checker-paused CTA on /fourth-down/ is the primary action, blue like other primaries. */
+.decide-page .empty-state .btn-primary { background: var(--color-blue-fill); border-color: var(--color-blue-fill); color: #ffffff; }
+.decide-page .empty-state .btn-primary:hover { background: #2a6fe0; }
+
+/* UI Critic 0015 P2-B: keep "CAR 91.9%" on one line; the bar track takes the rest. */
+.fd-bar { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+.fd-bar-num { white-space: nowrap; min-width: 5.75rem; text-align: right; font-variant-numeric: tabular-nums; }
+.fd-bar-track { flex: 1 1 auto; min-width: 0; }
+
+/* QA 0116 U4: self-hosted logos on the games list and game header. */
+.team-logo{display:inline-block;vertical-align:middle;object-fit:contain;margin-right:2px}
+.team-logo-plate{background:rgba(255,255,255,.9);border-radius:50%;padding:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.fd-empty{display:flex;flex-direction:column;gap:12px;align-items:stretch}.fd-empty p{font-size:18px;font-weight:700;margin:8px 0}.fd-empty-btn{min-height:54px;border-radius:999px;background:#1E5BFF;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none}
+
+/* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
+.kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.kb-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:#000}
+.kb-lede{margin:0;color:var(--sg-g);font-size:15px}
+.kb-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px 8px}
+.kb-q{font-size:16px;font-weight:600;color:#000}
+.kb-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:6px 0 4px}
+.kb-sub{font-size:14px;color:var(--sg-g);min-height:1.3em}
+.kb-range{width:100%;height:44px;accent-color:var(--sg-b);margin:0}
+.kb-ends{display:flex;justify-content:space-between;font-size:13px;color:var(--sg-g);margin-top:-6px}
+.kb-chips{margin:0}
+.kb-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kb-tile button{width:100%;display:grid;gap:4px;text-align:left;padding:10px 12px;border-radius:14px;border:1.5px solid #d9d9d9;background:#fff;color:#000;font:inherit;cursor:pointer}
+.kb-tile.is-on button{border-color:var(--sg-b);box-shadow:inset 0 0 0 1px var(--sg-b)}
+.kb-tile button:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
+.kb-tile-yd{font-size:14px;font-weight:700;color:var(--sg-g)}
+.kb-tile-pct{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.kb-bar{height:6px;border-radius:3px;background:#e6e6e6;overflow:hidden}
+.kb-bar span{display:block;height:100%;background:var(--sg-b)}
+.kb-tile-n{font-size:13px;color:var(--sg-g)}
+.kb-note{margin:0;font-size:13px;color:var(--sg-g);line-height:1.35}
+
+/* —— F6 model limits (reveal card + About) —— */
+.ml{border:1.5px solid #d9d9d9;border-radius:14px;background:#fff;margin:10px 0}
+.ml-sum{min-height:44px;display:flex;align-items:center;padding:0 14px;cursor:pointer;font-size:15px;font-weight:700;color:#000;list-style:none}
+.ml-sum::-webkit-details-marker{display:none}
+.ml-sum::after{content:"▸";margin-left:auto;color:var(--sg-b);transition:transform .15s}
+.ml[open] .ml-sum::after{transform:rotate(90deg)}
+.ml-list{margin:0;padding:0 14px 12px 32px;display:grid;gap:6px;font-size:14px;color:var(--sg-g);line-height:1.4}
+.ml-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ml-cols>div{border:1.5px solid #d9d9d9;border-radius:14px;background:#fff;padding:12px}
+.ml-cols h3{margin:0 0 6px;font-size:15px;color:#000}
+.ml-cols ul{margin:0;padding-left:18px;font-size:14px;color:var(--sg-g)}
+.ml{margin:6px 0 4px}
+.ml-sum{min-height:44px}
+/* About on the white game card */
+.ab{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));line-height:1.5}
+.ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:#000}
+.ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
+.ab>ul{padding-left:20px;display:grid;gap:6px}
+.ab a{color:var(--sg-b);padding:12px 0} /* QA V3: 44px tap height; inline padding does not move the text */
+/* —— chart pages (F4/D2), same white card as /kicks —— */
+.ch-card{padding:8px 6px}
+.ch-chips{margin:8px -2px 0}.ch-chips>:first-child{margin-left:auto}.ch-chips>:last-child{margin-right:auto}
+.ch-pick{text-align:left}
+.era-ax{font-size:11px;fill:#5f6368}
+.era-ax.is-on{fill:#000;font-weight:700}
+.era-lbl{font-size:11px;font-weight:700}
+.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
+.era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
+.era-all{border-top:1px solid #e6e6e6;padding-top:6px}
+.cal-axes{display:flex;justify-content:space-between;font-size:13px;color:#5f6368;padding:0 6px}
+
+
+/* 4th-down checker (ported from #57; shown only when CHECKER_ENABLED) */
+.fd-links a, .gs-back, .gs-swings a, .ck-src a { color: var(--color-blue); }
+.ck-h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+.ck-summary { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ck-steps { display: grid; gap: 0.5rem; }
+.ck-step { display: grid; grid-template-columns: 1fr 44px 6.5rem 44px; align-items: center; gap: 0.5rem; font-variant-numeric: tabular-nums; }
+.ck-step-label { color: var(--color-ink-secondary); }
+.ck-step-val { text-align: center; font-weight: 800; }
+.ck-fixed { grid-column: 3; }
+.ck-step-btn { width: 44px; height: 44px; border-radius: 10px; border: 1px solid #52525b; background: #1c1c1f; color: #fff; font: inherit; font-size: 1.25rem; font-weight: 700; cursor: pointer; }
+.ck-step-btn:hover:not(:disabled) { background: #27272a; }
+.ck-step-btn:disabled { color: #71717a; border-color: #3f3f46; cursor: not-allowed; }
+.ck-step-btn:focus-visible { outline: 3px solid var(--color-blue); outline-offset: 2px; }
+.ck-rec { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--color-blue); }
+.ck-close { margin: 0; font-weight: 700; }
+.ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
+.ck-src { font-size: 0.875rem; }
+/* —— D5 outcome histogram —— */
+.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
+/* —— D6 heat map (coaches' real go-rates) —— */
+.hm-card{padding:8px 6px}
+.hm-scroll{overflow-x:auto;scrollbar-width:none;margin:0 -6px;padding:0 6px}.hm-scroll::-webkit-scrollbar{display:none}
+.hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(44px,1fr));gap:2px}
+.hm-row{display:contents}
+.hm-corner{position:sticky;left:-6px;z-index:2;background:#fff;box-shadow:-6px 0 0 #fff;font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
+.hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
+.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:-6px;background:#fff;box-shadow:-6px 0 0 #fff;z-index:1}
+.hm-cell{min-width:44px;min-height:44px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
+.hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
+.hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
+.hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
+.oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
+/* —— E3 match the chart —— */
+.mc-charts{display:flex;flex-direction:column;gap:10px}
+.mc-chart{margin:0;display:flex;gap:8px;align-items:flex-start}
+.mc-chart svg{flex:1;min-width:0;height:auto}
+.mc-letter{font-weight:800;font-size:20px;width:22px;padding-top:4px}
+.mc-key{margin:0;font-size:12px;color:var(--sg-g)}
+.mc-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #eee}
+.mc-row:last-child{border-bottom:0}
+.mc-row.is-ok .mc-sub{color:#0a7d32}
+.mc-row.is-bad .mc-sub{color:#c5221f}
+.mc-game{font-size:15px;min-width:0}
+.mc-sub{font-size:12px;color:var(--sg-g);margin-top:2px}
+.mc-chips{display:flex;gap:6px;flex:none}
+.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.mc-chip.is-on{background:#1E5BFF;border-color:#1E5BFF;color:#fff}
+.mc-total{font-size:20px;font-weight:800;text-align:center;margin:12px 0 4px}
+.mc-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+/* —— E5 where's the ball —— */
+.wb-sit{font-size:17px;margin:6px 0 12px}
+.wb-wrap{margin:4px 0}
+.wb-ends{display:flex;justify-content:space-between;font-size:12px;color:var(--sg-g);margin-bottom:4px}
+.wb-field{position:relative;height:84px;border-radius:8px;background:#2e7d32;touch-action:none;cursor:pointer;border-left:10px solid #1b5e20;border-right:10px solid #1b5e20}
+.wb-field:focus-visible{outline:3px solid #1E5BFF;outline-offset:2px}
+.wb-yl{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.55)}
+.wb-yl span{position:absolute;bottom:4px;left:-8px;width:16px;text-align:center;font-size:10px;color:#fff;font-weight:700}
+.wb-ball{position:absolute;top:28px;width:20px;height:13px;margin-left:-10px;border-radius:50%;background:#8d4b20;border:2px solid #fff}
+.wb-ball.is-real{background:#fff;border-color:#000;top:46px}
+.wb-gap{position:absolute;top:0;bottom:0;background:rgba(255,235,59,.35)}
+.wb-step{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px}
+.wb-spot{font-size:18px;font-weight:800;min-width:96px;text-align:center}
+.mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
+.wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
+/* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in
+   AppNav's path check, so the static HTML and the client render match on 404s under /team/ etc. (React #418). */
+body:has(.sg-app) .fd-top,body:has(.sg-app) .app-nav{display:none}
+
+/* A1 break-even bar (Daily answer row) */
+.be { display: grid; gap: 0.2rem; }
+.be-track { position: relative; display: block; height: 6px; border-radius: 3px; background: #e4e4e7; margin: 0.3rem 6px 0.15rem; }
+.be-dot { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: #2563eb; border: 2px solid #fff; box-shadow: 0 0 0 1px #2563eb; transform: translate(-50%, -50%); }
+.be-need { position: absolute; top: -4px; width: 2px; height: 14px; background: #18181b; transform: translateX(-50%); }
+.be-ends { display: flex; justify-content: space-between; margin: 0 0 0.1rem; font-size: 0.8125rem; font-weight: 400; line-height: 1.2; color: #71717a; }
+.be-src, .be-empty { font-size: 0.8125rem; font-weight: 400; color: #52525b; }

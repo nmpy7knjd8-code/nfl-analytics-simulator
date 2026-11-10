@@ -1,0 +1,390 @@
+{
+  "_source": "Team data from nflverse (nflreadpy load_teams). Logos: ESPN (team_logo_espn); wordmarks: nflverse (team_wordmark). Downloaded and self-hosted by backend/scripts/fetch_team_logos.py; trademarks of the NFL and its teams, used for identification only.",
+  "fetched": "2026-10-27",
+  "teams": {
+    "ARI": {
+      "logo": {
+        "path": "/teams/ARI/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png",
+        "bytes": 5525
+      },
+      "wordmark": {
+        "path": "/teams/ARI/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/ARI.png",
+        "bytes": 8707
+      }
+    },
+    "ATL": {
+      "logo": {
+        "path": "/teams/ATL/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png",
+        "bytes": 6824
+      },
+      "wordmark": {
+        "path": "/teams/ATL/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/ATL.png",
+        "bytes": 3866
+      }
+    },
+    "BAL": {
+      "logo": {
+        "path": "/teams/BAL/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png",
+        "bytes": 6528
+      },
+      "wordmark": {
+        "path": "/teams/BAL/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/BAL.png",
+        "bytes": 8653
+      }
+    },
+    "BUF": {
+      "logo": {
+        "path": "/teams/BUF/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png",
+        "bytes": 5318
+      },
+      "wordmark": {
+        "path": "/teams/BUF/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/BUF.png",
+        "bytes": 3609
+      }
+    },
+    "CAR": {
+      "logo": {
+        "path": "/teams/CAR/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500-dark/car.png",
+        "bytes": 5003
+      },
+      "wordmark": {
+        "path": "/teams/CAR/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/CAR.png",
+        "bytes": 11232
+      }
+    },
+    "CHI": {
+      "logo": {
+        "path": "/teams/CHI/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png",
+        "bytes": 10393
+      },
+      "wordmark": {
+        "path": "/teams/CHI/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/CHI.png",
+        "bytes": 3685
+      }
+    },
+    "CIN": {
+      "logo": {
+        "path": "/teams/CIN/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png",
+        "bytes": 4680
+      },
+      "wordmark": {
+        "path": "/teams/CIN/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/CIN.png",
+        "bytes": 6978
+      }
+    },
+    "CLE": {
+      "logo": {
+        "path": "/teams/CLE/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png",
+        "bytes": 9345
+      },
+      "wordmark": {
+        "path": "/teams/CLE/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/CLE.png",
+        "bytes": 5431
+      }
+    },
+    "DAL": {
+      "logo": {
+        "path": "/teams/DAL/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png",
+        "bytes": 4007
+      },
+      "wordmark": {
+        "path": "/teams/DAL/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/DAL.png",
+        "bytes": 5655
+      }
+    },
+    "DEN": {
+      "logo": {
+        "path": "/teams/DEN/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/den.png",
+        "bytes": 5784
+      },
+      "wordmark": {
+        "path": "/teams/DEN/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/DEN.png",
+        "bytes": 5815
+      }
+    },
+    "DET": {
+      "logo": {
+        "path": "/teams/DET/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/det.png",
+        "bytes": 7043
+      },
+      "wordmark": {
+        "path": "/teams/DET/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/DET.png",
+        "bytes": 5473
+      }
+    },
+    "GB": {
+      "logo": {
+        "path": "/teams/GB/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png",
+        "bytes": 5565
+      },
+      "wordmark": {
+        "path": "/teams/GB/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/GB.png",
+        "bytes": 6023
+      }
+    },
+    "HOU": {
+      "logo": {
+        "path": "/teams/HOU/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png",
+        "bytes": 5277
+      },
+      "wordmark": {
+        "path": "/teams/HOU/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/HOU.png",
+        "bytes": 4988
+      }
+    },
+    "IND": {
+      "logo": {
+        "path": "/teams/IND/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png",
+        "bytes": 5885
+      },
+      "wordmark": {
+        "path": "/teams/IND/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/IND.png",
+        "bytes": 3381
+      }
+    },
+    "JAX": {
+      "logo": {
+        "path": "/teams/JAX/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png",
+        "bytes": 8622
+      },
+      "wordmark": {
+        "path": "/teams/JAX/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/JAX.png",
+        "bytes": 6518
+      }
+    },
+    "KC": {
+      "logo": {
+        "path": "/teams/KC/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png",
+        "bytes": 5571
+      },
+      "wordmark": {
+        "path": "/teams/KC/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/KC.png",
+        "bytes": 5734
+      }
+    },
+    "LA": {
+      "logo": {
+        "path": "/teams/LA/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png",
+        "bytes": 4247
+      },
+      "wordmark": {
+        "path": "/teams/LA/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/LA.png",
+        "bytes": 10696
+      }
+    },
+    "LAC": {
+      "logo": {
+        "path": "/teams/LAC/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png",
+        "bytes": 4147
+      },
+      "wordmark": {
+        "path": "/teams/LAC/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/LAC.png",
+        "bytes": 9960
+      }
+    },
+    "LV": {
+      "logo": {
+        "path": "/teams/LV/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png",
+        "bytes": 8334
+      },
+      "wordmark": {
+        "path": "/teams/LV/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/LV.png",
+        "bytes": 3823
+      }
+    },
+    "MIA": {
+      "logo": {
+        "path": "/teams/MIA/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png",
+        "bytes": 7902
+      },
+      "wordmark": {
+        "path": "/teams/MIA/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/MIA.png",
+        "bytes": 11862
+      }
+    },
+    "MIN": {
+      "logo": {
+        "path": "/teams/MIN/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/min.png",
+        "bytes": 8988
+      },
+      "wordmark": {
+        "path": "/teams/MIN/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/MIN.png",
+        "bytes": 10258
+      }
+    },
+    "NE": {
+      "logo": {
+        "path": "/teams/NE/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png",
+        "bytes": 4486
+      },
+      "wordmark": {
+        "path": "/teams/NE/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/NE.png",
+        "bytes": 4836
+      }
+    },
+    "NO": {
+      "logo": {
+        "path": "/teams/NO/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/no.png",
+        "bytes": 6226
+      },
+      "wordmark": {
+        "path": "/teams/NO/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/NO.png",
+        "bytes": 8359
+      }
+    },
+    "NYG": {
+      "logo": {
+        "path": "/teams/NYG/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png",
+        "bytes": 2425
+      },
+      "wordmark": {
+        "path": "/teams/NYG/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/NYG.png",
+        "bytes": 8995
+      }
+    },
+    "NYJ": {
+      "logo": {
+        "path": "/teams/NYJ/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png",
+        "bytes": 2524
+      },
+      "wordmark": {
+        "path": "/teams/NYJ/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/NYJ.png",
+        "bytes": 4336
+      }
+    },
+    "PHI": {
+      "logo": {
+        "path": "/teams/PHI/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png",
+        "bytes": 7500
+      },
+      "wordmark": {
+        "path": "/teams/PHI/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/PHI.png",
+        "bytes": 4579
+      }
+    },
+    "PIT": {
+      "logo": {
+        "path": "/teams/PIT/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png",
+        "bytes": 7070
+      },
+      "wordmark": {
+        "path": "/teams/PIT/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/PIT.png",
+        "bytes": 4389
+      }
+    },
+    "SEA": {
+      "logo": {
+        "path": "/teams/SEA/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png",
+        "bytes": 4436
+      },
+      "wordmark": {
+        "path": "/teams/SEA/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/SEA.png",
+        "bytes": 5719
+      }
+    },
+    "SF": {
+      "logo": {
+        "path": "/teams/SF/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png",
+        "bytes": 6194
+      },
+      "wordmark": {
+        "path": "/teams/SF/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/SF.png",
+        "bytes": 10332
+      }
+    },
+    "TB": {
+      "logo": {
+        "path": "/teams/TB/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png",
+        "bytes": 9791
+      },
+      "wordmark": {
+        "path": "/teams/TB/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/TB.png",
+        "bytes": 9356
+      }
+    },
+    "TEN": {
+      "logo": {
+        "path": "/teams/TEN/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png",
+        "bytes": 6380
+      },
+      "wordmark": {
+        "path": "/teams/TEN/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/TEN.png",
+        "bytes": 10237
+      }
+    },
+    "WAS": {
+      "logo": {
+        "path": "/teams/WAS/logo.png",
+        "source_url": "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png",
+        "bytes": 3815
+      },
+      "wordmark": {
+        "path": "/teams/WAS/wordmark.png",
+        "source_url": "https://github.com/nflverse/nflverse-pbp/raw/master/wordmarks/WAS.png",
+        "bytes": 7070
+      }
+    }
+  }
+}

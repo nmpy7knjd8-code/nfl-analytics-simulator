@@ -1,0 +1,51 @@
+{
+  "C": 0.25,
+  "ep_model_loaded": null,
+  "feature_names": [
+    "num__score_differential",
+    "num__game_seconds_remaining",
+    "num__half_seconds_remaining",
+    "num__down",
+    "num__distance",
+    "num__yardline_100",
+    "num__posteam_timeouts",
+    "num__defteam_timeouts",
+    "num__is_home_possession",
+    "num__receive_2h_ko",
+    "num__score_time_ratio",
+    "num__posteam_spread",
+    "num__posteam_spread_decayed"
+  ],
+  "features": [
+    "score_differential",
+    "game_seconds_remaining",
+    "half_seconds_remaining",
+    "down",
+    "distance",
+    "yardline_100",
+    "posteam_timeouts",
+    "defteam_timeouts",
+    "is_home_possession",
+    "receive_2h_ko",
+    "score_time_ratio",
+    "posteam_spread",
+    "posteam_spread_decayed"
+  ],
+  "holdout_brier_2024_25": 0.1480835661835104,
+  "path": "A_no_ep_feature+pregame_spread",
+  "seed": 42,
+  "selected_C": 0.25,
+  "train_n": 195024,
+  "train_seasons": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "val_log_loss_by_C": {
+    "0.25": 0.45965343222684657,
+    "1.0": 0.4596673571195304,
+    "4.0": 0.4596710256885579
+  }
+}

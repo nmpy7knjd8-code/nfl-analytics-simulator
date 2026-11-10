@@ -22,9 +22,18 @@ from nfl_sim.models.wp_features import (
     WP_MODEL_FEATURES,
     WP_NUMERIC_FEATURES,
     WP_SCORE_TIME_FEATURES,
+    WP_SPREAD_MODEL_FEATURES,
     WPFeatureBuilder,
     build_wp_feature_frame,
 )
+
+
+# Spread WP model (internal pregame input): fit 2019–2023, holdout 2024–2025.
+WP_FIT_SEASONS: tuple[int, ...] = (2019, 2020, 2021, 2022, 2023)
+WP_TUNE_SEASON: int = 2023  # C picked by fitting 2019–22 and scoring 2023
+WP_HOLDOUT_SEASONS: tuple[int, ...] = (2024, 2025)
+WP_HOLDOUT_BRIER_MAX: float = 0.150
+WP_SPREAD_MODEL_FILE: str = "wp_spread_model.joblib"  # used only when a real game's spread is known
 
 
 @dataclass
@@ -83,10 +92,19 @@ class WPModel:
     classifier: LogisticRegression | None = None
     meta: dict[str, Any] = field(default_factory=dict)
 
-    def fit(self, train_df: pd.DataFrame, *, C: float = 1.0) -> WPModel:
-        forbid_test_season_in_fit(train_df["season"].unique(), context="train_fit")
-        if int(TEST_SEASON) in set(int(x) for x in train_df["season"].unique()):
-            raise ValueError("Refusing to train WP on test season 2023")
+    def fit(
+        self, train_df: pd.DataFrame, *, C: float = 1.0, fit_seasons: tuple[int, ...] | None = None
+    ) -> WPModel:
+        seasons = set(int(x) for x in train_df["season"].unique())
+        if fit_seasons is None:
+            forbid_test_season_in_fit(seasons, context="train_fit")
+            if int(TEST_SEASON) in seasons:
+                raise ValueError("Refusing to train WP on test season 2023")
+        else:
+            # Spread model split: fit/tune only on fit_seasons; 2024–25 is the untouched holdout.
+            bad = sorted(seasons - set(fit_seasons)) + sorted(seasons & set(WP_HOLDOUT_SEASONS))
+            if bad:
+                raise ValueError(f"WP fit outside allowed seasons {fit_seasons}: {sorted(set(bad))}")
         X = build_wp_feature_frame(train_df)
         assert_no_leakage_columns(list(X.columns))
         Xt = self.feature_builder.fit_transform(X)
@@ -332,3 +350,57 @@ def train_and_evaluate_wp(
 
     return metrics
 
+
+
+def train_spread_wp(
+    frame: pd.DataFrame,
+    *,
+    out_dir: Path,
+    candidates: tuple[float, ...] = (0.25, 1.0, 4.0),
+    command: str | None = None,
+) -> dict[str, Any]:
+    """Spread WP: tune C on 2023 (fit 2019–22), refit 2019–23, score the 2024–25 holdout once."""
+    season = frame["season"].astype(int)
+    fit_df = frame[season.isin(WP_FIT_SEASONS)]
+    hold_df = frame[season.isin(WP_HOLDOUT_SEASONS)]
+    tune_fit = fit_df[fit_df["season"].astype(int) != WP_TUNE_SEASON]
+    tune_val = fit_df[fit_df["season"].astype(int) == WP_TUNE_SEASON]
+    feats = lambda: WPFeatureBuilder(columns=WP_SPREAD_MODEL_FEATURES)  # noqa: E731
+    c_scores: dict[str, float] = {}
+    for C in candidates:
+        m = WPModel(feature_builder=feats()).fit(tune_fit, C=C, fit_seasons=WP_FIT_SEASONS)
+        c_scores[str(C)] = float(log_loss(tune_val["wp_label"].astype(int), m.predict_proba(tune_val), labels=[0, 1]))
+    best_C = float(min(c_scores, key=c_scores.get))
+    model = WPModel(feature_builder=feats()).fit(fit_df, C=best_C, fit_seasons=WP_FIT_SEASONS)
+    base = WPModel().fit(fit_df, C=best_C, fit_seasons=WP_FIT_SEASONS)  # same split, no spread
+
+    y = hold_df["wp_label"].astype(int).to_numpy()
+    p, p0 = model.predict_wp(hold_df), base.predict_wp(hold_df)
+    metrics: dict[str, Any] = {
+        "model": "logistic WP + pregame spread (internal input)",
+        "features": list(WP_SPREAD_MODEL_FEATURES),
+        "fit_seasons": list(WP_FIT_SEASONS),
+        "tune": {"fit": list(WP_FIT_SEASONS[:-1]), "val": WP_TUNE_SEASON, "log_loss_by_C": c_scores,
+                 "selected_C": best_C},
+        "holdout": {
+            "seasons": list(WP_HOLDOUT_SEASONS),
+            "n": int(len(hold_df)),
+            "brier": float(brier_score_loss(y, p)),
+            "log_loss": float(log_loss(y, np.column_stack([1 - p, p]), labels=[0, 1])),
+            "brier_without_spread_same_split": float(brier_score_loss(y, p0)),
+            "brier_max": WP_HOLDOUT_BRIER_MAX,
+        },
+        "n_fit": int(len(fit_df)),
+        "seed": RANDOM_SEED,
+        "command": command,
+    }
+    art = Path(out_dir) / "artifacts"
+    art.mkdir(parents=True, exist_ok=True)
+    model.meta.update({"selected_C": best_C, "val_log_loss_by_C": c_scores, "features": list(WP_SPREAD_MODEL_FEATURES),
+                       "path": "A_no_ep_feature+pregame_spread", "seed": RANDOM_SEED, "ep_model_loaded": None,
+                       "holdout_brier_2024_25": metrics["holdout"]["brier"]})
+    # Separate artifact: the generic 4th-down engine / grid.json keep the no-spread wp_model.joblib.
+    model.save(art / WP_SPREAD_MODEL_FILE)
+    (art / "wp_spread_model.meta.json").write_text(json.dumps(model.meta, indent=2, sort_keys=True) + "\n")
+    (Path(out_dir) / "spread_metrics.json").write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n")
+    return metrics

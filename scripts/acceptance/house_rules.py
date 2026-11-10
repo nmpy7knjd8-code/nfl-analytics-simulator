@@ -6,8 +6,12 @@ on the site (daily quiz, 4th-down page, Game Story / games).
 
   1. Words: no "EPA", "WPA" or "xpass" on fan screens.
   2. No betting: no odds formats, lines or stakes language.
-  3. Data filter: the bad 2019_03_CIN_BUF game never ships in site data.
-  4. No team logos in the built site.
+  3. Data filter: the bad 2019_03_CIN_BUF "End of half" row and the play right before it (the
+     (:02) A.Dalton pass carrying a fake swing) never ship in site data. Other plays from that
+     game are fine (mining/build_swings.py drops only those two rows since #174).
+  4. No team logos in the built site, except the self-hosted team logos/wordmarks listed in
+     teams/manifest.json (teams/<ABBR>/logo.png, wordmark.png) and <img> tags pointing at /teams/.
+     Any external image (img src/srcset, SVG <image href>, CSS url() over http(s): or //) fails.
   5. Daily-game FG cap: no kick offered over 64 yd (quiz + 4th-down scenarios;
      kick distance = yardline_100 + 18, as in the engine since #64).
 Prints every failure, exits 1 if any.
@@ -29,6 +33,8 @@ BETTING = re.compile(
     re.I,
 )
 BAD_GAME = "2019_03_CIN_BUF"
+# The two bad rows in BAD_GAME: the "End of half" row and the (:02) Dalton pass before it.
+BAD_ROW_TEXT = re.compile(r"^\s*End of half|\(:02\).*A\.Dalton pass deep right to 19-A\.Tate", re.I)
 MAX_FG = 64
 FG_SNAP_YARDS = 18  # mirrors nfl_sim.models.fourth_down_empirics.FG_SNAP_YARDS (standalone script)
 fails: list[str] = []
@@ -46,6 +52,19 @@ def strings(obj, skip=frozenset()):
                 yield from strings(v, skip)
 
 
+def bad_rows(obj, path="$", game=None):
+    """Yield paths of BAD_GAME records (or their text) matching the bad End-of-half pattern."""
+    if isinstance(obj, dict):
+        game = obj.get("game_id", game)
+        for k, v in obj.items():
+            yield from bad_rows(v, f"{path}.{k}", game)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from bad_rows(v, f"{path}[{i}]", game)
+    elif isinstance(obj, str) and BAD_ROW_TEXT.search(obj) and (game == BAD_GAME or BAD_GAME in obj):
+        yield path
+
+
 def visible_text(page: str) -> str:
     page = re.sub(r"<(script|style|noscript|template)\b.*?</\1>", " ", page, flags=re.S | re.I)
     page = re.sub(r"<head\b.*?</head>", " ", page, flags=re.S | re.I)
@@ -59,6 +78,58 @@ def scan(text: str, where: str) -> None:
             s = max(0, m.start() - 30)
             fail_ctx = " ".join(text[s:m.end() + 30].split())
             fails.append(f"{what}: {where} shows {m.group(0)!r} in \"…{fail_ctx}…\"")
+
+
+# Logo ban exception (approved by Garrett, 2026-10-27, PR #125): the self-hosted team logos and
+# wordmarks under teams/<ABBR>/ that are listed in teams/manifest.json may ship, and <img> tags may
+# point at a same-site /teams/ path. Every other logo file or logo <img> in the built site still fails.
+TEAM_FILE = re.compile(r"^teams/[A-Z]{2,3}/(logo|wordmark)\.png$")
+LOGO_IMG = re.compile(r"<img[^>]+(logo|teamlogo)[^>]*>", re.I)
+# Same-site path only: no scheme, no protocol-relative //. An optional basePath prefix
+# (e.g. /nfl-analytics-simulator/teams/KC/logo.png) is fine.
+TEAMS_IMG_SRC = re.compile(
+    r"""\ssrc=["'](?:/[A-Za-z0-9._-]+)*/teams/[A-Z]{2,3}/(logo|wordmark)\.png["']""")
+
+# No external images at all: <img src/srcset>, <source srcset>, SVG <image href/xlink:href>,
+# and CSS url() pointing at http(s): or protocol-relative //. (Fonts in CSS url() are not images.)
+_EXT = r"""\s*(?:https?:)?//"""
+EXT_IMG_ATTR = re.compile(rf"""<img\b[^>]*?\ssrc\s*=\s*["']?{_EXT}[^>]*>""", re.I)
+EXT_SRCSET = re.compile(r"""<(?:img|source)\b[^>]*?\ssrcset\s*=\s*["']([^"']*)["'][^>]*>""", re.I)
+EXT_SVG_IMAGE = re.compile(rf"""<image\b[^>]*?\s(?:xlink:)?href\s*=\s*["']?{_EXT}[^>]*>""", re.I)
+EXT_CSS_URL = re.compile(rf"""url\(\s*["']?{_EXT}([^)"']*)["']?\s*\)""", re.I)
+FONT_EXT = re.compile(r"\.(woff2?|ttf|otf|eot)(?:[?#][^)]*)?$", re.I)
+
+
+def manifest_files(site: str) -> set[str]:
+    p = os.path.join(site, "teams", "manifest.json")
+    if not os.path.exists(p):
+        return set()
+    teams = json.load(open(p)).get("teams", {})
+    return {e[k]["path"].lstrip("/") for e in teams.values() for k in ("logo", "wordmark") if k in e}
+
+
+def logo_file_allowed(rel: str, allowed: set[str]) -> bool:
+    rel = rel.replace(os.sep, "/")
+    return bool(TEAM_FILE.match(rel)) and rel in allowed
+
+
+def bad_logo_imgs(page: str) -> list[str]:
+    return [m.group(0) for m in LOGO_IMG.finditer(page) if not TEAMS_IMG_SRC.search(m.group(0))]
+
+
+def external_images(text: str) -> list[str]:
+    """Every external image reference in an HTML page or CSS file."""
+    out = [m.group(0) for m in EXT_IMG_ATTR.finditer(text)]
+    out += [m.group(0) for m in EXT_SVG_IMAGE.finditer(text)]
+    for m in EXT_SRCSET.finditer(text):
+        if any(re.match(_EXT, c.strip().split(" ")[0] if c.strip() else "x") for c in m.group(1).split(",")):
+            out.append(m.group(0))
+    out += [m.group(0) for m in EXT_CSS_URL.finditer(text) if not FONT_EXT.search(m.group(1))]
+    return out
+
+
+# Win-chance swings are shown in percent; "N points" reads like game points (HGIC copy fix, Nov 3 2026).
+SWING_POINTS = re.compile(r"Chance to win swung |-point swing toward|swung win chances|win chances? \{swing\} points|play swung win chances")
 
 
 def main() -> int:
@@ -78,24 +149,36 @@ def main() -> int:
         if p.get("description"):
             scan(p["description"], f"play {p['game_id']}#{p.get('play_index')}")
 
+    # Client bundles: old "N points" swing copy must not ship.
+    for root, _, files in os.walk(site):
+        for f in files:
+            if f.endswith(".js"):
+                m = SWING_POINTS.search(open(os.path.join(root, f), encoding="utf-8", errors="ignore").read())
+                if m:
+                    fails.append(f"copy: {os.path.relpath(os.path.join(root, f), site)} has swing-in-points text {m.group(0)!r}")
+
     # Built pages (visible text only; redirect stubs skipped).
+    allowed = manifest_files(site)
     for root, _, files in os.walk(site):
         for f in files:
             path, rel = os.path.join(root, f), os.path.relpath(os.path.join(root, f), site)
-            if re.search(r"logo", f, re.I):
+            if re.search(r"logo", f, re.I) and not logo_file_allowed(rel, allowed):
                 fails.append(f"logo: built site ships {rel}")
-            if not f.endswith(".html"):
+            if not f.endswith((".html", ".css")):
                 continue
             page = open(path, encoding="utf-8", errors="replace").read()
-            if re.search(r"<img[^>]+(logo|teamlogo)", page, re.I):
+            for ref in external_images(page)[:3]:
+                fails.append(f"external image: /{rel} loads {ref[:120]!r}")
+            if not f.endswith(".html"):
+                continue
+            if bad_logo_imgs(page):
                 fails.append(f"logo: /{rel} renders a logo image")
             if 'http-equiv="refresh"' not in page:
                 scan(visible_text(page), f"page /{rel}")
 
-    # Bad CIN@BUF game never ships.
-    blob = json.dumps(data)
-    if BAD_GAME in blob:
-        fails.append(f"data filter: site data contains {BAD_GAME} (bad 'End of half' row)")
+    # Bad CIN@BUF rows never ship (the rest of that game may).
+    for where in bad_rows(data):
+        fails.append(f"data filter: site data contains the bad {BAD_GAME} row at {where}")
 
     # Daily game never offers a kick over 64 yd.
     for it in data["quiz"]["items"]:

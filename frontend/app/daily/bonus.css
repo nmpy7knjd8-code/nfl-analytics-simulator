@@ -1,0 +1,9 @@
+/* B3 theme reveal (/daily/#bonus). Reuses the B2 card styles (.fp-*) on the white Fourth & Daily card (.sg-app). */
+.tr-hint{margin:8px 0 0;font-size:15px;color:var(--sg-g)}
+.tr-reveal{border:1.5px solid #000;border-radius:16px;padding:12px 14px;margin:4px 0 8px;text-align:center}
+.tr-name{margin:0;font-size:30px;font-weight:800;color:var(--sg-b)}
+.tr-line{margin:4px 0 0;font-size:16px;font-weight:600}
+.tr-score{margin:6px 0 8px;font-size:16px;font-weight:700;text-align:center}
+.tr-link{display:flex;align-items:center;justify-content:center;text-decoration:none;min-height:54px}
+.tr .sg-recap>div{gap:8px}
+@media (max-width:375px){.tr-name{font-size:26px}.tr .sg-recap>div{padding:4px 0}}

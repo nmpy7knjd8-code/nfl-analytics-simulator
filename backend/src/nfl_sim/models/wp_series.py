@@ -113,7 +113,9 @@ def build_wp_series(
                 home_wp_pre=pre,
                 home_wp_post=post,
                 delta_home_wp=delta,
-                is_swing=abs(delta) >= swing_threshold - 1e-12,
+                # Rows with no play type (END markers, delays, notes) carry stand-in WPs: never swings
+                # (QA 2026-10-28 R1). Rows without the key are treated as real plays.
+                is_swing=bool(p.get("is_play", True)) and abs(delta) >= swing_threshold - 1e-12,
                 is_end_of_half=reason == "end_of_half",
                 is_low_clock_before_half=reason == "low_clock_before_half",
                 wp_quirk_reason=reason,

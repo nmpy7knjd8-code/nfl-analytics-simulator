@@ -1,0 +1,19 @@
+.ix-title { font-size: 28px; line-height: 1.15; margin: 14px 0 4px; }
+.ix-sub { color: var(--sg-g); margin: 0 0 14px; font-size: 15px; }
+.ix-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.ix-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ix-card { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 8px 12px; border: 1.5px solid #000; border-radius: 14px; color: #000; text-decoration: none; min-width: 0; }
+.ix-card b { font-size: 15px; line-height: 1.2; overflow-wrap: break-word; min-width: 0; }
+.ix-grid .ix-card { padding: 8px 8px; gap: 6px; }
+.ix-grid .ix-card b { font-size: 14px; overflow-wrap: normal; }
+.ix-card small { display: block; color: var(--sg-g); font-size: 13px; }
+.ix-grow { flex: 1; min-width: 0; }
+.ix-team { border: 1.5px solid #000; border-radius: 14px; }
+.ix-team summary { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 8px 12px; cursor: pointer; font-weight: 700; list-style: none; }
+.ix-team summary::-webkit-details-marker { display: none; }
+.ix-team summary::after { content: "▾"; margin-left: auto; color: var(--sg-g); }
+.ix-team[open] summary::after { content: "▴"; }
+.ix-team ul { list-style: none; margin: 0; padding: 0 12px 10px; display: grid; gap: 2px; }
+.ix-team li a { display: flex; justify-content: space-between; gap: 8px; min-height: 44px; align-items: center; color: #000; text-decoration: none; border-top: 1px solid #e3e5ea; }
+.ix-team li small { color: var(--sg-g); white-space: nowrap; }
+.ix-src { color: var(--sg-g); font-size: 13px; margin: 14px 0 0; }

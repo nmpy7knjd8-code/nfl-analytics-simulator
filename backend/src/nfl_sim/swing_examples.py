@@ -8,12 +8,14 @@ from __future__ import annotations
 
 from typing import Any
 
+from nfl_sim.models.past_play_wp import SOURCE_NOTE
+
 GAME_IDS = ("2023_01_BUF_NYJ", "2023_01_DET_KC", "2023_03_PHI_TB")
 SWING_PLAY_TYPES = frozenset({"run", "pass", "field_goal", "punt"})
 TOP_N = 5
 FIXTURE_COLUMNS = [
     "game_id", "play_id", "qtr", "time", "desc", "play_type", "posteam", "home_team", "away_team",
-    "home_wp", "home_wp_post", "total_home_score", "total_away_score", "qb_kneel", "qb_spike",
+    "home_wp", "home_wp_post", "wp_fallback", "total_home_score", "total_away_score", "qb_kneel", "qb_spike",
     "touchdown", "home_score", "away_score",
     "down", "ydstogo", "yardline_100", "posteam_score", "defteam_score", "yards_gained",
     "interception", "fumble_lost", "fourth_down_failed", "field_goal_result", "kick_distance",
@@ -22,11 +24,9 @@ FIXTURE_COLUMNS = [
     "kicker_player_name", "punter_player_name", "punt_returner_player_name", "kickoff_returner_player_name",
     "return_touchdown", "td_team",
     "fumbled_1_player_name", "fumble_recovery_1_player_name", "sack_player_name", "td_player_name",
-    "touchback", "penalty_team", "penalty_type", "penalty_yards", "penalty_player_name",
+    "touchback", "safety", "fumble", "fumble_recovery_1_team", "penalty_team", "penalty_type", "penalty_yards", "penalty_player_name",
 ]
-# role -> pbp *_player_id column; build script resolves ids to full names into row["names"]
-NAME_ROLES = ("passer", "receiver", "rusher", "interception", "kicker", "punter", "punt_returner",
-              "kickoff_returner", "fumbled_1", "fumble_recovery_1", "sack", "penalty")
+from nfl_sim.play_names import NAME_ROLES  # noqa: E402,F401  (re-export)
 
 
 def is_swing_candidate(r: dict[str, Any]) -> bool:
@@ -54,12 +54,13 @@ def _play(r: dict[str, Any]) -> dict[str, Any]:
         "down": _int(r.get("down")), "distance": _int(r.get("ydstogo")), "yardline_100": _int(r.get("yardline_100")),
         "yards_gained": _int(r.get("yards_gained")),
         "return_td": is_return_td(r),
+        "kick_return_td": is_kick_return_td(r),
         "fourth_down_failed": _int(r.get("down")) == 4 and bool(r.get("fourth_down_failed")),
-        "event": event_tag(r), "display_text": display_text(r), "raw_desc": r["desc"],
+        "event": event_tag(r), "display_text": display_text(r), "penalty_text": penalty_text(r), "raw_desc": r["desc"],
     }
 
 
-from nfl_sim.play_text import display_text, event_tag  # noqa: E402
+from nfl_sim.play_text import display_text, event_tag, penalty_text  # noqa: E402
 
 
 def _int(v: Any) -> int | None:
@@ -72,6 +73,11 @@ def is_return_td(r: dict[str, Any]) -> bool:
         return False
     td_team, pos = r.get("td_team"), r.get("posteam")
     return bool(r.get("return_touchdown")) or bool(td_team and pos and td_team != pos)
+
+
+def is_kick_return_td(r: dict[str, Any]) -> bool:
+    """Punt or kickoff returned for a TD (nflverse return_touchdown); turnovers stay in return_td."""
+    return bool(r.get("return_touchdown")) and r.get("play_type") in ("punt", "kickoff") and not is_return_td(r)
 
 
 def score_before(r: dict[str, Any]) -> tuple[int, int]:
@@ -90,8 +96,26 @@ def is_real_play(r: dict[str, Any]) -> bool:
     return not d.startswith("Timeout") and not d.startswith("END ") and "Two-Minute Warning" not in d
 
 
+def _post_wp(rows: list[dict[str, Any]], i: int) -> float | None:
+    post = rows[i].get("home_wp_post")
+    if post is None:
+        post = next((n["home_wp"] for n in rows[i + 1:] if n.get("home_wp") is not None), None)
+    return post
+
+
 def all_plays(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [_play(r) for r in rows if is_real_play(r)]
+    """Every real play, with the same home-team WP the chart uses (None in overtime/unknown)."""
+    out = []
+    for i, r in enumerate(rows):
+        if not is_real_play(r):
+            continue
+        p = _play(r)
+        post = _post_wp(rows, i)
+        if r.get("home_wp") is not None and post is not None:
+            p.update(home_wp_pre=round(r["home_wp"], 4), home_wp_post=round(post, 4),
+                     wp_fallback=bool(r.get("wp_fallback")))
+        out.append(p)
+    return out
 
 
 def top_swings(rows: list[dict[str, Any]], n: int = TOP_N) -> list[dict[str, Any]]:
@@ -125,14 +149,12 @@ def chart_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             continue
         if not is_real_play(r):
             continue
-        post = r.get("home_wp_post")
-        if post is None:
-            post = next((n["home_wp"] for n in rows[i + 1:] if n.get("home_wp") is not None), None)
+        post = _post_wp(rows, i)
         if post is None:
             continue
         p = _play(r)
         p.update(home_wp_pre=round(r["home_wp"], 4), home_wp_post=round(post, 4),
-                 swing_eligible=is_swing_candidate(r))
+                 swing_eligible=is_swing_candidate(r), wp_fallback=bool(r.get("wp_fallback")))
         out.append(p)
     return out
 
@@ -160,14 +182,14 @@ def build_export(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "game_id": gid, "home_team_id": last["home_team"], "away_team_id": last["away_team"],
             "home_score": int(last["home_score"]), "away_score": int(last["away_score"]),
             "first_home_wp": round(next(r["home_wp"] for r in g if r.get("home_wp") is not None), 4),
-            # QA H7: pre-snap home_wp of the first real play (opening kickoff), straight from nflverse.
+            # QA H7: pre-snap home WP of the first real play (opening kickoff), nflverse's published WP.
             "opening_home_wp": (o := round(next(r["home_wp"] for r in g if is_real_play(r) and r.get("home_wp") is not None), 4)),
             "opening_away_wp": round(1 - o, 4),
             "swings": top_swings(g), "overtime_plays": overtime_scoring_plays(g),
             "chart": chart_rows(g),
         }
     return {
-        "source": "nflverse_pbp_2023", "wp_source": "nflverse home_wp (pre-snap) / home_wp_post",
+        "source": "nflverse_pbp_2023", "wp_source": SOURCE_NOTE,
         "swing_filter": "regulation run/pass/field_goal/punt; no kneels, spikes or non-plays",
         "top_n": TOP_N, "games": games,
     }

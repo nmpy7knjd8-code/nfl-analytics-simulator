@@ -1,4 +1,5 @@
 /** Short display helpers for quiz scoreboard (abbr → nickname). */
+import { currentTeam } from "./teamCodes";
 
 const NICKNAMES: Record<string, string> = {
   ARI: "Cardinals",
@@ -40,7 +41,7 @@ const NICKNAMES: Record<string, string> = {
 };
 
 export function teamNickname(abbr: string): string {
-  return NICKNAMES[abbr] ?? abbr;
+  return NICKNAMES[currentTeam(abbr)] ?? abbr;
 }
 
 export function ordinalDown(down: number): string {

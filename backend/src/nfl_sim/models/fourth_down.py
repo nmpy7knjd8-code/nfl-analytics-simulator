@@ -306,6 +306,11 @@ class FourthDownAnalyzer:
         return FourthDownAnalyzer(model, emp)
 
     def _wp(self, row: dict[str, Any]) -> float:
+        # Real game with a known pregame spread (spread model only): rows carry it from the
+        # home side, so the model's posteam_spread flips sign with possession automatically.
+        hs = self.__dict__.get("_home_spread")
+        if hs is not None:
+            row = {**row, "spread_line": float(hs)}
         key = tuple(sorted(row.items()))
         cache = self.__dict__.setdefault("_wp_cache", {})
         if key not in cache:
@@ -331,6 +336,26 @@ class FourthDownAnalyzer:
         inconclusive_eps: float = INCONCLUSIVE_EPS,
         empirics_mode: EmpiricsMode = "pooled",
         transition_mode: TransitionMode = "legacy",
+        home_spread: float | None = None,
+    ) -> FourthDownResult:
+        """``home_spread``: internal pregame input for real games (ignored by no-spread models)."""
+        self.__dict__["_home_spread"] = home_spread
+        try:
+            return self._analyze(sit, p_convert_override=p_convert_override, p_make_override=p_make_override,
+                                 inconclusive_eps=inconclusive_eps, empirics_mode=empirics_mode,
+                                 transition_mode=transition_mode)
+        finally:
+            self.__dict__["_home_spread"] = None
+
+    def _analyze(
+        self,
+        sit: FourthDownSituation,
+        *,
+        p_convert_override: float | None,
+        p_make_override: float | None,
+        inconclusive_eps: float,
+        empirics_mode: EmpiricsMode,
+        transition_mode: TransitionMode,
     ) -> FourthDownResult:
         p_conv, conv_meta = self.empirics.p_convert(
             sit.distance, season=sit.season, mode=empirics_mode

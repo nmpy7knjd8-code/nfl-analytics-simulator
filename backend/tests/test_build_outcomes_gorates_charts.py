@@ -1,0 +1,287 @@
+"""D5 outcomes/v1, D6 gorates/v1, E3 matchcharts/v1 builders: nflverse counts, house rules, frozen guards."""
+from __future__ import annotations
+
+import glob
+import importlib.util
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[2]
+FIX = ROOT / "backend/tests/fixtures"
+SITE = ROOT / "data/site"
+BANNED = re.compile(r"epa|xpass|play_?id|wpa|spread|odds|moneyline|vegas|over/under", re.I)
+sys.path.insert(0, str(ROOT / "mining"))
+
+
+def _load(name):
+    spec = importlib.util.spec_from_file_location(name, ROOT / f"mining/{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+bo, bg, bm = _load("build_outcomes"), _load("build_gorates"), _load("build_match_charts")
+
+# every nflverse 2019-2025 row with down == 4 and ydstogo == 2: [play_type, yardline_100, yards_gained, conv, pen1d]
+O_ROWS = [{"season": 2019, "game_date": "", "down": 4, "ydstogo": 2, "play_type": p, "yardline_100": y,
+           "yards_gained": g, "fourth_down_converted": c, "first_down_penalty": f}
+          for p, y, g, c, f in json.loads((FIX / "outcomes_4th_and_2.json").read_text())]
+# every nflverse 2025 down == 4 row: [qtr, ydstogo, yardline_100, play_type, kick_distance]
+G_ROWS = [{"season": 2025, "game_date": "", "down": 4, "qtr": q, "ydstogo": d, "yardline_100": y, "play_type": p,
+           "kick_distance": k} for q, d, y, p, k in json.loads((FIX / "gorates_2025_4th.json").read_text())]
+# every nflverse row of 2023_01_ARI_WAS and 2023_01_BUF_NYJ (overtime)
+C_ROWS = json.loads((FIX / "charts_2023_two_games.json").read_text())
+
+
+def _site(name):
+    p = SITE / name
+    return p, json.loads(p.read_text())
+
+
+def _no_banned(path):
+    text = path.read_text()
+    assert not BANNED.search(text), path
+
+
+# ---------- D5 outcomes ----------
+def test_outcomes_4th_and_2_anchor():
+    built = bo.build(O_ROWS)["cells"]["2-all"]
+    _, site = _site("outcomes.json")
+    assert built == site["cells"]["2-all"]
+    assert built["tries"] == 807 and built["counts"][bo.BINS.index(0)] == 240
+    assert sum(built["counts"]) == 807
+    assert sum(site["cells"][f"2-{z}"]["tries"] for z in ("opp", "mid", "own")) == 807
+
+
+def test_outcomes_bins_and_shape():
+    assert bo.bin_index(-34) == 0 and bo.bin_index(73) == len(bo.BINS) - 1 and bo.BINS[bo.bin_index(0)] == 0
+    p, site = _site("outcomes.json")
+    assert site["schema"] == "outcomes/v1" and site["seasons"] == [2019, 2025]
+    assert set(site["cells"]) == {f"{d}-{z}" for d in range(1, 11) for z in ("opp", "mid", "own", "all")}
+    for c in site["cells"].values():
+        assert len(c["counts"]) == 26 and sum(c["counts"]) == c["tries"] and c["converted"] <= c["tries"]
+    assert p.stat().st_size < 10_000
+    _no_banned(p)
+
+
+def test_outcomes_frozen(tmp_path, monkeypatch):
+    built = bo.build(O_ROWS)
+    old = json.loads(bo.dumps(built))
+    assert bo.check_frozen(old, built) == []
+    old["cells"]["2-all"]["counts"][5] += 1
+    assert bo.check_frozen(old, built) == ["2-all"]
+    out = tmp_path / "o.json"
+    out.write_text(json.dumps(old))
+    monkeypatch.setattr(bo, "load_rows", lambda p: O_ROWS)
+    assert bo.main(["x", "--out", str(out)]) == 1 and json.loads(out.read_text()) == old
+
+
+# ---------- D6 gorates ----------
+def test_gorates_regulation_cap_and_counts():
+    base = {"down": 4, "qtr": 4, "ydstogo": 1, "yardline_100": 50, "play_type": "run"}
+    assert bg.keep(base) and not bg.keep({**base, "qtr": 5})
+    assert not bg.keep({**base, "play_type": "field_goal", "kick_distance": 65})
+    assert [bg.band_index(y) for y in (1, 10, 11, 90, 91, 99)] == [0, 0, 1, 8, 9, 9]
+    built = bg.build(G_ROWS)
+    kept = [r for r in G_ROWS if bg.keep(r)]
+    assert sum(c[0] for row in built["cells"] for c in row) == len(kept)
+    for row in built["cells"]:
+        for plays, went, fg, punts in row:
+            assert plays == went + fg + punts
+
+
+def test_gorates_committed_file():
+    p, site = _site("gorates.json")
+    assert site["schema"] == "gorates/v1" and site["maxFgYards"] == 64 and site["distances"] == list(range(1, 11))
+    assert len(site["bands"]) == 10 and site["bands"][-1] == {"min": 91, "max": 99}
+    assert sum(c[0] for row in site["cells"] for c in row) == 27488  # 27,494 regulation 4th downs - 6 FG > 64 yd
+    assert site["cells"][0][0] == [510, 442, 68, 0]  # 4th-and-1 at the opp 1-10
+    for row in site["cells"]:  # no field goal tries from band 51+ (every kick there would be 68+ yd)
+        assert all(c[2] == 0 for c in row[5:])
+    assert p.stat().st_size < 5_000
+    _no_banned(p)
+
+
+def test_gorates_frozen():
+    built = bg.build(G_ROWS)
+    old = json.loads(bg.dumps(built))
+    assert bg.check_frozen(old, built) == []
+    old["cells"][2][4][1] += 1
+    assert bg.check_frozen(old, built) == ["3-4"]
+
+
+
+# ---------- D6 engine layer (additive to gorates/v1) ----------
+def _engine_fixture():
+    rows = [{"season": 2025, "game_date": "", "down": 4, "qtr": 2, "ydstogo": 1, "yardline_100": 45, "play_type": pt,
+             "kick_distance": None, "game_id": "2025_01_A_B", "play_id": float(i)}
+            for i, pt in enumerate(["run", "pass", "punt", "punt", "field_goal"], 1)]
+    rows.append({**rows[0], "play_id": 99.0, "qtr": 5})  # overtime: not counted, even with an engine call
+    calls = {("2025_01_A_B", 1): ("go", 1), ("2025_01_A_B", 2): ("punt", 0), ("2025_01_A_B", 3): ("go", 0),
+             ("2025_01_A_B", 4): ("punt", 1), ("2025_01_A_B", 5): ("fg", 0), ("2025_01_A_B", 99): ("go", 0)}
+    return rows, calls
+
+
+def test_gorates_engine_cells_count_the_same_plays():
+    rows, calls = _engine_fixture()
+    eng = bg.build_engine(rows, "fourth_down_engine.v3", calls, "2026-02-08", "games-v7")
+    assert eng["engine"] == {"version": "fourth_down_engine.v3",
+                             "source": "Our 4th-down engine's best call for the same plays as cells, from the games-v7 game files",
+                             "dataThrough": "2026-02-08", "closeCallPct": 2,
+                             "fields": ["rated", "engineGo", "engineKick", "enginePunt", "closeCalls", "wentWhenEngineGo"]}
+    assert eng["engineCells"][0][4] == [5, 2, 1, 2, 2, 1]  # go on 1 and 3 (coaches went on 1 only)
+    assert bg.build(rows)["cells"][0][4][0] == 5
+    del calls[("2025_01_A_B", 5)]  # a play with no engine call is left out of rated only
+    assert bg.build_engine(rows, "v", calls, "", "t")["engineCells"][0][4] == [4, 2, 0, 2, 2, 1]
+
+
+def test_gorates_engine_committed_layer():
+    p, site = _site("gorates.json")
+    eng = site["engine"]
+    assert eng["version"] == "fourth_down_engine.v3" and eng["closeCallPct"] == 2
+    assert eng["fields"] == ["rated", "engineGo", "engineKick", "enginePunt", "closeCalls", "wentWhenEngineGo"]
+    assert eng["dataThrough"] == site["dataThrough"] and "example" not in eng
+    assert len(site["engineCells"]) == len(site["distances"])
+    for row, erow in zip(site["cells"], site["engineCells"], strict=True):
+        assert len(erow) == len(site["bands"])
+        for (plays, went, _fg, _punts), (rated, go, kick, punt, close, went_go) in zip(row, erow, strict=True):
+            assert rated == plays  # every kept play has an engine call
+            assert go + kick + punt == rated and close <= rated and went_go <= min(go, went)
+    assert site["engineCells"][0][4] == [356, 353, 1, 2, 157, 319]  # 4th-and-1 at the opp 41-50
+    assert not any(k in json.dumps(site) for k in ("gap", "alt_cost", "_pts"))
+
+
+def test_gorates_engine_frozen():
+    rows, calls = _engine_fixture()
+    new = {**bg.build(rows), **bg.build_engine(rows, "fourth_down_engine.v3", calls, "", "games-v7")}
+    old = json.loads(bg.dumps(new))
+    assert bg.check_engine_frozen(old, new) == [] and bg.check_engine_frozen(None, new) == []
+    old["engineCells"][0][4][1] += 1
+    assert bg.check_engine_frozen(old, new) == ["engine 1-4"]
+    old = json.loads(bg.dumps(new))
+    old["engine"]["version"] = "fourth_down_engine.v2"
+    assert bg.check_engine_frozen(old, new) == ["engine fourth_down_engine.v2 -> fourth_down_engine.v3"]
+    base_only = {k: v for k, v in old.items() if k not in ("engine", "engineCells")}
+    assert bg.check_engine_frozen(base_only, new) == []  # first engine publish
+
+# ---------- E3 match charts ----------
+def test_charts_regulation_only_with_ot_flag():
+    built = bm.build(C_ROWS)[2023]["games"]
+    by = {g["gameId"]: g for g in built}
+    ot, reg = by["2023_01_BUF_NYJ"], by["2023_01_ARI_WAS"]
+    assert ot["ot"] is True and reg["ot"] is False
+    for g in built:
+        assert len(g["wp"]) == 60 and all(0 <= v <= 1 for v in g["wp"])
+    reg_rows = [r for r in C_ROWS if r["game_id"] == "2023_01_BUF_NYJ" and 1 <= r["qtr"] <= 4
+                and r["vegas_home_wp"] is not None]
+    reg_rows.sort(key=lambda r: (r["qtr"], -r["game_seconds_remaining"]))  # game-clock order
+    assert ot["wp"][-1] == round(reg_rows[-1]["vegas_home_wp"], 3)  # last point = end of regulation, not OT
+    assert ot["wp"][0] == round(reg_rows[0]["vegas_home_wp"], 3)
+    _, site = _site("charts/2023.json")
+    assert {g["gameId"]: g for g in site["games"]}["2023_01_BUF_NYJ"] == ot
+
+
+def test_charts_committed_files():
+    files = sorted((SITE / "charts").glob("*.json"))
+    assert [f.stem for f in files] == [str(y) for y in range(2019, 2026)]
+    total = 0
+    for f in files:
+        d = json.loads(f.read_text())
+        assert d["schema"] == "matchcharts/v1" and d["season"] == int(f.stem) and d["points"] == 60
+        assert all(g["gameId"] != bm.BAD_GAME and len(g["wp"]) == 60 for g in d["games"])
+        assert f.stat().st_size < 150_000
+        _no_banned(f)
+        total += len(d["games"])
+    assert total == 1960  # every nflverse game 2019-2025 (2022_17_BUF_CIN has no pbp rows; still filtered)
+
+
+def test_charts_frozen(tmp_path, monkeypatch):
+    built = bm.build(C_ROWS)[2023]
+    old = json.loads(bm.dumps(built))
+    assert bm.check_frozen(old, built) == []
+    old["games"][0]["wp"][10] = 0.5
+    assert bm.check_frozen(old, built) == [old["games"][0]["gameId"]]
+    (tmp_path / "2023.json").write_text(json.dumps(old))
+    monkeypatch.setattr(bm, "load_rows", lambda p: C_ROWS)
+    assert bm.main(["x", "--out-dir", str(tmp_path)]) == 1
+    assert json.loads((tmp_path / "2023.json").read_text()) == old
+
+
+@pytest.mark.integration
+def test_full_rebuild_matches_committed_files():
+    d = os.environ.get("FOURTH_PBP_DIR")
+    if not d:
+        pytest.skip("FOURTH_PBP_DIR not set")
+    paths = sorted(glob.glob(f"{d}/pbp_20*.parquet"))
+    strip = lambda o: {k: v for k, v in o.items() if k != "builtAt"}
+    assert strip(bo.build(bo.load_rows(paths))) == strip(_site("outcomes.json")[1])
+    rows = bg.load_rows(paths)
+    site = _site("gorates.json")[1]
+    built = bg.build(rows)
+    assert built == {k: v for k, v in site.items() if k not in ("builtAt", "engine", "engineCells")} | {"builtAt": ""}
+    games = ROOT / "frontend/public/data/games"
+    if games.is_dir() and any(games.glob("20??_*_*.json")):
+        eng = bg.build_engine(rows, *bg.load_engine_calls(str(games)), built["dataThrough"], "games-v7")
+        assert eng["engineCells"] == site["engineCells"] and eng["engine"]["version"] == site["engine"]["version"]
+    for s, new in bm.build(bm.load_rows(paths)).items():
+        assert strip(new) == strip(_site(f"charts/{s}.json")[1])
+
+
+def test_charts_last_point_on_winner_side():
+    """Every non-overtime, non-tie game ends at 1.0 (home won) or 0.0 (home lost); OT games keep regulation's end."""
+    n = 0
+    for f in sorted((SITE / "charts").glob("*.json")):
+        for g in json.loads(f.read_text())["games"]:
+            if g["ot"] or g["homeScore"] == g["awayScore"]:
+                continue
+            assert g["wp"][-1] == (1.0 if g["homeScore"] > g["awayScore"] else 0.0), g["gameId"]
+            n += 1
+    assert n > 1800
+    built = {g["gameId"]: g for g in bm.build(C_ROWS)[2023]["games"]}
+    reg = built["2023_01_ARI_WAS"]
+    assert reg["wp"][-1] == (1.0 if reg["homeScore"] > reg["awayScore"] else 0.0)
+
+
+def test_charts_final_point_override_is_narrow():
+    built = bm.build(C_ROWS)[2023]
+    old = json.loads(bm.dumps(built))
+    gid = old["games"][0]["gameId"]
+    old["games"][0]["wp"][-1] = 0.5
+    assert bm.check_frozen(old, built) == [gid]
+    assert bm.check_frozen(old, built, {gid}) == []
+    old["games"][0]["wp"][10] = 0.123  # any other point is still frozen
+    assert bm.check_frozen(old, built, {gid}) == [gid]
+    ov = bm.load_override()
+    assert len(ov) == 30 and {"2019_15_JAX_OAK", "2021_05_DEN_PIT", "2022_18_CAR_NO"} <= ov
+
+
+def test_charts_game_clock_order_not_play_id():
+    """A Q2 timeout row filed with a higher play_id than END GAME (2024_10_ATL_NO) must not become a late point."""
+    base = dict(game_id="2099_01_AAA_BBB", season=2099, week=1, season_type="REG", game_date="2099-09-01",
+                home_team="BBB", away_team="AAA", home_score=20, away_score=17)
+    rows = [{**base, "qtr": 1, "game_seconds_remaining": 3600, "vegas_home_wp": 0.5, "play_id": 1},
+            {**base, "qtr": 3, "game_seconds_remaining": 1500, "vegas_home_wp": 0.6, "play_id": 300},
+            {**base, "qtr": 4, "game_seconds_remaining": 600, "vegas_home_wp": 0.8, "play_id": 400},
+            {**base, "qtr": 2, "game_seconds_remaining": 1900, "vegas_home_wp": 0.1, "play_id": 999}]
+    wp = bm.build(rows)[2099]["games"][0]["wp"]
+    assert wp[-2] == 0.8 and wp[-1] == 1.0 and wp[29] == 0.1 and wp[35] == 0.6
+
+
+def test_charts_clock_order_override_is_narrow():
+    pts = bm.load_clock_override()
+    assert len(pts) == 88 and sum(map(len, pts.values())) == 161
+    built = bm.build(C_ROWS)[2023]
+    old = json.loads(bm.dumps(built))
+    gid = old["games"][0]["gameId"]
+    old["games"][0]["wp"][10] = 0.123
+    assert bm.check_frozen(old, built, points={gid: {10}}) == []
+    assert bm.check_frozen(old, built, points={gid: {11}}) == [gid]
+    old["games"][0]["homeScore"] += 1  # only listed wp points may change
+    assert bm.check_frozen(old, built, points={gid: {10}}) == [gid]
+    site = {g["gameId"]: g for g in _site("charts/2024.json")[1]["games"]}
+    assert site["2024_13_HOU_JAX"]["wp"][28] == 0.325 and site["2024_04_BUF_BAL"]["wp"][29] == 0.962

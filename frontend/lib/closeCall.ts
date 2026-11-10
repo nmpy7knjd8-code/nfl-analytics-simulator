@@ -74,6 +74,8 @@ export function closeCallNote(item: CloseItem, picked: QuizChoice, result: "corr
   }
   const mine = item.reveal.values[picked] as number;
   const [a, b] = pair([near[0].v, mine]);
+  // QA M13: never "0.1% vs 0.1%".
+  if (a === b) return `${cap(DOING[near[0].c])} was about as good (both ${a}), so this pick gets ½.`;
   return `${cap(DOING[near[0].c])} was a little better (${a} vs ${b}), so this pick gets ½.`;
 }
 
@@ -86,6 +88,7 @@ export function closeCallWhy(item: CloseItem): string {
   const close = ranked.filter((r, i) => i < 2 || ranked[0].v - r.v <= Math.max(gap, 0.01));
   const names = list(close.map((r) => DOING[r.c]));
   const f = pair(close.map((r) => r.v));
-  const nums = close.length === 2 ? `${f[0]} vs ${f[1]}` : list(f);
+  const same = f.every((x) => x === f[0]);
+  const nums = same ? `${close.length === 2 ? "both" : "all"} ${f[0]}` : close.length === 2 ? `${f[0]} vs ${f[1]}` : list(f);
   return `${names[0].toUpperCase()}${names.slice(1)} give about the same win chance (${nums}).`;
 }

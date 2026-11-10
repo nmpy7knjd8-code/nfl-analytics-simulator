@@ -1,0 +1,13 @@
+/* Game Story keeps its own look and the top bar, but drops the old Today / Practice / Games bottom tabs (as /games did in #232).
+   Done in CSS, not in AppNav's route list, so unbuilt /games/<id> URLs (served by 404.html) don't hydrate differently. */
+body:has(.gs-no-tabs) .app-nav { display: none; }
+body:has(.gs-no-tabs) .app-stage { padding-bottom: var(--safe-bottom); }
+
+/* Tap targets (≥44px, content vertically centred) for the back link and the swing-play rows. */
+.gs-no-tabs .back-link { min-height: 44px; }
+.gs-no-tabs .swing-headline { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.gs-no-tabs .swing-link { display: flex; align-items: center; min-height: 44px; }
+.gs-no-tabs .swing-link-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+
+/* Trademark footer: readable on the current dark game layout. */
+.gs-no-tabs .sg-tm-note { color: #fff; margin: 16px 0 24px; }

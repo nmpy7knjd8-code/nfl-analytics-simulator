@@ -39,3 +39,13 @@ test("2220 L8: one decimal only when whole percents would match", () => {
 test("2220 L9: in-range field goal button shows the kick distance", () => {
   assert.equal(fgButton({ yardline_100: 29 }), "Field goal · 47-yd kick");
 });
+
+test("M13: never 'X% vs X%' with identical numbers", () => {
+  const item = { reveal: reveal({ go: 0.0012, fg: 0.0011, punt: 0.00105 }), situation: { yardline_100: 24 } };
+  const n = closeCallNote(item, "fg", "near_tie")!;
+  assert.doesNotMatch(n, /(\d+(?:\.\d)?%) vs \1/);
+  assert.match(n, /about as good \(both 0\.1%\)/);
+  assert.doesNotMatch(closeCallWhy(item), /(\d+(?:\.\d)?%) vs \1/);
+  const two = { reveal: reveal({ go: 0.0012, fg: 0.0011 }), situation: { yardline_100: 70 } };
+  assert.doesNotMatch(closeCallWhy(two), /(\d+(?:\.\d)?%) vs \1/);
+});

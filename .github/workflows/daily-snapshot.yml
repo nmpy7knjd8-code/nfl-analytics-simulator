@@ -1,0 +1,40 @@
+name: daily-snapshot
+# Freezes upcoming daily reveal values (today ET + 2 days) and opens a PR. Never pushes to main.
+on:
+  schedule:
+    - cron: "0 22 * * *"  # ~6 PM ET
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    # Explicit on the job: repo default workflow token is read-only.
+    permissions:
+      contents: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx tsx scripts/snapshot-daily.ts
+      - run: npx tsx scripts/snapshot-themes.ts
+      - run: npx tsx scripts/check-theme-schedule.ts
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/daily-snapshot
+          base: main
+          add-paths: |
+            frontend/lib/dailySnapshot.json
+            frontend/lib/themeSnapshot.json
+          commit-message: "Daily snapshot: freeze reveal values through today+2 (ET)"
+          title: "Daily snapshot: freeze reveal values through today+2 (ET)"
+          body: "Automated by .github/workflows/daily-snapshot.yml. Append-only: adds missing days to frontend/lib/dailySnapshot.json and frontend/lib/themeSnapshot.json from the current pack; existing entries untouched."

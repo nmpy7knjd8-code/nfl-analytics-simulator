@@ -37,6 +37,17 @@ If an existing project conflicts with these defaults, inspect it and document th
 14. Do not silently change a public interface or canonical schema. Document and test changes.
 15. After every phase, run the relevant tests, report actual results, document limitations, and stop for user approval before starting the next phase.
 
+## Fan-site house rules (checked by scripts/acceptance)
+
+* No EPA, WPA or xpass on fan screens; no odds, lines or betting text.
+* No field goal offered over 64 yards; no overtime win chance; CHECKER_ENABLED stays false until approved.
+* No agent or worker may write an "Approved by" line in a PR body unless it quotes HGIC's actual approval message for that exact PR (with time). A later rejection overrides an earlier approval; check HGIC's latest message on the PR right before merging.
+* NFL bots never message Garrett and never ask him for approvals or decisions. Every question, approval request and status update goes to Head Grokka in Charge, who decides and forwards anything huge to Garrett. (Garrett, Nov 3 2026, via HGIC)
+* A lane bot may squash-merge its own PR directly once HGIC has approved it, provided HGIC's quoted approval line is in the PR body and all 4 required checks (backend, frontend, acceptance, build) are green. Squash only. The bot then sends Integration an FYI with the merge commit. Integration remains the default merger and the auditor. (HGIC, Nov 3 2026 11:24 PM ET; replaces the 11:01 PM shared-account rule)
+* Team colors and logos: self-hosted nflverse team logos and wordmarks are allowed. Never hotlink external images (logo files must be self-hosted under /teams/ and listed in teams/manifest.json). The footer carries "Team names and logos are trademarks of the NFL and its teams. Not affiliated."
+* Light is the default theme. Dark mode is allowed when it follows the system setting (`prefers-color-scheme`) through the iOS design tokens in `frontend/app/tokens.css` (merged in #325). The old black theme and the old bottom nav remain banned. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
+* The 2026 season is approved as NFL Data Builders' 5-PR plan. The freeze-guard PR lands first and must prove that 2019–2025 outputs stay byte-identical. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
+
 ## Core domain invariants
 
 * Every game, team, player, play, model, and simulation has a stable identifier where applicable.
@@ -105,3 +116,13 @@ Use background agents or separate worktrees only if supported and useful. The le
 A feature is complete only when it works in the integrated application, has appropriate tests, has documented assumptions, and does not misrepresent missing functionality as implemented.
 
 Do not start the next project phase until the current phase’s acceptance criteria have been evaluated and the user has approved continuation.
+
+## Settings change log
+
+One line per branch-protection, Actions or repo-settings change: `YYYY-MM-DD (ET) | who | change | why`.
+
+* ~2026-10-31 | unknown | main began requiring 1 approving review (admins included) | not recorded; it blocked the nightly snapshot merge (#222)
+* by 2026-11-03 | unknown | 1-review requirement removed | not recorded
+* 2026-11-03 | HGIC | keep 0 required reviews; required checks stay backend, frontend, acceptance, build | HGIC decision (settings proposal item 4)
+* 2026-11-03 | HGIC | standing approval: the nightly daily-snapshot PR (7:30 PM routine) may auto-merge only if it adds future days only, changes no existing published day's bytes, and passes all 4 required checks; otherwise do not merge, ping HGIC | HGIC decision, Nov 3 2026 ~10:56 PM ET
+* 2026-11-03 | HGIC | lane bots may squash-merge their own HGIC-approved PRs (quoted approval line + 4 green checks, FYI to Integration with merge commit); Integration stays default merger and auditor; replaces the #263 shared-account rule | HGIC decision, Nov 3 2026 11:24 PM ET

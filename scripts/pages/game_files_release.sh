@@ -2,13 +2,13 @@
 # Game files (frontend/public/data/games/{id}.json, game.v2) via a GitHub release asset.
 # Not tracked in git (.gitignore). Expected sha256 is pinned in scripts/pages/<asset>.sha256.
 #
-#   pack:      scripts/pages/game_files_release.sh pack      -> dist/games-v2.tar.gz + .sha256 (local)
+#   pack:      GAMES_RELEASE_TAG=<tag> scripts/pages/game_files_release.sh pack -> dist/<tag>.tar.gz + .sha256 (local)
 #   fetch:     GAMES_RELEASE_TAG=<tag> scripts/pages/game_files_release.sh fetch
 #              (Pages build and local dev; fails on missing tag or sha256 mismatch)
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 DIR=frontend/public/data/games
-ASSET=games-v2.tar.gz
+ASSET="${GAMES_RELEASE_TAG:-games-v3}.tar.gz"  # asset name follows the tag
 case "${1:-}" in
   pack)
     mkdir -p dist

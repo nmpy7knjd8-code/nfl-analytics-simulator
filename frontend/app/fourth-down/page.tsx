@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { CHECKER_ENABLED, CHECKER_PAUSED } from "../../lib/features";
 import { shareMetadata } from "../../lib/share";
-import { ExampleBanner } from "../../components/ExampleBanner";
-import { FourthDownLab } from "../../components/FourthDownLab";
-import { TruthChip } from "../../components/TruthChip";
-import { FIXTURE_BANNER } from "../../lib/fixtures";
+import { FourthDownChecker } from "../../components/FourthDownChecker";
+import { Header, Trademark } from "../../components/SimpleGame";
+import "./fourth-down.css";
 
 export const metadata = shareMetadata({
-  title: "4th & short — NFL Analytics Simulator",
-  description:
-    "Compare go for it, kick, or punt in plain English — chance of winning, not a stats dump.",
+  title: "4th-down checker · Fourth & Daily",
+  description: "Go for it, kick, or punt? See the chance to win for each call, in plain English.",
   path: "/fourth-down/",
   card: "fourth-down",
   alt: "Go for it, kick, or punt? Win chance for each call. Data: nflverse",
@@ -17,31 +15,24 @@ export const metadata = shareMetadata({
 
 export default function DecidePage() {
   if (!CHECKER_ENABLED) {
-    // H6: no checker numbers render while the flag is off (Data & Models: late-Q4 goal-line values still off).
+    // H6: no checker numbers render while the flag is off.
     return (
-      <main className="decide-page page" id="main">
-        <section className="empty-state" role="status">
-          <h1>{CHECKER_PAUSED.title}</h1>
-          <p>{CHECKER_PAUSED.body}</p>
-          <Link className="btn btn-primary" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
-        </section>
+      <main id="main">
+        <div className="sg-app fd4">
+          <Header right="4th down" />
+          <div className="sg-status" role="status">
+            <p>{CHECKER_PAUSED.title}</p>
+            <p className="fd4-sub">{CHECKER_PAUSED.body}</p>
+            <Link className="sg-next fd4-cta" href={CHECKER_PAUSED.cta.href}>{CHECKER_PAUSED.cta.label}</Link>
+          </div>
+          <Trademark />
+        </div>
       </main>
     );
   }
   return (
-    <main className="decide-page page" id="main">
-      <header className="section-head">
-        <div className="overline">
-          <TruthChip kind="simulated" />
-          <span className="muted">Example</span>
-        </div>
-        <h1>Go, kick, or punt?</h1>
-        <p>See the call, then the short why — in plain English.</p>
-      </header>
-
-      <ExampleBanner message={FIXTURE_BANNER} />
-
-      <FourthDownLab />
+    <main id="main">
+      <FourthDownChecker />
     </main>
   );
 }
