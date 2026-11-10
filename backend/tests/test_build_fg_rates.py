@@ -88,11 +88,15 @@ def test_frozen_fail_on_change(built):
     old = json.loads(fr.dumps(built))
     old["yards"]["all"][0][0] += 1
     assert fr.check_frozen(old, built) == ["all"]
-    # adding a new season is allowed and may update "all"
+    # 2026 PR1: an open season may add its own key, but "all" stays the frozen 2019-2025 numbers
     newer = json.loads(fr.dumps(built))
     newer["yards"]["2026"] = [[1, 1]] * 47
-    newer["yards"]["all"] = [[t + 1, m + 1] for t, m in newer["yards"]["all"]]
     assert fr.check_frozen(json.loads(fr.dumps(built)), newer) == []
+    newer["yards"]["all"] = [[t + 1, m + 1] for t, m in newer["yards"]["all"]]
+    assert fr.check_frozen(json.loads(fr.dumps(built)), newer) == ["all"]
+    older = json.loads(fr.dumps(built))
+    older["yards"]["2018"] = [[1, 1]] * 47  # a closed season can never be added
+    assert fr.check_frozen(json.loads(fr.dumps(built)), older) == ["2018 added"]
 
 
 def test_frozen_change_exits_nonzero_and_writes_nothing(tmp_path, built, monkeypatch):

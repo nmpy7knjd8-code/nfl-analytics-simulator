@@ -10,7 +10,8 @@ Filter (/workspace/nfl-research/charts/d2-data-shape.md, with the house Vegas ru
 Buckets [lo, hi) in percent of vegas_home_wp (the last bucket includes 100): 0-5, 5-10, 10-20 ... 90-95, 95-100.
 predicted = mean vegas_home_wp x100 (1 dp); actual = share of rows where the home team won x100 (1 dp).
 
-Frozen data: for the same season span, published buckets must not change; the build exits 1 if they would.
+Frozen data: published buckets must not change, even if the season span or source string changes; the
+build exits 1 if they would.
 
 Usage: python mining/build_calib.py PBP_PARQUET [...] [--out data/site/calib.json]
 """
@@ -22,6 +23,10 @@ import math
 import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/calib.json"
@@ -84,8 +89,8 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    if not old or old.get("schema") != new["schema"] or old.get("source") != new["source"]:
-        return []  # a new season span (or schema) replaces the buckets
+    if not old or old.get("schema") != new["schema"]:
+        return []  # a schema bump replaces the buckets; a new season span or source string never does
     # "plays" was renamed "moments" (QA D3: buckets count every nflverse row incl. timeouts and END GAME,
     # not only snaps); the rename alone is not a value change.
     ren = lambda b: {("moments" if k == "plays" else k): v for k, v in b.items()}  # noqa: E731
@@ -96,7 +101,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 
