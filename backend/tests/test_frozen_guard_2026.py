@@ -89,7 +89,11 @@ def test_span_change_build_exits_1_and_writes_nothing(mod, tmp_path, monkeypatch
     out.write_text(mod.dumps(mod.build(rows)))
     before = out.read_bytes()
     monkeypatch.setattr(mod, "load_rows", lambda paths: rows + fake_season(rows, 2026))
-    assert mod.main(["x.parquet", "--out", str(out)]) == 1
+    extra = []
+    if mod is bg:  # gorates also reads the engine layer from game files (#330)
+        monkeypatch.setattr(bg, "load_engine_calls", lambda d: ("fourth_down_engine.test", {}))
+        extra = ["--games-dir", str(tmp_path), "--games-tag", "games-test"]
+    assert mod.main(["x.parquet", "--out", str(out), *extra]) == 1
     assert out.read_bytes() == before
 
 
@@ -284,3 +288,10 @@ def test_full_rebuild_byte_identical():
         argv += ["--games-dir", os.environ["NFL_GAMES_DIR"]]
     r = subprocess.run(argv, capture_output=True, text=True)
     assert r.returncode == 0 and "ALL IDENTICAL" in r.stdout, r.stdout[-3000:] + r.stderr[-2000:]
+
+
+def test_gorates_engine_layer_not_skipped_on_span_change():
+    old = rt({**bg.build(G_ROWS), "engine": {"version": "v3"}, "engineCells": [[[1] * 6] * 10] * 10})
+    new = {**bg.build(G_ROWS + fake_season(G_ROWS, 2026)), "engine": {"version": "v3"},
+           "engineCells": [[[2] * 6] * 10] * 10}
+    assert old["seasons"] != new["seasons"] and bg.check_engine_frozen(old, new)

@@ -59,6 +59,11 @@ def test_every_index_game_has_a_game_file(season):
         assert (GAMES / f"{g['id']}.json").exists(), g["id"]
 
 
+# Releases built before the no-win-chance-in-overtime rule (audit #328) and the 2021_12_LV_DAL overtime fix.
+_PRE_OT_RULE_RELEASES = {"games-v2", "games-v3", "games-v4", "games-v5", "games-v6", "games-v7"}
+_PRE_OT_RULE = os.environ.get("GAMES_RELEASE_TAG") in _PRE_OT_RULE_RELEASES
+
+
 @pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
 def test_game_file_wp_home_side_ends_at_result(path):
     raw = json.loads(path.read_text())
@@ -67,11 +72,19 @@ def test_game_file_wp_home_side_ends_at_result(path):
     g = doc["game"]
     assert doc["wp_perspective"] == "home" and doc["provenance"]["source"] == "nflverse"
     idx = {x["id"]: x for x in _index(g["season"])["games"]}
-    assert idx[g["id"]] == g
+    ig = idx[g["id"]]
+    if _PRE_OT_RULE and g["id"] in games.OVERTIME_FIXES:  # old release still has nflverse's wrong flag
+        ig = {**ig, "overtime": g["overtime"]}
+    assert ig == g
     want = 1.0 if g["home_score"] > g["away_score"] else 0.0 if g["home_score"] < g["away_score"] else 0.5
     assert doc["final_home_wp"] == want
     wp = [p for p in doc["plays"] if p["home_wp"] is not None]
-    assert wp[-1]["home_wp_after"] == want
+    if any(p["qtr"] >= 5 for p in doc["plays"]) and not _PRE_OT_RULE:
+        # No win chance in overtime: the series ends at the last regulation row (no after-value);
+        # the result lives in final_home_wp only.
+        assert wp[-1]["qtr"] <= 4 and wp[-1]["home_wp_after"] is None
+    else:
+        assert wp[-1]["home_wp_after"] == want
     assert all(0 <= p["home_wp"] <= 1 for p in wp)
     last = [p for p in doc["plays"] if p["home_score"] is not None][-1]
     assert (last["home_score"], last["away_score"]) == (g["home_score"], g["away_score"])
@@ -80,6 +93,40 @@ def test_game_file_wp_home_side_ends_at_result(path):
         fd = p["fourth_down"]
         if fd is not None:
             assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 18 <= 64)
+
+
+@pytest.mark.skipif(_PRE_OT_RULE, reason="release built before the no-win-chance-in-overtime rule")
+@pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
+def test_no_win_chance_in_overtime(path):
+    """House rule (audit #328): overtime rows have no win chance, swing, model fallback or 4th-down values,
+    and game.overtime is true exactly when the file has overtime rows."""
+    doc = json.loads(path.read_text())
+    c = doc["cols"]
+    ot = [i for i, q in enumerate(c["qtr"]) if q >= 5]
+    assert doc["game"]["overtime"] == bool(ot), doc["game"]["id"]
+    ot_ids = {c["play_id"][i] for i in ot}
+    assert all(c["home_wp"][i] is None for i in ot)
+    assert not ot_ids & set(doc["swing_play_ids"]) and not ot_ids & set(doc["wp_fallback_play_ids"])
+    assert not {int(k) for k in doc["fourth"]} & set(ot)
+
+
+def test_null_overtime_win_chance_rule():
+    row = lambda pid, q, wp, after, swing: {"play_id": pid, "qtr": q, "home_wp": wp, "home_wp_after": after, "swing": swing}
+    doc = {"final_home_wp": 1.0, "swing_play_ids": [2, 3, 5], "wp_fallback_play_ids": [6],
+           "plays": [row(1, 4, 0.5, 0.4, False), row(2, 4, 0.4, 0.5, True), row(3, 4, 0.5, 0.6, True),
+                     row(4, 5, 0.6, 0.9, False), row(5, 5, 0.9, 1.0, True), row(6, 5, 1.0, 1.0, False)]}
+    out = games.null_overtime_win_chance(doc)
+    assert [p["home_wp"] for p in out["plays"]] == [0.5, 0.4, 0.5, None, None, None]
+    assert [p["home_wp_after"] for p in out["plays"]] == [0.4, 0.5, None, None, None, None]
+    assert out["swing_play_ids"] == [2] and out["wp_fallback_play_ids"] == [] and out["final_home_wp"] == 1.0
+    assert doc["plays"][3]["home_wp"] == 0.6  # input untouched
+    reg = {**doc, "plays": doc["plays"][:3]}
+    assert games.null_overtime_win_chance(reg) is reg
+
+
+def test_overtime_fixes_in_index():
+    for gid, ot in games.OVERTIME_FIXES.items():
+        assert next(g for g in _index(int(gid[:4]))["games"] if g["id"] == gid)["overtime"] is ot
 
 
 def test_game_files_total_size_budget():
