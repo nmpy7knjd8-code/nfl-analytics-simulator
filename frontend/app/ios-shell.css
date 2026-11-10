@@ -22,11 +22,11 @@
   min-height: calc(var(--ios-nav-height) + var(--ios-status-safe));
   padding: var(--ios-status-safe) var(--ios-space-4) 0;
   background: var(--ios-nav-background);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
+  -webkit-backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
   color: var(--ios-label-primary);
   font-family: var(--ios-font-text);
-  border-bottom: 0.5px solid transparent;
+  border-bottom: 0.5px solid var(--ios-separator);
 }
 
 .ios-topbar-title {
@@ -35,7 +35,7 @@
   right: 0;
   text-align: center;
   font-size: var(--ios-text-headline);
-  font-weight: 600;
+  font-weight: var(--ios-text-headline-weight);
   letter-spacing: var(--ios-tracking-body);
   pointer-events: none;
 }
@@ -58,8 +58,8 @@
   height: calc(var(--ios-tab-height) + var(--ios-home-safe));
   padding: 4px 8px var(--ios-home-safe);
   background: var(--ios-tab-background);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
+  -webkit-backdrop-filter: saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
   border-top: 0.5px solid var(--ios-hairline);
   font-family: var(--ios-font-text);
 }
@@ -85,7 +85,7 @@
   padding-top: 4px;
   color: var(--ios-label-tertiary);
   font-size: var(--ios-text-caption-2);
-  font-weight: 500;
+  font-weight: var(--ios-weight-medium);
   text-decoration: none;
   background: none;
   border: 0;
@@ -94,12 +94,12 @@
 .ios-tab.is-current,
 .ios-tab[aria-current="page"] {
   color: var(--ios-accent);
-  font-weight: 600;
+  font-weight: var(--ios-weight-semibold);
 }
 
 .ios-card {
   background: var(--ios-background-elevated);
-  border-radius: var(--ios-radius-xl);
+  border-radius: var(--ios-radius-lg);
   box-shadow: var(--ios-shadow-card);
   padding: var(--ios-space-4);
   color: var(--ios-label-primary);
@@ -120,7 +120,7 @@
   min-height: 54px;
   padding: 0 var(--ios-space-4);
   font-size: var(--ios-text-body);
-  font-weight: 400;
+  font-weight: var(--ios-weight-regular);
   letter-spacing: var(--ios-tracking-body);
   color: var(--ios-label-primary);
   background: transparent;
@@ -136,7 +136,7 @@
 .ios-large-title {
   font-family: var(--ios-font-display);
   font-size: var(--ios-text-large-title);
-  font-weight: 700;
+  font-weight: var(--ios-text-large-title-weight);
   letter-spacing: var(--ios-tracking-large-title);
   line-height: var(--ios-leading-tight);
   color: var(--ios-label-primary);
@@ -144,10 +144,55 @@
 
 .ios-footer-note {
   font-family: var(--ios-font-text);
-  font-size: var(--ios-text-caption-2);
+  font-size: var(--ios-text-footnote);
   line-height: 1.35;
   text-align: center;
   color: var(--ios-label-tertiary);
+}
+
+
+.ios-headline {
+  font-family: var(--ios-font-text);
+  font-size: var(--ios-text-headline);
+  font-weight: var(--ios-text-headline-weight);
+  letter-spacing: var(--ios-tracking-body);
+  color: var(--ios-label-primary);
+}
+
+.ios-nums {
+  font-variant-numeric: var(--ios-nums);
+  font-feature-settings: "tnum" 1;
+}
+
+.ios-sheet {
+  background: var(--ios-background-elevated);
+  border-radius: var(--ios-radius-xl);
+  box-shadow: var(--ios-shadow-card);
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-text);
+}
+
+.ios-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--ios-touch);
+  padding: 0 var(--ios-space-4);
+  border: 0;
+  border-radius: var(--ios-radius-md);
+  background: var(--ios-accent);
+  color: var(--ios-label-on-accent);
+  font-family: var(--ios-font-text);
+  font-size: var(--ios-text-headline);
+  font-weight: var(--ios-text-headline-weight);
+  letter-spacing: var(--ios-tracking-body);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ios-button-pill,
+.ios-button.ios-button-pill {
+  border-radius: var(--ios-radius-full);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -155,6 +200,8 @@
   .ios-tabbar,
   .ios-tab,
   .ios-card,
+  .ios-sheet,
+  .ios-button,
   .ios-list-row {
     transition: none !important;
     animation: none !important;
