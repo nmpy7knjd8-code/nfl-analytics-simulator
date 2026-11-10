@@ -1,0 +1,162 @@
+/*
+  Opt-in iOS app-shell styles.
+
+  Classes in this file are unused by current routes. They are the shared
+  building blocks for later PRs (blurred top bar, bottom tab bar, cards).
+
+  AppNav.tsx and SiteMenu.tsx belong to NFL Integration & Docs — this file
+  does not change their logic or selectors. Product UI owns .sg-app pages
+  (daily game, /fake-punt, /two-point, Hard mode); those keep their CSS
+  until a coordinated follow-up.
+
+  Use with tokens from frontend/app/tokens.css.
+*/
+
+.ios-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(var(--ios-nav-height) + var(--ios-status-safe));
+  padding: var(--ios-status-safe) var(--ios-space-4) 0;
+  background: var(--ios-nav-background);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-text);
+  border-bottom: 0.5px solid transparent;
+}
+
+.ios-topbar-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: var(--ios-text-headline);
+  font-weight: 600;
+  letter-spacing: var(--ios-tracking-body);
+  pointer-events: none;
+}
+
+.ios-topbar-side {
+  min-width: var(--ios-touch);
+  min-height: var(--ios-touch);
+  display: flex;
+  align-items: center;
+}
+
+.ios-tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: calc(var(--ios-tab-height) + var(--ios-home-safe));
+  padding: 4px 8px var(--ios-home-safe);
+  background: var(--ios-tab-background);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 0.5px solid var(--ios-hairline);
+  font-family: var(--ios-font-text);
+}
+
+/* Bottom tab bar is a phone-width pattern. Above 700px it stays bottom-
+   aligned but is centered to the same column as the rest of the app shell. */
+@media (min-width: 700px) {
+  .ios-tabbar {
+    left: 50%;
+    right: auto;
+    width: min(100%, 56rem);
+    transform: translateX(-50%);
+  }
+}
+
+.ios-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  min-height: var(--ios-touch);
+  padding-top: 4px;
+  color: var(--ios-label-tertiary);
+  font-size: var(--ios-text-caption-2);
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: 0;
+}
+
+.ios-tab.is-current,
+.ios-tab[aria-current="page"] {
+  color: var(--ios-accent);
+  font-weight: 600;
+}
+
+.ios-card {
+  background: var(--ios-background-elevated);
+  border-radius: var(--ios-radius-xl);
+  box-shadow: var(--ios-shadow-card);
+  padding: var(--ios-space-4);
+  color: var(--ios-label-primary);
+  font-family: var(--ios-font-text);
+}
+
+.ios-list {
+  background: var(--ios-background-elevated);
+  border-radius: var(--ios-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ios-shadow-card);
+  font-family: var(--ios-font-text);
+}
+
+.ios-list-row {
+  display: flex;
+  align-items: center;
+  min-height: 54px;
+  padding: 0 var(--ios-space-4);
+  font-size: var(--ios-text-body);
+  font-weight: 400;
+  letter-spacing: var(--ios-tracking-body);
+  color: var(--ios-label-primary);
+  background: transparent;
+  border: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.ios-list-row + .ios-list-row {
+  border-top: 0.5px solid var(--ios-separator);
+}
+
+.ios-large-title {
+  font-family: var(--ios-font-display);
+  font-size: var(--ios-text-large-title);
+  font-weight: 700;
+  letter-spacing: var(--ios-tracking-large-title);
+  line-height: var(--ios-leading-tight);
+  color: var(--ios-label-primary);
+}
+
+.ios-footer-note {
+  font-family: var(--ios-font-text);
+  font-size: var(--ios-text-caption-2);
+  line-height: 1.35;
+  text-align: center;
+  color: var(--ios-label-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ios-topbar,
+  .ios-tabbar,
+  .ios-tab,
+  .ios-card,
+  .ios-list-row {
+    transition: none !important;
+    animation: none !important;
+  }
+}
