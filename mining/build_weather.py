@@ -7,7 +7,8 @@ closed-roof and missing-weather games are absent from ``games``; dome/closed-roo
 ``bands`` are average total points per wind band and per temperature band over those games, so the badge
 can say e.g. "Games this windy averaged 42.3 points". No play ids, EPA, win chance or betting fields.
 
-Frozen: a published game's weather and the band numbers may not change unless a season is added.
+Frozen: a published game's weather and the band numbers never change; new games and indoors entries only
+from an open season past the watermark (mining/_frozen.py).
 
 Usage: python mining/build_weather.py PBP_PARQUET [...] [--out data/site/weather.json]
 """
@@ -22,6 +23,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_stamp import stamp  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/weather.json"
@@ -81,17 +85,19 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
     bad = [g for g, v in old["games"].items() if new["games"].get(g) != v]
-    if old.get("season_list") == new.get("season_list"):
-        bad += ["bands"] if old["bands"] != new["bands"] else []
-        bad += ["games added"] if set(new["games"]) != set(old["games"]) else []
-        bad += ["indoors"] if "indoors" in old and old["indoors"] != new.get("indoors") else []
+    bad += ["bands"] if old["bands"] != new["bands"] else []  # frozen whatever the season list
+    bad += [f"games added: {g}" for g in new["games"] if g not in old["games"] and fz.is_frozen_game(g, "weather")]
+    if "indoors" in old:
+        ni = new.get("indoors") or []
+        bad += ["indoors"] if ni[:len(old["indoors"])] != old["indoors"] else []  # append-only
+        bad += [f"indoors added: {g}" for g in ni[len(old["indoors"]):] if fz.is_frozen_game(g, "weather")]
     return bad
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df = df.drop_duplicates("game_id")
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))

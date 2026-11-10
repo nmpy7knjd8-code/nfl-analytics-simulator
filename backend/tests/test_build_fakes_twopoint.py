@@ -47,7 +47,9 @@ def test_fake_frozen():
     old = bf.build([prow()])
     assert bf.check_frozen(old, bf.build([prow()])) == []
     assert bf.check_frozen(old, bf.build([prow(first_down=0)]))
-    assert bf.check_frozen(old, bf.build([prow(), prow(season=2025, game_id="2025_01_KC_BAL")])) == []
+    # 2026 PR1: a row inserted into a closed season (<= 2025) now fails, and so does any summary change
+    bad = bf.check_frozen(old, bf.build([prow(), prow(season=2025, game_id="2025_01_KC_BAL")]))
+    assert any("inserted into frozen week" in b for b in bad)
 
 
 def trow(**k):

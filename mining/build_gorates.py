@@ -9,7 +9,7 @@ Filter (/workspace/nfl-research/charts/d6-data-shape.md):
 cells[distance-1][band] = [plays, went, fieldGoals, punts]; distance = ydstogo 1..10 (10 = 10 or more),
 band = yardline_100 in 10-yard bands 1-10 ... 91-99. went = run or pass.
 
-Frozen data: the build exits 1 if any published cell would change while the seasons stay the same.
+Frozen data: the build exits 1 if any published cell would change, even if the season span changes.
 
 Usage: python mining/build_gorates.py PBP_PARQUET [...] [--out data/site/gorates.json]
 """
@@ -24,6 +24,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_stamp import stamp  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/gorates.json"
@@ -89,7 +92,9 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    if not old or old.get("schema") != new["schema"] or old.get("seasons") != new["seasons"]:
+    """Every published cell is frozen 2019-2025 data, whatever the new season span (no span-change skip:
+    an open season needs its own slice, 2026 PR4)."""
+    if not old or old.get("schema") != new["schema"]:
         return []
     changed = [f"{d}-{b}" for d, row in enumerate(old.get("cells", []), 1) for b, c in enumerate(row)
                if new["cells"][d - 1][b] != c]
@@ -99,7 +104,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     last = df.game_date.astype(str).max()
     df = df[df.down == 4].copy()
     df["game_date"] = df["game_date"].astype(str)

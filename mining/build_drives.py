@@ -30,6 +30,9 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_stamp import stamp  # noqa: E402
 
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data/site/drives"
 SCHEMA = "drives/v1"
@@ -262,6 +265,8 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[s
                 bad.append(f"{g} (override: not exactly the {rule} change)")
         elif n != v:
             bad.append(g)
+    bad += [f"{g} (inserted into a frozen week)" for g in new["games"]
+            if g not in old["games"] and fz.is_frozen_game(g, "drives")]
     if old["cols"] != new["cols"] and not (rule == "od_return" and allowed and new["cols"] == old["cols"] + ["ret"]):
         bad.append("cols")
     if old.get("result_key") is not None and old.get("result_key") != new.get("result_key"):
@@ -284,7 +289,7 @@ def load_override(path: str | None) -> tuple[set[str], str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 
@@ -306,6 +311,8 @@ def main(argv: list[str] | None = None) -> int:
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
+        if olds[s] is None and fz.is_frozen_season(s) and any(out_dir.glob("*.json")):
+            fails.append(f"{s}: new file for a closed season")
         fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed, rule)]
     if fails:
         print("FAIL: published drives would change: " + ", ".join(fails[:10]), file=sys.stderr)

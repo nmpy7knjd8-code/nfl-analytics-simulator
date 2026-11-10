@@ -54,8 +54,12 @@ def test_frozen_numbers():
     changed = br.build([r for r in ROWS if r["fixed_drive"] != 3])
     bad = br.check_frozen(old, changed)
     assert {"2024:KC", "2024:league", "all:KC", "all:league"} <= set(bad)
+    # 2026 PR1: a new season no longer unfreezes the all-seasons total; closed seasons can't be added
     later = br.build(ROWS + [dict(row("g3", "KC", 1, "Touchdown", 4), season=2025)])
-    assert br.check_frozen(old, later) == []  # a new season may change the all-seasons total
+    bad = br.check_frozen(old, later)
+    assert "all:league" in bad and "2025:added" in bad
+    later = br.build(ROWS + [dict(row("g3", "KC", 1, "Touchdown", 4), season=2026)])
+    assert "2026:added" not in br.check_frozen(old, later) and "all:league" in br.check_frozen(old, later)
     regraded = br.build([r for r in ROWS if r["fixed_drive"] != 3] + [dict(row("g3", "KC", 1, "Touchdown", 4), season=2025)])
     assert "2024:KC" in br.check_frozen(old, regraded)  # but never a published season
 
