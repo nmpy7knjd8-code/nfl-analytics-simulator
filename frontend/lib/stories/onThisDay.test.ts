@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dayLabel, games, isOnThisDayDoc, mmdd, pickDay, scoreLine } from "./onThisDay";
+import { dayLabel, games, isOnThisDayDoc, listLabel, mmdd, pickDay, scoreLine, shownGames } from "./onThisDay";
 
 const raw = readFileSync(new URL("../../public/data/stories/onthisday.json", import.meta.url), "utf8");
 const doc = JSON.parse(raw);
@@ -53,4 +53,30 @@ test("QA C4 on real data (#313): 2024_09_TB_KC has ot=true in column 5 and reads
   assert.doesNotMatch(scoreLine(g), /%|win chance/i);
   const ots = Object.values(doc.days as Record<string, unknown[][]>).flat().filter((r) => r[4] === true).length;
   assert.equal(ots, 110);
+});
+
+test("QA C5: the full Nov 10 list has all 25 games, including the OT game that sits 6th", () => {
+  const all = games(doc, "11-10");
+  assert.equal(all.length, 25);
+  const ot = all.find((g) => g.gameId === "2024_10_NYG_CAR")!;
+  assert.equal(all.indexOf(ot), 5);
+  assert.equal(ot.ot, true);
+  assert.equal(scoreLine(ot), "NYG 17, CAR 20 (OT)");
+  assert.doesNotMatch(scoreLine(ot), /%|win chance/i);
+  assert.equal(listLabel(25, 25), "Here are all 25.");
+  assert.deepEqual(shownGames(all), all);
+});
+
+test("QA C5: a 5-game cap still includes the Nov 10 OT game and is labelled 5 of 25", () => {
+  const all = games(doc, "11-10");
+  const shown = shownGames(all, 5);
+  assert.equal(shown.length, 5);
+  assert.ok(shown.some((g) => g.gameId === "2024_10_NYG_CAR" && g.ot));
+  assert.ok(!shown.some((g) => /%|win chance/i.test(scoreLine(g))));
+  // year-then-margin prefix stays; the 5th (DET_HOU) yields to the OT game
+  assert.equal(shown[0].gameId, "2025_10_PHI_GB");
+  assert.equal(shown[4].gameId, "2024_10_NYG_CAR");
+  assert.ok(!shown.some((g) => g.gameId === "2024_10_DET_HOU"));
+  assert.equal(listLabel(5, 25), "Here are 5 of 25.");
+  assert.equal(shownGames(all, 25).length, 25);
 });
