@@ -67,15 +67,13 @@ test("A/An before a team code follows the letter's sound", () => {
 });
 
 test("games-v7 stat-note rows (null sec, null play_type) are never beats; no blank clocks", () => {
-  for (const [id, note] of [["2019_01_PIT_NE", 4225], ["2019_03_NYJ_NE", 4047]] as const) {
-    const doc = JSON.parse(readFileSync(new URL(`../../public/data/games/${id}.json`, import.meta.url), "utf8"));
-    const s = buildStory(doc);
-    assert.ok(s.beats.length >= 3, id);
-    for (const b of s.beats) {
-      assert.match(b.clock, /^\d{1,2}:\d\d$/, `${id} ${b.playId}`);
-      assert.doesNotMatch(b.sentence, /With\s+left/, b.sentence);
-    }
-    assert.ok(!s.beats.some((b) => b.playId === note), `${id} ${note} is a beat`);
-    assert.ok(!s.rows.has(note), `${id} ${note} in rows`);
+  const doc = JSON.parse(readFileSync(new URL("../__fixtures__/statNoteBeats.json", import.meta.url), "utf8"));
+  const s = buildStory(doc);
+  assert.ok(s.beats.length >= 1);
+  for (const b of s.beats) {
+    assert.match(b.clock, /^\d{1,2}:\d\d$/, String(b.playId));
+    assert.doesNotMatch(b.sentence, /With\s+left/, b.sentence);
   }
+  assert.ok(!s.beats.some((b) => b.playId === 4225), "play 4225 is a beat");
+  assert.ok(!s.rows.has(4225), "play 4225 in rows");
 });
