@@ -1836,7 +1836,7 @@ body { font-variant-numeric: tabular-nums; }
 .mc-game{font-size:15px;min-width:0}
 .mc-sub{font-size:12px;color:var(--sg-g);margin-top:2px}
 .mc-chips{display:flex;gap:6px;flex:none}
-.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:19px;font-weight:800;cursor:pointer}
 .mc-chip.is-on{background:var(--ios-accent);border-color:var(--ios-accent);color:var(--ios-label-on-accent)}
 .mc-total{font-size:20px;font-weight:800;text-align:center;margin:12px 0 4px}
 .mc-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
@@ -1853,7 +1853,7 @@ body { font-variant-numeric: tabular-nums; }
 .wb-gap{position:absolute;top:0;bottom:0;background:rgba(255,235,59,.35)}
 .wb-step{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px}
 .wb-spot{font-size:18px;font-weight:800;min-width:96px;text-align:center}
-.mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:16px;font-weight:800;cursor:pointer}
+.mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:19px;font-weight:800;cursor:pointer}
 .mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
 .wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
 /* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in
