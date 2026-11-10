@@ -152,10 +152,10 @@ export function coachCallText(item: DailyItem): string {
   return a === "go" ? "Went for it." : a === "fg" ? "Kicked a field goal." : a === "punt" ? "Punted." : "";
 }
 
-/** Spoiler-free share text, plain glyphs only (no colored emoji). */
-export function plainShare(dayNo: number, results: ScoredCall["result"][], credit: string, streak: number): string {
+/** Spoiler-free share text, plain glyphs only (no colored emoji). Ends with the daily URL so a paste opens today's game. */
+export function plainShare(dayNo: number, results: ScoredCall["result"][], credit: string, streak: number, url: string): string {
   const g = results.map((r) => RESULT_GLYPH[r]).join(" ");
-  return `Fourth & Daily #${dayNo} · ${credit}/${results.length} · streak\u00a0${streak}\n${g}`;
+  return `Fourth & Daily #${dayNo} · ${credit}/${results.length} · streak\u00a0${streak}\n${g}\n${url}`;
 }
 
 /** Question sentence from the situation only: "The Giants trail 19–3 with 13:37 left in the 4th. 1 yard to go at midfield." */
