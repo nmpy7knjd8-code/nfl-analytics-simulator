@@ -7,6 +7,7 @@ import { feedHref } from "../../lib/gamePicker";
 import { gameFileUrl, isGameFileV2 } from "../../lib/gameFileV2";
 import { buildStory, gameIdFromQuery, playIdFromHash, weekLine, type Story, type StoryBeat } from "../../lib/stories/gameStory";
 import { KeyFourths } from "./KeyFourths";
+import { gameWeather, isWeatherDoc, type WeatherDoc } from "../../lib/stories/weather";
 import "./game-story.css";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -35,6 +36,12 @@ export function GameStory() {
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [focus, setFocus] = useState<number | null>(null);
+  // G6: weather badge in the game header. Decorative: loading, empty or error shows no badge.
+  const [wx, setWx] = useState<WeatherDoc | null>(null);
+  useEffect(() => {
+    fetch(`${BASE}/data/stories/weather.json`).then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (isWeatherDoc(d)) setWx(d); }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const id = gameIdFromQuery(window.location.search);
@@ -78,6 +85,7 @@ export function GameStory() {
 
   const { story } = load;
   const g = story.game;
+  const weather = wx ? gameWeather(wx, g.id) : null;
   const inBeats = focus != null && story.beats.some((b) => b.playId === focus);
   const extra = focus != null && !inBeats ? story.rows.get(focus) : undefined;
   const beat = (b: StoryBeat, n?: number) => (
@@ -100,6 +108,8 @@ export function GameStory() {
           <span className="gs-at">@</span>
           <span><TeamLogo abbr={g.home} size={28} /> {g.home} <b>{g.homeScore}</b></span>
         </div>
+        {weather ? <span className={`pf-wx pf-wx-${weather.kind}`}>{weather.text}</span> : null}
+        {weather?.note ? <span className="pf-wx-note">{weather.note}</span> : null}
       </section>
       {extra ? (
         <section className="gs-card gs-focus" aria-label="The play you came from">

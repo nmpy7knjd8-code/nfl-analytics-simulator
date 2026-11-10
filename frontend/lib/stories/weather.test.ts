@@ -32,6 +32,15 @@ test("the feed header mounts the badge", () => {
   assert.match(readFileSync(new URL("../../components/PlayFeedC6.tsx", import.meta.url), "utf8"), /pf-wx-note">\{weather\.note\}/, "note shows inline on phones, not as hover text");
 });
 
+test("the Game Story header mounts the same badge", () => {
+  const src = readFileSync(new URL("../../components/stories/GameStory.tsx", import.meta.url), "utf8");
+  assert.match(src, /gameWeather\(/);
+  const badge = src.match(/\{weather \?[\s\S]*?weather\?\.note[\s\S]*?<\/span>/);
+  assert.ok(badge, "badge markup missing");
+  assert.match(badge[0], /pf-wx-note">\{weather\.note\}/, "note shows inline on phones, not as hover text");
+  assert.doesNotMatch(badge[0], /points|averaged/i);
+});
+
 test("badge and note never mention points or averages", () => {
   for (const id of [...Object.keys(doc.games), ...doc.indoors]) {
     const w = gameWeather(doc, id)!;

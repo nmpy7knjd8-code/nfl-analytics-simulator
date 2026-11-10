@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { AppNav, TopBar } from "../components/AppNav";
+import "./tokens.css";
+import "./ios-shell.css";
 import "./globals.css";
 import "./simple-game.css";
 import { shareMetadata } from "../lib/share";
