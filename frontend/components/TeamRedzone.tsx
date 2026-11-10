@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChipScroll } from "./ChipScroll";
 import { ALL, REDZONE, pct, rowFor, seasonKeys, sliceFor, vsLeague } from "../lib/teamRedzone";
 import { CLOSE_LINE, VIEW_LABEL, gtView, teamStats, yardsVsLeague, type View } from "../lib/teamGarbageTime";
 
@@ -26,6 +27,7 @@ export function TeamRedzone({ abbr }: { abbr: string }) {
       </div>
       <p className="tm-def">{CLOSE_LINE}</p>
       {keys.length ? (
+        <ChipScroll>
         <div className="pf-chips tm-chips" role="group" aria-label="Season">
           {[ALL, ...keys].map((k) => (
             <button key={k} type="button" className={`pf-chip${season === k ? " is-on" : ""}`} aria-pressed={season === k} onClick={() => setSeason(k)}>
@@ -33,6 +35,7 @@ export function TeamRedzone({ abbr }: { abbr: string }) {
             </button>
           ))}
         </div>
+        </ChipScroll>
       ) : null}
       {close ? (
         !st ? (

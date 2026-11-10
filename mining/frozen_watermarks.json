@@ -1,0 +1,4 @@
+{
+  "doc": "Per-file week watermark for the open season (mining/_frozen.py). weeks[file][season] = last completed week; rows in that season with week <= it are frozen (no inserts, no changes). Seasons <= 2025 are always frozen and are never listed. Raise a watermark only in a reviewed PR, never lower it.",
+  "weeks": {}
+}

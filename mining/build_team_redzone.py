@@ -13,9 +13,9 @@ No EPA, xpass, play ids or betting fields are read or written.
 
 Also writes by_season ("2019".."2025"): the same league + ranked team rows for each regular season.
 
-Frozen data: every season already in the committed by_season, and the all-seasons total when the
-season list is unchanged, must be identical (a silent
-nflverse regrade fails the build, exit 1). Adding a season is allowed.
+Frozen data: every season already in the committed by_season, and the all-seasons total, must be
+identical whatever the season list (a silent nflverse regrade fails the build, exit 1). Adding an open
+season (> 2025) key is allowed.
 
 Usage: python mining/build_team_redzone.py PBP_PARQUET [...] [--out frontend/lib/teamRedzone.json]
 """
@@ -30,6 +30,10 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, Iterable
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend/lib/teamRedzone.json"
@@ -112,8 +116,8 @@ def build(rows: list[dict[str, Any]], source: str = "") -> dict[str, Any]:
 
 
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
-    """Every season already published must keep identical numbers; the all-seasons total must too
-    when the season list is unchanged. Returns labels like "2023:KC" or "all:league"."""
+    """Every season already published must keep identical numbers; so must the all-seasons total, whatever
+    the season list. New seasons only for open seasons. Returns labels like "2023:KC" or "all:league"."""
     if not old or old.get("stub"):
         return []
 
@@ -127,15 +131,15 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     out: list[str] = []
     for y, o in old.get("by_season", {}).items():
         out += diff(y, o, new["by_season"].get(y))
-    if old.get("seasons") == new["seasons"]:
-        out += diff("all", old, new)
+    out += diff("all", old, new)  # the all-seasons total stays frozen even when a season is added
+    out += [f"{y}:added" for y in new["by_season"] if y not in old.get("by_season", {}) and not fz.open_season_key(y)]
     return out
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df = df[df["season_type"] == "REG"]
     return json.loads(df.to_json(orient="records"))
 

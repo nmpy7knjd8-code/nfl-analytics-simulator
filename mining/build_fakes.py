@@ -6,8 +6,9 @@ That yields 162 plays (155 REG, 7 POST; none in overtime), 90 with first_down ==
 Values are copied from nflverse; win chance is nflverse vegas_wp at the snap (rounded to 4 dp),
 null in overtime. No EPA, xpass, play ids or betting fields.
 
-Frozen: every published fake must stay identical; summary numbers may change only when a season is
-added. Exit 1 otherwise.
+Frozen (mining/_frozen.py): every published fake must stay identical, new rows are appended only (never
+into a closed season or watermarked week), and summary numbers stay frozen (only open-season keys may be
+added). Exit 1 otherwise.
 
 Decoys (real_punts): 300 regulation 4th-down punts, stratified to the fakes' quarter/togo/yard-line mix
 with a fixed seed; first_down is null. punt_count = all nflverse punts (play_type == 'punt'). Decoys are
@@ -26,6 +27,9 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frozen import check_frozen as _check  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/fakes.json"
@@ -125,12 +129,12 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def check_frozen(old, new):
-    return _check(old, new, key, "plays", SUMMARY) + _check(old, new, key, "real_punts")
+    return _check(old, new, key, "plays", SUMMARY, name="fakes") + _check(old, new, key, "real_punts", name="fakes")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df = df[(df["play_type"] == "punt") | ((df["down"] == 4) & df["play_type"].isin(["run", "pass"]))]
     return json.loads(df.to_json(orient="records"))
 
