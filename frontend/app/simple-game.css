@@ -46,7 +46,7 @@
 .sg-final{font-weight:600;color:var(--sg-g)}
 .sg-tag{display:inline-block;font-size:13px;font-weight:800;padding:2px 8px;border-radius:999px;vertical-align:2px;margin-left:4px}
 .sg-best{background:var(--sg-b);color:#fff}.sg-close{background:#000;color:#fff}
-.sg-tm-note{font-size:13px;color:var(--sg-g);text-align:center;margin:8px 0 0;line-height:1.3;background:var(--ios-background-secondary);position:relative;z-index:1;flex:none}
+.sg-tm-note{font-size:13px;color:var(--sg-g);text-align:center;margin:8px 0 0;line-height:1.3;background:inherit;position:relative;z-index:1;flex:none}
 .sg-center{text-align:center;margin-top:10px}
 .sg-big{font-size:64px;font-weight:800;text-align:center;margin-top:10px;line-height:1}
 .sg-marks{display:flex;justify-content:center;gap:8px;margin:12px 0 4px}.sg-marks span{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
