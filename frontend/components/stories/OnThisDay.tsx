@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { feedHref } from "../../lib/gamePicker";
-import { dayLabel, games, isOnThisDayDoc, mmdd, pickDay, scoreLine, type DayGame } from "../../lib/stories/onThisDay";
+import { dayLabel, games, isOnThisDayDoc, listLabel, mmdd, pickDay, scoreLine, shownGames, type DayGame } from "../../lib/stories/onThisDay";
 import "./stories.css";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-type Load = { state: "loading" } | { state: "error" } | { state: "none" } | { state: "ready"; label: string; list: DayGame[] };
+type Load = { state: "loading" } | { state: "error" } | { state: "none" } | { state: "ready"; label: string; total: number; list: DayGame[] };
 
 /** Self-contained "On this day" card. Integration owns where it mounts. `date` is for previews/tests. */
-export function OnThisDay({ date, max = 5 }: { date?: Date; max?: number }) {
+export function OnThisDay({ date, max = 5, all = false }: { date?: Date; max?: number; all?: boolean }) {
   const [load, setLoad] = useState<Load>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -22,11 +22,12 @@ export function OnThisDay({ date, max = 5 }: { date?: Date; max?: number }) {
         if (!isOnThisDayDoc(d)) throw new Error("shape");
         const p = pickDay(d, mmdd(date ?? new Date()));
         if (!p) return setLoad({ state: "none" });
-        setLoad({ state: "ready", label: p.exact ? `On this day, ${dayLabel(p.key)}` : `Nearest game day, ${dayLabel(p.key)}`, list: games(d, p.key).slice(0, max) });
+        const list = games(d, p.key);
+        setLoad({ state: "ready", label: p.exact ? `On this day, ${dayLabel(p.key)}` : `Nearest game day, ${dayLabel(p.key)}`, total: list.length, list: all ? list : shownGames(list, max) });
       })
       .catch(() => live && setLoad({ state: "error" }));
     return () => { live = false; };
-  }, [attempt, date, max]);
+  }, [attempt, date, max, all]);
 
   return (
     <section className="st-card otd" aria-label="On this day">
@@ -42,6 +43,7 @@ export function OnThisDay({ date, max = 5 }: { date?: Date; max?: number }) {
       ) : (
         <>
           <p className="otd-h">{load.label}</p>
+          <p className="st-sub">{listLabel(load.list.length, load.total)}</p>
           <ul className="st-list">
             {load.list.map((g) => (
               <li key={g.gameId} className="st-row">
