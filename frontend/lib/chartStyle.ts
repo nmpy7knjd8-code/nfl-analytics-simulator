@@ -46,6 +46,60 @@ export type Palette = {
   shadow: string;
 };
 
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  const n = parseInt(h.length === 3 ? [...h].map((c) => c + c).join("") : h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
+}
+
+function mix(hex: string, other: string, t: number): string {
+  const a = hexToRgb(hex);
+  const b = hexToRgb(other);
+  return rgbToHex(
+    Math.round(a[0] + (b[0] - a[0]) * t),
+    Math.round(a[1] + (b[1] - a[1]) * t),
+    Math.round(a[2] + (b[2] - a[2]) * t),
+  );
+}
+
+/**
+ * Series colors: steps of the accent blue, plus grays.
+ * Never team colors, and never the orange / green / gold / purple token series.
+ */
+export function seriesStops(theme: Theme = "light"): readonly string[] {
+  const accent = iosColor[theme].accent;
+  return theme === "light"
+    ? [accent, mix(accent, "#ffffff", 0.32), mix(accent, "#ffffff", 0.58), "#8e8e93", "#c7c7cc"]
+    : [accent, mix(accent, "#ffffff", 0.28), mix(accent, "#ffffff", 0.52), "#8e8e93", "#636366"];
+}
+
+export const SERIES_CSS_VARS = [
+  "--chart-series-1",
+  "--chart-series-2",
+  "--chart-series-3",
+  "--chart-series-4",
+  "--chart-series-5",
+] as const;
+
+export function seriesDeclarations(theme: Theme): string {
+  return seriesStops(theme).map((c, i) => `${SERIES_CSS_VARS[i]}:${c}`).join(";");
+}
+
+/** Light defaults, dark via prefers-color-scheme or [data-theme]. Not injected globally. */
+export function seriesColorSchemeCss(selector = ":root"): string {
+  const nested = selector === ":root" ? "" : ` ${selector}`;
+  return (
+    `${selector}{${seriesDeclarations("light")}}` +
+    `[data-theme="light"]${nested}{${seriesDeclarations("light")}}` +
+    `@media (prefers-color-scheme:dark){:root:not([data-theme="light"])${nested}{${seriesDeclarations("dark")}}}` +
+    `[data-theme="dark"]${nested}{${seriesDeclarations("dark")}}`
+  );
+}
+
 export function palette(theme: Theme = "light"): Palette {
   const color = iosThemeColors(theme);
   const chart = iosChartColors(theme);
@@ -61,7 +115,7 @@ export function palette(theme: Theme = "light"): Palette {
     card: color.backgroundElevated,
     tooltip: color.backgroundElevated,
     band: chart.band,
-    series: chart.series,
+    series: seriesStops(theme),
     shadow: color.shadowCard,
   };
 }
@@ -168,15 +222,12 @@ export function chartMotionMs(prefersReducedMotion: boolean): number {
 }
 
 /**
- * Series color: team colors when comparing teams, otherwise the theme accent
- * (iosColor / --ios-accent, not the live --sg-b).
+ * Series color by step (0 = accent, then lighter blue tints, then grays).
+ * Never uses team colors.
  */
-export function seriesColor(
-  theme: Theme,
-  opts: { comparingTeams?: boolean; teamColor?: string | null } = {},
-): string {
-  if (opts.comparingTeams && opts.teamColor) return opts.teamColor;
-  return iosColor[theme].accent;
+export function seriesColor(theme: Theme, index = 0): string {
+  const stops = seriesStops(theme);
+  return stops[index] ?? stops[0];
 }
 
 export { iosChart, iosColor, iosFonts, iosMetrics, iosRadius, iosSpace, iosType };

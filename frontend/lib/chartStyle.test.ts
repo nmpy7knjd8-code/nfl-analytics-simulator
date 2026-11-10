@@ -18,6 +18,8 @@ import {
   palettes,
   radius,
   seriesColor,
+  seriesColorSchemeCss,
+  seriesStops,
   space,
   tooltip,
   typeScale,
@@ -65,7 +67,8 @@ test("light and dark palettes come from iosColor / iosChart, not --sg-b", () => 
     assert.equal(p.card, c.backgroundElevated);
     assert.equal(p.tooltip, c.backgroundElevated);
     assert.equal(p.band, ch.band);
-    assert.equal(p.series, ch.series);
+    assert.deepEqual(p.series, seriesStops(theme));
+    assert.equal(p.series[0], c.accent);
     assert.equal(p.shadow, c.shadowCard);
   }
   assert.equal(palettes.light.accent, "#007aff");
@@ -143,16 +146,37 @@ test("reduced motion turns chart animation off; duration matches --ios-duration"
   assert.ok(CHART_MOTION_MS > 0);
 });
 
-test("series use team colors when comparing teams, otherwise the accent", () => {
-  assert.equal(seriesColor("light"), iosColor.light.accent);
-  assert.equal(seriesColor("dark"), iosColor.dark.accent);
-  assert.equal(seriesColor("light", { comparingTeams: true, teamColor: "#00338D" }), "#00338D");
-  assert.equal(seriesColor("light", { comparingTeams: false, teamColor: "#00338D" }), iosColor.light.accent);
-  assert.equal(seriesColor("dark", { comparingTeams: true }), iosColor.dark.accent);
+test("series are accent-blue tints plus grays, never team or orange/green/gold/purple tokens", () => {
+  const banned = /#34c759|#ff9f0a|#af52de|#30d158|#ffd60a|#bf5af2|#00338D|#1E5BFF/i;
+  for (const theme of ["light", "dark"] as const) {
+    const stops = seriesStops(theme);
+    assert.equal(stops[0], iosColor[theme].accent);
+    assert.ok(stops.length >= 4);
+    assert.equal(seriesColor(theme, 0), stops[0]);
+    assert.equal(seriesColor(theme, 1), stops[1]);
+    assert.equal(seriesColor(theme, 3), stops[3]);
+    for (const c of stops) {
+      assert.doesNotMatch(c, banned);
+      // grays after the blue tints; first three stay in the blue family
+    }
+    // Mid tints stay in the accent's blue hue (low red, high blue).
+    for (const c of stops.slice(0, 3)) {
+      const n = parseInt(c.slice(1), 16);
+      const r = (n >> 16) & 255, b = n & 255;
+      assert.ok(b > r + 40, `${theme} ${c} should be a blue tint`);
+    }
+    assert.match(stops[3], /^#8e8e93$/i);
+  }
+  const css = seriesColorSchemeCss(".ch-era");
+  assert.match(css, /\.ch-era\{/);
+  assert.match(css, /prefers-color-scheme:dark/);
+  assert.match(css, /\[data-theme="dark"\] \.ch-era/);
+  assert.doesNotMatch(css, banned);
+  assert.doesNotMatch(src, /teamColor|comparingTeams/);
 });
 
-test("no existing frontend file imports chartStyle yet (live look unchanged)", () => {
-  const skip = new Set(["chartStyle.ts", "chartStyle.test.ts"]);
+test("only the /era migration imports chartStyle (other live charts unchanged)", () => {
+  const skip = new Set(["chartStyle.ts", "chartStyle.test.ts", "EraChart.tsx", "era-chart.css", "era.test.ts"]);
   const hits: string[] = [];
   const walk = (dir: string) => {
     for (const name of readdirSync(dir, { withFileTypes: true })) {
