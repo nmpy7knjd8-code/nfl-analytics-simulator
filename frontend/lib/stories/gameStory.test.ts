@@ -65,3 +65,15 @@ test("A/An before a team code follows the letter's sound", () => {
   const fumble = { ...row, text: "J.Goff FUMBLES, RECOVERED BY MIN", play_type: "run", posteam: "CHI", home_wp: 0.4, home_wp_after: 0.52 };
   assert.equal(sentence(fumble, "MIN", "CHI"), "A CHI fumble with 1:05 left in the fourth quarter swung win chance 12% toward MIN.");
 });
+
+test("games-v7 stat-note rows (null sec, null play_type) are never beats; no blank clocks", () => {
+  const doc = JSON.parse(readFileSync(new URL("../__fixtures__/statNoteBeats.json", import.meta.url), "utf8"));
+  const s = buildStory(doc);
+  assert.ok(s.beats.length >= 1);
+  for (const b of s.beats) {
+    assert.match(b.clock, /^\d{1,2}:\d\d$/, String(b.playId));
+    assert.doesNotMatch(b.sentence, /With\s+left/, b.sentence);
+  }
+  assert.ok(!s.beats.some((b) => b.playId === 4225), "play 4225 is a beat");
+  assert.ok(!s.rows.has(4225), "play 4225 in rows");
+});

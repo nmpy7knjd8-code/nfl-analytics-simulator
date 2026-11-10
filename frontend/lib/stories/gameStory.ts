@@ -46,8 +46,10 @@ export function buildStory(doc: GameFileV2): Story {
     playId: p.play_id, qtr: p.qtr, clock: p.clock ?? "", team: p.posteam ?? "",
     sentence: sentence(p, game.home, game.away), text: playText(p.display_text ?? p.text),
   });
-  const beats = storyRows(plays).map(toBeat);
-  const rows = new Map(plays.map((p) => [p.play_id, toBeat(p)]));
+  // Stat-note rows (e.g. "Brady 58th career game…") have no play_type and no clock; never tell them as beats.
+  const real = plays.filter((p) => p.play_type != null && p.clock != null);
+  const beats = storyRows(real).map(toBeat);
+  const rows = new Map(real.map((p) => [p.play_id, toBeat(p)]));
   // Regulation only: overtime has no win chance, so no OT points on the chart.
   const points = plays
     .filter((p) => p.qtr <= 4 && p.home_wp != null && p.clock)
