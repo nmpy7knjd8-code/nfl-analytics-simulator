@@ -881,6 +881,61 @@
      "punt"
     ]
    }
+  },
+  "2026-11-11": {
+   "2023_02_CLE_PIT-2457": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.235394,
+     "punt": 0.227543,
+     "fg": 0.250445
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2022_13_CLE_HOU-3182": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.837137,
+     "punt": 0.807455,
+     "fg": 0.869094
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_03_PIT_LV-2235": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.242364,
+     "punt": 0.219573
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_01_GB_CHI-913": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.618456,
+     "punt": 0.648946
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_17_CHI_DET-1798": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.9378,
+     "punt": 0.890635,
+     "fg": 0.922118
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }
