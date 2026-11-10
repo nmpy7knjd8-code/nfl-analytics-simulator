@@ -1,14 +1,14 @@
 /* Team pages: same white card as the Fourth & Daily game (.sg-app), like /kicks (#159). */
 .tm{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .tm-head{display:flex;align-items:center;gap:10px;margin-top:6px}
-.tm-h1{font-size:26px;line-height:1.15;font-weight:800;margin:0;color:#000}
+.tm-h1{font-size:26px;line-height:1.15;font-weight:800;margin:0;color:var(--ios-label-primary)}
 .tm-lede{margin:0;color:var(--sg-g);font-size:15px}
 .tm-chips{margin:0}
 .tm-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px;display:grid;gap:6px}
-.tm-q{font-size:16px;font-weight:600;color:#000;margin:0}
+.tm-q{font-size:16px;font-weight:600;color:var(--ios-label-primary);margin:0}
 .tm-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:4px 0 0}
 .tm-sub{font-size:14px;color:var(--sg-g)}
-.tm-vs{margin:0;font-size:15px;font-weight:600;color:#000}
+.tm-vs{margin:0;font-size:15px;font-weight:600;color:var(--ios-label-primary)}
 .tm-bars{display:grid;gap:6px;margin-top:4px}
 .tm-row{display:grid;grid-template-columns:3em 1fr;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sg-g);text-align:left}
 .tm-bar{height:8px;border-radius:4px;background:#e6e6e6;overflow:hidden}
@@ -35,7 +35,7 @@
 .tm .tm-rh{font-size:20px;margin:0 0 2px}
 .tm .tm-rsub{font-size:14px;color:var(--sg-g);margin:0 0 10px}
 .tm .tm-rlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.tm .tm-rrow{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 14px;border:1.5px solid #000;border-radius:16px;color:#000;text-decoration:none}
+.tm .tm-rrow{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 14px;border:1.5px solid var(--ios-separator);border-radius:16px;color:var(--ios-label-primary);text-decoration:none}
 .tm .tm-rrow:focus-visible,.tm .tm-rmore summary:focus-visible{outline:3px solid var(--sg-b);outline-offset:2px}
 .tm .tm-rname{font-weight:700;font-size:16px;flex:1;min-width:0}
 .tm .tm-rrec{font-size:14px;color:var(--sg-g);white-space:nowrap}

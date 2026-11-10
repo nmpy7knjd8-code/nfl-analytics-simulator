@@ -1736,9 +1736,9 @@ body { font-variant-numeric: tabular-nums; }
 /* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
 .kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .kb-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:var(--ios-label-primary)}
-.kb-lede{margin:0;color:var(--sg-g);font-size:15px}
+.kb-lede{margin:0;color:var(--ios-label-secondary);font-size:15px}
 .kb-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px 8px}
-.kb-q{font-size:16px;font-weight:600;color:#000}
+.kb-q{font-size:16px;font-weight:600;color:var(--ios-label-primary)}
 .kb-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:6px 0 4px}
 .kb-sub{font-size:14px;color:var(--sg-g);min-height:1.3em}
 .kb-range{width:100%;height:44px;accent-color:var(--sg-b);margin:0}
@@ -1779,11 +1779,11 @@ body { font-variant-numeric: tabular-nums; }
 .ch-chips{margin:8px -2px 0}.ch-chips>:first-child{margin-left:auto}.ch-chips>:last-child{margin-right:auto}
 .ch-pick{text-align:left}
 .era-ax{font-size:11px;fill:#5f6368}
-.era-ax.is-on{fill:#000;font-weight:700}
+.era-ax.is-on{fill:var(--ios-label-primary);font-weight:700}
 .era-lbl{font-size:11px;font-weight:700}
-.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-pick-h{font-size:15px;font-weight:600;color:var(--ios-label-primary);margin-bottom:6px}
 .era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ios-label-primary)}
 .era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
 .era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
 .era-all{border-top:1px solid #e6e6e6;padding-top:6px}
@@ -1808,7 +1808,7 @@ body { font-variant-numeric: tabular-nums; }
 .ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
 .ck-src { font-size: 0.875rem; }
 /* —— D5 outcome histogram —— */
-.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-head{font-size:15px;font-weight:700;color:var(--ios-label-primary);text-align:left;margin-bottom:4px}
 .oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
 /* —— D6 heat map (coaches' real go-rates) —— */
 .hm-card{padding:8px 6px}

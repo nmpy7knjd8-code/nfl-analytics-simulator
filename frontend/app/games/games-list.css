@@ -1,4 +1,4 @@
-.gl-title { font-size: 28px; line-height: 1.15; margin: 14px 0 4px; }
+.gl-title { font-size: 28px; line-height: 1.15; margin: 14px 0 4px; color: var(--ios-label-primary); }
 .gl-sub { color: var(--sg-g); margin: 0 0 14px; font-size: 15px; }
 .gl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .gl-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 56px; padding: 10px 14px; border: 1.5px solid var(--ios-separator); border-radius: 14px; color: var(--ios-label-primary); text-decoration: none; }

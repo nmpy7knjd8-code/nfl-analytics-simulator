@@ -103,6 +103,7 @@ body:not(.ios-play-active) .sg-app{
 
 @media (min-width:700px){
   .sg-app{padding-bottom:24px}
+  .sg-menu-list{max-height:calc(100dvh - var(--ios-nav-height) - var(--ios-status-safe) - 16px)}
 }
 .sg-btn,.sg-next,.sg-keep,.sg-reset{border-radius:999px;box-shadow:none}
 .sg-btn,.sg-keep,.sg-reset{background:#fff;border:1.5px solid #000;color:#000}
@@ -310,6 +311,10 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   border-bottom:0.5px solid var(--ios-separator);
   font-family:var(--ios-font-text);
 }
+/* Open menu must leave .sg-top's stacking context above .ios-tabbar (z 40). */
+.sg-top:has(.sg-menu-list){
+  z-index:calc(var(--ios-z-nav) + 10);
+}
 /* Brand stays in the DOM for routeChrome / brand-spacing tests; large titles replace it visually. */
 .sg-app .sg-brand{
   position:absolute;
@@ -353,6 +358,9 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   border-radius:14px;
   box-shadow:var(--ios-shadow-card);
   top:calc(var(--ios-nav-height) + 4px);
+  z-index:calc(var(--ios-z-nav) + 10);
+  max-height:calc(100dvh - var(--ios-nav-height) - var(--ios-status-safe) - var(--ios-tab-height) - var(--ios-home-safe) - 8px);
+  overflow-y:auto;
 }
 .sg-menu-list a{
   color:var(--ios-label-primary);
@@ -418,6 +426,13 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   color:var(--ios-label-tertiary);
   margin-top:auto;
   padding:10px 8px 8px;
+}
+/* Beat .ab p / .kb / page wrappers so the footer stays tertiary on inherit, not black ink. */
+.sg-app .sg-tm-note,
+.ab .sg-tm-note,
+.ab p.sg-tm-note{
+  color:var(--ios-label-tertiary);
+  background:inherit;
 }
 .sg-today-date{
   font-size:15px;
