@@ -17,7 +17,8 @@ win chance (go for 2 vs kick the PAT) for each try is filled by ``--fill-win-cha
 engine (see ``fill_win_chance``); overtime and late-Q4 (0:01-2:00) tries stay null.
 No EPA, xpass, play ids or betting fields. Rows are arrays under "cols" to keep the file small.
 
-Frozen: every published try must stay identical; rates may change only when a season is added.
+Frozen (mining/_frozen.py): every published try must stay identical, new tries are appended only (never into
+a closed season or watermarked week), and the rates stay frozen (an open season needs its own slice).
 
 Usage: python mining/build_twopoint.py PBP_PARQUET [...] [--out data/site/twopoint.json]
        python mining/build_twopoint.py --fill-win-chance [--out data/site/twopoint.json]
@@ -33,6 +34,9 @@ from typing import Any, Callable
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frozen import check_frozen as _check  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/twopoint.json"
@@ -285,12 +289,13 @@ def check_frozen(old, new, allowed: set[str] | None = None):
         if tp(old) != tp(new):
             return ["summary two_point"]
         old = {**old, "tries": fixed, "two_point": new["two_point"]}
-    return _check(old, new, key, "tries", SUMMARY) + _check(old, new, kick_key, "kicks")
+    return _check(old, new, key, "tries", SUMMARY, name="twopoint") + _check(old, new, kick_key, "kicks",
+                                                                               name="twopoint")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     rows = json.loads(df.to_json(orient="records"))
     is_try = lambda r: r.get("two_point_attempt") == 1 or r.get("play_type") == "extra_point"  # noqa: E731
     attach_after(rows, is_try)

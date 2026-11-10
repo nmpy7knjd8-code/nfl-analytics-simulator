@@ -35,5 +35,54 @@ test("QA 0217 K/J/menu: About kick copy matches the game; every logo has a plate
   assert.match(css, /\.fd-brand \{[^}]*white-space: nowrap;[^}]*flex-shrink: 0;/);
   assert.doesNotMatch(css, /\.fd-top-links/);
   assert.match(read("../app/simple-game.css"), /\.sg-menu-list\{[^}]*overflow-y:auto;max-height:/);
-  for (const href of ["/practice/", "/endless/", "/feed/", "/kicks/", "/games/", "/daily/stats/", "/about/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
+  for (const href of ["/practice/", "/endless/", "/feed/", "/kicks/", "/games/", "/daily/stats/", "/about/", "/first-down/"]) assert.ok(sg.includes(`<Link href="${href}">`), href);
+});
+
+test("QA S7: ☰ menu and top bar stack above /feed chips; footer stays below the menu", () => {
+  const tokens = readFileSync(new URL("../app/tokens.css", import.meta.url), "utf8");
+  const sg = readFileSync(new URL("../app/simple-game.css", import.meta.url), "utf8");
+  const globals = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+  const nav = Number(tokens.match(/--ios-z-nav:\s*(\d+)/)?.[1]);
+  assert.equal(nav, 40);
+
+  const bodyOf = (css: string, sel: string) => {
+    const re = new RegExp("(?:^|[}\\n])" + sel.replace(/[.]/g, "\\.") + "\\s*\\{([^}]*)\\}", "g");
+    const ms = [...css.matchAll(re)];
+    assert.ok(ms.length, `missing rule ${sel}`);
+    return ms.map((m) => m[1]).join(";");
+  };
+  const zOf = (css: string, sel: string) => {
+    const body = bodyOf(css, sel);
+    const raw = body.match(/z-index:\s*([^;]+)/)?.[1]?.trim();
+    if (!raw) return 0;
+    if (raw === "var(--ios-z-nav)") return nav;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const top = zOf(sg, ".sg-top");
+  const menu = zOf(sg, ".sg-menu-list");
+  const fd = zOf(globals, ".fd-top");
+  const chips = zOf(sg, ".pf-chips");
+  const footer = zOf(sg, ".sg-tm-note");
+  assert.ok(top > chips, `sg-top z ${top} should exceed pf-chips ${chips}`);
+  assert.ok(menu > chips, `sg-menu-list z ${menu} should exceed pf-chips ${chips}`);
+  assert.ok(fd > chips, `fd-top z ${fd} should exceed pf-chips ${chips}`);
+  assert.match(bodyOf(sg, ".sg-top"), /position:\s*relative/);
+  assert.match(bodyOf(globals, ".fd-top"), /position:\s*relative/);
+
+  assert.ok(footer > 0 && footer < nav, `footer z ${footer} must sit above page content and below --ios-z-nav ${nav}`);
+  // The footer inherits .sg-app's background (hardcoded #fff). A token like
+  // --ios-background-secondary turns dark (#1c1c1e) in dark mode and left a 2.8:1 strip.
+  assert.match(bodyOf(sg, ".sg-tm-note"), /background:\s*inherit/);
+  assert.doesNotMatch(bodyOf(sg, ".sg-tm-note"), /background:\s*var\(--ios-/);
+  assert.match(bodyOf(sg, ".sg-tm-note"), /position:\s*relative/);
+  assert.match(bodyOf(sg, ".sg-tm-note"), /flex:\s*none/);
+  assert.doesNotMatch(bodyOf(sg, ".sg-tm-note"), /background:\s*#fff/);
+
+  const list = bodyOf(sg, ".pf-list");
+  assert.match(list, /overflow-x:\s*hidden/);
+  assert.match(list, /overflow-y:\s*auto/);
+  assert.match(list, /isolation:\s*isolate/);
+  assert.doesNotMatch(list, /padding-bottom/);
 });

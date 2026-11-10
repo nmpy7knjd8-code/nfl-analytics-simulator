@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import os
 
 import pandas as pd
@@ -59,6 +60,13 @@ def test_every_index_game_has_a_game_file(season):
         assert (GAMES / f"{g['id']}.json").exists(), g["id"]
 
 
+# Releases built before the no-win-chance-in-overtime rule (audit #328) and the 2021_12_LV_DAL overtime fix.
+_PRE_OT_RULE_RELEASES = {"games-v2", "games-v3", "games-v4", "games-v5", "games-v6", "games-v7"}
+_PRE_OT_RULE = os.environ.get("GAMES_RELEASE_TAG") in _PRE_OT_RULE_RELEASES
+# Releases built before games-v7.2 (W4 weather text fallback, season team codes, initials fix).
+_PRE_V72 = os.environ.get("GAMES_RELEASE_TAG") in _PRE_OT_RULE_RELEASES | {"games-v7.1"}
+
+
 @pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
 def test_game_file_wp_home_side_ends_at_result(path):
     raw = json.loads(path.read_text())
@@ -67,11 +75,21 @@ def test_game_file_wp_home_side_ends_at_result(path):
     g = doc["game"]
     assert doc["wp_perspective"] == "home" and doc["provenance"]["source"] == "nflverse"
     idx = {x["id"]: x for x in _index(g["season"])["games"]}
-    assert idx[g["id"]] == g
+    ig = idx[g["id"]]
+    if _PRE_OT_RULE and g["id"] in games.OVERTIME_FIXES:  # old release still has nflverse's wrong flag
+        ig = {**ig, "overtime": g["overtime"]}
+    if _PRE_V72 and g["wind"] is None and g["temp"] is None:  # old release predates the W4 backfill
+        ig = {**ig, "wind": None, "temp": None}
+    assert ig == g
     want = 1.0 if g["home_score"] > g["away_score"] else 0.0 if g["home_score"] < g["away_score"] else 0.5
     assert doc["final_home_wp"] == want
     wp = [p for p in doc["plays"] if p["home_wp"] is not None]
-    assert wp[-1]["home_wp_after"] == want
+    if any(p["qtr"] >= 5 for p in doc["plays"]) and not _PRE_OT_RULE:
+        # No win chance in overtime: the series ends at the last regulation row (no after-value);
+        # the result lives in final_home_wp only.
+        assert wp[-1]["qtr"] <= 4 and wp[-1]["home_wp_after"] is None
+    else:
+        assert wp[-1]["home_wp_after"] == want
     assert all(0 <= p["home_wp"] <= 1 for p in wp)
     last = [p for p in doc["plays"] if p["home_score"] is not None][-1]
     assert (last["home_score"], last["away_score"]) == (g["home_score"], g["away_score"])
@@ -80,6 +98,90 @@ def test_game_file_wp_home_side_ends_at_result(path):
         fd = p["fourth_down"]
         if fd is not None:
             assert p["down"] == 4 and ("fg" in fd["wp"]) == (p["yardline_100"] + 18 <= 64)
+
+
+@pytest.mark.skipif(_PRE_OT_RULE, reason="release built before the no-win-chance-in-overtime rule")
+@pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
+def test_no_win_chance_in_overtime(path):
+    """House rule (audit #328): overtime rows have no win chance, swing, model fallback or 4th-down values,
+    and game.overtime is true exactly when the file has overtime rows."""
+    doc = json.loads(path.read_text())
+    c = doc["cols"]
+    ot = [i for i, q in enumerate(c["qtr"]) if q >= 5]
+    assert doc["game"]["overtime"] == bool(ot), doc["game"]["id"]
+    ot_ids = {c["play_id"][i] for i in ot}
+    assert all(c["home_wp"][i] is None for i in ot)
+    assert not ot_ids & set(doc["swing_play_ids"]) and not ot_ids & set(doc["wp_fallback_play_ids"])
+    assert not {int(k) for k in doc["fourth"]} & set(ot)
+
+
+@pytest.mark.skipif(_PRE_V72, reason="release built before games-v7.2")
+@pytest.mark.parametrize("path", _game_files(), ids=lambda p: p.stem)
+def test_play_team_codes_and_initials(path):
+    """Play rows use the season's team codes (2019 Raiders: OAK), and no doubled initials ('A.J. A.J. Brown')."""
+    doc = json.loads(path.read_text())
+    g, c = doc["game"], doc["cols"]
+    assert set(c["posteam"]) - {None} <= {g["home"], g["away"]}, g["id"]
+    moved = [games.OLD_TEAM_CODES[t] for t in (g["home"], g["away"]) if t in games.OLD_TEAM_CODES]
+    fan = c["display_text"] + [t for t in c["penalty_text"] if t]
+    assert not [t for t in fan if any(re.search(rf"\b{m}\b", t) for m in moved)], g["id"]
+    assert not [t for t in c["display_text"] if re.search(r"\b((?:[A-Z]\.){2,3}) ?\1", t)], g["id"]
+
+
+def test_season_team_codes_rule():
+    doc = {"game": {"home": "OAK", "away": "CHI"},
+           "plays": [{"posteam": "LV", "display_text": "Timeout by LV.", "penalty_text": "Penalty on X (LV): holding."},
+                     {"posteam": "CHI", "display_text": "LVX runs.", "penalty_text": None}]}
+    out = games.season_team_codes(doc)
+    assert [p["posteam"] for p in out["plays"]] == ["OAK", "CHI"]
+    assert out["plays"][0]["display_text"] == "Timeout by OAK." and out["plays"][0]["penalty_text"].endswith("(OAK): holding.")
+    assert out["plays"][1]["display_text"] == "LVX runs."
+    same = {"game": {"home": "LV", "away": "CHI"}, "plays": doc["plays"]}
+    assert games.season_team_codes(same) is same
+
+
+def test_w4_weather_text_fallback():
+    from nfl_sim.weather_text import parse_weather_text as p
+    assert p("Temp: 83° F, Humidity: 36%, Wind: E 6 mph") == (6, 83)
+    assert p("Partly sunny Temp: 66° F, Humidity: 56%, Wind: NNW 2 mph") == (2, 66)
+    assert p("Temp: 40° F, Humidity: 70%, Wind: SSE 12mph mph") == (12, 40)
+    assert p("Temp: -2° F, Wind: Northwest 15 mph") == (15, -2)
+    for bad in (None, "", "Temp: ° F, Wind: mph", "Temp: 66° F, Humidity: 79%, Wind: mph",
+                "Indoors Temp: 85° F, Humidity: 47%, Wind: N 6 mph", "Indoors Temp: 72° F, Wind: N/A 0 mph"):
+        assert p(bad) is None, bad
+    base = {"roof": "outdoors", "wind": None, "temp": None}
+    assert games.weather(base, "Temp: 83° F, Wind: E 6 mph") == {"roof": "outdoors", "wind": 6, "temp": 83}
+    assert games.weather({**base, "wind": 3, "temp": 70}, "Temp: 83° F, Wind: E 6 mph")["wind"] == 3  # nflverse wins
+    assert games.weather({**base, "roof": "dome"}, "Temp: 83° F, Wind: E 6 mph")["wind"] is None
+
+
+def test_w4_backfill_in_committed_indexes():
+    """154 open-air games got wind/temp from the pbp weather text; 8 stay blank (2 roof conflicts, 6 no text)."""
+    rows = {g["id"]: g for s in games.SEASONS for g in _index(s)["games"]}
+    assert (rows["2023_01_DET_KC"]["wind"], rows["2023_01_DET_KC"]["temp"]) == (6, 83)
+    for gid in ("2023_02_GB_ATL", "2023_02_IND_HOU", "2019_02_PHI_ATL", "2025_11_WAS_MIA"):
+        assert rows[gid]["wind"] is None and rows[gid]["temp"] is None, gid
+    open_air = [g for g in rows.values() if g["roof"] in games.OPEN_AIR_ROOFS]
+    assert sum(g["wind"] is None for g in open_air) == 8 and all((g["wind"] is None) == (g["temp"] is None) for g in open_air)
+
+
+def test_null_overtime_win_chance_rule():
+    row = lambda pid, q, wp, after, swing: {"play_id": pid, "qtr": q, "home_wp": wp, "home_wp_after": after, "swing": swing}
+    doc = {"final_home_wp": 1.0, "swing_play_ids": [2, 3, 5], "wp_fallback_play_ids": [6],
+           "plays": [row(1, 4, 0.5, 0.4, False), row(2, 4, 0.4, 0.5, True), row(3, 4, 0.5, 0.6, True),
+                     row(4, 5, 0.6, 0.9, False), row(5, 5, 0.9, 1.0, True), row(6, 5, 1.0, 1.0, False)]}
+    out = games.null_overtime_win_chance(doc)
+    assert [p["home_wp"] for p in out["plays"]] == [0.5, 0.4, 0.5, None, None, None]
+    assert [p["home_wp_after"] for p in out["plays"]] == [0.4, 0.5, None, None, None, None]
+    assert out["swing_play_ids"] == [2] and out["wp_fallback_play_ids"] == [] and out["final_home_wp"] == 1.0
+    assert doc["plays"][3]["home_wp"] == 0.6  # input untouched
+    reg = {**doc, "plays": doc["plays"][:3]}
+    assert games.null_overtime_win_chance(reg) is reg
+
+
+def test_overtime_fixes_in_index():
+    for gid, ot in games.OVERTIME_FIXES.items():
+        assert next(g for g in _index(int(gid[:4]))["games"] if g["id"] == gid)["overtime"] is ot
 
 
 def test_game_files_total_size_budget():

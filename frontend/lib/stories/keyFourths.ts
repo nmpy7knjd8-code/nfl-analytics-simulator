@@ -42,4 +42,12 @@ export function spot(team: string, yl: number | null): string {
   return yl > 50 ? `own ${100 - yl}` : `opponent's ${yl}`;
 }
 
+/** Phrase after "4th and N": "at their own 34", "at the opponent's 12", "at midfield". */
+export function atSpot(at: string): string {
+  if (!at) return "";
+  if (at === "midfield") return " at midfield";
+  if (at.startsWith("own ")) return ` at their ${at}`;
+  return ` at the ${at}`;
+}
+
 export const CALL_LABEL: Record<KeyFourth["call"], string> = { go: "Went for it", punt: "Punted", fg: "Kicked a field goal" };

@@ -81,13 +81,28 @@ def clean_desc(desc: str) -> str:
     return (s[:1].upper() + s[1:] + ".") if s else s
 
 
+# The period after a first-name initial ("A.J.", "J.D.") is not a sentence end; splitting there cut
+# "A.J. Brown fumbles" to "A.J.", and the fumble was then re-added as "A.J. A.J. Brown" (QA #328 initials).
+_NOT_SENTENCE_END = re.compile(r"(?<![A-Za-z.])(?:[A-Z]\.){1,3}$")
+
+
+def _sentences(s: str) -> list[str]:
+    out: list[str] = []
+    for part in re.split(r"(?<=\.)\s+", s):
+        if out and _NOT_SENTENCE_END.search(out[-1]):
+            out[-1] += " " + part
+        else:
+            out.append(part)
+    return out
+
+
 def _fit(s: str) -> str:
     words = s.split()
     if len(words) <= MAX_WORDS:
         return s
     # Prefer whole sentences; else cut at 20 words (drops trailing detail, never adds any).
     out = ""
-    for sent in re.split(r"(?<=\.)\s+", s):
+    for sent in _sentences(s):
         cand = (out + " " + sent).strip()
         if len(cand.split()) > MAX_WORDS:
             break
