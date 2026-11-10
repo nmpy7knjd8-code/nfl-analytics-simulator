@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Header, Trademark } from "../SimpleGame";
 import { feedHref } from "../../lib/gamePicker";
-import { isFirstDownDoc, isGood, outcomeText, pct, situation, weekSet, type Call, type FdPlay, type FirstDownDoc } from "../../lib/stories/firstDown";
+import { isFirstDownDoc, isGood, outcomeText, pct, situation, weekSet, whyText, type Call, type FdPlay, type FirstDownDoc } from "../../lib/stories/firstDown";
 import "./stories.css";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -74,6 +74,7 @@ export function FirstDown() {
           <>
             <p className="fd-q">{pick === p.call ? "Right." : "Not this time."} {p.offense} called a {p.call}.</p>
             <p className="fd-out"><b>{outcomeText(p)}</b> {isGood(p) ? "A good play." : "Not a good play."}</p>
+            <p className="st-row-s">{whyText(p)}</p>
             <p className="st-row-s">Since 2019 on 1st & 10, passes were good {pct(doc.league.pass.good)} of the time, runs {pct(doc.league.run.good)}.</p>
             <button type="button" className="st-oval st-oval-fill" onClick={() => setN(n + 1)}>{n + 1 < set.length ? "Next play" : "See how you did"}</button>
           </>

@@ -96,3 +96,26 @@ def _keys(o):
     elif isinstance(o, list):
         for v in o:
             yield from _keys(v)
+
+
+def test_doubled_period_override_is_narrow():
+    """Override players-2026-11-10-doubled-period: listed swings may change only desc, only '..' -> '.'."""
+    ov = ROOT / "mining/frozen_overrides/players-2026-11-10-doubled-period.json"
+    allowed = qp.load_override(str(ov))
+    assert len(allowed) == 14
+    idx, new = qp.build(rows(), {QA: "A B", QB: "C D"}, lambda g, p: "pass to Chris Godwin Jr..")
+    assert new[QA]["swings"][0]["desc"] == "pass to Chris Godwin Jr."  # builder fixes the text
+    old = {i: {**f, "swings": [{**s, "desc": s["desc"] + "."} for s in f["swings"]]} for i, f in new.items()}
+    keys = {qp.override_key(QA, s) for s in old[QA]["swings"]}
+    assert qp.check_frozen(idx, idx, old, new) != []  # without the override the fix is blocked
+    assert qp.check_frozen(idx, idx, old, new, keys | {qp.override_key(QB, old[QB]["swings"][0])}) == []
+    worse = {QA: {**new[QA], "swings": [{**s, "swing": 0.99} for s in new[QA]["swings"]]}, QB: new[QB]}
+    assert qp.check_frozen(idx, idx, old, worse, keys)  # another field may not change
+    other = {QA: {**new[QA], "swings": [{**s, "desc": "other"} for s in new[QA]["swings"]]}, QB: new[QB]}
+    assert qp.check_frozen(idx, idx, old, other, keys)  # desc may change only by the fix
+    assert qp.check_frozen(idx, idx, new, new, keys)  # stale override entry (nothing to fix) is flagged
+    for pid_key in allowed:  # every listed swing is published and now fixed
+        pid, *k = pid_key.split("|")
+        f = json.loads((PDIR / f"{pid}.json").read_text())
+        s = next(s for s in f["swings"] if qp.override_key(pid, s) == pid_key)
+        assert ".." not in s["desc"] and s["desc"].endswith((" Jr.", " Sr.", "Turnover on downs."))
