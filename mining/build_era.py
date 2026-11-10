@@ -22,6 +22,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/era.json"
 SCHEMA = "era/v1"
@@ -86,6 +90,8 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
         return []
     by = {r["season"]: r for r in new["seasons"]}
     changed = [str(r["season"]) for r in old.get("seasons", []) if by.get(r["season"]) != r]
+    olds = {r["season"] for r in old.get("seasons", [])}
+    changed += [f"{s} added" for s in by if s not in olds and not fz.open_season_key(s)]
     if old.get("zones") != new["zones"]:
         changed.append("zones")
     return changed
@@ -94,7 +100,7 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     last = df.game_date.astype(str).max()
     df = df[df.down == 4].copy()
     df["game_date"] = df["game_date"].astype(str)

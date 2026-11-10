@@ -6,7 +6,8 @@ finds its play by game_id + quarter + clock + offense, never by play id. ``rates
 went-for-it share of all 4th-and-goal-at-the-1 snaps (run, pass, field goal; verify_out: 229 of 255), TD rate
 overall and by run / pass. No play ids, EPA, win chance or betting fields.
 
-Frozen: published stops and rates may not change unless a season is added.
+Frozen (mining/_frozen.py): published stops and rates never change; new stops are appended only, never
+into a closed season (<= 2025) or a watermarked week.
 
 Usage: python mining/build_goalline.py PBP_PARQUET [...] [--out data/site/goalline.json]
 """
@@ -21,6 +22,9 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frozen import check_frozen as _check  # noqa: E402
 from build_stamp import stamp  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/goalline.json"
@@ -60,13 +64,13 @@ def build(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
     if not old or old.get("schema") != new["schema"]:
         return []
-    return _check(old, new, lambda r: (r["game_id"], r["qtr"], r["clock"], r["offense"]), "stops", ("rates",))
+    return _check(old, new, lambda r: (r["game_id"], r["qtr"], r["clock"], r["offense"]), "stops", ("rates",), name="goalline")
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 

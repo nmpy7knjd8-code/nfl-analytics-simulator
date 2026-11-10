@@ -46,7 +46,7 @@ export default async function RivalryPage({ params }: Props) {
           <span className="rv-nb">{r.meetings.length} {r.meetings.length === 1 ? "meeting" : "meetings"}, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]}</span>
         </p>
         <p className="rv-sub rv-pts">
-          Points: <span className="rv-nb">{name(r.a)} {r.aPts}</span> · <span className="rv-nb">{name(r.b)} {r.bPts}</span>
+          Score: <span className="rv-nb">{name(r.a)} {r.aPts}</span> · <span className="rv-nb">{name(r.b)} {r.bPts}</span>
         </p>
         <div className="rv-strip" aria-hidden="true">
           {r.meetings.map((m) => (
