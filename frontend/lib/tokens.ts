@@ -7,6 +7,10 @@
  * CSS source of the same tokens: frontend/app/tokens.css
  * Keep the two files in sync when a value changes.
  *
+ * Accent (Head Grokka, Nov 10): #007AFF light, #0A84FF dark. One blue, used
+ * everywhere. Charts use tints of that accent plus grays. Team colors are not
+ * chrome tokens — they appear only on the scoreboard.
+ *
  * Additive only: adopting these on a screen is a later, reviewable PR.
  * Do not use this module to change frozen daily data.
  */
@@ -15,6 +19,14 @@ export const iosFonts = {
   text: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", system-ui, "Segoe UI", sans-serif',
   display: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", system-ui, "Segoe UI", sans-serif',
   mono: '"SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
+  nums: "tabular-nums",
+} as const;
+
+export const iosWeight = {
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
 } as const;
 
 export const iosColor = {
@@ -35,10 +47,8 @@ export const iosColor = {
     fillSecondary: "rgba(120, 120, 128, 0.12)",
     fillTertiary: "rgba(120, 120, 128, 0.08)",
     accent: "#007aff",
-    accentSoft: "rgba(0, 122, 255, 0.12)",
-    success: "#34c759",
-    warning: "#ff9f0a",
-    danger: "#ff3b30",
+    accentSoft: "color-mix(in srgb, var(--ios-accent) 12%, transparent)",
+    red: "#ff3b30",
     navBackground: "rgba(242, 242, 247, 0.72)",
     tabBackground: "rgba(249, 249, 249, 0.78)",
     hairline: "rgba(0, 0, 0, 0.12)",
@@ -61,10 +71,8 @@ export const iosColor = {
     fillSecondary: "rgba(120, 120, 128, 0.24)",
     fillTertiary: "rgba(120, 120, 128, 0.16)",
     accent: "#0a84ff",
-    accentSoft: "rgba(10, 132, 255, 0.22)",
-    success: "#30d158",
-    warning: "#ffd60a",
-    danger: "#ff453a",
+    accentSoft: "color-mix(in srgb, var(--ios-accent) 22%, transparent)",
+    red: "#ff453a",
     navBackground: "rgba(22, 22, 24, 0.72)",
     tabBackground: "rgba(22, 22, 24, 0.78)",
     hairline: "rgba(255, 255, 255, 0.14)",
@@ -72,27 +80,31 @@ export const iosColor = {
   },
 } as const;
 
+/** Resolved chart series (accent tints + gray) for canvas / SVG consumers. */
 export const iosChart = {
   light: {
     axis: "rgba(60, 60, 67, 0.72)",
     grid: "rgba(60, 60, 67, 0.12)",
-    series: ["#007aff", "#34c759", "#ff9f0a", "#af52de"] as const,
+    // Mixes match tokens.css color-mix of the accent toward white / gray.
+    series: ["#007aff", "#54a3ff", "#9bc4ff", "#8e8e93"] as const,
     band: "rgba(0, 122, 255, 0.14)",
   },
   dark: {
     axis: "rgba(235, 235, 245, 0.66)",
     grid: "rgba(84, 84, 88, 0.45)",
-    series: ["#0a84ff", "#30d158", "#ffd60a", "#bf5af2"] as const,
+    series: ["#0a84ff", "#0757a8", "#06355f", "#8e8e93"] as const,
     band: "rgba(10, 132, 255, 0.22)",
   },
 } as const;
 
 export const iosType = {
   largeTitle: "2.125rem",
+  largeTitleWeight: iosWeight.bold,
   title1: "1.75rem",
   title2: "1.375rem",
   title3: "1.25rem",
   headline: "1.0625rem",
+  headlineWeight: iosWeight.semibold,
   body: "1.0625rem",
   callout: "1rem",
   subhead: "0.9375rem",
@@ -115,15 +127,21 @@ export const iosSpace = {
   6: 24,
   7: 32,
   8: 40,
+  9: 48,
 } as const;
 
-/** Corner radii, in pixels. */
+/** Corner radii, in pixels. Cards use lg (16); sheets use xl (20). */
 export const iosRadius = {
   sm: 8,
   md: 12,
   lg: 16,
   xl: 20,
   full: 999,
+} as const;
+
+export const iosMaterial = {
+  blur: "20px",
+  saturate: "180%",
 } as const;
 
 export const iosMetrics = {

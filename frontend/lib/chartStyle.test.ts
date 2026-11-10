@@ -133,7 +133,9 @@ test("chart defaults: thin horizontal grid, few ticks, round 2.5px lines, phone 
   assert.equal(tooltip.value.fontWeight, 600);
   assert.equal(tooltip.label.fontSize, iosType.caption1);
   assert.equal(tooltip.backdropBlurPx, TOOLTIP_BLUR_PX);
-  assert.match(shellCss, new RegExp(`blur\\(${TOOLTIP_BLUR_PX}px\\)`));
+  // Shell chrome blurs through the material token; the token carries the px value.
+  assert.match(shellCss, /blur\(var\(--ios-material-blur\)\)/);
+  assert.match(tokensCss, new RegExp(`--ios-material-blur:\\s*${TOOLTIP_BLUR_PX}px`));
 });
 
 test("reduced motion turns chart animation off; duration matches --ios-duration", () => {
