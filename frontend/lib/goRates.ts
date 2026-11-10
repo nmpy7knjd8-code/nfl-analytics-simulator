@@ -7,6 +7,18 @@ export type GoBand = { min: number; max: number };
 export type GoRatesFile = {
   schema: "gorates/v1"; source: string; builtAt: string; dataThrough: string; seasons: number[];
   minPlays: number; maxFgYards: 64; distances: number[]; bands: GoBand[]; cells: GoCell[][];
+  /** Engine layer (additive, optional): our 4th-down engine's best call for the same plays as `cells`. */
+  engine?: GoEngineMeta; engineCells?: GoEngineCell[][];
+};
+/** [plays with an engine call, engine says go, kick, punt, close calls (within closeCallPct points of win chance),
+ *  coaches went for it when the engine said go]. go + kick + punt = rated. */
+export type GoEngineCell = [rated: number, engineGo: number, engineKick: number, enginePunt: number,
+  closeCalls: number, wentWhenEngineGo: number];
+export type GoEngineMeta = {
+  version: string; source: string; dataThrough: string; closeCallPct: number;
+  fields: ["rated", "engineGo", "engineKick", "enginePunt", "closeCalls", "wentWhenEngineGo"];
+  /** Present only in example stubs; never in the built file. */
+  example?: string;
 };
 
 export const goRates = raw as unknown as GoRatesFile;
@@ -22,6 +34,12 @@ export function cellAt(f: GoRatesFile, togo: number, yardline100: number): { cel
   const col = f.bands.findIndex((b) => yardline100 >= b.min && yardline100 <= b.max);
   if (row < 0 || col < 0) return null;
   return { cell: f.cells[row][col], band: f.bands[col], row, col };
+}
+
+/** Engine cell for the same spot as cellAt; null when the file has no engine layer. */
+export function engineCellAt(f: GoRatesFile, togo: number, yardline100: number): GoEngineCell | null {
+  const at = cellAt(f, togo, yardline100);
+  return at && f.engineCells ? f.engineCells[at.row][at.col] : null;
 }
 
 export const pct = (n: number, d: number) => (d ? Math.round((100 * n) / d) : 0);
