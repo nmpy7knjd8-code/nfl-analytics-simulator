@@ -1,14 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { goRates, kickTooFar, kickPartlyTooFar, pct, spotLabel, type GoBand } from "../lib/goRates";
+import React, { useState } from "react";
+import { CHECKER_ENABLED } from "../lib/features";
+import {
+  goRates, kickTooFar, kickPartlyTooFar, pct, spotLabel, engineLayer,
+  type GoBand, type GoRatesFile,
+} from "../lib/goRates";
+import { iosChart, iosColor, iosFonts, iosRadius, iosSpace, iosType } from "../lib/tokens";
 import { Header, Trademark } from "./SimpleGame";
 
 const bandName = (b: GoBand) => `${spotLabel(b.max)} to ${spotLabel(b.min)}`;
 const shade = (r: number) => `rgba(30, 91, 255, ${0.08 + 0.92 * r})`;
 
-export function HeatMap() {
-  const f = goRates;
+/** Engine-layer series: accent blue + gray only. No team colors, no orange. */
+export const engineLayerSeries = {
+  model: iosChart.light.series[0],
+  teams: iosColor.light.labelSecondary,
+} as const;
+
+export function HeatMap({ file = goRates, enabled = CHECKER_ENABLED }: { file?: GoRatesFile; enabled?: boolean } = {}) {
+  const f = file;
   const [sel, setSel] = useState<[number, number]>([0, 0]);
   const [row, col] = sel;
   const [n, went, fg, punt] = f.cells[row][col];
@@ -66,11 +77,49 @@ export function HeatMap() {
         {kickPartlyTooFar(f, band) ? <p className="kb-note">Kicks stop at {f.maxFgYards} yards, so from the back of this stretch a kick is too far.</p> : null}
       </section>
 
+      <EngineLayer file={f} row={row} col={col} enabled={enabled} />
+
       <p className="kb-note">
         What coaches actually did on 4th down in the first four quarters, {f.seasons[0]}–{f.seasons[1]}. Blank squares have fewer than {f.minPlays} plays.
         Data: nflverse play-by-play. Data through {f.dataThrough}.
       </p>
       <Trademark />
+    </div>
+  );
+}
+
+export function EngineLayer({
+  file, row, col, enabled = CHECKER_ENABLED,
+}: {
+  file: GoRatesFile; row: number; col: number; enabled?: boolean;
+}) {
+  const view = engineLayer(file, row, col, enabled);
+  if (!view) return null;
+  const barStyle = {
+    fontFamily: iosFonts.text,
+    borderRadius: iosRadius.md,
+    padding: `${iosSpace[3]}px ${iosSpace[4]}px`,
+  } as const;
+  return (
+    <section className="hm-engine" style={barStyle} aria-label="Our model compared with teams">
+      <EngineBar kind="model" label={view.modelLabel} value={view.modelGoPct} />
+      <EngineBar kind="teams" label={view.teamsLabel} value={view.teamsWentPct} />
+      <p className="hm-engine-summary" style={{ fontSize: iosType.footnote }}>{view.summary}</p>
+      {view.agreeLine ? <p className="hm-engine-agree" style={{ fontSize: iosType.caption1 }}>{view.agreeLine}</p> : null}
+    </section>
+  );
+}
+
+function EngineBar({ kind, label, value }: { kind: "model" | "teams"; label: string; value: number }) {
+  return (
+    <div className={`hm-engine-row is-${kind}`}>
+      <div className="hm-engine-lab">
+        <span className="hm-engine-name">{label}</span>
+        <strong className="hm-engine-val">{value}%</strong>
+      </div>
+      <div className="hm-engine-track" aria-hidden="true">
+        <div className="hm-engine-fill" style={{ width: `${value}%` }} />
+      </div>
     </div>
   );
 }
