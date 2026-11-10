@@ -23,6 +23,7 @@ const LINKS: { href: string; label: string }[] = [
   { href: "/wheres-the-ball/", label: "Where's the ball?" },
   { href: "/comebacks/", label: "Biggest comebacks" },
   { href: "/on-this-day/", label: "On this day" },
+  { href: "/first-down/", label: "First down" },
 ];
 
 export default function ExplorePage() {

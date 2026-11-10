@@ -53,7 +53,7 @@ export function Header({ right, onBack, backHref, showMenu = true }: { right: st
         ) : null}
       </div>
       <Link href="/" className="sg-brand">Fourth{" "}<span>&amp;</span>{" "}Daily</Link>
-      {right ? <span className="sg-count">{right}</span> : null}
+      {right ? <span className={playChrome ? "sg-play-title" : "sg-count"}>{right}</span> : null}
       <div className="sg-top-r">
         {showMenu ? <SiteMenu /> : null}
       </div>
@@ -76,6 +76,7 @@ function TodayHub({ dayKey, item, onStart }: { dayKey: string; item: DailyItem; 
       <p className="sg-today-date">{formatHubDate(dayKey)}</p>
       <section className="ios-card sg-today-card" aria-label="Today's 4th downs">
         <p className="sg-today-kicker">Five real 4th downs</p>
+        <ScoreBug item={item} />
         <p className="sg-today-sit">{nick} ball · {flagText(item)}.</p>
         <button type="button" className="sg-today-go" onClick={onStart}>Make the call</button>
       </section>

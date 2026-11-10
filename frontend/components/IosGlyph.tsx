@@ -1,7 +1,7 @@
 import React, { type ReactNode } from "react";
 
 /** Small white-on-accent glyphs for inset grouped list rows. */
-export function IosGlyph({ name }: { name: "practice" | "stats" | "explore" | "about" }) {
+export function IosGlyph({ name }: { name: "practice" | "stats" | "explore" | "about" | "teams" | "rivalry" | "playoffs" | "coaches" }) {
   const paths: Record<typeof name, ReactNode> = {
     practice: (
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
@@ -26,6 +26,30 @@ export function IosGlyph({ name }: { name: "practice" | "stats" | "explore" | "a
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
         <circle cx="12" cy="12" r="8.2" />
         <path d="M12 11.2V17M12 7.6h.01" />
+      </svg>
+    ),
+    teams: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" aria-hidden="true">
+        <path d="M12 3.5 4.8 6.2v5.2c0 4.4 3.1 7.6 7.2 9.1 4.1-1.5 7.2-4.7 7.2-9.1V6.2L12 3.5Z" />
+      </svg>
+    ),
+    rivalry: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+        <path d="M7.5 16.5 16.5 7.5M8 8h.01M16 16h.01" />
+        <circle cx="8" cy="8" r="2.2" />
+        <circle cx="16" cy="16" r="2.2" />
+      </svg>
+    ),
+    playoffs: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M5 6v5h4v7M19 6v5h-4v7" />
+        <path d="M9 11h6" />
+      </svg>
+    ),
+    coaches: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.2" />
+        <path d="M5.5 19c.6-3.4 3.2-5 6.5-5s5.9 1.6 6.5 5" />
       </svg>
     ),
   };

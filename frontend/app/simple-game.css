@@ -3,7 +3,7 @@
 .sg-app button{font-family:inherit;cursor:pointer}
 .sg-top{display:flex;justify-content:space-between;align-items:center;height:48px;flex:none;position:relative;z-index:var(--ios-z-nav)}
 .sg-brand{display:inline-flex;align-items:center;column-gap:.28em;min-height:44px;font-weight:800;font-size:17px;color:#000;text-decoration:none}.sg-brand span{color:var(--sg-b)}
-.sg-top-r{display:flex;align-items:center;gap:6px;position:relative}
+.sg-top-r{display:flex;align-items:center;gap:6px;position:relative;margin-left:auto}
 .sg-count{font-size:14px;color:var(--sg-g);font-weight:600}
 .sg-menu{width:48px;height:48px;border:0;background:none;font-size:24px;margin-right:-12px;color:#000}
 .sg-menu-wrap{position:relative;display:flex}
@@ -46,7 +46,7 @@
 .sg-final{font-weight:600;color:var(--sg-g)}
 .sg-tag{display:inline-block;font-size:13px;font-weight:800;padding:2px 8px;border-radius:999px;vertical-align:2px;margin-left:4px}
 .sg-best{background:var(--sg-b);color:#fff}.sg-close{background:#000;color:#fff}
-.sg-tm-note{font-size:13px;color:var(--sg-g);text-align:center;margin:8px 0 0;line-height:1.3;background:var(--ios-background-secondary);position:relative;z-index:1;flex:none}
+.sg-tm-note{font-size:13px;color:var(--sg-g);text-align:center;margin:8px 0 0;line-height:1.3;background:inherit;position:relative;z-index:1;flex:none}
 .sg-center{text-align:center;margin-top:10px}
 .sg-big{font-size:64px;font-weight:800;text-align:center;margin-top:10px;line-height:1}
 .sg-marks{display:flex;justify-content:center;gap:8px;margin:12px 0 4px}.sg-marks span{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
@@ -98,7 +98,7 @@ body.ios-play-active .sg-app{
 
 /* Beat page-level .ab/.kb/.gs/.tm/.co padding so the tab bar does not cover the footer. */
 body:not(.ios-play-active) .sg-app{
-  padding-bottom:calc(var(--ios-tab-height) + var(--ios-home-safe) + 16px);
+  padding-bottom:calc(var(--ios-tab-height) + env(safe-area-inset-bottom, 0px) + 20px);
 }
 
 @media (min-width:700px){
@@ -296,7 +296,7 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 .sg-top{
   position:sticky;
   top:0;
-  z-index:30;
+  z-index:var(--ios-z-nav);
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -305,8 +305,9 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   margin:0 -16px;
   padding:var(--ios-status-safe) 8px 0;
   background:var(--ios-nav-background);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
+  -webkit-backdrop-filter:saturate(var(--ios-material-saturate)) blur(var(--ios-material-blur));
+  border-bottom:0.5px solid var(--ios-separator);
   font-family:var(--ios-font-text);
 }
 /* Brand stays in the DOM for routeChrome / brand-spacing tests; large titles replace it visually. */
@@ -369,7 +370,9 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   flex:none;
   z-index:2;
 }
-.sg-top-r{justify-content:flex-end;position:relative}
+.sg-top-r{justify-content:flex-end;position:relative;margin-left:auto}
+/* Visually hidden on hub/tab pages (large titles replace this). Never use this
+   hide pattern for the in-play title — it rendered 0px-wide when un-clipped. */
 .sg-count{
   position:absolute;
   width:1px;
@@ -383,15 +386,17 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   color:var(--ios-label-primary);
   pointer-events:none;
 }
-/* Centered in the header itself (not .sg-top-r), so back / title / menu stay aligned. */
-.sg-top-play .sg-count{
+/* Play title is a direct child of .sg-top and is never visually hidden. */
+.sg-play-title{
+  position:absolute;
   left:52px;
   right:52px;
   top:var(--ios-status-safe);
   height:var(--ios-nav-height);
   width:auto;
+  margin:0;
   overflow:hidden;
-  clip:auto;
+  clip:rect(auto, auto, auto, auto);
   clip-path:none;
   display:flex;
   align-items:center;
@@ -399,10 +404,15 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   text-align:center;
   white-space:nowrap;
   text-overflow:ellipsis;
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:-0.4px;
+  color:var(--ios-label-primary);
+  pointer-events:none;
   z-index:1;
 }
 .sg-tm-note{
-  font-size:11px;
+  font-size:var(--ios-text-footnote);
   line-height:1.35;
   font-weight:500;
   color:var(--ios-label-tertiary);
@@ -414,9 +424,18 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   font-weight:400;
   color:var(--ios-label-secondary);
   letter-spacing:-0.2px;
-  margin:0 0 16px;
+  margin:4px 0 16px;
 }
 .sg-today-card{margin:0 0 14px}
+.sg-today-card .sg-bug{margin:0 auto 2px;max-width:100%}
+.ios-group-label{
+  font-size:13px;
+  font-weight:400;
+  color:var(--ios-label-secondary);
+  letter-spacing:-0.08px;
+  margin:0 0 8px;
+  padding:0 16px;
+}
 .sg-today-kicker{
   font-size:13px;
   font-weight:600;
@@ -440,8 +459,8 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   background:var(--ios-accent);
   color:var(--ios-label-on-accent);
   font:inherit;
-  font-size:17px;
-  font-weight:600;
+  font-size:19px;
+  font-weight:700;
   letter-spacing:-0.3px;
 }
 .sg-today-list{margin-top:14px}
@@ -451,7 +470,12 @@ img.sg-plate{box-shadow:0 0 0 1px rgba(0,0,0,.08)}
   .sg-top,.sg-today-go,.sg-back{transition:none!important;animation:none!important}
 }
 
-.ios-more .ios-large-title,
+.sg-app .ios-large-title.sg-today-title,
+.sg-app .sg-today-title{
+  margin:0;
+  padding:8px 0 0;
+}
+.ios-more .ios-large-title.sg-today-title,
 .ios-more .sg-today-title{
   padding-top:8px;
   padding-bottom:0;

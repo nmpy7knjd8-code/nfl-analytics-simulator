@@ -81,7 +81,7 @@ body.ios-play-active .ios-tabbar {
   align-items: center;
   justify-content: flex-start;
   gap: 2px;
-  min-height: var(--ios-touch);
+  min-height: 48px;
   padding-top: 4px;
   color: var(--ios-label-tertiary);
   font-size: var(--ios-text-caption-2);
@@ -140,6 +140,7 @@ body.ios-play-active .ios-tabbar {
   letter-spacing: var(--ios-tracking-large-title);
   line-height: var(--ios-leading-tight);
   color: var(--ios-label-primary);
+  margin: 0;
 }
 
 .ios-footer-note {
@@ -182,8 +183,8 @@ body.ios-play-active .ios-tabbar {
   background: var(--ios-accent);
   color: var(--ios-label-on-accent);
   font-family: var(--ios-font-text);
-  font-size: var(--ios-text-headline);
-  font-weight: var(--ios-text-headline-weight);
+  font-size: 19px;
+  font-weight: var(--ios-weight-bold);
   letter-spacing: var(--ios-tracking-body);
   text-decoration: none;
   cursor: pointer;
@@ -273,7 +274,7 @@ a.ios-list-row:focus-visible {
 
 .ios-large-title.sg-today-title,
 .sg-today-title {
-  padding: 8px 0 2px;
+  padding: 8px 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

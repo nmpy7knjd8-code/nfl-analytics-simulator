@@ -24,8 +24,14 @@ test("path matching covers hub, overflow, and trailing slashes", () => {
   assert.ok(by.Games.match("/games/xyz"));
   assert.ok(by.More.match("/more"));
   assert.ok(by.More.match("/explore/"));
-  assert.ok(by.More.match("/practice"));
   assert.ok(by.More.match("/about"));
+  assert.ok(by.More.match("/team"));
+  assert.ok(by.More.match("/team/KC"));
+  assert.ok(by.More.match("/rivalry/"));
+  assert.ok(by.More.match("/playoffs/2025"));
+  assert.ok(by.More.match("/coaches"));
+  assert.ok(!by.More.match("/practice"));
+  assert.ok(by.Today.match("/practice"));
   assert.ok(!by.More.match("/"));
   assert.ok(!by.More.match("/feed"));
 });

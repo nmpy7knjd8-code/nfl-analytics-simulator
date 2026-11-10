@@ -5,13 +5,15 @@ import { shareMetadata } from "../../lib/share";
 
 export const metadata = shareMetadata({
   title: "More · Fourth & Daily",
-  description: "Stats, charts and stories, practice, and about Fourth & Daily.",
+  description: "Stats, charts and stories, teams and games, and about Fourth & Daily.",
   path: "/more/",
   card: "home",
-  alt: "Fourth & Daily — more: stats, charts, practice, about. Data: nflverse",
+  alt: "Fourth & Daily — more: stats, charts, teams, about. Data: nflverse",
 });
 
-function Row({ href, glyph, label, sub }: { href: string; glyph: "practice" | "stats" | "explore" | "about"; label: string; sub?: string }) {
+type Glyph = "practice" | "stats" | "explore" | "about" | "teams" | "rivalry" | "playoffs" | "coaches";
+
+function Row({ href, glyph, label, sub }: { href: string; glyph: Glyph; label: string; sub?: string }) {
   return (
     <li>
       <Link href={href} className="ios-list-row">
@@ -36,10 +38,14 @@ export default function MorePage() {
           <ul className="ios-list ios-inset-grouped">
             <Row href="/daily/stats/" glyph="stats" label="Stats" />
             <Row href="/explore/" glyph="explore" label="Explore" sub="Charts and stories" />
-            <Row href="/practice/" glyph="practice" label="Practice" />
-          </ul>
-          <ul className="ios-list ios-inset-grouped">
             <Row href="/about/" glyph="about" label="About" />
+          </ul>
+          <h2 className="ios-group-label">Teams &amp; Games</h2>
+          <ul className="ios-list ios-inset-grouped">
+            <Row href="/team/" glyph="teams" label="Teams" />
+            <Row href="/rivalry/" glyph="rivalry" label="Rivalries" />
+            <Row href="/playoffs/" glyph="playoffs" label="Playoffs" />
+            <Row href="/coaches/" glyph="coaches" label="Coaches" />
           </ul>
         </nav>
         <Trademark />
