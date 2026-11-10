@@ -51,19 +51,50 @@ test("chart starts at kickoff and has one point per play", () => {
 });
 
 test("overtime (real game, BUF @ NYJ 2023): plays listed, no win chance, no chart", () => {
-  const ot = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2);
+  const doc = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2;
+  const ot = buildFeed(doc);
   const otRows = ot.plays.filter((p) => p.ot);
   assert.ok(otRows.length > 0 && otRows.every((p) => p.qtr > 4 && !canChart(p) && !p.big));
+  assert.ok(otRows.every((p) => p.homeWp == null && p.homeWpBefore == null), "OT rows stay null even if the file still has values");
   assert.ok(ot.plays.filter((p) => !p.ot).every(canChart));
   assert.deepEqual(filterFeed(ot.plays, { ...NO_FILTER, qtr: 5 }).map((p) => p.id), otRows.map((p) => p.id));
   const pts = chartPoints(ot.plays);
-  assert.equal(pts.length, ot.plays.length - otRows.length + 1);
-  assert.ok(pts.every((p) => p.t <= 3600));
+  const reg = ot.plays.filter((p) => !p.ot);
+  assert.equal(pts.length, reg.filter((p) => p.homeWp != null).length + (reg[0]?.homeWpBefore != null ? 1 : 0));
+  assert.ok(pts.every((p) => p.t <= 3600 && p.wp != null && Number.isFinite(p.wp)));
   assert.ok(!pts.some((p) => otRows.some((o) => o.id === p.id)));
+  // Line ends at the last regulation value (0.496 at end of Q4), not at the OT result (NYJ won, 1.0).
+  assert.notEqual(pts.at(-1)!.wp, doc.final_home_wp);
+  assert.equal(pts.at(-1)!.wp, 0.496);
   assert.match(metaLine(otRows[0]), /^OT · /);
   assert.ok(otRows.at(-1)!.scoring); // walk-off punt return
   assert.deepEqual(otRows.filter((p) => p.scoring).length, 1);
   assert.ok(ot.plays.filter((p) => p.scoring).every((p) => /field goal|touchdown|extra point|safety|two-point|kicks the extra|\\bgood\\b/i.test(p.text)), 'scoring tag sits on the scoring play');
+});
+
+test("chart skips null rows: no placeholder, no result fallback, no line through OT (games-v7.1 shape)", () => {
+  const doc = JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2;
+  // games-v7.1: every OT home_wp is null, including END GAME. Also drop the last regulation
+  // non-play value so the last real play's after-value is null — the chart must not invent one.
+  for (let i = 0; i < doc.cols.play_id.length; i++) {
+    if (doc.cols.qtr[i] > 4) (doc.cols.home_wp as (number | null)[])[i] = null;
+  }
+  const endQ4 = doc.cols.text.findIndex((t, i) => doc.cols.qtr[i] === 4 && /^END (QUARTER 4|Q4)/i.test(t ?? ""));
+  assert.ok(endQ4 >= 0);
+  const endQ4Wp = doc.cols.home_wp[endQ4];
+  (doc.cols.home_wp as (number | null)[])[endQ4] = null;
+  const ot = buildFeed(doc);
+  const lastReg = ot.plays.filter((p) => !p.ot).at(-1)!;
+  assert.equal(lastReg.homeWp, null, "no fallback to the game result when the after-value is null");
+  assert.notEqual(endQ4Wp, null);
+  const pts = chartPoints(ot.plays);
+  assert.ok(pts.every((p) => p.wp != null && p.t <= 3600));
+  assert.ok(!pts.some((p) => p.id === lastReg.id), "null after-value is skipped, not drawn as a placeholder");
+  assert.notEqual(pts.at(-1)!.wp, 1, "does not draw the OT result");
+  assert.notEqual(pts.at(-1)!.wp, doc.final_home_wp);
+  assert.equal(pts.at(-1)!.wp, lastReg.homeWpBefore);
+  assert.ok(ot.plays.filter((p) => p.ot).every((p) => p.homeWp == null && p.homeWpBefore == null));
+  assert.equal(swingText(ot, lastReg), "");
 });
 
 test("scoring tag sits on the play that scores (row scores are post-play)", () => {
@@ -98,13 +129,15 @@ test("swing line says it is the win chance, in %, for the team ahead", () => {
   const bn = buildFeed(JSON.parse(readFileSync(new URL("./__fixtures__/2023_01_BUF_NYJ.json", import.meta.url), "utf8")) as GameFileV2);
   const fg = bn.plays.find((p) => p.qtr === 1 && p.sec === 189 && /Bass.s 40-yard field goal is good/i.test(p.text))!;
   // Pre-snap home (NYJ) chance 49.9% -> 51.1% at the next snap (NYJ receive the kickoff), per the model.
+  assert.ok(fg.homeWp != null);
   assert.equal(winLine(bn, fg.homeWp).team, "NYJ");
   assert.equal(swingText(bn, fg), "NYJ's win chance up 1%");
   const prev = bn.plays[bn.plays.indexOf(fg) - 1];
   assert.equal(swingText(bn, prev), "NYJ's win chance down 2%");
-  const flat = bn.plays.find((p) => Math.round(p.homeWp * 100) === Math.round(p.homeWpBefore * 100))!;
+  const flat = bn.plays.find((p) => p.homeWp != null && p.homeWpBefore != null && Math.round(p.homeWp * 100) === Math.round(p.homeWpBefore * 100))!;
   assert.equal(swingText(bn, flat), "No change");
-  for (const p of bn.plays) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
+  for (const p of bn.plays.filter((p) => p.homeWp != null)) assert.match(swingText(bn, p), /^(No change|[A-Z]{2,3}'s win chance (up|down) \d+%)$/);
+  assert.ok(bn.plays.some((p) => p.ot && swingText(bn, p) === ""));
 });
 
 test("swing wording is percent from the shown rounded numbers, never pts", () => {
