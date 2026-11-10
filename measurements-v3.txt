@@ -1,0 +1,12 @@
+light 360 play scroll=false(740/740) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 7 yds to go","Field goal 47 yds"]
+light 390 play scroll=false(844/844) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 7 yds to go","Field goal 47 yds"]
+dark 360 play scroll=false(740/740) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 7 yds to go","Field goal 47 yds"]
+dark 390 play scroll=false(844/844) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 7 yds to go","Field goal 47 yds"]
+light 360 play-3choices scroll=false(740/740) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 4 yds to go","Field goal 58 yds","Punt Kick it away"]
+light 390 play-3choices scroll=false(844/844) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 4 yds to go","Field goal 58 yds","Punt Kick it away"]
+dark 360 play-3choices scroll=false(740/740) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 4 yds to go","Field goal 58 yds","Punt Kick it away"]
+dark 390 play-3choices scroll=false(844/844) footerVisible=true tabbar=false small=[] contrastFails=[] choices=["Go for it 4 yds to go","Field goal 58 yds","Punt Kick it away"]
+
+gaps (static export, NFL_SIM_STATIC_EXPORT=1 build of 86461c6):
+360x740: scorebug bottom 148 -> question top 164 (16px); choices bottom 672 -> footer 672-720 -> viewport bottom 740 (68px = 48px footer + 20px safe/padding)
+390x844: scorebug bottom 148 -> question top 164 (16px); choices bottom 776 -> footer 776-824 -> viewport bottom 844 (68px)
