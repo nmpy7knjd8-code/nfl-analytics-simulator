@@ -17,8 +17,8 @@ Stats per team (offense): rz = [trips, td, rank, fg, no_score]  (rank by TD rate
 Ranks are computed inside each view (and each season); ties share the better rank.
 vegas_wp is read only to classify snaps; no EPA, xpass, play ids, win chances or betting fields are written.
 
-Frozen data: every published season (both views), and the all-seasons block when the season list is
-unchanged, must stay identical; an nflverse regrade fails the build (exit 1).
+Frozen data: every published season (both views) and the all-seasons block must stay identical whatever
+the season list (an open season only adds its own by_season key); an nflverse regrade fails the build (exit 1).
 
 Usage: python mining/build_team_garbage_time.py PBP_PARQUET [...] [--out frontend/lib/teamGarbageTime.json]
 """
@@ -33,6 +33,10 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 from typing import Any, Callable
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend/lib/teamGarbageTime.json"
@@ -149,15 +153,16 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any]) -> list[str]:
 
     for y, o in old.get("by_season", {}).items():
         diff(y, o, new["by_season"].get(y))
-    if old.get("season_list") == new["season_list"]:
-        diff("all", old, new)
+    diff("all", old, new)  # the all-seasons block stays frozen even when a season is added
+    out.extend(f"{y}:added" for y in new["by_season"] if y not in old.get("by_season", {})
+               and not fz.open_season_key(y))
     return out
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df = df[df["season_type"] == "REG"]
     return json.loads(df.to_json(orient="records"))
 

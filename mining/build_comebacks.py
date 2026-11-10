@@ -10,7 +10,8 @@ Output (small): ``lows`` = every decided game's low point (winner's chance, 4 dp
 "Could you have quit?" slider count; ``top`` = the TOP lowest games with a 24-point regulation sparkline of
 the winner's chance (whole percent). No play ids, EPA or betting fields; no overtime win chance.
 
-Frozen: published ``top`` rows and the decided-game count may not change unless a season is added.
+Frozen (mining/_frozen.py): published ``top`` rows, ``lows`` and the decided-game count never change; the
+ranked list may grow but never evict a published row.
 
 Usage: python mining/build_comebacks.py PBP_PARQUET [...] [--out data/site/comebacks.json]
        [--allow-changes mining/frozen_overrides/<file>.json]  (listed games may change only spark)
@@ -27,6 +28,9 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _frozen import check_frozen as _check  # noqa: E402
 from build_stamp import stamp  # noqa: E402
+
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data/site/comebacks.json"
@@ -130,8 +134,8 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[s
         bad = [f"{e[3]} (override: changed more than spark)" for e in old.get("top", [])
                if e[3] in allowed and e[3] in nk and (e[:si] + e[si + 1:]) != (nk[e[3]][:si] + nk[e[3]][si + 1:])]
         old = {**old, "top": [nk[e[3]] if e[3] in allowed and e[3] in nk else e for e in old.get("top", [])]}
-        return bad + _check(old, new, key, "top", ("decided_games", "lows"))
-    return _check(old, new, key, "top", ("decided_games", "lows"))
+        return bad + _check(old, new, key, "top", ("decided_games", "lows"), name="comebacks", ranked=True)
+    return _check(old, new, key, "top", ("decided_games", "lows"), name="comebacks", ranked=True)
 
 
 def load_override(path: str | None) -> set[str]:
@@ -146,7 +150,7 @@ def load_override(path: str | None) -> set[str]:
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 

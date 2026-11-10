@@ -29,6 +29,9 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_stamp import stamp  # noqa: E402
 
+import _frozen as fz  # noqa: E402
+from _frozen import read_pbp  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "data/site/charts"
 SCHEMA = "matchcharts/v1"
@@ -135,13 +138,14 @@ def check_frozen(old: dict[str, Any] | None, new: dict[str, Any], allowed: set[s
     changed = [g["gameId"] for g in old.get("games", []) if by.get(g["gameId"]) != g
                and not _final_point_ok(g, by.get(g["gameId"]), allowed)
                and not _points_ok(g, by.get(g["gameId"]), points or {})]
+    changed += fz.check_rows(old.get("games", []), new["games"], lambda g: g["gameId"], "charts")
     return changed + (["points"] if old.get("points") != new["points"] else [])
 
 
 def load_rows(paths: list[str]) -> list[dict[str, Any]]:
     import pandas as pd
 
-    df = pd.concat([pd.read_parquet(p, columns=COLUMNS) for p in paths], ignore_index=True)
+    df = read_pbp(paths, COLUMNS)
     df["game_date"] = df["game_date"].astype(str)
     return json.loads(df.to_json(orient="records"))
 
@@ -163,6 +167,8 @@ def main(argv: list[str] | None = None) -> int:
     for s, new in built.items():
         p = out_dir / f"{s}.json"
         olds[s] = json.loads(p.read_text()) if p.exists() else None
+        if olds[s] is None and fz.is_frozen_season(s) and any(out_dir.glob("*.json")):
+            fails.append(f"{s}: new file for a closed season")
         fails += [f"{s}:{g}" for g in check_frozen(olds[s], new, allowed, load_clock_override())]
     if fails:
         print(f"FAIL: published chart games would change: {', '.join(fails)}", file=sys.stderr)
