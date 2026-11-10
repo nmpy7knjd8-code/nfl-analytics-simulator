@@ -11,7 +11,7 @@ export default function OnThisDayPage() {
         <Header right="On this day" />
         <h1 className="st-h1">On this day</h1>
         <p className="st-sub">NFL games played on today&apos;s date in past seasons.</p>
-        <OnThisDay />
+        <OnThisDay all />
         <Trademark />
       </div>
     </main>

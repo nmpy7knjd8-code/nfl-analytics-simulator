@@ -35,3 +35,22 @@ export function games(d: OnThisDayDoc, key: string): DayGame[] {
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 export const dayLabel = (key: string): string => { const [m, d] = key.split("-").map(Number); return `${MONTHS[m - 1]} ${d}`; };
 export const scoreLine = (g: DayGame): string => `${g.away} ${g.awayScore}, ${g.home} ${g.homeScore}${g.ot ? " (OT)" : ""}`;
+
+/** When the list is capped, keep overtime games in the shown set (C5). Uncapped returns every game in the existing year-then-margin order. */
+export function shownGames(list: DayGame[], max?: number): DayGame[] {
+  if (max == null || !Number.isFinite(max) || max <= 0 || list.length <= max) return list.slice();
+  const head = list.slice(0, max);
+  const missingOt = list.filter((g) => g.ot && !head.includes(g));
+  if (!missingOt.length) return head;
+  const drop = new Set<DayGame>();
+  for (let i = head.length - 1; i >= 0 && drop.size < missingOt.length; i--) {
+    if (!head[i].ot) drop.add(head[i]);
+  }
+  return list.filter((g) => (head.includes(g) && !drop.has(g)) || missingOt.includes(g)).slice(0, max);
+}
+
+/** "Here are all 25." or "Here are 5 of 25." */
+export function listLabel(shown: number, total: number): string {
+  if (shown >= total) return `Here are all ${total}.`;
+  return `Here are ${shown} of ${total}.`;
+}
