@@ -149,8 +149,12 @@
 body.ios-play-active .ios-game .sg-rv{padding-bottom:calc(var(--ios-home-safe) + 8px)}
 @media (max-width:375px){.ios-game .sg-rv .sg-v{font-size:15px}.ios-game .sg-rv .sg-lbl{font-size:12px}.ios-game .sg-rv .sg-verdict{font-size:24px}}
 
-/* Play screen: question sits right above the field, and both sit right above the pinned choices (no dead gap). */
-.ios-game .ig-qs{margin-top:auto}
+/* Play screen: question and field sit 16px under the score bug; the choices pin to the bottom (above the footer and
+   safe area); any leftover space goes between the field and the choices. */
+.ios-game .ig-qs{margin-top:16px}
+/* The field wrapper grows (field stays 110px at its top), so it takes all free space and no auto margin
+   (the choices' or the footer's) gets any: choices + footer sit at the bottom. */
+.ios-game .ig-qs~.igf-wrap{flex:1 0 auto}
 .ios-game .ig-qs~.sg-btns{margin-top:0}
 
 /* Result: the conversion rate is text only (no slider-like track or knob). */

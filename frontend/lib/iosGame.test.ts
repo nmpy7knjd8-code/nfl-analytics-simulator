@@ -107,3 +107,9 @@ test("designer/critic round 2: 1st label, football, one orientation, lean result
   assert.match(sg, /encodeChallenge\(dayNo, picks\.map\(\(x\) => x\.pick\)\)/);
 });
 
+test("play layout: question 16px under the bug, field absorbs leftover space, choices pinned to the bottom", () => {
+  assert.match(css, /\.ios-game \.ig-qs\{margin-top:16px\}/);
+  assert.match(css, /\.ios-game \.ig-qs~\.igf-wrap\{flex:1 0 auto\}/);
+  assert.doesNotMatch(css, /\.ig-qs\{margin-top:auto\}|justify-content:center[^}]*\}\s*\/\* play/);
+});
+
