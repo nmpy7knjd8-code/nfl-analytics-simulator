@@ -9,7 +9,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "mining"))
 import _frozen as fz  # noqa: E402
-import seasons as S  # noqa: E402
+import seasons as mining_seasons  # noqa: E402
+import nfl_sim.seasons as S  # noqa: E402  (the real definitions; mining/seasons.py re-exports them)
+
+
+def test_mining_reexports_the_package_list():
+    for name in ("FIRST", "CLOSED_THROUGH", "OPEN", "CLOSED", "SEASONS", "CLOSED_SPAN", "SIZE_CAPS"):
+        assert getattr(mining_seasons, name) is getattr(S, name), name
+    assert mining_seasons.size_cap is S.size_cap
 
 
 def test_one_contiguous_season_list():
