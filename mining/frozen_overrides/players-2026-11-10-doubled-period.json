@@ -18,5 +18,5 @@
     "00-0039732|2024_17_DEN_CIN|4|00:14|DEN|pass",
     "00-0039732|2025_20_BUF_DEN|4|01:01|DEN|pass"
   ],
-  "approved_by": "PENDING HGIC"
+  "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges), Nov 10 2026 3:20 AM ET: #328 (data-audit suite + Jr../Sr.. desc fix in 9 QB player files, head 8b51148). Fill approved_by on players-2026-11-10-doubled-period.json with this line. Remove DO NOT MERGE and hand to Integration to squash-merge with all 4 checks green."
 }
