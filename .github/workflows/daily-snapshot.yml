@@ -28,8 +28,19 @@ jobs:
       - run: npx tsx scripts/snapshot-daily.ts
       - run: npx tsx scripts/snapshot-themes.ts
       - run: npx tsx scripts/check-theme-schedule.ts
+      # PRs opened with the default GITHUB_TOKEN don't start CI/Pages normally; a GitHub App token does.
+      # Scoped to this repo only, contents + pull-requests write only. Setup: SNAPSHOT_APP_ID + SNAPSHOT_APP_PRIVATE_KEY repo secrets (setup steps are in the PR that added this step).
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.SNAPSHOT_APP_ID }}
+          private-key: ${{ secrets.SNAPSHOT_APP_PRIVATE_KEY }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
       - uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ steps.app-token.outputs.token }}
           branch: chore/daily-snapshot
           base: main
           add-paths: |
