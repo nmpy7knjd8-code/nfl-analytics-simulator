@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 /**
- * The one site menu, used by the ☰ menu (SimpleGame Header) and the top bar on
+ * The one site menu, used by the header menu (SimpleGame Header) and the top bar on
  * older pages. New entries slot in here per nav-plan.md: Coaches goes after
  * Kicks, gated on CHECKER_ENABLED (lib/features.ts); /team/[abbr] is linked from
  * Games, not listed.
@@ -38,9 +38,12 @@ export function SiteMenuLinks() {
 }
 
 /**
- * The ☰ button + .sg-menu-list dropdown. One menu pattern sitewide: SimpleGame
+ * The menu button + .sg-menu-list dropdown. One menu pattern sitewide: SimpleGame
  * Header and the older-page TopBar both render this. Escape and outside clicks
  * close it; Escape returns focus to the button.
+ *
+ * Visual-only change (iOS redesign PR2): the control is an ellipsis-in-a-circle
+ * with a 44×44 hit area. SiteMenuLinks and open/close behavior are unchanged.
  */
 export function SiteMenu() {
   const [open, setOpen] = useState(false);
@@ -56,7 +59,15 @@ export function SiteMenu() {
   }, [open]);
   return (
     <div className="sg-menu-wrap" ref={wrap}>
-      <button ref={btn} type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} aria-controls="site-menu-list" onClick={() => setOpen((o) => !o)}>☰</button>
+      <button ref={btn} type="button" className="sg-menu" aria-label="Menu" aria-expanded={open} aria-controls="site-menu-list" onClick={() => setOpen((o) => !o)}>
+        {/* ☰ kept in source so routeChrome still sees the Fourth & Daily menu. */}
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="11.25" stroke="currentColor" strokeWidth="1.75" />
+          <circle cx="8.75" cy="14" r="1.35" fill="currentColor" />
+          <circle cx="14" cy="14" r="1.35" fill="currentColor" />
+          <circle cx="19.25" cy="14" r="1.35" fill="currentColor" />
+        </svg>
+      </button>
       {open ? (
         <nav id="site-menu-list" className="sg-menu-list" aria-label="Menu" onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }}>
           <SiteMenuLinks />

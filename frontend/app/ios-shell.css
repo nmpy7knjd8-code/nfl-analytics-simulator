@@ -1,13 +1,13 @@
 /*
-  Opt-in iOS app-shell styles.
+  iOS app-shell styles.
 
-  Classes in this file are unused by current routes. They are the shared
-  building blocks for later PRs (blurred top bar, bottom tab bar, cards).
+  Wired in PR2: IosTabBar (.ios-tabbar), large titles, inset grouped lists
+  (More / Explore / Today hub), cards, footer note. The blurred top bar
+  class remains available; .sg-top is restyled in simple-game.css.
 
   AppNav.tsx and SiteMenu.tsx belong to NFL Integration & Docs — this file
-  does not change their logic or selectors. Product UI owns .sg-app pages
-  (daily game, /fake-punt, /two-point, Hard mode); those keep their CSS
-  until a coordinated follow-up.
+  does not change their logic. Product UI owns .sg-app pages
+  (daily game, /fake-punt, /two-point, Hard mode).
 
   Use with tokens from frontend/app/tokens.css.
 */
@@ -54,7 +54,7 @@
   bottom: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--ios-tab-count, 4), minmax(0, 1fr));
   height: calc(var(--ios-tab-height) + var(--ios-home-safe));
   padding: 4px 8px var(--ios-home-safe);
   background: var(--ios-tab-background);
@@ -64,15 +64,15 @@
   font-family: var(--ios-font-text);
 }
 
-/* Bottom tab bar is a phone-width pattern. Above 700px it stays bottom-
-   aligned but is centered to the same column as the rest of the app shell. */
+/* Bottom tab bar is a phone-width pattern. */
 @media (min-width: 700px) {
   .ios-tabbar {
-    left: 50%;
-    right: auto;
-    width: min(100%, 56rem);
-    transform: translateX(-50%);
+    display: none;
   }
+}
+
+body.ios-play-active .ios-tabbar {
+  display: none;
 }
 
 .ios-tab {
@@ -81,7 +81,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: 2px;
-  min-height: var(--ios-touch);
+  min-height: 48px;
   padding-top: 4px;
   color: var(--ios-label-tertiary);
   font-size: var(--ios-text-caption-2);
@@ -140,6 +140,7 @@
   letter-spacing: var(--ios-tracking-large-title);
   line-height: var(--ios-leading-tight);
   color: var(--ios-label-primary);
+  margin: 0;
 }
 
 .ios-footer-note {
@@ -149,7 +150,6 @@
   text-align: center;
   color: var(--ios-label-tertiary);
 }
-
 
 .ios-headline {
   font-family: var(--ios-font-text);
@@ -183,8 +183,8 @@
   background: var(--ios-accent);
   color: var(--ios-label-on-accent);
   font-family: var(--ios-font-text);
-  font-size: var(--ios-text-headline);
-  font-weight: var(--ios-text-headline-weight);
+  font-size: 19px;
+  font-weight: var(--ios-weight-bold);
   letter-spacing: var(--ios-tracking-body);
   text-decoration: none;
   cursor: pointer;
@@ -193,6 +193,88 @@
 .ios-button-pill,
 .ios-button.ios-button-pill {
   border-radius: var(--ios-radius-full);
+}
+
+.ios-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+}
+
+.ios-tab-label {
+  font-size: 11px;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 360px) {
+  .ios-tab-label {
+    font-size: 10px;
+  }
+}
+
+.ios-list-row {
+  text-decoration: none;
+  gap: 0;
+}
+
+a.ios-list-row:hover,
+a.ios-list-row:focus-visible {
+  background: var(--ios-fill-secondary);
+}
+
+.ios-list-icon {
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+  background: var(--ios-accent);
+  color: var(--ios-label-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-right: 12px;
+}
+
+.ios-list-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ios-list-label {
+  font-size: var(--ios-text-body);
+  font-weight: var(--ios-weight-regular);
+  color: var(--ios-label-primary);
+}
+
+.ios-list-sub {
+  font-size: var(--ios-text-footnote);
+  color: var(--ios-label-secondary);
+  letter-spacing: var(--ios-tracking-body);
+}
+
+.ios-chevron {
+  margin-left: auto;
+  flex: none;
+  color: var(--ios-label-tertiary);
+}
+
+.ios-inset-grouped {
+  margin: 0 0 22px;
+}
+
+.ios-large-title.sg-today-title,
+.sg-today-title {
+  padding: 8px 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

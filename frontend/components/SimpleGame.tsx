@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SiteMenu } from "./SiteMenu";
-import type React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { IosChevron, IosGlyph } from "./IosGlyph";
+import { usePlayChrome } from "./usePlayChrome";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { RUN_PASS_4TH_1, runPassVerdict, showsRunPassBonus, type Guess } from "../lib/runPass";
 import { shieldStreak } from "../lib/shields";
 import {
@@ -14,7 +16,7 @@ import { addCoachDay, coachTally, entryFor, loadCoach, saveCoach, type CoachEntr
 import { gameFileUrl, isGameFileV2 } from "../lib/gameFileV2";
 import type { QuizChoice } from "../lib/quiz";
 import {
-  CHOICE_LABEL, RESULT_GLYPH, RESULT_TITLE, bestCallText, coachCallText, isGoalToGo, kickTooFar, optionTags,
+  CHOICE_LABEL, RESULT_GLYPH, RESULT_TITLE, bestCallText, coachCallText, flagText, isGoalToGo, kickTooFar, optionTags,
   outcomeFromGame, plainShare, situationLine, situationSentence, tappable, type Outcome,
 } from "../lib/simpleGame";
 import { teamNickname } from "../lib/teams";
@@ -35,21 +37,75 @@ const nick = (a: string) => teamNickname(a);
 type Load = { state: "loading" } | { state: "error" } | { state: "ready"; outcomes: (Outcome | null)[] };
 export type Pick = { pick: QuizChoice; scored: ScoredCall };
 
-export function Header({ right }: { right: string }) {
+const BACK_ICON = (
+  <svg width="12" height="22" viewBox="0 0 12 22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 2 2 11l8 9" /></svg>
+);
+
+export function Header({ right, onBack, backHref, showMenu = true }: { right: string; onBack?: () => void; backHref?: string; showMenu?: boolean }) {
+  const playChrome = Boolean(onBack || backHref);
   return (
-    <header className="sg-top">
+    <header className={playChrome ? "sg-top sg-top-play" : "sg-top"}>
+      <div className="sg-top-l">
+        {onBack ? (
+          <button type="button" className="sg-back" aria-label="Back" onClick={onBack}>{BACK_ICON}</button>
+        ) : backHref ? (
+          <Link href={backHref} className="sg-back" aria-label="Back">{BACK_ICON}</Link>
+        ) : null}
+      </div>
       <Link href="/" className="sg-brand">Fourth{" "}<span>&amp;</span>{" "}Daily</Link>
+      {right ? <span className={playChrome ? "sg-play-title" : "sg-count"}>{right}</span> : null}
       <div className="sg-top-r">
-        <span className="sg-count">{right}</span>
-        <SiteMenu />
+        {showMenu ? <SiteMenu /> : null}
       </div>
     </header>
+  );
+}
+
+function formatHubDate(key: string): string {
+  const [y, m, d] = key.split("-").map(Number);
+  const dt = new Date(y, (m ?? 1) - 1, d ?? 1);
+  return dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+}
+
+function TodayHub({ dayKey, item, onStart }: { dayKey: string; item: DailyItem; onStart: () => void }) {
+  const nick = teamNickname(item.situation.posteam);
+  return (
+    <div className="sg-app">
+      <Header right="" />
+      <h1 className="ios-large-title sg-today-title">Today</h1>
+      <p className="sg-today-date">{formatHubDate(dayKey)}</p>
+      <section className="ios-card sg-today-card" aria-label="Today's 4th downs">
+        <p className="sg-today-kicker">Five real 4th downs</p>
+        <ScoreBug item={item} />
+        <p className="sg-today-sit">{nick} ball · {flagText(item)}.</p>
+        <button type="button" className="sg-today-go" onClick={onStart}>Make the call</button>
+      </section>
+      <ul className="ios-list sg-today-list">
+        <li>
+          <Link href="/practice/" className="ios-list-row">
+            <IosGlyph name="practice" />
+            <span className="ios-list-text"><span className="ios-list-label">Practice</span></span>
+            <IosChevron />
+          </Link>
+        </li>
+        <li>
+          <Link href="/daily/stats/" className="ios-list-row">
+            <IosGlyph name="stats" />
+            <span className="ios-list-text"><span className="ios-list-label">Your stats</span></span>
+            <IosChevron />
+          </Link>
+        </li>
+      </ul>
+      <Trademark />
+    </div>
   );
 }
 
 export const Trademark = () => <p className="sg-tm-note">Team names and logos are trademarks of the NFL and its teams. Not affiliated.</p>;
 
 export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) {
+  const router = useRouter();
+  const [started, setStarted] = useState(mode !== "daily");
   const [key, setKey] = useState<string | null>(null);
   const [seed, setSeed] = useState("0");
   useEffect(() => { setKey(dateKey()); setSeed(String(Date.now())); }, []);
@@ -104,6 +160,8 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
   }, [key, items, attempt]);
 
   const done = items.length > 0 && picks.length === items.length && idx >= items.length;
+  const inPlay = (mode === "practice" || started) && !done && !(already && picks.length === 0) && load.state === "ready" && items.length > 0;
+  usePlayChrome(inPlay);
   useEffect(() => {
     if (!done || key == null) return;
     const credit = picks.reduce((a, p) => a + p.scored.credit, 0);
@@ -250,16 +308,22 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
     );
   }
 
+  if (mode === "daily" && !started && load.state === "ready") {
+    return <TodayHub dayKey={key!} item={items[0]} onStart={() => setStarted(true)} />;
+  }
+
   const it = items[idx];
   const p = picks[idx];
   const counter = mode === "daily" ? `Play ${idx + 1} of ${n}` : `Practice · ${idx + 1} of ${n}`;
+  const onPlayBack = mode === "daily" ? () => setStarted(false) : () => router.push("/");
+  const playHeader = <Header right={counter} onBack={onPlayBack} />;
   const banner = dare.kind === "bad" && idx === 0
     ? <p className="sg-dare-bad" role="status">This challenge link doesn&apos;t work. Play today&apos;s five instead.</p>
     : dare.kind === "ok" && idx === 0 ? <p className="sg-dare-ok" role="status">A friend challenged you. Their picks show after you finish.</p> : null;
   if (!p && isHard && pending != null) {
     return (
       <div className="sg-app">
-        <Header right={counter} />
+        {playHeader}
         <p className="sg-lbl">Hard mode</p>
         <p className="sg-conf-sit">{situationLine(it)}</p>
         <h1 className="sg-sent sg-conf-q">How sure are you about <b>{CHOICE_LABEL[pending]}</b>?</h1>
@@ -271,12 +335,12 @@ export function SimpleGame({ mode = "daily" }: { mode?: "daily" | "practice" }) 
       </div>
     );
   }
-  if (!p) return <QuestionScreen item={it} header={<Header right={counter} />} extra={banner} onPick={choose} />;
+  if (!p) return <QuestionScreen item={it} header={playHeader} extra={banner} onPick={choose} />;
   if (showsRunPassBonus(p.pick, it.situation.distance, isGoalToGo(it)) && !bonusSeen.includes(idx)) {
-    return <RunOrPass header={<Header right={counter} />} onDone={() => setBonusSeen((b) => [...b, idx])} />;
+    return <RunOrPass header={playHeader} onDone={() => setBonusSeen((b) => [...b, idx])} />;
   }
   return (
-    <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={<Header right={counter} />}
+    <RevealScreen item={it} pick={p} outcome={outcomes[idx]} header={playHeader}
       nextLabel={idx + 1 < n ? "Next play" : "See your score"} onNext={() => setIdx(idx + 1)} />
   );
 }
