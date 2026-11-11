@@ -1822,6 +1822,21 @@ body { font-variant-numeric: tabular-nums; }
 .hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
 .hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
 .hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
+
+/* D6 engine layer (flag-gated). Series: accent blue + gray only; no team colors, no orange. */
+.hm-engine{background:var(--ios-background-secondary);color:var(--ios-label-primary);box-shadow:var(--ios-shadow-card);display:grid;gap:var(--ios-space-3);text-align:left}
+.hm-engine-row{display:grid;gap:var(--ios-space-1)}
+.hm-engine-lab{display:flex;align-items:baseline;justify-content:space-between;gap:var(--ios-space-2)}
+.hm-engine-name{font-size:var(--ios-text-caption-1);line-height:var(--ios-leading-body);color:var(--ios-label-secondary)}
+.hm-engine-val{font-size:var(--ios-text-headline);font-weight:600;font-variant-numeric:tabular-nums;color:var(--ios-label-primary);letter-spacing:var(--ios-tracking-body)}
+.hm-engine-track{height:8px;border-radius:var(--ios-radius-full);background:var(--ios-fill-tertiary);overflow:hidden}
+.hm-engine-fill{height:100%;border-radius:var(--ios-radius-full);transform-origin:left center;transition:width var(--ios-duration) var(--ios-ease)}
+.hm-engine-row.is-model .hm-engine-fill{background:var(--ios-accent)}
+.hm-engine-row.is-teams .hm-engine-fill{background:var(--ios-label-secondary)}
+.hm-engine-summary{margin:0;font-size:var(--ios-text-footnote);line-height:var(--ios-leading-body);color:var(--ios-label-primary)}
+@media (prefers-reduced-motion:reduce){
+  .hm-engine-fill{transition:none}
+}
 .oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
 /* —— E3 match the chart —— */
 .mc-charts{display:flex;flex-direction:column;gap:10px}
