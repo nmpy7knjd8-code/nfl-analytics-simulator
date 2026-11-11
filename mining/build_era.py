@@ -1,6 +1,6 @@
 """Build data/site/era.json (schema era/v1) for F4 Era chart: 4th-down go-for-it rate by season x field zone.
 
-Source: nflverse play-by-play 2019-2025 (REG + POST). Counts only; no win chance involved.
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG + POST). Counts only; no win chance involved.
 
 Filter (shape agreed with NFL Charts UI, /workspace/nfl-research/charts/f4-data-shape.md):
   * down == 4, play_type in run, pass, punt, field_goal, yardline_100 not null;

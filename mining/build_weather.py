@@ -1,6 +1,6 @@
 """Build data/site/weather.json for G6 Weather badge (Game Story header).
 
-Source: nflverse play-by-play 2019-2025 (REG+POST): game-level roof, temp (F), wind (mph), final scores.
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG+POST): game-level roof, temp (F), wind (mph), final scores.
 A game gets weather only when nflverse roof is "outdoors" or "open" and both temp and wind are present; dome,
 closed-roof and missing-weather games are absent from ``games``; dome/closed-roof games are listed in
 ``indoors`` (nflverse roof) so the badge can say "Indoors". 2022_17_BUF_CIN (suspended) is left out.

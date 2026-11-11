@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import SEASONS, size_cap  # noqa: E402
 _spec = importlib.util.spec_from_file_location("build_team_garbage_time", ROOT / "mining/build_team_garbage_time.py")
 gt = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(gt)
@@ -69,7 +72,7 @@ def test_frozen_numbers():
 
 def test_site_file_matches_redzone_and_is_clean():
     site, redz = json.loads(SITE.read_text()), json.loads(REDZONE.read_text())
-    assert site["stub"] is False and site["season_list"] == list(range(2019, 2026))
+    assert site["stub"] is False and site["season_list"] == list(SEASONS)
     assert {t["team"]: t["rz"][:2] for t in site["all"]["teams"]} == {t["team"]: [t["drives"], t["td"]] for t in redz["teams"]}
     for y, s in redz["by_season"].items():
         assert {t["team"]: t["rz"][:2] for t in site["by_season"][y]["all"]["teams"]} == \
@@ -88,7 +91,7 @@ def test_site_file_matches_redzone_and_is_clean():
             [walk(v) for v in o]
     walk(site)
     assert not [k for k in keys if BANNED_KEY.search(k)]
-    assert SITE.stat().st_size < 60_000
+    assert SITE.stat().st_size < size_cap("frontend/lib/teamGarbageTime.json")
 
 
 def test_rz_fg_and_no_score_appended():

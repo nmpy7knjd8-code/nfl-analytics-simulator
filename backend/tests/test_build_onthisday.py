@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_onthisday", ROOT / "mining/build_onthisday.py")
 bo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bo)
@@ -46,7 +49,7 @@ def test_committed_file():
         t = (date(2024, *map(int, k.split("-"))) + timedelta(off)).strftime("%m-%d")
         assert t in d["days"] and off != 0
     assert not [k for k in set(d) | set(d["cols"]) if BANNED.search(k)]
-    assert FILE.stat().st_size < 80_000
+    assert FILE.stat().st_size < size_cap("data/site/onthisday.json")
 
 
 def test_frozen():

@@ -1,6 +1,6 @@
 """Build data/site/goalline.json for C4 Goal-line stand badge (NFL Stories UI; badge only, no collection page).
 
-Source: nflverse play-by-play 2019-2025 (REG+POST). A try is down == 4, yardline_100 == 1, play_type run or
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG+POST). A try is down == 4, yardline_100 == 1, play_type run or
 pass; a stand (stop) is a try with nflverse touchdown == 0 (spec rule; verify_out.txt: 100 stops). The badge
 finds its play by game_id + quarter + clock + offense, never by play id. ``rates`` are the popover numbers:
 went-for-it share of all 4th-and-goal-at-the-1 snaps (run, pass, field goal; verify_out: 229 of 255), TD rate

@@ -1,6 +1,6 @@
 """Build data/site/fg_rates.json (schema fg_rates/v2) for A4 Kick bands.
 
-Source: nflverse play-by-play 2019-2025. Counts only; nothing is modelled.
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025). Counts only; nothing is modelled.
 
 Filter (matches the shape agreed with NFL Charts UI, /workspace/nfl-research/charts/a4-data-shape.md):
   * play_type == "field_goal" with a kick_distance (every nflverse field_goal_attempt row);

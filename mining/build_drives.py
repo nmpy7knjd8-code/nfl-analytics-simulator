@@ -1,6 +1,6 @@
 """Build data/site/drives/{season}.json for F7 drive strips (play-feed drive headers, NFL Charts UI).
 
-Source: nflverse play-by-play 2019-2025 (REG+POST). One entry per nflverse drive (fixed_drive) that has at
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG+POST). One entry per nflverse drive (fixed_drive) that has at
 least one snap, in game order. Each drive: offense, start quarter and clock (nflverse drive_quarter_start /
 drive_game_clock_start), net yards (nflverse ydsnet), result (nflverse fixed_drive_result) and one tile per
 snap (run, pass, punt, field goal, kneel, spike; nflverse row order) shaded by the play's own outcome, never

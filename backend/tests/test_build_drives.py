@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_drives", ROOT / "mining/build_drives.py")
 bd = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bd)
@@ -42,7 +45,7 @@ def test_committed_files():
     n = 0
     for f in sorted(DIR.glob("*.json")):
         d = json.loads(f.read_text())
-        assert d["schema"] == "drives/v1" and f.stat().st_size < 180_000
+        assert d["schema"] == "drives/v1" and f.stat().st_size < size_cap(f"data/site/drives/{f.name}")
         assert not [k for k in set(d) | set(d["cols"]) if BANNED.search(k)]
         for gid, drives in d["games"].items():
             assert gid != "2022_17_BUF_CIN" and drives

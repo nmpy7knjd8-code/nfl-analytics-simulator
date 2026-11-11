@@ -17,10 +17,14 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
-FROZEN_THROUGH = 2025
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from seasons import CLOSED_THROUGH  # noqa: E402
+
+FROZEN_THROUGH = CLOSED_THROUGH  # the shared season list (mining/seasons.py)
 WATERMARKS = Path(__file__).resolve().parent / "frozen_watermarks.json"
 # columns read_pbp() needs to decide whether a game is finished (dropped again before the builder sees them)
 FINISH_COLUMNS = ("game_id", "home_score", "desc", "qtr", "quarter_end", "total_home_score", "total_away_score",

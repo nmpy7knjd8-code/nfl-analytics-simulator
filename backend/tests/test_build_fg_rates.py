@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import SEASONS, season_keys, size_cap  # noqa: E402
 _spec = importlib.util.spec_from_file_location("build_fg_rates", ROOT / "mining/build_fg_rates.py")
 fr = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(fr)
@@ -51,7 +54,7 @@ def test_counts_match_nflverse_and_committed_file(built):
 def test_committed_all_is_sum_of_seasons():
     site = json.loads(SITE.read_text())
     seasons = [k for k in site["yards"] if k != "all"]
-    assert seasons == [str(y) for y in range(2019, 2026)]
+    assert seasons == season_keys()
     for i in range(47):
         assert site["yards"]["all"][i] == [sum(site["yards"][k][i][j] for k in seasons) for j in (0, 1)]
     # 2019-2025: 7,627 field goal tries, 18 over 64 yd left out
@@ -114,12 +117,12 @@ def test_frozen_change_exits_nonzero_and_writes_nothing(tmp_path, built, monkeyp
 def test_committed_file_small_clean_and_shape():
     text = SITE.read_text()
     data = json.loads(text)
-    assert SITE.stat().st_size < 6_000
+    assert SITE.stat().st_size < size_cap("data/site/fg_rates.json")
     assert not BANNED.search(text)
     assert set(data) == {"schema", "source", "builtAt", "dataThrough", "seasons", "minYards", "maxYards",
                          "fewKicksBelow", "smoothYards", "bands", "yards"}
     assert data["schema"] == "fg_rates/v2" and (data["minYards"], data["maxYards"], data["smoothYards"]) == (18, 64, 2)
-    assert data["seasons"] == list(range(2019, 2026))
+    assert data["seasons"] == list(SEASONS)
     assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", data["builtAt"])
     for counts in data["yards"].values():
         assert len(counts) == 47 and all(0 <= m <= t for t, m in counts)

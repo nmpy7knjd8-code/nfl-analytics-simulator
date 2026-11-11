@@ -4,7 +4,7 @@ Outputs (spec: nfl-research/teams/g5-json-shape.md):
   frontend/lib/qbIndex.json                    small index (generateStaticParams + /player list)
   frontend/public/data/players/<gsis_id>.json  one lazy file per QB
 
-Who is a QB: any nflverse gsis_id listed at position QB on an nflverse weekly roster 2019-2025 who has
+Who is a QB: any nflverse gsis_id listed at position QB on an nflverse weekly roster (seasons: mining/seasons.py) who has
 at least one swing. Names come from nflverse players (display_name), never the abbreviated pbp names.
 
 A swing (same rule as mining/build_swings.py, C2/C3): regulation only (qtr 1-4, no overtime), a run or
