@@ -6,6 +6,7 @@ import { teamNickname } from "../../../lib/teams";
 import { TeamLogo } from "../../../components/TeamLogo";
 import { Header, Trademark } from "../../../components/SimpleGame";
 import { SEASONS, allPairs, canonicalPair, reversePairs, rivalry, seriesLine, stripColors } from "../../../lib/rivalries";
+import { seasonCoverageText, seasonEnds } from "../../../lib/seasons";
 import { PairRedirect } from "./PairRedirect";
 import "../rivalry.css";
 
@@ -31,6 +32,8 @@ export default async function RivalryPage({ params }: Props) {
   const r = rivalry(pair);
   if (!r) notFound();
   const name = teamNickname;
+  const coverage = seasonCoverageText(SEASONS);
+  const ends = coverage.includes("–") ? seasonEnds(SEASONS) : null;
   const [ca, cb] = stripColors(r.a, r.b);
   return (
     <main id="main">
@@ -43,7 +46,7 @@ export default async function RivalryPage({ params }: Props) {
         </header>
         <h1 className="rv-h1">{seriesLine(r, name)}</h1>
         <p className="rv-sub">
-          <span className="rv-nb">{r.meetings.length} {r.meetings.length === 1 ? "meeting" : "meetings"}, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]}</span>
+          <span className="rv-nb">{r.meetings.length} {r.meetings.length === 1 ? "meeting" : "meetings"}, {ends ? <>{ends[0]}–{ends[1]}</> : coverage}</span>
         </p>
         <p className="rv-sub rv-pts">
           Score: <span className="rv-nb">{name(r.a)} {r.aPts}</span> · <span className="rv-nb">{name(r.b)} {r.bPts}</span>
@@ -72,7 +75,7 @@ export default async function RivalryPage({ params }: Props) {
           })}
         </ol>
         <p className="rv-note">
-          Regular season and playoffs, newest first.{r.a === "LV" || r.b === "LV" ? " Raiders games from 2019 (Oakland) count as Las Vegas." : ""} Data: nflverse schedules, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]}.
+          Regular season and playoffs, newest first.{r.a === "LV" || r.b === "LV" ? " Raiders games from 2019 (Oakland) count as Las Vegas." : ""} Data: nflverse schedules, {ends ? <>{ends[0]}–{ends[1]}</> : coverage}.
         </p>
         <p className="rv-more"><Link href={`/team/${r.a}/`}>{name(r.a)} team page</Link> · <Link href={`/team/${r.b}/`}>{name(r.b)} team page</Link></p>
         <Trademark />

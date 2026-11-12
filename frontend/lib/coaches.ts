@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { COACHES_DIR, coachSeasons } from "./seasons";
 
 /** Ported from closed PR #59. Engine-derived: pages render only when CHECKER_ENABLED is true. */
 
@@ -67,11 +68,13 @@ export type CoachSeason = {
   coaches: Coach[];
 };
 
-export const SEASONS = [2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
-export const LATEST_SEASON = SEASONS[SEASONS.length - 1];
+const DIR = COACHES_DIR;
+const seasons = coachSeasons();
+export const SEASONS = seasons;
+const latest = seasons.at(-1);
+if (latest == null) throw new Error("public/data/coaches has no YYYY.json season files");
+export const LATEST_SEASON = latest;
 export const MIN_CALLS = 20;
-
-const DIR = path.join(process.cwd(), "public", "data", "coaches");
 
 export function readSeason(season: number): CoachSeason {
   return JSON.parse(fs.readFileSync(path.join(DIR, `${season}.json`), "utf8")) as CoachSeason;

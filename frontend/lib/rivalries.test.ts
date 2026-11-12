@@ -1,7 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { allGames, allPairs, pairKey, rivalry, seriesLine } from "./rivalries";
+import { SEASONS, allGames, allPairs, pairKey, rivalry, seriesLine } from "./rivalries";
+import { gameSeasons, seasonCoverageText } from "./seasons";
+
+test("rivalry seasons follow the game files", () => {
+  assert.deepEqual([...SEASONS], gameSeasons());
+  assert.equal(seasonCoverageText(SEASONS), "2019–2025");
+});
 
 test("every game lands in exactly one pair and pair counts add up", () => {
   const n = allPairs().reduce((s, k) => s + rivalry(k)!.meetings.length, 0);

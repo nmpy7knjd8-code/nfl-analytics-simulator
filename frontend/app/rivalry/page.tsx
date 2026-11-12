@@ -4,7 +4,8 @@ import colors from "../../lib/teamColors.json";
 import { teamNickname } from "../../lib/teams";
 import { TeamLogo } from "../../components/TeamLogo";
 import { Header, Trademark } from "../../components/SimpleGame";
-import { allPairs, teamRivals } from "../../lib/rivalries";
+import { SEASONS, allPairs, teamRivals } from "../../lib/rivalries";
+import { seasonCoverageText } from "../../lib/seasons";
 import "../section-index.css";
 
 export const metadata: Metadata = { title: "Rivalries · Fourth & Daily" };
@@ -18,7 +19,7 @@ export default function RivalriesIndex() {
       <div className="sg-app ix">
         <Header right="Rivalries" />
         <h1 className="ix-title">Rivalries</h1>
-        <p className="ix-sub">{allPairs().length} matchups, 2019–2025. Open a team to see every opponent it played, most meetings first.</p>
+        <p className="ix-sub">{allPairs().length} matchups, {seasonCoverageText(SEASONS)}. Open a team to see every opponent it played, most meetings first.</p>
         <div className="ix-list">
           {ABBRS.map((a) => {
             const rivals = teamRivals(a);

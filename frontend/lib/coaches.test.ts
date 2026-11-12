@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { SEASONS, readSeason, gradeCell, wentWhenShould, regulationOnly, coachHref, signedPts, MIN_CALLS } from "./coaches";
+import { LATEST_SEASON, SEASONS, readSeason, gradeCell, wentWhenShould, regulationOnly, coachHref, signedPts, MIN_CALLS } from "./coaches";
+import { coachSeasons, seasonRangeText } from "./seasons";
+
+test("coach seasons follow the coach files, latest last", () => {
+  assert.deepEqual([...SEASONS], coachSeasons());
+  assert.equal(LATEST_SEASON, SEASONS.at(-1));
+  assert.equal(seasonRangeText(SEASONS), "2019–2025");
+});
 
 test("every season file is coaches.v1.2 with min 20 calls", () => {
   for (const s of SEASONS) {

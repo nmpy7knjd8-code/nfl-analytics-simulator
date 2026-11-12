@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  SEASONS, finalScore, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonIndexUrl, weeksOf,
+  finalScore, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonIndexUrl, weeksOf,
   type IndexGame,
 } from "../lib/gamePicker";
 import { TeamLogo } from "./TeamLogo";
@@ -25,8 +25,8 @@ function GameRow({ g, current, sub, onPick }: { g: IndexGame; current: boolean; 
 }
 
 /** Season → week → game, with a quick team search over the chosen season. Lives inside the feed card. */
-export function GamePicker({ currentId, startSeason, onPick, onClose }: {
-  currentId: string; startSeason: number; onPick: (id: string) => void; onClose: () => void;
+export function GamePicker({ currentId, startSeason, seasons, onPick, onClose }: {
+  currentId: string; startSeason: number; seasons: readonly number[]; onPick: (id: string) => void; onClose: () => void;
 }) {
   const [season, setSeason] = useState(startSeason);
   const [week, setWeek] = useState<number | null>(null);
@@ -59,7 +59,7 @@ export function GamePicker({ currentId, startSeason, onPick, onClose }: {
     if (step === "season")
       return (
         <div className="gp-grid gp-grid-2">
-          {SEASONS.map((s) => (
+          {seasons.map((s) => (
             <button key={s} type="button" className={`gp-cell${s === season ? " is-on" : ""}`} aria-pressed={s === season}
               onClick={() => { setSeason(s); setWeek(null); setStep("week"); }}>{s}</button>
           ))}
