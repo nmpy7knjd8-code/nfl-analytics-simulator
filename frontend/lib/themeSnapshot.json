@@ -292,6 +292,66 @@
      ]
     }
    }
+  },
+  "2026-11-12": {
+   "theme": "marathon",
+   "items": {
+    "2022_06_JAX_IND-1030": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.242749,
+      "punt": 0.153867,
+      "fg": 0.222419
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_15_PHI_CHI-3519": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.716985,
+      "punt": 0.670163,
+      "fg": 0.750058
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_15_CHI_CLE-1730": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.172422,
+      "punt": 0.11063,
+      "fg": 0.1576
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_17_ARI_PHI-479": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.671385,
+      "punt": 0.573688,
+      "fg": 0.678796
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2022_06_TB_PIT-3790": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.175861,
+      "punt": 0.053986,
+      "fg": 0.119897
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
