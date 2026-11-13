@@ -1044,6 +1044,61 @@
      "go"
     ]
    }
+  },
+  "2026-11-14": {
+   "2023_12_PIT_CIN-3437": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.93679,
+     "punt": 0.900969,
+     "fg": 0.958627
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_03_LA_CIN-1333": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.68711,
+     "punt": 0.588009,
+     "fg": 0.661933
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "anchor-bal-nyj": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.583433,
+     "punt": 0.557109
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_07_WAS_NYG-1216": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.277481,
+     "punt": 0.318586
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_03_LA_ARI-375": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.675449,
+     "punt": 0.587913,
+     "fg": 0.648194
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }
