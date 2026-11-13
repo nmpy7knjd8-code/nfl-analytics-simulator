@@ -991,6 +991,59 @@
      "go"
     ]
    }
+  },
+  "2026-11-13": {
+   "2022_06_CAR_LA-1643": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.384966,
+     "punt": 0.333484
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_10_SEA_TB-132": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.337825,
+     "punt": 0.370374
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_02_MIA_BAL-3484": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.832322,
+     "punt": 0.860512
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_08_NO_IND-125": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.378178,
+     "punt": 0.402299
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2022_06_TB_PIT-777": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.283421,
+     "punt": 0.208052,
+     "fg": 0.255113
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }
