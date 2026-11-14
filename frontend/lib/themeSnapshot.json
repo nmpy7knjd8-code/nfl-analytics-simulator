@@ -352,6 +352,64 @@
      ]
     }
    }
+  },
+  "2026-11-14": {
+   "theme": "playoffs",
+   "items": {
+    "2023_19_GB_DAL-4382": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.951301,
+      "punt": 0.952225,
+      "fg": 0.950994
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_19_LA_DET-2747": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.657826,
+      "punt": 0.673256
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_20_TB_DET-3819": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.043672,
+      "punt": 0.0477961
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_20_CIN_BUF-3317": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.966448,
+      "punt": 0.93917,
+      "fg": 0.960872
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_19_NYG_MIN-3208": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.632373,
+      "punt": 0.482473,
+      "fg": 0.595723
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
