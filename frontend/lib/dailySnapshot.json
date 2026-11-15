@@ -1099,6 +1099,61 @@
      "go"
     ]
    }
+  },
+  "2026-11-15": {
+   "2022_07_GB_WAS-806": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.454444,
+     "punt": 0.349113,
+     "fg": 0.41621
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_15_CHI_CLE-4679": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.602126,
+     "punt": 0.447379,
+     "fg": 0.74291
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_04_ATL_JAX-3157": {
+    "recommendation": "fg",
+    "values": {
+     "go": 0.9269,
+     "punt": 0.906713,
+     "fg": 0.93706
+    },
+    "best": [
+     "fg"
+    ]
+   },
+   "2023_01_LV_DEN-1653": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.603177,
+     "punt": 0.541418
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_13_MIA_WAS-522": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.178715,
+     "punt": 0.208924
+    },
+    "best": [
+     "punt"
+    ]
+   }
   }
  }
 }
