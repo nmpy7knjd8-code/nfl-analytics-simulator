@@ -1154,6 +1154,61 @@
      "punt"
     ]
    }
+  },
+  "2026-11-16": {
+   "2022_16_LAC_IND-2680": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.16128,
+     "punt": 0.0794012,
+     "fg": 0.128912
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2022_13_GB_CHI-996": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.327402,
+     "punt": 0.231918,
+     "fg": 0.29233
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_05_DAL_SF-406": {
+    "recommendation": "punt",
+    "values": {
+     "go": 0.311208,
+     "punt": 0.34092
+    },
+    "best": [
+     "punt"
+    ]
+   },
+   "2023_15_HOU_TEN-1865": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.109858,
+     "punt": 0.0539171,
+     "fg": 0.0769674
+    },
+    "best": [
+     "go"
+    ]
+   },
+   "2023_03_NE_NYJ-4157": {
+    "recommendation": "go",
+    "values": {
+     "go": 0.0867196,
+     "punt": 0.0657283
+    },
+    "best": [
+     "go"
+    ]
+   }
   }
  }
 }
