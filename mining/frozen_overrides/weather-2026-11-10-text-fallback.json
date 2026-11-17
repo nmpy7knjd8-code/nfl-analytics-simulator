@@ -1,0 +1,284 @@
+{
+  "file": "data/site/weather.json",
+  "rule": "text_fallback",
+  "reason": "W4 (Data & Models, 2026-11-10): 162 open-air games have empty nflverse numeric temp and wind. Fill 154 of them from the play-by-play weather text via mining/_weather_text.py. The existing 1,199 game values stay byte-identical; band game-counts and averages may change only for the listed cells, and only because those 154 games are added. Leave blank: roof-conflict 2023_02_GB_ATL and 2023_02_IND_HOU (open roof, text says Indoors) and the 6 games with no usable text (2019_02_PHI_ATL, 2019_07_LA_ATL, 2019_08_SEA_ATL, 2023_02_NYJ_DAL, 2023_03_DAL_ARI, 2025_11_WAS_MIA).",
+  "games": [
+    "2019_03_BAL_KC",
+    "2019_07_HOU_IND",
+    "2019_08_DEN_IND",
+    "2019_17_IND_JAX",
+    "2019_19_HOU_KC",
+    "2019_20_TEN_KC",
+    "2019_21_SF_KC",
+    "2021_01_PHI_ATL",
+    "2021_03_PHI_DAL",
+    "2021_04_WAS_ATL",
+    "2021_06_HOU_IND",
+    "2021_08_CAR_ATL",
+    "2021_08_GB_ARI",
+    "2021_08_TEN_IND",
+    "2021_14_LA_ARI",
+    "2021_14_SEA_HOU",
+    "2021_16_DET_ATL",
+    "2021_18_SEA_ARI",
+    "2022_01_BAL_NYJ",
+    "2022_01_CLE_CAR",
+    "2022_01_DEN_SEA",
+    "2022_01_JAX_WAS",
+    "2022_01_NE_MIA",
+    "2022_01_NYG_TEN",
+    "2022_01_PIT_CIN",
+    "2022_01_SF_CHI",
+    "2022_02_CAR_NYG",
+    "2022_02_CHI_GB",
+    "2022_02_HOU_DEN",
+    "2022_02_IND_JAX",
+    "2022_02_LAC_KC",
+    "2022_02_MIA_BAL",
+    "2022_02_MIN_PHI",
+    "2022_02_NE_PIT",
+    "2022_02_NYJ_CLE",
+    "2022_02_SEA_SF",
+    "2022_02_TEN_BUF",
+    "2022_03_ATL_SEA",
+    "2022_03_BAL_NE",
+    "2022_03_BUF_MIA",
+    "2022_03_CIN_NYJ",
+    "2022_03_DAL_NYG",
+    "2022_03_GB_TB",
+    "2022_03_HOU_CHI",
+    "2022_03_KC_IND",
+    "2022_03_LV_TEN",
+    "2022_03_NO_CAR",
+    "2022_03_PHI_WAS",
+    "2022_03_PIT_CLE",
+    "2022_03_SF_DEN",
+    "2022_04_ARI_CAR",
+    "2022_04_BUF_BAL",
+    "2022_04_CHI_NYG",
+    "2022_04_CLE_ATL",
+    "2022_04_JAX_PHI",
+    "2022_04_KC_TB",
+    "2022_04_LA_SF",
+    "2022_04_MIA_CIN",
+    "2022_04_MIN_NO",
+    "2022_04_NE_GB",
+    "2022_04_NYJ_PIT",
+    "2022_04_TEN_IND",
+    "2022_05_ATL_TB",
+    "2022_05_CIN_BAL",
+    "2022_05_DET_NE",
+    "2022_05_HOU_JAX",
+    "2022_05_IND_DEN",
+    "2022_05_LAC_CLE",
+    "2022_05_LV_KC",
+    "2022_05_MIA_NYJ",
+    "2022_05_NYG_GB",
+    "2022_05_PIT_BUF",
+    "2022_05_SF_CAR",
+    "2022_05_TEN_WAS",
+    "2022_06_ARI_SEA",
+    "2022_06_BAL_NYG",
+    "2022_06_BUF_KC",
+    "2022_06_DAL_PHI",
+    "2022_06_JAX_IND",
+    "2022_06_MIN_MIA",
+    "2022_06_NE_CLE",
+    "2022_06_NYJ_GB",
+    "2022_06_SF_ATL",
+    "2022_06_TB_PIT",
+    "2022_06_WAS_CHI",
+    "2022_07_ATL_CIN",
+    "2022_07_CHI_NE",
+    "2022_07_CLE_BAL",
+    "2022_07_GB_WAS",
+    "2022_07_IND_TEN",
+    "2022_07_KC_SF",
+    "2022_07_NO_ARI",
+    "2022_07_NYG_JAX",
+    "2022_07_NYJ_DEN",
+    "2022_07_PIT_MIA",
+    "2022_07_TB_CAR",
+    "2022_08_BAL_TB",
+    "2022_08_CHI_DAL",
+    "2022_08_DEN_JAX",
+    "2022_08_GB_BUF",
+    "2022_08_NE_NYJ",
+    "2022_08_NYG_SEA",
+    "2022_08_PIT_PHI",
+    "2022_09_LAC_ATL",
+    "2022_09_SEA_ARI",
+    "2022_10_SEA_TB",
+    "2022_11_SF_ARI",
+    "2022_15_SF_SEA",
+    "2022_16_TB_ARI",
+    "2023_01_ARI_WAS",
+    "2023_01_BUF_NYJ",
+    "2023_01_CIN_CLE",
+    "2023_01_DAL_NYG",
+    "2023_01_DET_KC",
+    "2023_01_GB_CHI",
+    "2023_01_HOU_BAL",
+    "2023_01_LA_SEA",
+    "2023_01_LV_DEN",
+    "2023_01_PHI_NE",
+    "2023_01_SF_PIT",
+    "2023_02_BAL_CIN",
+    "2023_02_CHI_TB",
+    "2023_02_CLE_PIT",
+    "2023_02_KC_JAX",
+    "2023_02_LAC_TEN",
+    "2023_02_LV_BUF",
+    "2023_02_MIA_NE",
+    "2023_02_MIN_PHI",
+    "2023_02_NO_CAR",
+    "2023_02_WAS_DEN",
+    "2023_03_CHI_KC",
+    "2023_04_ATL_JAX",
+    "2023_04_LA_IND",
+    "2023_04_PIT_HOU",
+    "2023_04_WAS_PHI",
+    "2023_05_HOU_ATL",
+    "2023_05_JAX_BUF",
+    "2023_05_TEN_IND",
+    "2023_06_BAL_TEN",
+    "2023_06_DEN_KC",
+    "2023_06_IND_JAX",
+    "2023_07_CLE_IND",
+    "2023_09_MIA_KC",
+    "2023_09_MIN_ATL",
+    "2023_10_IND_NE",
+    "2023_15_SF_ARI",
+    "2024_01_GB_PHI",
+    "2024_10_NYG_CAR",
+    "2024_13_HOU_JAX",
+    "2024_15_NYJ_JAX",
+    "2024_17_DET_SF",
+    "2025_12_IND_KC",
+    "2025_15_LAC_KC",
+    "2025_17_DEN_KC"
+  ],
+  "band_cells": [
+    {
+      "kind": "wind",
+      "range": [
+        0,
+        9
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        0,
+        9
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        10,
+        14
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        10,
+        14
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        15,
+        19
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        15,
+        19
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "wind",
+      "range": [
+        20,
+        null
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        null,
+        32
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        null,
+        32
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        33,
+        50
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        33,
+        50
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        51,
+        70
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        51,
+        70
+      ],
+      "field": "avg_points"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        71,
+        null
+      ],
+      "field": "games"
+    },
+    {
+      "kind": "temp",
+      "range": [
+        71,
+        null
+      ],
+      "field": "avg_points"
+    }
+  ],
+  "approved_by": "Approved by Head Grokka in Charge (speaks for Garrett on NFL merges), Nov 10 2026 3:28 AM ET: weather.json text fallback, +154 games, existing values unchanged."
+}
