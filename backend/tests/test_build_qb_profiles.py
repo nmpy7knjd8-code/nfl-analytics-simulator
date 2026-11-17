@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import SEASONS, size_cap  # noqa: E402
 _spec = importlib.util.spec_from_file_location("build_qb_profiles", ROOT / "mining/build_qb_profiles.py")
 qp = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(qp)
@@ -69,7 +72,7 @@ def test_frozen_guard():
 
 def test_site_files_consistent_and_clean():
     idx = json.loads(INDEX.read_text())
-    assert idx["stub"] is False and idx["season_list"] == list(range(2019, 2026)) and idx["builtAt"] and idx["dataThrough"]
+    assert idx["stub"] is False and idx["season_list"] == list(SEASONS) and idx["builtAt"] and idx["dataThrough"]
     slugs = [q["slug"] for q in idx["qbs"]]
     assert len(slugs) == len(set(slugs))
     files = {p.stem: json.loads(p.read_text()) for p in PDIR.glob("*.json")}
@@ -81,7 +84,8 @@ def test_site_files_consistent_and_clean():
         assert sum(sum(v) for v in q["by_season"].values()) == q["swings"]
     for f in [idx, *files.values()]:
         assert not BANNED.findall(json.dumps(list(_keys(f))))
-    assert INDEX.stat().st_size < 30_000 and max(p.stat().st_size for p in PDIR.glob("*.json")) < 30_000
+    assert INDEX.stat().st_size < size_cap("frontend/lib/qbIndex.json") and max(
+        p.stat().st_size for p in PDIR.glob("*.json")) < size_cap("frontend/public/data/players/*.json")
 
 
 def _keys(o):

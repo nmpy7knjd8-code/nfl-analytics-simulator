@@ -4,6 +4,7 @@ from __future__ import annotations
 import glob
 import importlib.util
 import json
+import sys
 import os
 import re
 from pathlib import Path
@@ -11,6 +12,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import SEASONS, size_cap  # noqa: E402
 FIX = ROOT / "backend/tests/fixtures"
 BANNED = re.compile(r"epa|xpass|play_id|wpa|spread|odds|moneyline", re.I)
 
@@ -44,7 +47,7 @@ def test_era_2025_matches_nflverse_and_committed_file():
 
 def test_era_anchor_rates_and_shape():
     data = json.loads(ERA_SITE.read_text())
-    assert [s["season"] for s in data["seasons"]] == list(range(2019, 2026))
+    assert [s["season"] for s in data["seasons"]] == list(SEASONS)
     rate = lambda c: round(100 * c[1] / c[0], 1)
     s19, s25 = data["seasons"][0], data["seasons"][-1]
     assert [rate(s19[k]) for k in ("opp", "mid", "own", "all")] == [25.5, 18.9, 6.7, 16.3]
@@ -52,7 +55,7 @@ def test_era_anchor_rates_and_shape():
     for s in data["seasons"]:
         assert s["all"] == [sum(s[z][j] for z in ("opp", "mid", "own")) for j in (0, 1)]
     assert set(data) == {"schema", "source", "builtAt", "dataThrough", "zones", "seasons"} and data["schema"] == "era/v1"
-    assert ERA_SITE.stat().st_size < 3_000 and not BANNED.search(ERA_SITE.read_text())
+    assert ERA_SITE.stat().st_size < size_cap("data/site/era.json") and not BANNED.search(ERA_SITE.read_text())
 
 
 def test_era_filter():
@@ -110,7 +113,7 @@ def test_calib_committed_file_shape():
     assert data["buckets"][0] == {"lo": 0, "hi": 5, "moments": 29472, "predicted": 1.5, "actual": 2.1}
     for b in data["buckets"]:
         assert b["lo"] <= b["predicted"] <= b["hi"] and 0 <= b["actual"] <= 100
-    assert CALIB_SITE.stat().st_size < 3_000 and not BANNED.search(CALIB_SITE.read_text())
+    assert CALIB_SITE.stat().st_size < size_cap("data/site/calib.json") and not BANNED.search(CALIB_SITE.read_text())
 
 
 def test_calib_frozen(tmp_path, monkeypatch):

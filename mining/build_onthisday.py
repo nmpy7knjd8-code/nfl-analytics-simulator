@@ -1,6 +1,6 @@
 """Build data/site/onthisday.json for G4 On This Day (NFL Stories UI home card).
 
-Source: nflverse play-by-play 2019-2025 (REG+POST) final scores; game_date is nflverse's (US Eastern) date.
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG+POST) final scores; game_date is nflverse's (US Eastern) date.
 2022_17_BUF_CIN (suspended, no final) is left out. ``days`` maps each MM-DD that had games (any season)
 to its games [game_id, year, away_score, home_score, ot] (ot = true when the game had any nflverse play with
 qtr >= 5, i.e. went to overtime); ``fallback`` maps every other MM-DD of the 366 (Feb 29

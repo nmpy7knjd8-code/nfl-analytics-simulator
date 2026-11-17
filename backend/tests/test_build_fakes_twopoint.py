@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 
 
 def _load(name):
@@ -124,7 +125,7 @@ def test_committed_files():
     assert not {bf.key(p) for p in d} & {bf.key(p) for p in f["plays"]}
     keys = set(f) | {k for p in f["plays"] for k in p} | set(t) | set(t["cols"])
     assert not [k for k in keys if BANNED.search(k)]
-    assert FAKES.stat().st_size < 180_000 and TWO.stat().st_size < 170_000  # +wp_before/wp_after 2026-11-03
+    assert FAKES.stat().st_size < size_cap("data/site/fakes.json") and TWO.stat().st_size < size_cap("data/site/twopoint.json")
 
 
 def test_decoys_stratified_deterministic_and_frozen():

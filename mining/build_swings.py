@@ -1,6 +1,6 @@
 """Build data/site/swings.json for C2 (Swing of the Week) and C3 (Biggest regulation swings).
 
-Source: nflverse play-by-play 2019-2025, Vegas-adjusted win chance (vegas_wp / vegas_home_wp),
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), Vegas-adjusted win chance (vegas_wp / vegas_home_wp),
 values copied from nflverse (rounded to 4 decimals only), never recomputed.
 
 Shared swing filter (build-plan C2/C3, creative-builds.md Group C):

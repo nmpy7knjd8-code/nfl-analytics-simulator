@@ -1,6 +1,6 @@
 """Build data/site/fakes.json for B2 ("Real punt or fake?" card, NFL Product UI).
 
-Source: nflverse play-by-play 2019-2025 (REG + POST). A fake punt is exactly the plan's query:
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG + POST). A fake punt is exactly the plan's query:
 down == 4, desc contains "Punt formation" (case-insensitive), play_type in (run, pass).
 That yields 162 plays (155 REG, 7 POST; none in overtime), 90 with first_down == 1 (55.6%).
 Values are copied from nflverse; win chance is nflverse vegas_wp at the snap (rounded to 4 dp),

@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 _spec = importlib.util.spec_from_file_location("build_swings", ROOT / "mining/build_swings.py")
 bs = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(bs)
@@ -180,7 +183,7 @@ def test_committed_override_is_exact_and_reviewed():
 
 def test_committed_site_file_is_small_and_clean():
     data = json.loads(SITE.read_text())
-    assert SITE.stat().st_size < 100_000
+    assert SITE.stat().st_size < size_cap("data/site/swings.json")
     assert data["v"] == bs.SCHEMA_VERSION and len(data["top"]) == bs.TOP_N
     text = SITE.read_text()
     assert "End of half" not in text and "REVERSED" not in text

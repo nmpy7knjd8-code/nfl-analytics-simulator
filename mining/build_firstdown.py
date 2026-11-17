@@ -1,6 +1,6 @@
 """G1 First-down call: weekly 1st-and-10 "pass or run?" picks -> data/site/firstdown.json.
 
-Source: nflverse play-by-play 2019-2025, regular season, quarters 1-4. A play qualifies when it is 1st & 10,
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025), regular season, quarters 1-4. A play qualifies when it is 1st & 10,
 the score is within 8 points before the snap, it is a called pass or run (nflverse play_type; scrambles are
 passes), and there is no penalty, kneel, spike or aborted snap. Outcomes use yards only (nflverse yards_gained):
 "good" means 4 or more yards, or a first down / touchdown. No EPA, success, win chance, play ids or betting fields.

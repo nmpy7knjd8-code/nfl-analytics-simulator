@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "mining"))
+from seasons import size_cap  # noqa: E402
 spec = importlib.util.spec_from_file_location("build_weather", ROOT / "mining/build_weather.py")
 bw = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bw)
@@ -36,7 +39,7 @@ def test_committed_file_matches_spec_bands():
     assert t[(None, 32)] == (88, 44.7) and t[(33, 50)] == (347, 42.9)
     assert sum(b["games"] for b in d["bands"]["wind"]) == 1199
     assert not [k for k in set(d) | set(d["cols"]) if BANNED.search(k)]
-    assert FILE.stat().st_size < 45_000
+    assert FILE.stat().st_size < size_cap("data/site/weather.json")
 
 
 def test_frozen():

@@ -1,6 +1,6 @@
 """Build data/site/twopoint.json for B1 concept 1 ("Kick or go for two?" card, NFL Product UI).
 
-Source: nflverse play-by-play 2019-2025 (REG + POST). Shown values are real nflverse rates only
+Source: nflverse play-by-play, seasons in mining/seasons.py (closed 2019-2025) (REG + POST). Shown values are real nflverse rates only
 (concept 1: no engine values):
   * two-point tries: two_point_attempt == 1 -> 960 tries, 456 success (47.5%); run 266, pass 681,
     13 "no_play" rows that still carry a result (counted in the overall rate only);
