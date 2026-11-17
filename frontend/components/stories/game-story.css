@@ -6,7 +6,7 @@
 .gs-score{display:flex;align-items:center;justify-content:space-between;font-size:20px;font-weight:700;margin-top:4px}
 .gs-score b{font-size:26px;font-weight:800;margin-left:4px}
 .gs-at{color:var(--sg-g);font-size:15px}
-.gs-h1{font-size:24px;font-weight:800;margin:8px 0 0;color:#000}
+.gs-h1{font-size:24px;font-weight:800;margin:8px 0 0;color:var(--ios-label-primary)}
 .gs-h2{font-size:18px;font-weight:800;margin:8px 0 0}
 .gs-beats{list-style:none;margin:0;padding:0}
 .gs-beat{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #eee;scroll-margin-top:60px}

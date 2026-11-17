@@ -36,7 +36,7 @@ test("chip rows start at the left edge and scroll only enough to show the select
 });
 
 test("/heatmap corner and yard labels stay pinned over the scrolled squares", () => {
-  for (const sel of [".hm-corner", ".hm-rowh"]) assert.match(rule(sel), /position:sticky;left:-6px.*background:#fff/);
+  for (const sel of [".hm-corner", ".hm-rowh"]) assert.match(rule(sel), /position:sticky;left:-6px.*background:var\(--ios-background-primary\)/);
 });
 
 test("team and playoff chip rows use ChipScroll edge fades as the scroll cue", () => {

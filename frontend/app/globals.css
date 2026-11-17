@@ -31,9 +31,9 @@
   --color-truth-simulated-soft: #1f1f23;
   --color-interactive-surface: #151517;
   --color-interactive-hover: #1f1f23;
-  --font-display: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--ios-font-display);
+  --font-body: var(--ios-font-text);
+  --font-mono: var(--ios-font-mono);
   --text-display: clamp(2.5rem, 5vw + 1rem, 3.75rem);
   --text-h1: 1.75rem;
   --text-h2: 1.35rem;
@@ -1735,10 +1735,10 @@ body { font-variant-numeric: tabular-nums; }
 
 /* —— A4 kick bands: same white card as the Fourth & Daily game (.sg-app) —— */
 .kb{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
-.kb-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:#000}
-.kb-lede{margin:0;color:var(--sg-g);font-size:15px}
+.kb-h1{font-size:26px;line-height:1.15;font-weight:800;margin:6px 0 0;color:var(--ios-label-primary)}
+.kb-lede{margin:0;color:var(--ios-label-secondary);font-size:15px}
 .kb-hero{text-align:center;border:1.5px solid #000;border-radius:16px;padding:12px 14px 8px}
-.kb-q{font-size:16px;font-weight:600;color:#000}
+.kb-q{font-size:16px;font-weight:600;color:var(--ios-label-primary)}
 .kb-big{font-size:56px;font-weight:800;line-height:1;color:var(--sg-b);font-variant-numeric:tabular-nums;margin:6px 0 4px}
 .kb-sub{font-size:14px;color:var(--sg-g);min-height:1.3em}
 .kb-range{width:100%;height:44px;accent-color:var(--sg-b);margin:0}
@@ -1770,8 +1770,8 @@ body { font-variant-numeric: tabular-nums; }
 .ml-sum{min-height:44px}
 /* About on the white game card */
 .ab{gap:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));line-height:1.5}
-.ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:#000}
-.ab p,.ab>ul{margin:0;font-size:15px;color:#202124}
+.ab h2{font-size:19px;font-weight:800;margin:8px 0 0;color:var(--ios-label-primary)}
+.ab p,.ab>ul{margin:0;font-size:15px;color:var(--ios-label-primary)}
 .ab>ul{padding-left:20px;display:grid;gap:6px}
 .ab a{color:var(--sg-b);padding:12px 0} /* QA V3: 44px tap height; inline padding does not move the text */
 /* —— chart pages (F4/D2), same white card as /kicks —— */
@@ -1779,11 +1779,11 @@ body { font-variant-numeric: tabular-nums; }
 .ch-chips{margin:8px -2px 0}.ch-chips>:first-child{margin-left:auto}.ch-chips>:last-child{margin-right:auto}
 .ch-pick{text-align:left}
 .era-ax{font-size:11px;fill:#5f6368}
-.era-ax.is-on{fill:#000;font-weight:700}
+.era-ax.is-on{fill:var(--ios-label-primary);font-weight:700}
 .era-lbl{font-size:11px;font-weight:700}
-.era-pick-h{font-size:15px;font-weight:600;color:#000;margin-bottom:6px}
+.era-pick-h{font-size:15px;font-weight:600;color:var(--ios-label-primary);margin-bottom:6px}
 .era-rows{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:#000}
+.era-rows li{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ios-label-primary)}
 .era-rows strong{margin-left:auto;font-size:18px;font-variant-numeric:tabular-nums}
 .era-dot{width:10px;height:10px;border-radius:50%;background:#000;flex:none}
 .era-all{border-top:1px solid #e6e6e6;padding-top:6px}
@@ -1808,20 +1808,20 @@ body { font-variant-numeric: tabular-nums; }
 .ck-changes { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
 .ck-src { font-size: 0.875rem; }
 /* —— D5 outcome histogram —— */
-.oh-head{font-size:15px;font-weight:700;color:#000;text-align:left;margin-bottom:4px}
+.oh-head{font-size:15px;font-weight:700;color:var(--ios-label-primary);text-align:left;margin-bottom:4px}
 .oh-empty{margin:24px 0;color:var(--sg-g);font-size:15px}
 /* —— D6 heat map (coaches' real go-rates) —— */
 .hm-card{padding:8px 6px}
 .hm-scroll{overflow-x:auto;scrollbar-width:none;margin:0 -6px;padding:0 6px}.hm-scroll::-webkit-scrollbar{display:none}
 .hm-grid{display:grid;grid-template-columns:52px repeat(10,minmax(44px,1fr));gap:2px}
 .hm-row{display:contents}
-.hm-corner{position:sticky;left:-6px;z-index:2;background:#fff;box-shadow:-6px 0 0 #fff;font-size:10px;color:var(--sg-g);align-self:end;text-align:left}
-.hm-colh{font-size:12px;font-weight:700;color:var(--sg-g);text-align:center}
-.hm-rowh{font-size:11px;color:var(--sg-g);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:-6px;background:#fff;box-shadow:-6px 0 0 #fff;z-index:1}
+.hm-corner{position:sticky;left:-6px;z-index:2;background:var(--ios-background-primary);box-shadow:-6px 0 0 var(--ios-background-primary);font-size:10px;color:var(--ios-label-secondary);align-self:end;text-align:left}
+.hm-colh{font-size:12px;font-weight:700;color:var(--ios-label-secondary);text-align:center}
+.hm-rowh{font-size:11px;color:var(--ios-label-secondary);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;white-space:nowrap;position:sticky;left:-6px;background:var(--ios-background-primary);box-shadow:-6px 0 0 var(--ios-background-primary);z-index:1}
 .hm-cell{min-width:44px;min-height:44px;border:0;border-radius:4px;font:inherit;font-size:11px;font-weight:700;padding:0;cursor:pointer;font-variant-numeric:tabular-nums}
 .hm-cell.is-few{background:repeating-linear-gradient(45deg,#f1f3f4 0 4px,#e0e0e0 4px 6px)}
-.hm-cell.is-on{outline:3px solid #000;outline-offset:-1px}
-.hm-axis{font-size:12px;color:var(--sg-g);margin-top:6px;text-align:left}
+.hm-cell.is-on{outline:3px solid var(--ios-label-primary);outline-offset:-1px}
+.hm-axis{font-size:12px;color:var(--ios-label-secondary);margin-top:6px;text-align:left}
 .oh-empty{margin:12px 0;color:var(--sg-g);font-size:15px}
 /* —— E3 match the chart —— */
 .mc-charts{display:flex;flex-direction:column;gap:10px}
@@ -1836,8 +1836,8 @@ body { font-variant-numeric: tabular-nums; }
 .mc-game{font-size:15px;min-width:0}
 .mc-sub{font-size:12px;color:var(--sg-g);margin-top:2px}
 .mc-chips{display:flex;gap:6px;flex:none}
-.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
-.mc-chip.is-on{background:#1E5BFF;border-color:#1E5BFF;color:#fff}
+.mc-chip{width:40px;height:40px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:19px;font-weight:800;cursor:pointer}
+.mc-chip.is-on{background:var(--ios-accent);border-color:var(--ios-accent);color:var(--ios-label-on-accent)}
 .mc-total{font-size:20px;font-weight:800;text-align:center;margin:12px 0 4px}
 .mc-seasons{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 /* —— E5 where's the ball —— */
@@ -1853,7 +1853,7 @@ body { font-variant-numeric: tabular-nums; }
 .wb-gap{position:absolute;top:0;bottom:0;background:rgba(255,235,59,.35)}
 .wb-step{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px}
 .wb-spot{font-size:18px;font-weight:800;min-width:96px;text-align:center}
-.mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.mc-chip{width:44px;height:44px;border-radius:50%;border:2px solid var(--ios-label-primary);background:var(--ios-background-elevated);color:var(--ios-label-primary);font:inherit;font-size:19px;font-weight:800;cursor:pointer}
 .mc-total{font-size:22px;font-weight:800;text-align:center;margin:8px 0}
 .wb-clue{margin:4px 0 0;font-size:14px;color:var(--sg-g)}
 /* Pages with the light ☰ Header (.sg-app) never show the old top bar / bottom nav. Done in CSS, not in

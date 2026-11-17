@@ -30,8 +30,10 @@
 
   /* Labels (ink) */
   --ios-label-primary: #000000;
-  --ios-label-secondary: rgba(60, 60, 67, 0.72);
-  --ios-label-tertiary: rgba(60, 60, 67, 0.48);
+  /* Footer + inactive tabs must meet 4.5:1 on the grouped background (#f2f2f7).
+     Tertiary #636366 is ~5.37:1. Secondary is a stronger ink for body-adjacent text. */
+  --ios-label-secondary: #3c3c43;
+  --ios-label-tertiary: #636366;
   --ios-label-quaternary: rgba(60, 60, 67, 0.3);
   --ios-label-on-accent: #ffffff;
 
@@ -76,8 +78,8 @@
     --ios-background-grouped-secondary: #1c1c1e;
 
     --ios-label-primary: #ffffff;
-    --ios-label-secondary: rgba(235, 235, 245, 0.66);
-    --ios-label-tertiary: rgba(235, 235, 245, 0.44);
+    --ios-label-secondary: rgba(235, 235, 245, 0.8);
+    --ios-label-tertiary: #8e8e93;
     --ios-label-quaternary: rgba(235, 235, 245, 0.28);
     --ios-label-on-accent: #ffffff;
 
@@ -117,8 +119,8 @@
   --ios-background-grouped-secondary: #1c1c1e;
 
   --ios-label-primary: #ffffff;
-  --ios-label-secondary: rgba(235, 235, 245, 0.66);
-  --ios-label-tertiary: rgba(235, 235, 245, 0.44);
+  --ios-label-secondary: rgba(235, 235, 245, 0.8);
+  --ios-label-tertiary: #8e8e93;
   --ios-label-quaternary: rgba(235, 235, 245, 0.28);
   --ios-label-on-accent: #ffffff;
 
@@ -200,6 +202,7 @@
 
   --ios-nav-height: 44px;
   --ios-z-nav: 40;
+  --ios-z-menu: 50; /* open ☰ list stacks above the 49px tab bar */
   --ios-tab-height: 49px;
   --ios-touch: 44px;
   --ios-status-safe: env(safe-area-inset-top, 0px);
