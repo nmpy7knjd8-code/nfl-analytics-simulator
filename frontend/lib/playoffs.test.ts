@@ -1,6 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CONF, SEASONS, bracket, roman } from "./playoffs";
+import { gameSeasons, seasonRangeText } from "./seasons";
+
+test("playoff seasons follow the game files", () => {
+  assert.deepEqual([...SEASONS], gameSeasons());
+  assert.equal(seasonRangeText(SEASONS), "2019–2025");
+});
 
 test("every season has a full bracket: 6 WC (4 in 2019), 4 DIV, 2 CON, 1 SB; 89 games", () => {
   let n = 0;

@@ -7,7 +7,8 @@ import { Header, Trademark } from "../../../components/SimpleGame";
 import { TeamRedzone } from "../../../components/TeamRedzone";
 import { REDZONE } from "../../../lib/teamRedzone";
 import Link from "next/link";
-import { teamRivals, type Rival } from "../../../lib/rivalries";
+import { SEASONS, teamRivals, type Rival } from "../../../lib/rivalries";
+import { seasonCoverageText } from "../../../lib/seasons";
 import "../team.css";
 
 type Props = { params: Promise<{ abbr: string }> };
@@ -27,7 +28,8 @@ export default async function TeamPage({ params }: Props) {
   const { abbr } = await params;
   const c = TEAMS[abbr];
   if (!c || !REDZONE.teams.some((t) => t.team === abbr)) notFound();
-  const [s0, s1] = REDZONE.seasons;
+  const redzoneSpan = seasonCoverageText(REDZONE.season_list);
+  const rivalrySpan = seasonCoverageText(SEASONS);
   const rivals = teamRivals(abbr);
   const top = rivals.slice(0, 6), rest = rivals.slice(6);
   const rivalRow = (r: Rival) => (
@@ -48,10 +50,10 @@ export default async function TeamPage({ params }: Props) {
           <h1 className="tm-h1">{teamNickname(abbr)}</h1>
         </header>
         <p className="tm-lede">How their offense did: red-zone touchdowns, yards per play and third downs.</p>
-        <TeamRedzone abbr={abbr} />
+        <TeamRedzone abbr={abbr} span={redzoneSpan} />
         <section className="tm-rivals" aria-labelledby="tm-rivals-h">
           <h2 id="tm-rivals-h" className="tm-rh">Rivalries</h2>
-          <p className="tm-rsub">Every meeting with each opponent, {s0}–{s1}, regular season and playoffs.</p>
+          <p className="tm-rsub">Every meeting with each opponent, {rivalrySpan}, regular season and playoffs.</p>
           <ul className="tm-rlist">{top.map(rivalRow)}</ul>
           {rest.length ? (
             <details className="tm-rmore">
@@ -62,7 +64,7 @@ export default async function TeamPage({ params }: Props) {
         </section>
         <p className="tm-note">
           A red-zone trip is a drive with a snap at the opponent 20 or closer. No points includes turnovers, turnover on downs,
-          missed kicks and the clock running out. Yards per play counts runs and passes. Data: nflverse play-by-play, {s0}–{s1}, regular season.
+          missed kicks and the clock running out. Yards per play counts runs and passes. Data: nflverse play-by-play, {redzoneSpan}, regular season.
         </p>
         <Trademark />
       </div>

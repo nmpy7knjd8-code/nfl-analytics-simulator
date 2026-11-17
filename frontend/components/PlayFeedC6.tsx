@@ -110,7 +110,7 @@ function Chart({ g, play, onClose }: { g: FeedGame; play: FeedPlay & { homeWp: n
   );
 }
 
-export function PlayFeedC6() {
+export function PlayFeedC6({ seasons }: { seasons: readonly number[] }) {
   // Static export: the chosen game lives in ?game=<id> and is read on the client (shareable, survives reload).
   const [gameId, setGameId] = useState<string | null>(null);
   // G6: weather badge in the game header. Decorative: loading, empty or error shows no badge.
@@ -200,7 +200,7 @@ export function PlayFeedC6() {
         </div>
       )}
       {picking ? (
-        <GamePicker currentId={gameId ?? DEFAULT_FEED_GAME} startSeason={seasonOf(gameId ?? DEFAULT_FEED_GAME)} onPick={pick} onClose={() => setPicking(false)} />
+        <GamePicker currentId={gameId ?? DEFAULT_FEED_GAME} startSeason={seasonOf(gameId ?? DEFAULT_FEED_GAME)} seasons={seasons} onPick={pick} onClose={() => setPicking(false)} />
       ) : play && g ? (
         <Chart g={g} play={play} onClose={closeChart} />
       ) : (

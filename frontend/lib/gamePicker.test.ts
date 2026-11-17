@@ -2,9 +2,16 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  DEFAULT_FEED_GAME, SEASONS, feedHref, feedUrlToWrite, finalScore, gameFromQuery, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonOf, weeksOf,
+  DEFAULT_FEED_GAME, feedHref, feedUrlToWrite, finalScore, gameFromQuery, gamesInWeek, isSeasonIndex, matchup, searchGames, seasonOf, weeksOf,
   type SeasonIndex,
 } from "./gamePicker";
+import { gameSeasons } from "./seasons";
+
+const SEASONS = gameSeasons("desc");
+
+test("picker seasons are the committed game files, newest first", () => {
+  assert.deepEqual(SEASONS, [2025, 2024, 2023, 2022, 2021, 2020, 2019]);
+});
 
 const idx = (s: number) => JSON.parse(readFileSync(new URL(`../public/data/games/${s}.json`, import.meta.url), "utf8")) as SeasonIndex;
 

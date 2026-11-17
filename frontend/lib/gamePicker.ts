@@ -4,7 +4,6 @@
  */
 import { teamNickname } from "./teams";
 
-export const SEASONS = [2025, 2024, 2023, 2022, 2021, 2020, 2019] as const;
 export const DEFAULT_FEED_GAME = "2023_01_DET_KC";
 
 export type IndexGame = {

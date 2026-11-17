@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 import { ChipScroll } from "./ChipScroll";
-import { ALL, REDZONE, pct, rowFor, seasonKeys, sliceFor, vsLeague } from "../lib/teamRedzone";
+import { ALL, pct, rowFor, seasonKeys, sliceFor, vsLeague } from "../lib/teamRedzone";
 import { CLOSE_LINE, VIEW_LABEL, gtView, teamStats, yardsVsLeague, type View } from "../lib/teamGarbageTime";
 
-export function TeamRedzone({ abbr }: { abbr: string }) {
+export function TeamRedzone({ abbr, span }: { abbr: string; span: string }) {
   const [season, setSeason] = useState(ALL);
   const [view, setView] = useState<View>("all");
   const keys = seasonKeys();
   const slice = sliceFor(season);
   const row = rowFor(abbr, slice);
-  const [s0, s1] = REDZONE.seasons;
-  const when = season === ALL ? `${s0}–${s1}` : season;
+  const when = season === ALL ? span : season;
   const gv = gtView(view, season);
   const st = gv ? teamStats(abbr, gv) : undefined;
   const close = view === "close";

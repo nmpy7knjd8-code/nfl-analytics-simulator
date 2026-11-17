@@ -4,18 +4,20 @@ import { teamNickname } from "../../lib/teams";
 import { TeamLogo } from "../../components/TeamLogo";
 import { Header, Trademark } from "../../components/SimpleGame";
 import { SEASONS, bracket } from "../../lib/playoffs";
+import { seasonEnds } from "../../lib/seasons";
 import "../section-index.css";
 
 export const metadata: Metadata = { title: "Playoffs · Fourth & Daily" };
 
 export default function PlayoffsIndex() {
   const rows = [...SEASONS].reverse().map((s) => bracket(s));
+  const ends = seasonEnds(SEASONS);
   return (
     <main id="main">
       <div className="sg-app ix">
         <Header right="Playoffs" />
         <h1 className="ix-title">Playoffs</h1>
-        <p className="ix-sub">Every playoff bracket, {SEASONS[0]}–{SEASONS[SEASONS.length - 1]} seasons.</p>
+        <p className="ix-sub">Every playoff bracket, {ends ? <>{ends[0]}–{ends[1]}</> : ""} seasons.</p>
         <ul className="ix-list">
           {rows.map((b) => (
             <li key={b.season}>
