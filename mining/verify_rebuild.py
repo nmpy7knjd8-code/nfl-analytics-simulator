@@ -88,6 +88,13 @@ def main(argv: list[str] | None = None) -> int:
             files = sorted((ROOT / rel).glob("*.json"))
             extra = sorted(set(p.name for p in out.glob("*.json")) - set(p.name for p in files))
             ok &= code == 0 and not extra and compare([(out / f.name, f) for f in files], name)
+        if a.ref_dir and want("kickers"):
+            ref = Path(a.ref_dir)
+            out = tmp / "kickers.json"
+            shutil.copy(ROOT / "data/site/kickers.json", out)
+            code, last = run([str(M / "build_kickers.py"), str(ref / "players.parquet"), *pbp, "--out", str(out)])
+            print(f"-- build_kickers: exit {code}: {last}")
+            ok &= code == 0 and compare([(out, ROOT / "data/site/kickers.json")], "kickers")
         if a.ref_dir and want("player_names"):
             ref = Path(a.ref_dir)
             out = tmp / "player_names.json"

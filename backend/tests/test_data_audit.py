@@ -67,7 +67,7 @@ COPIES: list[tuple[str, str]] = [
     *[(f"data/site/{n}.json", f"frontend/public/data/stories/{n}.json")
       for n in ("comebacks", "firstdown", "goalline", "onthisday", "swings", "weather")],
     *[(f"data/site/{n}.json", f"frontend/lib/site/{n}.json")
-      for n in ("calib", "era", "fakes", "fg_rates", "gorates", "outcomes", "twopoint")],
+      for n in ("calib", "era", "fakes", "fg_rates", "gorates", "kickers", "outcomes", "twopoint")],
 ]
 
 # Nulls allowed at a (group, normalized path). Win-chance fields are handled separately (always allowed in OT).
