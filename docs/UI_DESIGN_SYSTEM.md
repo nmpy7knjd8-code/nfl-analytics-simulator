@@ -2,7 +2,7 @@
 
 **Status:** Design tokens and visual direction for Phase frontend work. Not an implementation.  
 **Consumers:** Screen-spec agent, Next.js implementers.  
-**Stack assumption:** Next.js + TypeScript; fonts via `next/font/google` or self-host.
+**Stack assumption:** Next.js + TypeScript; the iOS redesign uses the system font.
 
 ---
 
@@ -28,7 +28,7 @@
 - Rounded-full pill clusters, emoji decoration  
 - Cards wrapping static content that does not need a container  
 - Floating badges/overlays on hero media  
-- Inter, Roboto, Arial, or system UI stacks as brand/body fonts  
+- Inter, Roboto, or Arial as brand/body fonts (the iOS redesign uses the system font)  
 
 **Mood reference:** Quiet sideline light, chalk and turf depth, magazine clarity—not broadcast lower-thirds.
 
@@ -52,7 +52,7 @@ Interior app screens skip the marketing hero; they open with a quiet top bar, pa
 
 ## 3. Color
 
-Light theme is default. Dark mode is allowed when it follows the system setting (`prefers-color-scheme`) through the iOS design tokens in `frontend/app/tokens.css` (merged in #325). The old black theme and the old bottom nav remain banned. Do not design dark-first. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
+Light theme is default. Dark mode is allowed when it follows the system setting (`prefers-color-scheme`) through the iOS design tokens in `frontend/app/tokens.css` (merged in #325). The old black theme and the old bottom nav remain banned. Do not design dark-first. There is a single accent: `#007AFF` in light, `#0A84FF` in dark. `#1E5BFF` is retired. System red is only for errors. Charts use blue tints and grays. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 ### 3.1 CSS variables
 
@@ -151,13 +151,13 @@ Optional: a very light noise overlay (`opacity` ≤ 0.04) on a fixed pseudo-elem
 
 ### 3.3 Team colors
 
-Use official team colors only as **small accents** (logos, matchup marks, tiny series keys)—never as page chrome or full chart palettes. Always meet WCAG AA for text on its background. Prefer ink + turf accent for UI chrome regardless of team.
+Team colors appear only on the scoreboard—not as page chrome, chart palettes, or series keys. Always meet WCAG AA for text on its background. Prefer ink + the single iOS accent (`#007AFF` / `#0A84FF`) for UI chrome. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 ---
 
 ## 4. Typography
 
-Load via `next/font/google` (or self-host the same files).
+The iOS redesign uses the system font (see `iosFonts` in `frontend/lib/tokens.ts`). This supersedes Syne, Source Sans 3, and IBM Plex Mono as the UI typefaces. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 | Role | Family | Weights | Notes |
 |------|--------|---------|--------|
@@ -255,10 +255,11 @@ Load via `next/font/google` (or self-host the same files).
 
 **Shell**
 
-- Top bar: product mark (Syne), primary nav links, environment/data freshness indicator.
+- Top bar: quiet product chrome and a freshness indicator when needed.
+- Tabs: Today / Feed / Games / More. Hide the tabs during play. The old bottom nav remains banned.
 - Content column centered within `--page-max` or `--page-max-wide`.
 - Sticky **context rail** (optional, lg+): game/situation summary + truth labels—text and metrics only, not a card stack.
-- Mobile: single column; sticky bottom primary action only when a lab/simulator step requires commit.
+- Mobile: single column.
 
 **Section pattern**
 
@@ -364,7 +365,7 @@ Do not invent confidence intervals in the UI if the API does not supply them—s
 
 ## 10. Chart styling
 
-Library-agnostic tokens (Recharts, Visx, or similar later).
+Charts use blue tints and grays (and the single iOS accent). Do not use team colors or `#1E5BFF` in charts. The turf/brown `--chart-*` values below are superseded by `--ios-chart-*` in `frontend/app/tokens.css`. (Head Grokka in Charge, speaks for Garrett, Nov 10 2026)
 
 **Defaults**
 
@@ -436,10 +437,6 @@ Design these as first-class layouts, not toasts-only afterthoughts.
 
 ## 14. Token handoff checklist
 
-Implementers should expose the CSS variables above in a single `tokens.css` (or CSS module) and map fonts in `app/layout.tsx` via `next/font/google`:
-
-- `Syne` → `--font-display`
-- `Source_Sans_3` → `--font-body`
-- `IBM_Plex_Mono` → `--font-mono`
+Implementers should use the iOS tokens in `frontend/app/tokens.css` and `frontend/lib/tokens.ts`. Type is the system font (`iosFonts`); do not load Syne, Source Sans 3, or IBM Plex Mono as the UI typefaces.
 
 Component usage rules: [`UI_COMPONENT_RULES.md`](./UI_COMPONENT_RULES.md).
