@@ -470,6 +470,66 @@
      ]
     }
    }
+  },
+  "2026-11-19": {
+   "theme": "marathon",
+   "items": {
+    "2022_16_JAX_NYJ-2985": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.102265,
+      "punt": 0.0704365,
+      "fg": 0.0968434
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_15_MIA_BUF-4334": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.649755,
+      "punt": 0.416026,
+      "fg": 0.764483
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_03_NO_GB-3038": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.0702221,
+      "punt": 0.0378159,
+      "fg": 0.0575002
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_15_DET_NYJ-347": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.587023,
+      "punt": 0.384182,
+      "fg": 0.497985
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_19_NYG_MIN-3208": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.632373,
+      "punt": 0.482473,
+      "fg": 0.595723
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
