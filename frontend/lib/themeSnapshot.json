@@ -530,6 +530,239 @@
      ]
     }
    }
+  },
+  "2026-11-21": {
+   "theme": "playoffs",
+   "items": {
+    "2023_20_TB_DET-4149": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.827197,
+      "punt": 0.847102,
+      "fg": 0.831311
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_19_PIT_BUF-915": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.0373024,
+      "punt": 0.0355729
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_19_LA_DET-3409": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.359005,
+      "punt": 0.374096,
+      "fg": 0.360519
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_19_DAL_TB-236": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.495591,
+      "punt": 0.540832
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2023_20_HOU_BAL-2758": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.805659,
+      "punt": 0.774557
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-24": {
+   "theme": "goal-line",
+   "items": {
+    "2023_18_JAX_TEN-3652": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.301507,
+      "punt": 0.149123,
+      "fg": 0.217885
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_12_NO_SF-1624": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.797925,
+      "punt": 0.676284,
+      "fg": 0.749115
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_05_CHI_WAS-634": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.801799,
+      "punt": 0.676118,
+      "fg": 0.768299
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_16_PHI_DAL-1269": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.414842,
+      "punt": 0.22853,
+      "fg": 0.320155
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_09_TEN_KC-501": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.525572,
+      "punt": 0.377688,
+      "fg": 0.490463
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-26": {
+   "theme": "marathon",
+   "items": {
+    "2023_04_CIN_TEN-507": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.515922,
+      "punt": 0.458111,
+      "fg": 0.439878
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_11_TEN_GB-2126": {
+     "recommendation": "fg",
+     "values": {
+      "go": 0.190721,
+      "punt": 0.162593,
+      "fg": 0.223137
+     },
+     "best": [
+      "fg"
+     ]
+    },
+    "2023_16_SEA_TEN-3400": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.441874,
+      "punt": 0.342627,
+      "fg": 0.415164
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_09_TEN_KC-501": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.525572,
+      "punt": 0.377688,
+      "fg": 0.490463
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2023_01_LA_SEA-3321": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.788497,
+      "punt": 0.635619,
+      "fg": 0.735074
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
+  },
+  "2026-11-28": {
+   "theme": "playoffs",
+   "items": {
+    "2023_21_KC_BAL-122": {
+     "recommendation": "inconclusive",
+     "values": {
+      "go": 0.341599,
+      "punt": 0.343915
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_19_DAL_TB-416": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.575442,
+      "punt": 0.560502
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_21_SF_PHI-1164": {
+     "recommendation": "punt",
+     "values": {
+      "go": 0.537198,
+      "punt": 0.593535
+     },
+     "best": [
+      "punt"
+     ]
+    },
+    "2022_19_LAC_JAX-4266": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.490121,
+      "punt": 0.416966,
+      "fg": 0.42595
+     },
+     "best": [
+      "go"
+     ]
+    },
+    "2022_19_BAL_CIN-1916": {
+     "recommendation": "go",
+     "values": {
+      "go": 0.525223,
+      "punt": 0.512909
+     },
+     "best": [
+      "go"
+     ]
+    }
+   }
   }
  }
 }
